@@ -1,0 +1,25 @@
+//引入主题文件
+//Import theme doc
+@import "~/assets/theme/light";
+@import "~/assets/theme/dark";
+
+//滚动条样式
+//Import scroll bar
+@import "./scrollbar";
+
+ //全局动画时间
+ //Animation for all global pages
+ $animete-time: 0.2s;
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+$mainColor: #1B05A1;
+$mainTextColor: #5A575C;
+$secondaryTextColor: #C6C4C7;

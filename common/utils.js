@@ -1,0 +1,160 @@
+import _ from "lodash"
+
+/**
+ * 时间格式化函数, 按照指定格式化字符串格式化传入时间
+ *
+ * @param {Date} time 需要格式化的时间
+ * @param {String} fmStr 定义时间的格式
+ * 		yyyy: 代表四位数年份
+ * 		  yy: 代表两位数年份
+ * 		  mm: 代表月份(小于10时补0)
+ * 		  dd: 代表日期(小于10时补0)
+ * 		  hh: 代表小时(小于10时补0)
+ * 		  hh: 代表小时(小于10时补0)
+ * 		  MM: 代表分钟(小于10时补0)
+ * 		  ss: 代表秒数(小于10时补0)
+ * 		 SSS: 代表毫秒数
+ * 		   w: 代表周几(数字)
+ * 		   W: 代表周几(中文)
+ * 		  ww: 代表周几(英文)
+ * @returns {String} 返回格式化的时间
+ */
+//timeFormat
+export const timeFormat = (time, fmStr) => {
+    const weekCN = "一二三四五六日";
+    const weekEN = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+    ];
+
+    let year = time.getFullYear();
+    let month = time.getMonth() + 1;
+    let day = time.getDate();
+    let hours = time.getHours();
+    let minutes = time.getMinutes();
+    let seconds = time.getSeconds();
+    let milliSeconds = time.getMilliseconds();
+    let week = time.getDay();
+
+    month = month >= 10 ? month : "0" + month;
+    day = day >= 10 ? day : "0" + day;
+    hours = hours >= 10 ? hours : "0" + hours;
+    minutes = minutes >= 10 ? minutes : "0" + minutes;
+    seconds = seconds >= 10 ? seconds : "0" + seconds;
+
+    if (fmStr.indexOf("yyyy") !== -1) {
+        fmStr = fmStr.replace("yyyy", year);
+    } else {
+        fmStr = fmStr.replace("yy", (year + "").slice(2));
+    }
+    fmStr = fmStr.replace("mm", month);
+    fmStr = fmStr.replace("dd", day);
+    fmStr = fmStr.replace("hh", hours);
+    fmStr = fmStr.replace("MM", minutes);
+    fmStr = fmStr.replace("ss", seconds);
+    fmStr = fmStr.replace("SSS", milliSeconds);
+    fmStr = fmStr.replace("W", weekCN[week - 1]);
+    fmStr = fmStr.replace("ww", weekEN[week - 1]);
+    fmStr = fmStr.replace("w", week);
+    // console.log(fmStr, "timeFormat");
+    return fmStr;
+};
+
+Date.prototype.format = function(fmStr) {
+    return timeFormat(this, fmStr);
+};
+
+/**
+ * 科学计数法转数字文本
+ * @param {*} num
+ */
+// toNonExponential: Conversion of scientific counting method to digital text
+export const toNonExponential = num => {
+    try {
+        var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
+        return num.toFixed(Math.max(0, (m[1] || "").length - m[2]));
+    } catch (error) {
+        // console.log(error,'toNonExponential');
+        return 0;
+    }
+};
+
+/**
+ * 查找父级元素
+ * @param {Element} el  当前dom元素
+ * @param {String} className 要查找的类名
+ * @return {Element} 返回找到的元素
+ */
+//findParents 
+export const findParents = ($el, $className) => {
+    try {
+        let parentNode = $el.parentNode;
+        while (parentNode) {
+            if (
+                parentNode.className &&
+                parentNode.className.indexOf($className) != -1
+            ) {
+                return parentNode;
+            }
+            parentNode = parentNode.parentNode;
+        }
+        return null;
+    } catch (error) {
+        return null;
+    }
+};
+
+/**
+ * 删除class
+ * @param {Element} el  当前dom元素
+ * @param {Array,String} className 要删除的类名
+ */
+//removeClass
+export const removeClass = ($el, $className) => {
+    try {
+        let classNameArray = $el.className.split(" ");
+
+        if (_.isArray($className)) {
+            _.pullAll(classNameArray, $className);
+        } else if (_.isString($className)) {
+            _.pull(classNameArray, $className);
+        } else {
+            return false;
+        }
+
+        $el.className = classNameArray.join(" ");
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
+
+/**
+ * 添加class
+ * @param {Element} el  当前dom元素
+ * @param {Array,String} className 要添加的类名
+ */
+//addClass
+export const addClass = ($el, $className) => {
+    try {
+        let classNameArray = $el.className.split(" ");
+
+        if (_.isArray($className)) {
+            classNameArray = [...classNameArray,...$className];
+        } else if (_.isString($className)) {
+            classNameArray.push($className)
+        } else {
+            return false;
+        }
+
+        $el.className = classNameArray.join(" ");
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
