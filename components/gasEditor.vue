@@ -2,7 +2,7 @@
     <div id="gasEditor">
         <div class="editInfo">
             <div class="infoLeft">
-                <span class="editTitle">Etherum network fee</span>
+                <span class="editTitle">Ethereum Network Fee</span>
                 <span class="editBtn" @click="gasEditorModal = true"
                     ><svg width="16px" height="16px" viewBox="0 0 16 16">
                         <g>
@@ -36,7 +36,6 @@
             @on-visible-change="gasEditorModalChange"
         >
             <div class="header">
-
                 <div class="closeBtn" @click="gasEditorModal = false">
                     <closeSvg></closeSvg>
                 </div>
@@ -52,13 +51,13 @@
                 <div class="selections">
                     <div
                         class="selectionItem"
-                        @click="selectedTypeChange('SLOW')"
+                        @click="selectedTypeChange(NETWORK_SPEEDS_TO_KEY.SLOW)"
                         :class="{
-                            active: selectedType == 'SLOW'
+                            active: selectedType == NETWORK_SPEEDS_TO_KEY.SLOW
                         }"
                     >
                         <div class="itemSpeed">
-                            Slow
+                            {{ NETWORK_SPEEDS_TO_KEY.SLOW | capitalize }}
                         </div>
 
                         <div class="itemNumBox">
@@ -72,13 +71,15 @@
 
                     <div
                         class="selectionItem"
-                        @click="selectedTypeChange('MEDIUM')"
+                        @click="
+                            selectedTypeChange(NETWORK_SPEEDS_TO_KEY.MEDIUM)
+                        "
                         :class="{
-                            active: selectedType == 'MEDIUM'
+                            active: selectedType == NETWORK_SPEEDS_TO_KEY.MEDIUM
                         }"
                     >
                         <div class="itemSpeed">
-                            Medium
+                            {{ NETWORK_SPEEDS_TO_KEY.MEDIUM | capitalize }}
                         </div>
 
                         <div class="itemNumBox">
@@ -92,13 +93,13 @@
 
                     <div
                         class="selectionItem"
-                        @click="selectedTypeChange('FAST')"
+                        @click="selectedTypeChange(NETWORK_SPEEDS_TO_KEY.FAST)"
                         :class="{
-                            active: selectedType == 'FAST'
+                            active: selectedType == NETWORK_SPEEDS_TO_KEY.FAST
                         }"
                     >
                         <div class="itemSpeed">
-                            Fast
+                            {{ NETWORK_SPEEDS_TO_KEY.FAST | capitalize }}
                         </div>
 
                         <div class="itemNumBox">
@@ -114,7 +115,7 @@
                 <div
                     class="custom"
                     :class="{
-                        active: selectedType == 'CUSTOM'
+                        active: selectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM
                     }"
                     @click="customPriceFocus"
                 >
@@ -124,7 +125,7 @@
                         </div>
 
                         <div class="desc">
-                            <div class="descTop">Etherum network fee</div>
+                            <div class="descTop">Ethereum Network Fee</div>
                             <div class="unit">GWEI</div>
                         </div>
                     </div>
@@ -157,20 +158,35 @@
 <script>
 import _ from "lodash";
 import closeSvg from "@/components/svg/close";
+
+import {
+    getNetworkSpeeds,
+    formatGasPrice,
+    unFormatGasPrice
+} from "@/assets/linearLibrary/linearTools/network";
+import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
+
 export default {
     data() {
         return {
-            price: this.$store.state?.gasDetails?.price, //当前选中的gas
+            price: unFormatGasPrice(this.$store.state?.gasDetails?.price), //当前选中的gas
             gasEditorModal: false, //设置弹窗
             selectedType: this.$store.state?.gasDetails?.type, //当前选择类型
-            networkSpeeds: {
-                SLOW: { time: "1 min", price: "100" },
-                MEDIUM: {},
-                FAST: {}
-            }, //网络速度
+            networkSpeeds: { SLOW: {}, MEDIUM: {}, FAST: {} }, //网络速度
             speedLoading: false, //加载状态
-            customPrice: null //自定义的gas
+            customPrice: null, //自定义的gas
+            NETWORK_SPEEDS_TO_KEY, //速度类型
         };
+    },
+    filters:{
+        capitalize(val){
+            if(_.isNull(val)){
+                return;
+            }else{
+                return _.capitalize(val);
+            }
+
+        }
     },
     components: {
         closeSvg
@@ -210,26 +226,26 @@ export default {
             try {
                 this.speedLoading = true;
 
-                _.delay(() => {
-                    this.networkSpeeds = {
-                        SLOW: { time: "16", price: 30 },
-                        MEDIUM: { time: "5", price: 200 },
-                        FAST: { time: "1", price: 999 }
-                    };
+                await getNetworkSpeeds()
+                    .then(res => {
+                        this.networkSpeeds = res;
 
-                    this.selectedType = this.$store.state?.gasDetails?.type;
+                        this.selectedType = this.$store.state?.gasDetails?.type;
 
-                    //判断赋值
-                    if (this.selectedType == "CUSTOM") {
-                        this.price = this.customPrice = this.$store.state?.gasDetails?.price;
-                    } else {
-                        this.price = this.networkSpeeds[
-                            this.selectedType
-                        ].price;
-                    }
-
-                    this.speedLoading = false;
-                }, 500);
+                        //判断赋值
+                        if (this.selectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
+                            this.price = this.customPrice = unFormatGasPrice(
+                                this.$store.state?.gasDetails?.price
+                            );
+                        } else {
+                            this.price = this.networkSpeeds[
+                                this.selectedType
+                            ].price;
+                        }
+                    })
+                    .finally(() => {
+                        this.speedLoading = false;
+                    });
             } catch (error) {
                 console.log(error);
             }
@@ -244,7 +260,10 @@ export default {
 
                 await this.getNetworkSpeeds();
 
-                const gwei = this.$store.state?.gasDetails?.price;
+                const gwei = unFormatGasPrice(
+                    this.$store.state?.gasDetails?.price
+                );
+
                 //如果price发生变化时,更新数据
                 if (this.price != gwei) {
                     this.setGasDetails(this.price, this.selectedType);
@@ -293,7 +312,7 @@ export default {
         //设置gas
         setGasDetails(price, type) {
             this.$store.commit("setGasDetails", {
-                price: price,
+                price: formatGasPrice(price),
                 type,
                 status: 1
             });
@@ -317,7 +336,6 @@ export default {
                 color: #5a575c;
                 font-family: Gilroy;
                 font-size: 16px;
-                font-weight: 700;
                 line-height: 24px;
             }
 
@@ -367,8 +385,7 @@ export default {
             .price {
                 color: #5a575c;
                 font-family: Gilroy;
-                font-size: 24px;
-                font-weight: 700;
+                font-size: 16px;
                 line-height: 32px;
             }
 

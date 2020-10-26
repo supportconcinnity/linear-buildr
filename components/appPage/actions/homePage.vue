@@ -2,8 +2,7 @@
     <div id="homePage">
         <div class="title">Welcome to Buildr</div>
         <div class="context">
-            Our native Linear Token (LINA) serves the purpose of staking in our
-            collateral pool with infinite liquidity and no slippage
+            Our native token LINA is staked in our collateral pool to build ℓUSD. The collateral pool enables infinite liquidity and no slippage.
         </div>
         <div class="actionsBox">
             <div class="buyLINABox">
@@ -12,9 +11,10 @@
                 </div>
                 <div class="context">
                     Buy LINA <br />
-                    on other platform
+                    from other platforms
                 </div>
-                <div class="btn" @click="btnClick(1)">BUY LINA →</div>
+                <div class="btn">BUY LINA →</div>
+                 <!-- @click="btnClick(1)" -->
             </div>
             <div class="buildBox">
                 <div class="imgBox">
@@ -22,7 +22,7 @@
                 </div>
                 <div class="context">
                     Stake LINA <br />
-                    Build ℓUSD
+                    and Build ℓUSD
                 </div>
                 <div class="btn" @click="btnClick(2)">Build ℓUSD</div>
             </div>
@@ -39,8 +39,7 @@ export default {
     methods: {
         btnClick: function(type) {
             if (type == 1) {
-                //跳转到 buy LINA 页面
-                console.log("跳转到 buy LINA 页面");
+                window.open("https://app.uniswap.org/#/swap?inputCurrency=0x3e9bc21c9b189c09df3ef1b824798658d5011937&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7");
             } else {
                 this.$store.commit("setCurrentAction", 1);
             }
@@ -67,7 +66,7 @@ export default {
     }
 
     .context {
-        width: 560px;
+        width: 400px;
         color: #c6c4c7;
         font-family: Gilroy-Regular;
         font-size: 14px;
@@ -142,9 +141,9 @@ export default {
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #ffffff;
-            font-family: Gilroy-Bold;
+            font-family: Gilroy;
             font-size: 16px;
-            font-weight: 400;
+            font-weight: 700;
             cursor: pointer;
             transition: $animete-time linear;
         }

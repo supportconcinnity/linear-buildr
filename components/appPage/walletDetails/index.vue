@@ -3,15 +3,15 @@
         <div class="walletAndAddressBox">
             <div class="info">
                 <div class="wallet">
-                    WalletConnect
-                    <!-- {{walletType}} -->
+                    {{ walletType }}
                 </div>
                 <div class="address">
-                    0xaaa2aa2aa2...7084
+                    {{ walletAddress }}
                 </div>
                 <Tooltip
-                    class="tip"
+                    class="globalInfoStyle"
                     :content="tooltipContent"
+                    offset="0 4"
                     placement="bottom"
                     @on-popper-hide="resetTooltipContent"
                 >
@@ -46,7 +46,31 @@
                     </svg>
                 </Tooltip>
             </div>
+            <div class="chainChange">
+                <div
+                    class="ethBox"
+                    :class="{ selected: currentChain == 0 }"
+                    @click="changeChain(0)"
+                >
+                    <img src="@/static/ETH.svg" alt="" />
+                </div>
+                <div
+                    class="bscBox"
+                    :class="{ selected: currentChain == 1 }"
+                    @click="changeChain(1)"
+                >
+                    <Tooltip
+                        class="globalInfoStyle"
+                        content="Coming soon"
+                        placement="bottom"
+                        offset="0 4"
+                    >
+                        <img src="@/static/bnb.svg" alt="" />
+                    </Tooltip>
+                </div>
+            </div>
         </div>
+
         <div class="walletDetailsBox">
             <div class="actionsBox">
                 <div class="box">
@@ -150,20 +174,26 @@
                 <div class="title">
                     Pledge Ratio
                     <Tooltip
-                        class="tip"
-                        content="tooltip context"
+                        max-width="200"
+                        class="globalInfoStyle"
+                        content="Target ratio is the minimum threshold that needs to be maintained to claim rewards or unlock collateral."
                         placement="bottom"
+                        offset="0 6"
                     >
                         <img src="@/static/info.svg" />
                     </Tooltip>
                 </div>
                 <div class="ratio">
                     <div class="box">
-                        <div class="value">0</div>
+                        <div class="value">
+                            {{ walletDetails.currentRatioPercent || 0 }}
+                        </div>
                         <div class="context">Current</div>
                     </div>
                     <div class="box">
-                        <div class="value">750</div>
+                        <div class="value">
+                            {{ walletDetails.targetRatioPercent || 0 }}
+                        </div>
                         <div class="context">Target</div>
                     </div>
                 </div>
@@ -178,95 +208,125 @@
             <div class="walletInfo">
                 <div class="title">Wallet Balance</div>
                 <div class="LINABox">
-                    <img src="@/static/LINA_logo.svg" />
+                    <img class="tokenIcon" src="@/static/LINA_logo.svg" />
                     <div class="box">
                         <div class="tokenItems">
                             <div class="left">LINA</div>
-                            <div class="right">1,000 LINA</div>
+                            <div class="right">
+                                {{ walletDetails.amountLINA || 0 }} LINA
+                            </div>
                         </div>
                         <div class="tokenToUSDItems">
-                            <div class="left">1 LINA = $400 USD</div>
-                            <div class="right">≈ $4,000.00 USD</div>
+                            <div class="left">
+                                1 LINA = ${{ walletDetails.LINA2USDRate || 0 }}
+                                USD
+                            </div>
+                            <div class="right">
+                                ≈ ${{ walletDetails.amountLINA2USD || 0 }} USD
+                            </div>
                         </div>
                         <div class="avaliableItems">
-                            <div class="left">Avaliable</div>
-                            <div class="right">1,000 LINA</div>
+                            <div class="left">Available</div>
+                            <div class="right">
+                                {{ walletDetails.avaliableLINA || 0 }} LINA
+                            </div>
                         </div>
                         <div class="stakedItems">
                             <div class="left">Staked</div>
-                            <div class="right">0 LINA</div>
+                            <div class="right">
+                                {{ walletDetails.stakedLINA || 0 }} LINA
+                            </div>
                         </div>
                         <div class="lockedItems">
                             <div class="left">Locked</div>
-                            <div class="right">0 LINA</div>
+                            <div class="right">
+                                {{ walletDetails.lockLINA || 0 }} LINA
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="LUSDBox">
-                    <img src="@/static/LUSD_logo.svg" />
+                    <img class="tokenIcon" src="@/static/LUSD_logo.svg" />
                     <div class="box">
                         <div class="tokenItems">
                             <div class="left">ℓUSD</div>
-                            <div class="right">1,000 ℓUSD</div>
+                            <div class="right">
+                                {{ walletDetails.amountlUSD || 0 }} ℓUSD
+                            </div>
                         </div>
                         <div class="tokenToUSDItems">
-                            <div class="left">1 ℓUSD = $1 USD</div>
-                            <div class="right">≈ $1,000.00 USD</div>
+                            <div class="left">
+                                1 ℓUSD = ${{ walletDetails.lUSD2USDRate }} USD
+                            </div>
+                            <div class="right">
+                                ≈ ${{ walletDetails.amountlUSD2USD || 0 }} USD
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="ETHBox">
-                    <img src="@/static/ETH_logo.svg" />
+                    <img class="tokenIcon" src="@/static/ETH_logo.svg" />
                     <div class="box">
                         <div class="tokenItems">
                             <div class="left">ETH</div>
-                            <div class="right">500 ETH</div>
+                            <div class="right">
+                                {{ walletDetails.amountETH || 0 }} ETH
+                            </div>
                         </div>
                         <div class="tokenToUSDItems">
-                            <div class="left">1 ETH = $389.31 USD</div>
-                            <div class="right">≈ $194,655.00 USD</div>
+                            <div class="left">
+                                1 ETH = ${{ walletDetails.ETH2USDRate || 0 }}
+                                USD
+                            </div>
+                            <div class="right">
+                                ≈ ${{ walletDetails.amountETH2USD || 0 }} USD
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="assetBox">
-                    <img src="@/static/LUSD_logo.svg" />
+                    <img class="tokenIcon" src="@/static/LUSD_logo.svg" />
                     <div class="leftBox">
-                        Liquids Asset
+                        Liquids
                         <Tooltip
-                            class="tip"
-                            content="tooltip context"
+                            max-width="200"
+                            class="globalInfoStyle"
+                            content="Total value of synthetic exposure created using Linear.Exchange."
                             placement="bottom"
+                            offset="0 4"
                         >
                             <img src="@/static/info.svg" />
                         </Tooltip>
                     </div>
                     <div class="rightBox">
                         <div class="tokenItems">
-                            0 ℓUSD
+                            {{ walletDetails.liquids || 0 }} ℓUSD
                         </div>
                         <div class="tokenToUSDItems">
-                            ≈ $0 USD
+                            ≈ ${{ walletDetails.liquids2USD || 0 }} USD
                         </div>
                     </div>
                 </div>
                 <div class="debtBox">
-                    <img src="@/static/LUSD_logo.svg" />
+                    <img class="tokenIcon" src="@/static/LUSD_logo.svg" />
                     <div class="leftBox">
                         Debt
                         <Tooltip
-                            class="tip"
-                            content="tooltip context"
+                            max-width="200"
+                            class="globalInfoStyle"
+                            content="Total value that must be paid off before unlocking collateral. Fluctuates depending on trading activity."
                             placement="bottom"
+                            offset="0 4"
                         >
                             <img src="@/static/info.svg" />
                         </Tooltip>
                     </div>
                     <div class="rightBox">
                         <div class="tokenItems">
-                            0 ℓUSD
+                            {{ walletDetails.amountDebt || 0 }} ℓUSD
                         </div>
                         <div class="tokenToUSDItems">
-                            ≈ $0 USD
+                            ≈ ${{ walletDetails.amountDebt2USD || 0 }} USD
                         </div>
                     </div>
                 </div>
@@ -274,11 +334,15 @@
             <div class="totalBalanceToUSD">
                 <div class="box">
                     <div class="title">Total Crypto Balance in USD</div>
-                    <div class="amount">$10,000.00</div>
+                    <div class="amount">
+                        ${{ walletDetails.totalCryptoBalanceInUSD }}
+                    </div>
                 </div>
 
                 <svg
-                    class="refreshBtn refreshing"
+                    class="refreshBtn"
+                    :class="{ refreshing: walletStatus == 0 }"
+                    @click="getdata"
                     xmlns="http://www.w3.org/2000/svg"
                     width="64"
                     height="64"
@@ -312,16 +376,17 @@
 </template>
 
 <script>
+import _ from "lodash";
 import Clipboard from "clipboard";
+import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 
 export default {
     name: "walletDetails",
     data() {
         return {
-            currentRatio: (700 / 750) * 100, //当前抵押率占目标抵押率的百分比
-            currentAddress: "0xaaa2288d854Bc83ceB289ce3522443DC3A897084",
+            currentAddress: this.$store.state?.wallet?.address,
             tooltipContent: "Copy to clipboard",
-            walletType: this.$store.state.walletType,
+            // refreshing: false, //刷新钱包详情数据中
 
             transactionStatus: false, //历史记录窗口状态
             transactionIconStatus: 0, //鼠标状态 0离开,1进入
@@ -334,9 +399,57 @@ export default {
         };
     },
     watch: {
-        trackStatusChange() {}
+        trackStatusChange() {},
+        currentChain() {},
+        walletStatus() {},
+        walletAddress() {},
+        walletNetworkName() {},
+        walletDetails() {}
     },
-    computed: {},
+    computed: {
+        //当前选择的是什么链 0eth 1bsc
+        currentChain() {
+            return this.$store.state?.currentChain;
+        },
+        walletStatus() {
+            return this.$store.state?.wallet?.status;
+        },
+        walletType(){
+            let metaStr = this.$store.state.walletType;
+            metaStr = metaStr.toLowerCase();
+            if(metaStr == "metamask")
+                return "MetaMask";
+            else
+                return this.$store.state.walletType;
+        },
+        walletAddress() {
+            if (this.$store.state?.wallet?.address) {
+                return (
+                    this.$store.state.wallet.address.substring(0, 15) + "..."
+                );
+            }
+        },
+        walletNetworkName() {
+            return this.$store.state?.walletNetworkName;
+        },
+        walletDetails() {
+            return _.clone(this.$store.state?.walletDetails);
+        },
+        //当前抵押率占目标抵押率的百分比
+        currentRatio() {
+            var currentRatio = 0;
+
+            if (Object.keys(this.walletDetails).length !== 0) {
+                currentRatio =
+                    (this.walletDetails.currentRatioPercent /
+                        this.walletDetails.targetRatioPercent) *
+                    100;
+                if (currentRatio > 100) currentRatio = 100;
+            }
+
+            return currentRatio;
+        }
+    },
     created() {
         //订阅历史记录窗口关闭事件
         this.$pub.subscribe("transactionModalCloseEvent", (msg, params) => {
@@ -350,8 +463,49 @@ export default {
         this.$pub.subscribe("referralModalCloseEvent", (msg, params) => {
             this.referStatus = false;
         });
+        //订阅钱包改变事件
+        this.$pub.subscribe("onWalletAccountChange", (msg, params) => {
+            //切换钱包关闭窗口,防止出错
+            this.referStatus = false;
+            this.transactionStatus = false;
+            this.trackStatus = false;
+            this.$pub.publish("referralModalChange", this.referStatus);
+            this.$pub.publish("transactionModalChange", this.transactionStatus);
+            this.$pub.publish("trackModalChange", this.trackStatus);
+        });
+
+        //等待钱包设置完毕
+        this.waitWalletAddressInit().then(() => {
+            //开启自动刷新
+            this.$pub.publish("onWalletDetailsLoopRefreshStart");
+        });
+    },
+    destroyed() {
+        //关闭自动刷新
+        this.$pub.publish("onWalletDetailsLoopRefreshStop");
+    },
+    mounted() {
+        // 测试用,无用时删除
+        // _.delay(this.trackModalClick, 500)
+        // 测试用,无用时删除
     },
     methods: {
+        //等待钱包设置完毕
+        async waitWalletAddressInit() {
+            return new Promise(resolve => {
+                const check = async () => {
+                    const walletAddress = this.$store.state?.wallet?.address;
+                    if (walletAddress) {
+                        resolve(true);
+                    } else {
+                        setTimeout(check, 1000);
+                    }
+                };
+
+                check();
+            });
+        },
+
         //测试复制文字
         copyAddress() {
             var that = this;
@@ -371,6 +525,20 @@ export default {
             setTimeout(function() {
                 that.tooltipContent = "Copy to clipboard";
             }, 300);
+        },
+
+        changeChain(value) {
+            //this.$store.commit("setCurrentChain", value);
+        },
+
+        //获取当前钱包详情数据
+        async getdata() {
+            // this.refreshing = true;
+            await storeDetailsData(
+                this.$store,
+                this.$store.state?.wallet?.address
+            );
+            // this.refreshing = false;
         },
 
         //历史记录窗口状态改变
@@ -463,7 +631,7 @@ export default {
         align-items: center;
 
         .info {
-            width: 374px;
+            width: 278px;
             height: 40px;
             display: flex;
             justify-content: space-evenly;
@@ -496,6 +664,36 @@ export default {
                         stroke: #1b05a1;
                     }
                 }
+            }
+        }
+
+        .chainChange {
+            width: 80px;
+            height: 40px;
+            display: flex;
+            border-radius: 20px;
+            background: #f6f5f6;
+
+            .ethBox,
+            .bscBox {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                transition: $animete-time linear;
+
+                img {
+                    height: 20px;
+                }
+
+            }
+
+            .selected {
+                box-shadow: 0 2px 6px 0 #deddde;
+                background-color: #ffffff;
             }
         }
     }
@@ -531,7 +729,7 @@ export default {
                     .placeholder {
                         width: 48px;
                         height: 48px;
-                        margin-bottom: 12px;
+                        margin-bottom: 8px;
                         position: relative;
 
                         img {
@@ -618,6 +816,11 @@ export default {
             padding: 0 22px;
             border-bottom: solid 2px #f6f5f6;
 
+            .tokenIcon {
+                border-radius: 50%;
+                border: solid 1px #deddde;
+            }
+
             .title {
                 color: #c6c4c7;
                 font-family: Gilroy;
@@ -642,7 +845,7 @@ export default {
 
             .tokenToUSDItems {
                 color: #c6c4c7;
-                font-family: Gilroy-Medium;
+                font-family: Gilroy;
                 font-size: 12px;
                 font-weight: 400;
             }
@@ -674,7 +877,7 @@ export default {
                     .lockedItems {
                         display: flex;
                         justify-content: space-between;
-                        font-family: Gilroy-Medium;
+                        font-family: Gilroy;
                         font-size: 12px;
                     }
                 }
@@ -714,16 +917,14 @@ export default {
                 }
 
                 .leftBox {
-                    width: 128px;
                     display: flex;
-                    justify-content: space-between;
                     align-items: center;
                     font-family: Gilroy;
                     font-size: 16px;
                     font-weight: 700;
 
-                    img {
-                        margin: -4px 0 0 4px;
+                    .ivu-tooltip {
+                        margin-left: 8px;
                     }
                 }
 
@@ -792,59 +993,9 @@ export default {
                 -webkit-animation: spin 1s linear 1s 5 alternate;
                 animation: spin 1s linear infinite;
             }
-        }
-    }
 
-    .tip {
-        .ivu-tooltip-rel {
-            transition: $animete-time linear;
-            opacity: 0.2;
-
-            &:hover {
-                opacity: 1;
-            }
-
-            img {
-                vertical-align: middle;
-            }
-        }
-
-        .ivu-tooltip-popper {
-            margin-left: 3px;
-
-            &[x-placement="top"] {
-                .ivu-tooltip-arrow {
-                    border-right: 1px solid #dedede;
-                    border-bottom: 1px solid #dedede;
-                }
-            }
-
-            &[x-placement^="bottom"] {
-                .ivu-tooltip-arrow {
-                    border-left: 1px solid #dedede;
-                    border-top: 1px solid #dedede;
-                }
-            }
-
-            .ivu-tooltip-arrow {
-                transform: rotate(45deg);
-                width: 10px;
-                height: 10px;
-                background: white;
-                border: none;
-            }
-
-            .ivu-tooltip-inner {
-                background-color: #fff;
-                font-family: Gilroy;
-                font-size: 12px;
-                font-weight: 500;
-                line-height: 16px;
-                color: #5a575c;
-                padding: 10px 16px;
-                border: 1px solid #dedede;
-                box-shadow: none;
-                border-radius: 16px;
+            .refreshing:hover {
+                cursor: not-allowed;
             }
         }
     }

@@ -76,10 +76,28 @@ Date.prototype.format = function(fmStr) {
 // toNonExponential: Conversion of scientific counting method to digital text
 export const toNonExponential = num => {
     try {
-        var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
-        return num.toFixed(Math.max(0, (m[1] || "").length - m[2]));
+        if (isNaN(num)) return 0;
+        let strParam = String(num);
+        let flag = /e/.test(strParam);
+        if (!flag) return num;
+
+        // 指数符号 true: 正，false: 负
+        let sysbol = true;
+        if (/e-/.test(strParam)) {
+            sysbol = false;
+        }
+        // 指数
+        let index = Number(strParam.match(/\d+$/)[0]);
+        // 基数
+        let basis = strParam.match(/^[\d\.]+/)[0].replace(/\./, "");
+
+        if (sysbol) {
+            return basis.padEnd(index + 1, 0);
+        } else {
+            return basis.padStart(index + basis.length, 0).replace(/^0/, "0.");
+        }
     } catch (error) {
-        // console.log(error,'toNonExponential');
+        console.log(error,num,'toNonExponential');
         return 0;
     }
 };
@@ -145,9 +163,9 @@ export const addClass = ($el, $className) => {
         let classNameArray = $el.className.split(" ");
 
         if (_.isArray($className)) {
-            classNameArray = [...classNameArray,...$className];
+            classNameArray = [...classNameArray, ...$className];
         } else if (_.isString($className)) {
-            classNameArray.push($className)
+            classNameArray.push($className);
         } else {
             return false;
         }
@@ -156,5 +174,44 @@ export const addClass = ($el, $className) => {
         return true;
     } catch (error) {
         return false;
+    }
+};
+
+/**
+ * 根据HASH打开网站
+ * @param {String} hash  交易hash
+ */
+export const openEtherScan = $hash => {
+    try {
+        let networkName = $nuxt.$store.state?.walletNetworkName;
+        if (networkName) {
+            let href = `https://${
+                networkName === "MAINNET" ? "" : networkName + "."
+            }etherscan.io/tx/${$hash}`;
+
+            // console.log(href);
+
+            window.open(href, "_blank");
+        }
+    } catch (error) {
+        console.log(error, "openEtherScan");
+    }
+};
+
+//设置输入框的光标位置，会选中 selectionStart 到 selectionEnd 间的内容
+export const setCursorRange = (el, selectionStart, selectionEnd) => {
+    try {
+        if (el.setSelectionRange) {
+            el.focus();
+            el.setSelectionRange(selectionStart, selectionEnd);
+        } else if (el.createTextRange) {
+            var range = el.createTextRange();
+            range.collapse(true);
+            range.moveEnd("character", selectionEnd);
+            range.moveStart("character", selectionStart);
+            range.select();
+        }
+    } catch (error) {
+        console.log(error, "setCursorRange");
     }
 };

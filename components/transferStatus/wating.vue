@@ -20,7 +20,7 @@
         <div class="descript">Your transaction waiting to be confirmed</div>
 
         <div class="btns">
-            <div class="etherscan" @click="$emit('etherscan')">
+            <div v-if="value" class="etherscan" @click="$emit('etherscan')">
                 View on Etherscan
             </div>
             <div class="gap">&nbsp;</div>
@@ -35,6 +35,7 @@
 <script>
 export default {
     name: "transferWating",
+    props: ["value"],//实现v-model
     data() {
         return {
             waitPercent: 0, //等待进度
@@ -45,6 +46,12 @@ export default {
         this.waitPercentTimeId = setInterval(() => {
             this.waitPercent++;
         }, 50);
+    },
+    methods: {
+        //实现v-model
+        handleInput(e) {
+            this.$emit("input", e.target.value);
+        },
     },
     destroyed() {
         clearInterval(this.waitPercentTimeId);
@@ -58,7 +65,7 @@ export default {
         width: 400px;
         height: 40px;
         color: #5a575c;
-        font-family: "Gilroy-Bold";
+        font-family: "Gilroy";
         font-size: 32px;
         font-weight: 400;
         line-height: 40px;
@@ -73,7 +80,7 @@ export default {
         width: 103px;
         height: 32px;
         color: #5a575c;
-        font-family: "Gilroy-Bold";
+        font-family: "Gilroy";
         font-size: 24px;
         font-weight: 400;
         line-height: 32px;
@@ -105,7 +112,7 @@ export default {
         border-radius: 20px;
         border: solid 1px #1b05a1;
         color: #1b05a1;
-        font-family: "Gilroy-Bold";
+        font-family: "Gilroy";
         font-size: 12px;
         font-weight: 400;
         line-height: 40px;
@@ -124,7 +131,7 @@ export default {
         border-radius: 20px;
         background: #1b05a1;
         color: #ffffff;
-        font-family: "Gilroy-Bold";
+        font-family: "Gilroy";
         font-size: 12px;
         font-weight: 400;
         line-height: 40px;

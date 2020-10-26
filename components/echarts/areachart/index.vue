@@ -28,8 +28,8 @@ export default {
     props: {
         data: {
             //数据
-            type: Object,
-            default: {}
+            type: Array,
+            default: []
         },
         color: {
             //自定义颜色
@@ -155,19 +155,19 @@ export default {
                 backgroundColor: innerColor.backgroundColor, //背景色
                 grid: {
                     //边距
-                    top: 10,
-                    // left: 0,
+                    top: 0,
+                    left: 0,
                     right: 0,
-                    // bottom: 0
+                    bottom: 0
                 },
                 xAxis: {
                     type: "category",
-                    // show: false, //不显示横坐标栏
-                    data: this.data.xAxis.data //横坐标数据,用于显示tooltip
+                    show: false, //不显示横坐标栏
+                    data: this.data //横坐标数据,用于显示tooltip
                 },
                 yAxis: {
                     type: "value",
-                    // show: false, //不显示竖坐标栏
+                    show: false //不显示竖坐标栏
                 },
                 tooltip: {
                     show: this.tooltip, //是否显示
@@ -183,7 +183,7 @@ export default {
                 },
                 series: [
                     {
-                        data: this.data.series, //数据
+                        data: this.data, //数据
                         type: "line", //图表类型
                         areaStyle: this.area
                             ? {

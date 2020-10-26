@@ -8,7 +8,7 @@
             <img src="@/static/roadblock.svg" />
         </div>
 
-        <div class="title">Opps! Something is wrong</div>
+        <div class="title">Oops! Something is wrong</div>
 
         <div class="descript">Your transaction can not be processed.</div>
 
@@ -60,7 +60,7 @@ export default {
         width: 410px;
         height: 40px;
         color: #5a575c;
-        font-family: "Gilroy-Bold";
+        font-family: "Gilroy";
         font-size: 24px;
         font-weight: 400;
         line-height: 40px;
@@ -91,7 +91,7 @@ export default {
         border-radius: 20px;
         border: solid 1px #1b05a1;
         color: #1b05a1;
-        font-family: "Gilroy-Bold";
+        font-family: "Gilroy";
         font-size: 12px;
         font-weight: 400;
         line-height: 40px;
@@ -110,7 +110,7 @@ export default {
         border-radius: 20px;
         background: #1b05a1;
         color: #ffffff;
-        font-family: "Gilroy-Bold";
+        font-family: "Gilroy";
         font-size: 12px;
         font-weight: 400;
         line-height: 40px;

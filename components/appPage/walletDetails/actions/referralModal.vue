@@ -19,9 +19,7 @@
                 <div class="content">
                     <div class="contentTitle">Earn LINA with friends</div>
                     <div class="contentDesc">
-                        You and your friend will receive 5 LINA tokens after
-                        your friend has added your referral code and complete 5
-                        transactions.
+                        Receive 10 USD worth LINA when a friend adds your code and completes 5 transactions
                     </div>
                     <div class="youCodeBox">
                         <div class="icon">
@@ -55,9 +53,10 @@
                             Enter referral code
 
                             <Tooltip
-                                class="tip"
+                                class="tip globalInfoStyle"
                                 placement="top"
-                                content="You can only submit referral code once"
+                                content="Referral code can only be submitted once."
+                                offset="0 4"
                             >
                                 <img src="@/static/info.svg" />
                             </Tooltip>
@@ -104,7 +103,7 @@
                     You are adding {{ referralCode.referral_code }}. Are you
                     sure?
                 </div>
-                <div class="desc">You can only submit referral code once.</div>
+                <div class="desc">Referral code can only be submitted once.</div>
                 <div class="btns">
                     <div class="back" @click="referralTabs = 'm0'">
                         No, go back
@@ -148,8 +147,6 @@ export default {
 
             loading: false,
 
-            wallet: "0x1501794bEB40A9DAff574eEBCFA0049677123456",
-
             copyStatus: 0
         };
     },
@@ -160,7 +157,8 @@ export default {
         });
     },
     watch: {
-        disabledSubmitBtn() {}
+        disabledSubmitBtn() {},
+        walletAddress() {}
     },
     computed: {
         //提交按钮禁止
@@ -181,6 +179,10 @@ export default {
                 default:
                     return "";
             }
+        },
+
+        walletAddress() {
+            return this.$store.state?.wallet?.address;
         }
     },
     methods: {
@@ -190,9 +192,7 @@ export default {
         referralModalChange(status) {
             if (status) {
                 this.loading = true;
-
-                console.log(api,'api');
-                api.getReferralCode(this.wallet)
+                api.getReferralCode(this.walletAddress)
                     .then(res => {
                         if (_.has(res, "data")) {
                             this.referralCode = res.data;
@@ -273,7 +273,7 @@ export default {
             if (!this.disabledSubmitBtn) {
                 this.loading = true;
                 api.checkReferralCode(
-                    this.wallet,
+                    this.walletAddress,
                     this.referralCode.referral_code
                 )
                     .then(res => {
@@ -297,7 +297,7 @@ export default {
             if (!this.disabledSubmitBtn) {
                 this.loading = true;
                 api.addReferralCode(
-                    this.wallet,
+                    this.walletAddress,
                     this.referralCode.referral_code
                 )
                     .then(res => {
@@ -446,7 +446,15 @@ export default {
                             width: 786px;
                             display: inline-block;
                             height: 1px;
-                            border: 1px dashed #deddde;
+                            // border: 1px dashed #deddde;
+                            background-image: linear-gradient(
+                                to right,
+                                #ccc 0%,
+                                #ccc 50%,
+                                transparent 50%
+                            );
+                            background-size: 12px 1px;
+                            background-repeat: repeat-x;
                         }
 
                         .referralCodeBox {
@@ -487,56 +495,13 @@ export default {
                                 line-height: 24px;
                                 text-align: center;
                                 display: flex;
+                                align-items: center;
 
                                 .tip {
                                     margin-left: 8px;
 
-                                    .ivu-tooltip-rel {
-                                        transition: $animete-time linear;
-                                        opacity: 0.2;
-                                        &:hover {
-                                            opacity: 1;
-                                        }
-                                        img {
-                                            vertical-align: middle;
-                                        }
-                                    }
-
-                                    .ivu-tooltip-popper {
-                                        &[x-placement="top"] {
-                                            .ivu-tooltip-arrow {
-                                                border-right: 1px solid #dedede;
-                                                border-bottom: 1px solid #dedede;
-                                            }
-                                        }
-
-                                        &[x-placement^="bottom"] {
-                                            .ivu-tooltip-arrow {
-                                                border-left: 1px solid #dedede;
-                                                border-top: 1px solid #dedede;
-                                            }
-                                        }
-
-                                        .ivu-tooltip-arrow {
-                                            transform: rotate(45deg);
-                                            width: 10px;
-                                            height: 10px;
-                                            background: white;
-                                            border: none;
-                                        }
-
-                                        .ivu-tooltip-inner {
-                                            background-color: #fff;
-                                            font-family: Gilroy;
-                                            font-size: 12px;
-                                            font-weight: 500;
-                                            line-height: 16px;
-                                            color: #5a575c;
-                                            padding: 10px 16px;
-                                            border: 1px solid #dedede;
-                                            box-shadow: none;
-                                            border-radius: 16px;
-                                        }
+                                    img{
+                                        margin-top: -3px;
                                     }
                                 }
                             }

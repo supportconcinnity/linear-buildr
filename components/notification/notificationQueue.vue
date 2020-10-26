@@ -1,16 +1,26 @@
 <template>
     <div class="nitificationQueue" ref="nitificationQueue">
         <div class="notificationBox">
-            <div v-for="(item, index) in queue" :key="index">
-                <notification :hash="item.hash" :type="item.type" :value="item.value" :unit="item.unit" @closeNotification="removeNotification(index)"> </notification>
-            </div>
+            <transition-group name="list" tag="div">
+                <template v-for="(item, index) in queue">
+                    <notification
+                        :key="item.key"
+                        :hash="item.hash"
+                        :type="item.type"
+                        :value="item.value"
+                        :unit="item.unit"
+                        @closeNotification="removeNotification(index)"
+                    >
+                    </notification>
+                </template>
+            </transition-group>
         </div>
     </div>
 </template>
 
 <script>
-import notification from "@/components/notification/notification.vue"
-
+import notification from "@/components/notification/notification.vue";
+import _ from "lodash";
 export default {
     name: "nitificationQueue",
     data() {
@@ -23,33 +33,18 @@ export default {
     },
     created() {
         this.$pub.subscribe("notificationQueue", async (msg, data) => {
-            let hasData = false
-            for(let i=0; i<this.queue.length; i++) {
-                let item = this.queue[i]
-                if(item.hash == data.hash) {
-                    item.hash = data.hash
-                    item.type = data.type
-                    item.value = data.value
-                    item.unit = data.unit
-                    hasData = true
-                }
+            let newQueue = _.clone(this.queue);
+            if (newQueue.length > 2) {
+                newQueue.shift();
             }
-
-            if(!hasData) {
-                this.queue.unshift(data)
-                console.log(this.queue, 'subscribe queue')
-            }
-
-            this.$nextTick(()=>{
-                this.$refs.nitificationQueue.scrollTop = 99999;
-            })
+            data.key = new Date().valueOf(); //用时间戳当做key,防止dom不更新
+            newQueue.push(data);
+            this.queue = _.clone(newQueue);
         });
-
     },
     methods: {
         removeNotification(index) {
-            this.queue.splice(index, 1)
-
+            this.queue.splice(index, 1);
         }
     }
 };
@@ -59,15 +54,10 @@ export default {
 .nitificationQueue {
     position: fixed;
     width: 374px;
-    height: auto;
-    max-height: 60vh;
-    right: 0;
-    bottom: 0;
+    right: 20px;
+    bottom: 20px;
     z-index: 1000;
-    overflow-y: scroll;
-    ::-webkit-scrollbar-thumb {
 
-    }
     &::-webkit-scrollbar-track-piece {
         background: #fff;
     }
@@ -79,5 +69,14 @@ export default {
     }
 }
 
-
+//列表动画
+.list-enter-active,
+.list-leave-active {
+    transition: all $animete-time;
+}
+.list-enter,
+.list-leave-to {
+    opacity: 0;
+    transform: translateX(120%);
+}
 </style>

@@ -10,68 +10,430 @@
         fullscreen
         @on-visible-change="transactionModalChange"
     >
-        <div class="closeBtn" @click="transactionModal = false">
-            <closeSvg></closeSvg>
+        <svg
+            class="closeBtn"
+            @click="transactionModal = false"
+            width="40px"
+            height="40px"
+            viewBox="-1 -1 42 42"
+        >
+            <defs>
+                <path
+                    d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
+                    id="path_1"
+                />
+                <clipPath id="clip_1">
+                    <use xlink:href="#path_1" />
+                </clipPath>
+            </defs>
+            <g id="Icon-Button/Cancel">
+                <g id="Setup/Icon-Button/Outline">
+                    <g id="Oval">
+                        <g clip-path="url(#clip_1)">
+                            <use
+                                id="round"
+                                xlink:href="#path_1"
+                                fill="none"
+                                stroke="#DEDDDE"
+                                stroke-width="1.5"
+                            />
+                        </g>
+                    </g>
+                </g>
+                <g id="Icon/Arrow-Left" transform="translate(8 8)">
+                    <path
+                        d="M8.5 0C8.74546 0 8.94961 0.176875 8.99194 0.410124L9 0.5L9 8L16.5 8C16.7761 8 17 8.22386 17 8.5C17 8.74546 16.8231 8.94961 16.5899 8.99194L16.5 9L9 9L9 16.5C9 16.7761 8.77614 17 8.5 17C8.25454 17 8.05039 16.8231 8.00806 16.5899L8 16.5L8 9L0.5 9C0.223858 9 0 8.77614 0 8.5C0 8.25454 0.176875 8.05039 0.410124 8.00806L0.5 8L8 8L8 0.5C8 0.223858 8.22386 0 8.5 0Z"
+                        transform="matrix(0.70710677 0.70710677 -0.70710677 0.70710677 12 -0.020814896)"
+                        id="shape"
+                        fill="#1B05A1"
+                        stroke="none"
+                    />
+                </g>
+            </g>
+        </svg>
+
+        <div v-if="transactionHistoryData.length != 0 || gettingData" class="transactionBox">
+            <div class="title">Transaction History</div>
+
+            <div class="filterMenu">
+                <div class="box">
+                    <Select class="chainSelect" :class="{'hasFilter': filters.chainType}" v-model="filters.chainType" placeholder="All Chains">
+                        <Option value="1" label="Ethereum">
+                            <img src="@/static/ETH.svg" alt="">
+                            <span>Ethereum</span>
+                        </Option>
+                        <Option value="2" label="Binance">
+                            <img src="@/static/bnb_yellow.svg" alt="">
+                            <span> Binance</span>
+                        </Option>
+                    </Select>
+
+                    <DatePicker :value="dateValue"
+                                class="dateDropdown"
+                                :class="{'hasFilter': filters.dateRange.length != 0 && filters.dateRange[0] != '' && filters.dateRange[1] != ''}"
+                                @on-change="dateRangeChange"
+                                format="yyyy/MM/dd"
+                                type="daterange"
+                                placement="bottom-end"
+                                placeholder="All Dates"
+                                :options="options1"
+                                transfer
+                    >
+                    </DatePicker>
+                    
+                    <Dropdown trigger="click" class="typeDropdown" :class="{'hasFilter': filters.transactionType.length != 0}">
+                        <div class="typeBtn" v-if="filters.transactionType.length == 0">
+                            <span>All Types</span><Icon type="ios-arrow-down"></Icon>
+                        </div>
+                        <div class="typeBtnSelected" v-else-if="filters.transactionType.length == 1">
+                            {{filters.transactionType[0]}}
+                        </div>
+                        <div class="typeBtnSelected" v-else>
+                            {{filters.transactionType.length}} Selected
+                        </div>
+                        <DropdownMenu slot="list">
+                            <CheckboxGroup v-model="filters.transactionType">
+                                <Checkbox label="Build">
+                                    Build
+                                </Checkbox>
+                                <Checkbox label="Burn">
+                                    Burn
+                                </Checkbox>
+                                <Checkbox label="Claim">
+                                    Claim
+                                </Checkbox>
+                                <Checkbox label="Transfer">
+                                    Transfer
+                                </Checkbox>
+                                <Checkbox label="Stake">
+                                    Stake
+                                </Checkbox>
+                                <Checkbox label="Unstake">
+                                    Unstake
+                                </Checkbox>
+                                <Checkbox label="Referral">
+                                    Referral
+                                </Checkbox>
+                            </CheckboxGroup>
+                        </DropdownMenu>
+                    </Dropdown>
+                    
+                    <Dropdown trigger="click" class="amountDropdown" :class="{'hasFilter': filters.amountRange.from || filters.amountRange.to}">
+                        <div class="amountBtn" v-if="filters.amountRange.from || filters.amountRange.to">
+                            From {{filters.amountRange.from?filters.amountRange.from:0}} to {{filters.amountRange.to?filters.amountRange.to:0}}
+                        </div>
+                        <div class="amountBtnSelected" v-else>
+                            <span>All Amount</span><Icon type="ios-arrow-down"></Icon>
+                        </div>
+                        <DropdownMenu slot="list">
+                            <span>From:</span>
+                            <InputNumber :max="999999999999" :min="0" v-model="filters.amountRange.from"></InputNumber>
+                            <span>To:</span>
+                            <InputNumber :max="999999999999" :min="0" v-model="filters.amountRange.to"></InputNumber>
+                        </DropdownMenu>
+                    </Dropdown>
+                </div>
+                
+                <div class="clearFiltersBtn"
+                    :class="{'hasFilter': filters.chainType || filters.dateRange.length != 0 || filters.transactionType.length != 0 || filters.amountRange.from || filters.amountRange.to}"
+                    @click="clearFilters">
+                    {{filterNum > 1 ? "CLEAR ALL" : "CLEAR"}}
+                </div>
+            </div>
+            
+            <div class="customTable">
+                <div class="tabelHeader">
+                    <div class="th sort chain">
+                        Smart Chain
+                    </div>
+                    <div class="th sort date">
+                        Date
+                    </div>
+                    <div class="th sort type">
+                        Type
+                    </div>
+                    <div class="th sort amount">
+                        Amount
+                    </div>
+                    <div class="th sort viewInBrowser">
+                        
+                    </div>
+                </div>
+        
+                <div v-if="tableData.length" class="hasData">
+                    <div class="tableBody">
+                        <div class="tr" v-for="(row, index) in tableData" :key="index">
+                            <div class="td chain">
+                                <img src="@/static/ETH.svg"/> {{ row.chain }}
+                            </div>
+                            <div class="td date">
+                                {{ row.date }}
+                            </div>
+                            <div class="td type">
+                                {{ row.type }}
+                            </div>
+                            <div class="td amount">
+                                <span>{{row.amount}}</span>
+                            </div>
+                            <div class="td viewInBrowser">
+                                <a :href="row.hash" target="_blank">VIEW →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="notData">
+                    Not Data
+                </div>
+        
+                <Spin size="large" fix v-if="gettingData"></Spin>
+            </div>
+
+            <div class="pageBox">
+                <Page :total="totalData" @on-change="pageChange" :current="currentPage" :page-size="defaultPageSize" size="small"/>
+                <!-- <Page total="100" @on-change="pageChange" :current="currentPage" :page-size="defaultPageSize" size="small"/> -->
+            </div>
         </div>
 
-        <div v-if="!hasTransaction" class="noTransactionBox">
-            <img src="@/static/no_transaction.svg" alt="" />
+        <div v-else class="noTransactionBox">
+            <img src="@/static/no_transaction.svg" alt="">
             <div class="title">No Transactions</div>
-            <div class="context">You haven’t made any transaction yet</div>
-            <div class="buildBtn" @click="buildClick">Build ℓUSD</div>
+            <div class="context">You have not made any transactions yet</div>
+            <div class="buildBtn" @click="toBuild()">Build ℓUSD </div>
         </div>
-
-        <div v-else class="transactionBox"></div>
     </Modal>
 </template>
 
 <script>
-import { format } from "date-fns";
-import closeSvg from "@/components/svg/close";
+import { fetchTransactionHistory, TRANSACTION_EVENTS } from "@/assets/linearLibrary/linearTools/request/transactionHistory";
+import { format } from 'date-fns';
+import {getEthereumNetwork} from "@/assets/linearLibrary/linearTools/network";
+import {formatNumber} from "@/assets/linearLibrary/linearTools/format";
 
 export default {
     name: "transactionModal",
-    components: {
-        closeSvg
-    },
     data() {
         return {
             transactionModal: false,
-            hasTransaction: false //有无交易记录
+            gettingData: true,
+            dateValue: [], //时间区间数组
+            filters: { chainType: 0, dateRange: [], transactionType: [], amountRange: { from: 0, to: 0 } }, //筛选条件：当前选择的链0all 1eth 2bsc 交易类型 时间区间 金额区间
+            currentPage: 1, //当前所在页数
+            defaultPageSize: 10, //每页显示数据条数 
+            transactionHistoryData: [], //交易记录数据
+            netWork: {},
+            //显示表格日期,大于今天的日期禁用
+            options1: {
+                disabledDate (date) {
+                    return date && date.valueOf() > Date.now();
+                }
+            },
+            
+            tableData: [
+            ]
         };
     },
     created() {
         //订阅组件改变事件
         this.$pub.subscribe("transactionModalChange", (msg, params) => {
             this.transactionModal = params;
+            if (params) {
+                this.gettingData = true;
+                this.fetchTransactionHistoryClick();
+            }
         });
     },
-    watch: {},
-    computed: {},
+    watch: {
+        currentPageData() {
+            var that = this;
+            var type = '', amount = '', date = '', hash = '', tempData = [];
+            
+            if (this.currentPageData.length == 0) {
+                that.$nextTick(function(){
+                    this.tableData = tempData;
+                });
+                return null;
+            }
+
+            this.currentPageData.map(function (item, index, ary) { 
+                type = item.type;
+                date =  format(item.timestamp, 'd MMM yyyy k:m');                
+
+                if(that.netWork?.networkId == 1)
+                    hash = "https://etherscan.io/tx/"+item.hash;
+                else
+                    hash = "https://ropsten.etherscan.io/tx/"+item.hash;
+
+                if (item.type == 'Build' ||
+                    item.type == 'Burn' ||
+                    item.type == 'Transfer'||
+                    item.type == 'Stake' || 
+                    item.type == 'Unstake'||
+                    item.type == 'Referral'
+                    )
+                {
+                    if(item.source == 'lUSD')
+                        amount = formatNumber(item.value) + " ℓUSD";
+                    else
+                        amount = formatNumber(item.value) + " " + item.source;
+                } else if (item.type == 'Claim') {
+                    let rewardslusd ="";
+                    let rewardsLina ="";
+                    if(item.rewardslusd!=undefined ||item.rewardslusd != 0){
+                        rewardslusd = formatNumber(item.rewardslusd) + " ℓUSD";
+                    }
+                    if(!item.rewardsLina ||item.rewardsLina != 0){
+                        rewardsLina = formatNumber(item.rewardsLina) + " LINA";
+                    }
+                    amount = rewardsLina  + "&\n" + rewardslusd;
+                }else {
+                    return null;
+                }
+                
+                tempData.push({
+                    chain: item.chain,
+                    type: type,
+                    amount: amount,
+                    date: date,
+                    hash: hash
+                });
+            });
+
+            that.$nextTick(function(){
+                this.tableData = tempData;
+            });
+        },
+        filterTransactionHistoryData() {
+
+        }
+    },
+    computed: {
+        //根据筛选条件计算交易数据
+        filterTransactionHistoryData() {
+            var that = this;
+            this.currentPage = 1;   //每次筛选数据都将当前分页改为1
+
+            //筛选交易记录
+            var filterTransactionHistoryData = this.transactionHistoryData.filter(function(record) {
+                var { chainType, transactionType, dateRange, amountRange } = that.filters;
+
+                //在不在筛选的链中
+                if (chainType == 2) {
+                    return false;
+                }
+
+                //在不在筛选的类型中 筛选数组为空则表示显示全部
+                if (transactionType.length != 0 && !transactionType.includes(record.type)) {
+                    return false;
+                }
+
+                //在不在筛选的金额范围内
+                if (amountRange.from || amountRange.to) {
+                    if (record.value < amountRange.from || record.value > amountRange.to) return false;
+                    if (record.amount < amountRange.from || record.amount > amountRange.to) return false;
+                    if (record.fromAmount < amountRange.from || record.fromAmount > amountRange.to) return false;
+                    if (record.rewardslusd < amountRange.from || record.rewardslusd > amountRange.to){
+                        if (record.rewardsLina < amountRange.from || record.rewardsLina > amountRange.to) return false;
+                    }
+                }
+
+                //在不在筛选的时间范围内,  iview日期区间是以两个日期的零点算，所以大的日期要加多一天的毫秒数 
+                if (dateRange.length != 0 && (record.timestamp < Date.parse(dateRange[0]) || record.timestamp > Date.parse(dateRange[1]) + 86400000 )) {
+                    return false;
+                }
+
+                //符合以上所有筛选条件则保留
+                return true;
+            });
+            return filterTransactionHistoryData;
+        },
+        //筛选后的数据总数
+        totalData() {
+            return this.filterTransactionHistoryData.length;
+        },
+        //当前分页的数据
+        currentPageData() {
+            return this.filterTransactionHistoryData.slice(((this.currentPage - 1) * this.defaultPageSize), this.currentPage * this.defaultPageSize, this.currentPage);
+        },
+        //筛选条件数量
+        filterNum() {
+            var filterNum = 0;
+            for(let key in this.filters){
+                switch (key)  {
+                    case 'chainType':
+                        if (this.filters[key]) filterNum++;
+                    break;
+                    case 'dateRange':
+                        if (this.filters[key].length != 0 && this.filters[key][0] != "" && this.filters[key][0] != "") {
+                            filterNum++;
+                        }
+                    break;
+                    case 'transactionType':
+                        if (this.filters[key].length != 0) {
+                            filterNum++;
+                        }
+                    break;
+                    case 'amountRange':
+                        if (this.filters[key].from || this.filters[key].to) {
+                            filterNum++;
+                        }
+                    break;
+                }
+            }
+
+            return filterNum;
+        }
+    },
     methods: {
         transactionModalChange(status) {
             if (status) {
                 //获取交易记录
-                this.transactionHistoryData = [];
+                this.transactionHistoryData = []; 
             } else {
                 this.$pub.publish("transactionModalCloseEvent");
+                this.clearFilters()
 
                 //to do list: 清理筛选条件
             }
         },
-        //打开 build 功能
-        buildClick() {
+        //获取交易记录
+        async fetchTransactionHistoryClick() { 
+            this.netWork = await getEthereumNetwork();
+            this.transactionHistoryData = await fetchTransactionHistory(this.$store.state?.wallet?.address);
+            this.gettingData = false;
+        },
+        //日期范围改变
+        dateRangeChange(dateRange) {
+            this.filters.dateRange = dateRange;
+        },
+        //当前分页改变
+        pageChange(currentPage) {
+            this.currentPage = currentPage;
+        },
+        //清除筛选条件数据
+        clearFilters() {
+            this.filters = { chainType: 0, transactionType: [], dateRange: [], amountRange: { from: 0, to: 0 } };
+            this.dateValue = [];
+            this.currentPag = 1;
+        },
+        //打开build功能
+        toBuild() {
+            this.transactionModal = false;
             this.$store.commit("setCurrentAction", 1);
-
-            this.$pub.publish("transactionModalChange", false);
-            this.$pub.publish("transactionModalCloseEvent");
         }
     }
 };
 </script>
 
 <style lang="scss">
+body {
+    .ivu-date-picker-transfer {
+        font-family: Gilroy;
+    }
+}
+
 #transactionModal {
+    $animete-time: 0.2s;
+
     .ivu-modal-wrap {
         position: absolute;
 
@@ -80,7 +442,7 @@ export default {
             background: #ffffff;
             box-shadow: 0px 2px 6px #deddde;
             position: relative;
-            padding: 64px 143px 0;
+            padding: 64px 93px 0;
             height: 100%;
             overflow: hidden;
 
@@ -89,6 +451,23 @@ export default {
                 position: absolute;
                 top: 24px;
                 right: 24px;
+                cursor: pointer;
+
+                #round,
+                #shape {
+                    transition: fill $animete-time linear;
+                }
+
+                &:hover {
+                    #round {
+                        stroke: #1b05a1;
+                        fill: #1b05a1;
+                    }
+
+                    #shape {
+                        fill: white;
+                    }
+                }
             }
 
             .noTransactionBox {
@@ -132,11 +511,10 @@ export default {
                     text-align: center;
                     color: #ffffff;
                     cursor: pointer;
-                    transition: $animete-time linear;
+                }
 
-                    &:hover {
-                        background-color: #1f04c6;
-                    }
+                .buildBtn:hover {
+                    background-color: #1f04c6;
                 }
             }
 
@@ -155,147 +533,212 @@ export default {
                     justify-content: space-between;
                     margin: 32px 0;
 
-                    .dateDropdown {
-                        * {
-                            box-shadow: none !important;
+                    .box {
+                        display: flex;
+                        justify-content: space-between;
+
+                        .chainSelect,
+                        .dateDropdown,
+                        .typeDropdown{
+                            margin-right: 8px;
                         }
 
-                        .ivu-date-picker-rel {
-                            .ivu-input-suffix {
-                                cursor: pointer;
+                        .chainSelect {
+                            width: 100px;
 
-                                i:before {
+                            .ivu-select-selection {
+                                border: 1px solid #CACACA;
+                                box-shadow: none !important;
+                                
+                                span {
+                                    font-family: Gilroy;
+                                    font-size: 12px;
+                                    font-weight: 500;
+                                    color: #c1c1c1;
+                                }
+
+                                .ivu-icon:before{
                                     line-height: 32px;
-                                    content: "\f116";
-                                    color: #cacaca;
+                                    content: '\f116';
+                                    color: #CACACA;
                                 }
                             }
 
-                            input {
-                                width: 144px;
-                                height: 32px;
-                                line-height: 32px;
-                                border: 1px solid #cacaca;
-                                border-radius: 4px;
-                                color: #cacaca;
-                            }
-                        }
+                            .ivu-select-dropdown {
+                                .ivu-select-dropdown-list {
+                                    .ivu-select-item {
+                                        display: flex;
+                                        align-items: center;
+                                        font-family: Gilroy;
+                                        font-size: 12px;
+                                        color: #515a6e;
 
-                        &.hasFilter {
-                            input {
-                                border: 1px solid #1b05a1;
-                                color: #5a575c;
-                            }
-                        }
-                    }
-
-                    .typeDropdown {
-                        .ivu-dropdown-rel {
-                            .typeBtn,
-                            .typeBtnSelected {
-                                width: 103px;
-                                height: 32px;
-                                line-height: 32px;
-                                border: 1px solid #cacaca;
-                                border-radius: 4px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-between;
-                                padding: 0 8px;
-                                margin: 0 10px;
-                                color: #cacaca;
-                                cursor: pointer;
-
-                                img {
-                                    width: 20px;
-                                    margin-top: 12px;
-                                    display: inline-block;
+                                        img{
+                                            width: 24px;
+                                            margin-right: 8px;
+                                        }
+                                    }
                                 }
                             }
 
-                            .typeBtnSelected {
-                                justify-content: center;
-                            }
-                        }
-
-                        .ivu-select-dropdown {
-                            width: 144px;
-                            left: 0;
-                            padding-left: 6px;
-
-                            .ivu-checkbox-group {
-                                display: flex;
-                                flex-direction: column;
-
-                                .ivu-checkbox-wrapper {
-                                    margin: 4px 0;
-
-                                    img {
-                                        width: 16px;
-                                        margin: 0 2px 0 3px;
+                            &.hasFilter {
+                                .ivu-select-selection {
+                                    border: 1px solid #1b05a1;
+                                    
+                                    span {
+                                        color: #5a575c;
                                     }
                                 }
                             }
                         }
 
-                        &.hasFilter {
+                        .dateDropdown {
+                            font-family: Gilroy;
+
+                            * {
+                                box-shadow: none !important;
+                            }
+
+                            .ivu-date-picker-rel {
+                                .ivu-input-suffix {
+                                    cursor: pointer;
+
+                                    i:before{
+                                        line-height: 32px;
+                                        content: '\f116';
+                                        color: #CACACA;
+                                    }
+                                }
+
+                                input {
+                                    width: 144px;
+                                    height: 32px;
+                                    font-size: 12px;
+                                    line-height: 32px;
+                                    border: 1px solid #CACACA;
+                                    border-radius: 4px;
+                                    color: #CACACA;
+                                }
+                            }
+
+                            &.hasFilter {
+                                input {
+                                    border: 1px solid #1b05a1;
+                                    color: #5a575c;
+                                }
+                            }
+                        }
+
+                        .typeDropdown {
+                            font-family: Gilroy;
+
                             .ivu-dropdown-rel {
-                                .typeBtn,
+                                .typeBtn, .typeBtnSelected {
+                                    width: 103px;
+                                    height: 32px;
+                                    font-size: 12px;
+                                    line-height: 32px;
+                                    border: 1px solid #CACACA;
+                                    border-radius: 4px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: space-between;
+                                    padding: 0 8px;
+                                    color: #CACACA;
+                                    cursor: pointer;
+
+                                    img {
+                                        width: 20px;
+                                        margin-top: 12px;
+                                        display: inline-block;
+                                    }
+                                }
+
                                 .typeBtnSelected {
-                                    border: 1px solid #1b05a1;
-                                    color: #5a575c;
+                                    justify-content: center;
                                 }
                             }
-                        }
-                    }
 
-                    .amountDropdown {
-                        .ivu-dropdown-rel {
-                            .amountBtn,
-                            .amountBtnSelected {
+                            .ivu-select-dropdown {
                                 width: 144px;
-                                height: 32px;
-                                line-height: 32px;
-                                border: 1px solid #cacaca;
-                                border-radius: 4px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-between;
-                                padding: 0 8px;
-                                margin: 0 10px;
-                                color: #cacaca;
-                                cursor: pointer;
-                            }
-                        }
+                                left: 0;
+                                padding-left: 6px;
 
-                        .ivu-select-dropdown {
-                            width: 190px;
-                            padding: 16px 24px;
+                                .ivu-checkbox-group {
+                                    display: flex;
+                                    flex-direction: column;
 
-                            .ivu-dropdown-menu {
-                                display: flex;
-                                flex-direction: column;
+                                    .ivu-checkbox-wrapper {
+                                        margin: 4px 0;
 
-                                .ivu-input-number {
-                                    width: 100%;
+                                        img {
+                                            width: 16px;
+                                            margin: 0 2px 0 3px;
+                                        }
+                                    }
                                 }
                             }
+
+                            &.hasFilter {
+                                .ivu-dropdown-rel {
+                                    .typeBtn, .typeBtnSelected {
+                                        border: 1px solid #1b05a1;
+                                        color: #5a575c;
+                                    }
+                                }
+                                
+                            }
                         }
 
-                        &.hasFilter {
+                        .amountDropdown {
+                            font-family: Gilroy;
+
                             .ivu-dropdown-rel {
-                                .amountBtn,
-                                .amountBtnSelected {
-                                    border: 1px solid #1b05a1;
-                                    color: #5a575c;
+                                .amountBtn, .amountBtnSelected {
+                                    width: 144px;
+                                    height: 32px;
+                                    font-size: 12px;
+                                    //line-height: 32px;
+                                    border: 1px solid #CACACA;
+                                    border-radius: 4px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: space-between;
+                                    padding: 0 8px;
+                                    color: #CACACA;
+                                    cursor: pointer;
+                                }
+                            }
+
+                            .ivu-select-dropdown {
+                                width: 190px;
+                                padding: 16px 24px;
+
+                                .ivu-dropdown-menu {
+                                    display: flex;
+                                    flex-direction: column;
+
+                                    .ivu-input-number {
+                                        width: 100%;
+                                    }
+                                }
+                            }
+
+                            &.hasFilter {
+                                .ivu-dropdown-rel {
+                                    .amountBtn, .amountBtnSelected {
+                                        border: 1px solid #1b05a1;
+                                        color: #5a575c;
+                                    }
                                 }
                             }
                         }
                     }
 
                     .clearFiltersBtn {
+                        width: 166px;
                         color: #1b05a1;
-                        opacity: 0.2;
+                        opacity: .2;
                         font-family: Gilroy;
                         font-size: 12px;
                         font-weight: 700;
@@ -303,6 +746,7 @@ export default {
                         text-transform: uppercase;
                         letter-spacing: 1.5px;
                         cursor: not-allowed;
+                        text-align: center;
 
                         &.hasFilter {
                             opacity: 1;
@@ -320,7 +764,7 @@ export default {
                         font-size: 12px;
                         font-weight: 700;
                         line-height: 16px;
-
+                        
                         th {
                             background: #fff;
                         }
@@ -331,7 +775,7 @@ export default {
 
                         .ivu-table-row {
                             color: #5a575c;
-                            font-family: Gilroy-Medium;
+                            font-family: Gilroy;
                             font-size: 12px;
                             font-weight: 400;
 
@@ -342,7 +786,7 @@ export default {
                                 font-weight: 700;
                                 text-transform: uppercase;
                                 letter-spacing: 1.5px;
-                                opacity: 0.2;
+                                opacity: .2;
                                 float: right;
                             }
 
@@ -354,22 +798,128 @@ export default {
                 }
             }
 
+            .customTable {
+                .tabelHeader {
+                    min-height: 34px;
+                    display: flex;
+                    padding: 0 6px;
+
+                    .th {
+                        flex: 1;
+                        font-family: Gilroy;
+                        font-size: 12px;
+                        font-weight: bold;
+                        line-height: 16px;
+                        color: #5a575c;
+                        display: flex;
+                        align-items: center;
+                        padding: 5px;
+                        border-bottom: 1px solid #f6f5f6;
+
+                        &:first-of-type {
+                            padding-left: 16px;
+                        }
+
+                        &:last-of-type {
+                            padding-right: 16px;
+                        }
+                    }
+                }
+
+                .hasData {
+                    .tableBody {
+                        overflow-y: auto;
+                        overflow-x: unset;
+                        padding: 0 6px 6px;
+
+                        .tr {
+                            display: flex;
+                            align-items: center;
+                            transition: $animete-time linear;
+                            min-height: 48px;
+                            cursor: default;
+                            border-bottom: 1px solid #f6f5f6;
+                            margin-top: 0px;
+
+                            &:hover {
+                                box-shadow: 0 2px 6px 0 #deddde;
+                                border-color: white;
+                            }
+
+                            .td {
+                                flex: 1;
+                                font-family: Gilroy;
+                                font-size: 12px;
+                                font-weight: 500;
+                                line-height: 16px;
+                                color: #5a575c;
+                                padding: 5px;
+                                height: 100%;
+                                word-break: break-all;
+
+                                &:first-of-type {
+                                    padding-left: 16px;
+                                }
+
+                                &:last-of-type {
+                                    text-align: center;
+
+                                    a {
+                                        color: #1b05a1;
+                                        font-weight: bold;
+                                        padding-right: 16px;
+                                        opacity: .2!important;
+                                    }
+
+                                    a:hover {
+                                        opacity: 1!important;
+                                    }
+                                }
+                            }
+
+                            .chain{
+                                display: flex;
+                                align-items: center;
+                                img{
+                                    width: 16px;
+                                }
+                            }
+
+                            .amount{
+                                span{
+                                    white-space: pre-wrap;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .notData {
+                    min-height: 48px;
+                    text-align: center;
+                    font-family: Gilroy;
+                    font-size: 14px;
+                    line-height: 48px;
+                    color: #c1c1c1;
+                }
+            }
+
             .pageBox {
                 width: 100%;
                 margin-top: 32px;
                 text-align: center;
-
+                
                 .ivu-page {
                     .ivu-page-item {
-                        border: 1px solid #cacaca;
+                        border: 1px solid #CACACA;
 
                         a {
-                            color: #cacaca;
+                            color: #CACACA;
                         }
                     }
 
                     .ivu-page-item:hover {
-                        &:not(.ivu-page-item-active) {
+                        &:not(.ivu-page-item-active){
                             border: 1px solid #1b05a1;
 
                             a {
@@ -383,21 +933,19 @@ export default {
                         background-color: #1b05a1;
 
                         a {
-                            color: #fff;
+                            color: #FFF;
                         }
                     }
 
-                    .ivu-page-item-jump-next,
-                    .ivu-page-item-jump-prev {
+                    .ivu-page-item-jump-next, .ivu-page-item-jump-prev {
                         a {
                             i {
-                                color: #cacaca;
+                                color: #CACACA;
                             }
                         }
                     }
 
-                    .ivu-page-item-jump-next:hover,
-                    .ivu-page-item-jump-prev:hover {
+                    .ivu-page-item-jump-next:hover, .ivu-page-item-jump-prev:hover {
                         a {
                             i {
                                 color: #1b05a1;
@@ -405,18 +953,16 @@ export default {
                         }
                     }
 
-                    .ivu-page-prev,
-                    .ivu-page-next {
+                    .ivu-page-prev, .ivu-page-next {
                         a {
                             i {
-                                color: #cacaca;
+                                color: #CACACA;
                             }
                         }
                     }
 
-                    .ivu-page-prev:hover,
-                    .ivu-page-next:hover {
-                        &:not(.ivu-page-disabled) {
+                    .ivu-page-prev:hover, .ivu-page-next:hover {
+                        &:not(.ivu-page-disabled){
                             a {
                                 i {
                                     color: #1b05a1;

@@ -6,9 +6,7 @@
                     <div class="actionBody">
                         <div class="actionTitle">Claim</div>
                         <div class="actionDesc">
-                            If you have staked your LINA and builded ℓUSD,
-                            <br />
-                            you are eligiable to collect two kinds of rewards
+                            Claim rewards from staking LINA and building ℓUSD
                         </div>
 
                         <div
@@ -28,7 +26,7 @@
                                 />
                                 <div class="title">Staking Rewards</div>
                                 <div class="amount">
-                                    <span>8.418</span> LINA
+                                    <span>{{ stakingRewards }}</span> LINA
                                 </div>
                             </div>
                             <div class="box">
@@ -43,7 +41,9 @@
                                     alt=""
                                 />
                                 <div class="title">Exchange Rewards</div>
-                                <div class="amount"><span>82.8</span> ℓUSD</div>
+                                <div class="amount">
+                                    <span>{{ tradingRewards }}</span> ℓUSD
+                                </div>
                             </div>
                         </div>
 
@@ -52,9 +52,9 @@
                                 <div class="title">
                                     Reward Status
                                     <Tooltip
-                                        class="tip"
+                                        class="globalInfoStyle"
                                         max-width="275"
-                                        content="You need to Build or Burn to reach the target C-Ratio in order to claim the reward"
+                                        content="Reward can only be claimed when target ratio is reached."
                                         placement="top"
                                     >
                                         <img src="@/static/info.svg" alt="" />
@@ -64,14 +64,16 @@
                                     class="status"
                                     :class="{ open: feesAreClaimable }"
                                 >
-                                    {{ feesAreClaimable ? "Open" : "Closed" }}
+                                    {{ feesAreClaimable ? "Open" : hasClaim ? "Claimed" : "Closed" }}
                                 </div>
                             </div>
                             <div class="periodBox">
                                 <div class="title">
-                                    Claim period ends in
+                                    Claim Period Ends
                                 </div>
-                                <div class="days"><span>2</span> Days</div>
+                                <div class="days">
+                                    <span>{{ closeIn }}</span>
+                                </div>
                             </div>
                             <gasEditor></gasEditor>
                         </div>
@@ -79,11 +81,13 @@
 
                     <div
                         class="claimBtn"
-                        :class="{ disabled: !feesAreClaimable }"
+                        :class="{ disabled: claimDisabled }"
                         @click="clickClaim"
                     >
                         CLAIM NOW
                     </div>
+
+                    <Spin fix v-if="processing"></Spin>
                 </div>
             </TabPane>
             <TabPane name="m1">
@@ -114,7 +118,20 @@
 </template>
 
 <script>
+import _ from "lodash";
+import { addSeconds, formatDistanceToNow } from "date-fns";
+import {
+    formatEtherToNumber,
+    formatNumber
+} from "@/assets/linearLibrary/linearTools/format";
+import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 import gasEditor from "@/components/gasEditor";
+import {
+    bufferGasLimit,
+    DEFAULT_GAS_LIMIT
+} from "@/assets/linearLibrary/linearTools/network";
+import { utils } from "ethers";
 
 export default {
     name: "claim",
@@ -124,15 +141,214 @@ export default {
     data() {
         return {
             actionTabs: "m0", //子页(m0默认,m1等待,m2成功,m3错误)
-            feesAreClaimable: true //是否可以领取奖励
+            closeIn: "", //多少天后可领取奖励
+            feesAreClaimable: false, //是否可以领取奖励
+            tradingRewards: 0, //交易所手续费奖励
+            stakingRewards: 0, //通胀奖励
+            processing: false, //加载状态
+            confirmTransactionHash: "", //交易hash
+            hasClaim: true //有没有claim过
         };
+    },
+    created() {
+        this.useGetFeeData(this.walletAddress);
+    },
+    watch: {
+        walletAddress() {},
+        networkName() {}
+    },
+    computed: {
+        networkName() {
+            return this.$store.state?.walletNetworkName;
+        },
+
+        walletAddress() {
+            return this.$store.state?.wallet?.address;
+        },
+
+        //claim按钮禁止状态
+        claimDisabled() {
+            return !this.feesAreClaimable || this.processing || (this.tradingRewards == 0 && this.stakingRewards == 0);
+        }
     },
     methods: {
         //点击 claim
-        clickClaim() {
-            if (this.feesAreClaimable) {
-                //模拟跳到pending页
-                this.actionTabs = "m1";
+        async clickClaim() {
+            if (!this.claimDisabled) {
+                this.processing = true;
+
+                //获取gas评估
+                const gasLimit = await this.getGasEstimate();
+
+                const transactionSettings = {
+                    gasPrice: this.$store.state?.gasDetails?.price,
+                    gasLimit: gasLimit
+                };
+
+                try {
+                    this.actionTabs = "m1"; //进入等待页
+
+                    let {
+                        lnrJS: { LnFeeSystemTest,LnFeeSystem }
+                    } = lnrJSConnector;
+
+                    let transaction = null;
+                    if(this.networkName == "ROPSTEN"){
+                        transaction= await LnFeeSystemTest.claimFees(
+                            transactionSettings
+                        );
+                    }else{
+                        transaction= await LnFeeSystem.claimFees(
+                            transactionSettings
+                        );
+                    }
+
+                    if (transaction) {
+                        this.confirmTransactionHash = transaction.hash;
+
+                        // 发起右下角通知
+                        this.$pub.publish("notificationQueue", {
+                            hash: this.confirmTransactionHash,
+                            type: "Claiming Rewards",
+                            value: "",
+                            unit: ""
+                        });
+
+                        //等待结果返回
+                        let status = await lnrJSConnector.utils.waitForTransaction(
+                            transaction.hash
+                        );
+
+                        //判断成功还是错误子页
+                        this.actionTabs = status ? "m2" : "m3";
+
+                        //成功则更新数据
+                        status &&
+                            _.delay(
+                                async () =>
+                                    await storeDetailsData(
+                                        this.$store,
+                                        this.walletAddress
+                                    ),
+                                5000
+                            );
+                    }
+                } catch (e) {
+                    console.log(e);
+                    this.actionTabs = "m3"; //进入错误页
+                } finally {
+                    this.processing = false;
+                }
+            }
+        },
+
+        //计算距离申领奖励开始的时间？
+        getFeePeriodCountdown(recentFeePeriods, feePeriodDuration) {
+            if (!recentFeePeriods) return;
+
+            //feePeriodDuration = 21600;
+            if (
+                parseInt(feePeriodDuration.add(recentFeePeriods.startTime)) -
+                    _.now() / 1000 <=
+                0
+            )
+                return "Now";
+
+            let currentPeriodStart = null;
+            if (recentFeePeriods && recentFeePeriods.startTime) {
+                currentPeriodStart =
+                    formatNumber(recentFeePeriods.startTime) == "0"
+                        ? null
+                        : new Date(parseInt(recentFeePeriods.startTime * 1000));
+            }
+
+            const currentPeriodEnd =
+                currentPeriodStart && feePeriodDuration
+                    ? addSeconds(currentPeriodStart, feePeriodDuration)
+                    : null;
+            return currentPeriodEnd
+                ? formatDistanceToNow(currentPeriodEnd)
+                : "N/A";
+        },
+
+        async useGetFeeData(walletAddress) {
+            const FEE_PERIOD = 0;
+
+            try {
+                this.processing = true;
+
+                let contract =null;
+                if(this.networkName == "ROPSTEN"){
+                    contract = lnrJSConnector.lnrJS.LnFeeSystemTest;
+                }else{
+                    contract = lnrJSConnector.lnrJS.LnFeeSystem;
+                }
+
+                let [
+                    feePeriodDuration,
+                    recentFeePeriods,
+                    feesAreClaimable,
+                    feesAvailable,
+                    prePeriod,
+                    lastClaimedId
+                ] = await Promise.all([
+                    contract.feePeriodDuration(),
+                    contract.recentFeePeriods(
+                        FEE_PERIOD
+                    ),
+                    contract.isFeesClaimable(
+                        walletAddress
+                    ),
+                    contract.feesAvailable(
+                        walletAddress
+                    ),
+                    contract.preRewardPeriod(),
+                    contract.userLastClaimedId(
+                        walletAddress
+                    )
+                ]);
+
+                this.closeIn = this.getFeePeriodCountdown(
+                    recentFeePeriods,
+                    feePeriodDuration
+                );
+                this.hasClaim = prePeriod.id.eq(lastClaimedId);
+                this.feesAreClaimable = feesAreClaimable;
+                this.tradingRewards =
+                    feesAvailable && feesAvailable[0] && !this.hasClaim
+                        ? formatNumber(feesAvailable[0]/1e18)
+                        : 0;
+                this.stakingRewards =
+                    feesAvailable && feesAvailable[1] && !this.hasClaim
+                        ? formatNumber(feesAvailable[1]/1e18)
+                        : 0;
+            } catch (e) {
+                console.log(e);
+            } finally {
+                this.processing = false;
+            }
+        },
+
+        //评估gas
+        async getGasEstimate() {
+            try {
+                const {
+                    lnrJS: { LnFeeSystemTest,LnFeeSystem }
+                } = lnrJSConnector;
+
+                let gasEstimate = null;
+                if(this.networkName == "ROPSTEN")
+                    gasEstimate = await LnFeeSystemTest.contract.estimateGas.claimFees();
+                else
+                    gasEstimate = await LnFeeSystem.contract.estimateGas.claimFees();
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                const errorMessage =
+                    (e && e.message) || "Error while getting gas estimate";
+                console.log(errorMessage);
+
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.claim);
             }
         },
 
@@ -149,11 +365,10 @@ export default {
 
         //回到默认状态
         setDefaultTab() {
-            this.activeItemBtn = -1;
-            this.burnData = { unStake: null, amount: null, ratio: 750 };
+            this.processing = false;
             this.actionTabs = "m0";
 
-            //重新拉取新数据
+            setTimeout(this.useGetFeeData(this.walletAddress), 5000);
         },
 
         //重试
@@ -231,14 +446,14 @@ export default {
 
                                 .title {
                                     color: #5a575c;
-                                    font-family: Gilroy-Bold;
+                                    font-family: Gilroy;
                                     font-size: 16px;
-                                    font-weight: 400;
+                                    font-weight: 700;
                                 }
 
                                 .amount {
                                     color: #5a575c;
-                                    font-family: Gilroy-Bold;
+                                    font-family: Gilroy;
                                     font-size: 16px;
                                     font-weight: 400;
                                     text-align: center;
@@ -292,14 +507,13 @@ export default {
                                     color: #5a575c;
                                     font-family: Gilroy;
                                     font-size: 16px;
-                                    font-weight: 700;
                                 }
 
                                 .status {
                                     width: 64px;
                                     height: 24px;
                                     color: #5a575c;
-                                    font-family: Gilroy-Medium;
+                                    font-family: Gilroy;
                                     font-size: 12px;
                                     line-height: 24px;
                                     font-weight: 400;
@@ -322,8 +536,7 @@ export default {
                                     span {
                                         color: #5a575c;
                                         font-family: Gilroy;
-                                        font-size: 24px;
-                                        font-weight: 700;
+                                        font-size: 16px;
                                     }
                                 }
                             }
@@ -337,9 +550,9 @@ export default {
                         position: absolute;
                         bottom: 0px;
                         color: #ffffff;
-                        font-family: Gilroy-Bold;
+                        font-family: Gilroy;
                         font-size: 24px;
-                        font-weight: 400;
+                        font-weight: 700;
                         line-height: 32px;
                         display: flex;
                         align-items: center;
@@ -365,58 +578,6 @@ export default {
                         }
                     }
                 }
-            }
-        }
-    }
-
-    .tip {
-        .ivu-tooltip-rel {
-            transition: $animete-time linear;
-
-            img {
-                opacity: 0.2;
-                vertical-align: middle;
-            }
-
-            img:hover {
-                opacity: 1;
-            }
-        }
-
-        .ivu-tooltip-popper {
-            &[x-placement="top"] {
-                .ivu-tooltip-arrow {
-                    border-right: 1px solid #dedede;
-                    border-bottom: 1px solid #dedede;
-                }
-            }
-
-            &[x-placement^="bottom"] {
-                .ivu-tooltip-arrow {
-                    border-left: 1px solid #dedede;
-                    border-top: 1px solid #dedede;
-                }
-            }
-
-            .ivu-tooltip-arrow {
-                transform: rotate(45deg);
-                width: 10px;
-                height: 10px;
-                background: white;
-                border: none;
-            }
-
-            .ivu-tooltip-inner {
-                background-color: #fff;
-                font-family: Gilroy;
-                font-size: 12px;
-                font-weight: 500;
-                line-height: 16px;
-                color: #5a575c;
-                padding: 10px 16px;
-                border: 1px solid #dedede;
-                box-shadow: none;
-                border-radius: 16px;
             }
         }
     }

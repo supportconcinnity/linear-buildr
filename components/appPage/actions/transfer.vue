@@ -7,10 +7,15 @@
                         <div class="text">
                             <div class="title">Transfer</div>
                             <div class="descript">
-                                You can select the type of currency you want to transfer and enter the wallet address
+                                Transfer different currencies to specified wallet address
                             </div>
                         </div>
-                        <div class="from" @click="changeActiveItem(0)">
+                        <div
+                            class="from actionInputItem"
+                            :class="{
+                                error: errors.amountMsg
+                            }"
+                        >
                             <div class="iconBox">
                                 <div class="icon">
                                     <img :src="currency[selected].img" alt="" />
@@ -26,7 +31,7 @@
                             </div>
                             <div
                                 class="arrow"
-                                @click="showDropdownFun"
+                                @click.stop="showDropdownFun"
                                 :class="{ perversion: showDropdown }"
                             >
                                 <img
@@ -47,6 +52,7 @@
                                             <InputNumber
                                                 class="input"
                                                 ref="itemInput0"
+                                                element-id="transfer_number_input"
                                                 :min="0"
                                                 :max="
                                                     currency[selected].avaliable
@@ -54,6 +60,9 @@
                                                 type="text"
                                                 v-model="transferNumber"
                                                 placeholder="0"
+                                                @on-change="changeAmount"
+                                                @on-focus="inputFocus(0)"
+                                                @on-blur="inputBlur(0)"
                                                 :formatter="
                                                     value =>
                                                         toNonExponential(value)
@@ -61,19 +70,23 @@
                                             />
                                         </div>
                                     </div>
-                                    <!-- <div class="unit">
-                                        {{currency[selected].name}}
-                                    </div> -->
                                 </div>
-                                <!-- <div class="avaliable">
-                                    Avaliable: {{currency[selected].avaliable}}
-                                </div> -->
                             </div>
                         </div>
                         <div
-                            class="to"
+                            class="someWrong"
+                            :style="{
+                                opacity: errors.amountMsg ? '1' : '0'
+                            }"
+                        >
+                            {{errors.amountMsg}}
+                        </div>
+
+                        <div
+                            class="to actionInputItem"
                             :class="{
-                                error: walletError && this.walletAddress != ''
+                                error:
+                                    walletError && this.transferToAddress != ''
                             }"
                         >
                             <div class="li_1">
@@ -85,24 +98,27 @@
                                 <div class="midle">
                                     <div class="p_1">
                                         From
-                                        <input type="text" value="0x5A0b5..." />
+                                        <span>{{ walletAddressEllipsis }}</span>
                                         to
                                     </div>
                                 </div>
                             </div>
                             <div class="li_2">
-                                <input
+                                <Input
                                     type="text"
-                                    v-model="walletAddress"
-                                    placeholder="Please enter the wallet address …"
+                                    ref="itemInput1"
+                                    v-model="transferToAddress"
+                                    @on-focus="inputFocus(1)"
+                                    @on-blur="inputBlur(1)"
+                                    placeholder="Enter wallet address..."
                                 />
                             </div>
                         </div>
                         <div
                             class="someWrong"
-                            v-if="walletError && this.walletAddress != ''"
+                            v-if="walletError && this.transferToAddress != ''"
                         >
-                            Error message goes here
+                            Please input a valid address.
                         </div>
 
                         <gasEditor></gasEditor>
@@ -114,8 +130,7 @@
                                 @click="selectCurrencyFun(index)"
                                 :key="index"
                                 :class="{
-                                    activity: index == selected,
-                                    gray: item.avaliable < 1000
+                                    activity: index == selected
                                 }"
                             >
                                 <div class="iconBox">
@@ -125,12 +140,7 @@
                                 </div>
                                 <div class="midle">
                                     <div class="p_1">
-                                        {{ item.name }}
-                                    </div>
-                                </div>
-                                <div class="value">
-                                    <div class="avaliable">
-                                        Avaliable: {{ item.avaliable }}
+                                        {{ item.name == "lUSD" ? "ℓUSD" : item.name }}
                                     </div>
                                 </div>
                             </div>
@@ -139,8 +149,8 @@
 
                     <div
                         class="transferBtn"
-                        :class="{ disabled: transferDisabled || walletError }"
-                        @click="clickTransfer"
+                        :class="{ disabled: transferDisabled || walletError}"
+                        @click="onSend"
                     >
                         TRANSFER NOW
                     </div>
@@ -149,6 +159,8 @@
             <TabPane name="m1">
                 <div class="waitingBox">
                     <wating
+                        v-if="actionTabs == 'm1'"
+                        v-model="confirmTransactionStatus"
                         @etherscan="etherscan"
                         @homepage="homepage"
                     ></wating>
@@ -173,9 +185,22 @@
 </template>
 
 <script>
+import { toNonExponential, openEtherScan, findParents, removeClass, addClass } from "@/common/utils";
+
 import _ from "lodash";
+import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 import gasEditor from "@/components/gasEditor";
-import { toNonExponential } from "@/common/utils";
+import {
+    bufferGasLimit,
+    DEFAULT_GAS_LIMIT
+} from "@/assets/linearLibrary/linearTools/network";
+
+import {
+    formatEtherToNumber,
+    formatNumber,
+} from "@/assets/linearLibrary/linearTools/format";
+
 export default {
     name: "transfer",
     data() {
@@ -183,42 +208,94 @@ export default {
             toNonExponential,
             actionTabs: "m0", //子页(m0默认,m1等待,m2成功,m3错误)
             showDropdown: false,
-            currency: [
-                {
-                    name: "ETH",
-                    img: require("@/static/ETH.svg"),
-                    avaliable: 1000
-                },
-                {
-                    name: "ℓUSD",
-                    img: require("@/static/lina_usd.svg"),
-                    avaliable: 500
-                },
-                {
-                    name: "LINA",
-                    img: require("@/static/lina_icon.svg"),
-                    avaliable: 1000
-                }
-            ],
             selected: 0,
+            processing: false, //交易按钮防抖
             transferNumber: null,
-            walletAddress: ""
+            transferToAddress: "",
+            ethGasLimit: 0,
+
+            confirmTransactionStatus: true,
+            confirmTransactionHash: "",
+
+            errors: {
+                amountMsg: ""
+            }
         };
     },
-    watch: {},
+    watch: {
+        walletAddress() {},
+        walletAddressEllipsis() {},
+        networkName() {}
+    },
     computed: {
         //transfer按钮禁止状态
         transferDisabled() {
-            return _.lte(this.transferNumber, 0);
+            return _.lte(this.transferNumber, 0) || this.processing || !this.transferToAddress;
         },
         walletError() {
-            if (/^0x[a-fA-F0-9]{40}$/.test(this.walletAddress)) {
+            if (/^0x[a-fA-F0-9]{40}$/.test(this.transferToAddress)) {
                 return false;
             }
             return true;
+        },
+        networkName() {
+            return this.$store.state?.walletNetworkName;
+        },
+        walletAddressEllipsis() {
+            if (this.$store.state?.wallet?.address) {
+                return this.$store.state.wallet.address.substring(0, 7) + "...";
+            }
+        },
+        walletAddress() {
+            return this.$store.state?.wallet?.address;
+        },
+        //所有资产余额
+        currency() {
+            var tempData = [];
+
+            if (this.$store.state?.walletDetails?.transferableAssets) {
+                for (let key in this.$store.state.walletDetails.transferableAssets) {
+                    var img = "";
+                    if (key == "ETH") img = require("@/static/ETH.svg");
+                    if (key == "lUSD") img = require("@/static/lina_usd.svg");
+                    if (key == "LINA") img = require("@/static/lina_icon.svg");
+                    tempData.push({
+                        name: key,
+                        img: img,
+                        avaliable: this.$store.state.walletDetails.transferableAssets[
+                            key
+                        ]
+                    });
+                }
+            }
+
+            if (tempData.length == 0) {
+                tempData = [
+                    {
+                        name: "lUSD",
+                        img: require("@/static/lina_usd.svg"),
+                        avaliable: 0
+                    }
+                ];
+                return tempData;
+            } else {
+                return tempData;
+            }
+        },
+        canSendEthAmount() {
+            return this.currency[this.selected].avaliable - (lnrJSConnector.utils.formatEther(this.$store.state?.gasDetails?.price.toString()) * this.ethGasLimit)
         }
     },
-    created() {},
+    async created() {
+        //获取ETH gas limit评估
+        let ethGasLimit = await this.getGasEstimate(
+            "ETH",
+            lnrJSConnector.utils.parseEther("1"),
+            "0xBE99e7347aC3263E7294648CE948A468c6C48f42"
+        );
+
+        this.ethGasLimit = ethGasLimit;
+    },
     components: {
         gasEditor
     },
@@ -228,54 +305,212 @@ export default {
         });
     },
     methods: {
-        showDropdownFun() {
-            setTimeout(() => {
-                this.showDropdown = true;
-            }, 1);
-        },
-        selectCurrencyFun(index) {
+        async selectCurrencyFun(index) {
+            this.errors.amountMsg = "";
             this.selected = index;
-            this.transferNumber =
-                this.transferNumber > this.currency[this.selected].avaliable
-                    ? this.currency[this.selected].avaliable
-                    : this.transferNumber;
+            this.transferNumber = 0;
         },
-        //点击Transfer
-        clickTransfer() {
-            // this.actionTabs = 'm1'
+        async onSend() {
+            if (this.transferDisabled) return;
 
-            // 发起右下角通知
-            this.$pub.publish("notificationQueue", {
-                hash: Math.ceil(Math.random() * 100000),
-                type: "transfer",
-                value: Math.random(),
-                unit: this.selectedAssetKind
-            });
-            if (!this.transferDisabled) {
-                // alert("click Transfer");
-        
+            this.processing = true;
+            this.confirmTransactionStatus = false;
 
+            let selectedAssetKind = this.currency[this.selected].name,
+                sendAmount = this.transferNumber,
+                selectedAssetMaxValue = this.currency[this.selected].avaliable,
+                recieveAddress = this.transferToAddress;
+
+            if (
+                Number(selectedAssetMaxValue) > 0 &&
+                Number(selectedAssetMaxValue) >= Number(sendAmount)
+            ) {
+                try {
+                    //获取gas评估
+                    const gasLimit = await this.getGasEstimate(
+                        selectedAssetKind,
+                        sendAmount,
+                        recieveAddress
+                    );
+
+                    const transactionSettings = {
+                        gasPrice: this.$store.state?.gasDetails?.price,
+                        gasLimit: gasLimit
+                    };
+                    
+                    sendAmount = lnrJSConnector.utils.parseEther(
+                        sendAmount.toString()
+                    );
+
+                    this.actionTabs = "m1";
+
+                    let transaction = await this.sendTransaction(
+                        selectedAssetKind,
+                        sendAmount,
+                        recieveAddress,
+                        transactionSettings
+                    );
+
+                    if (transaction) {
+                        this.confirmTransactionStatus = true;
+                        this.confirmTransactionHash = transaction.hash;
+
+                        // 发起右下角通知
+                        this.$pub.publish("notificationQueue", {
+                            hash: this.confirmTransactionHash,
+                            type: "Transfer",
+                            value: formatNumber(
+                                lnrJSConnector.utils.formatEther(sendAmount)
+                            ),
+                            unit: this.selectedAssetKind
+                        });
+
+                        //等待结果返回
+                        let status = await lnrJSConnector.utils.waitForTransaction(
+                            transaction.hash
+                        );
+
+                        //判断成功还是错误子页
+                        this.actionTabs = status ? "m2" : "m3";
+
+                        //成功则更新数据
+                        status &&
+                            _.delay(
+                                async () =>
+                                    await storeDetailsData(
+                                        this.$store,
+                                        this.walletAddress
+                                    ),
+                                5000
+                            );
+                    }
+                } catch (e) {
+                    console.log(e);
+                    this.actionTabs = "m3"; //进入错误页
+                    this.processing = false;
+                }
+            }
+
+            this.processing = false;
+        },
+
+        //发起链上交易
+        sendTransaction(currency, amount, destination, settings) {
+            if (!currency) return null;
+            if (currency === "LINA") {
+                return lnrJSConnector.lnrJS.LnProxyERC20.transfer(
+                    destination,
+                    amount,
+                    settings
+                );
+            } else if (currency === "ETH") {
+                return lnrJSConnector.signer.sendTransaction({
+                    value: amount,
+                    to: destination,
+                    ...settings
+                });
+            } else {
+                return lnrJSConnector.lnrJS[currency].transfer(
+                    destination,
+                    amount,
+                    settings
+                );
             }
         },
-        //点击最大
-        clickMaxAmount() {
-            this.transferNumber = this.currency[this.selected].avaliable;
+
+        //评估gas
+        async getGasEstimate(currency, amount, destination) {
+            try {
+                if (!currency || !amount || !destination) return;
+                if (amount > this.selectedAssetMaxValue)                   //大于最大余额
+                    throw new Error("input.error.balanceTooLow");
+                if (!Number(amount))
+                    throw new Error("input.error.invalidAmount");
+
+                let gasEstimate;
+
+                const amountBN = lnrJSConnector.utils.parseEther(amount.toString());
+                
+                if (currency === "LINA") {
+                    gasEstimate = await lnrJSConnector.lnrJS.LnProxyERC20.contract.estimateGas.transfer(
+                        destination,
+                        amountBN
+                    );
+                } else if (currency === "ETH") {
+                    if (amount === this.selectedAssetMaxValue)                   //不能转全部eth,需要留手续费
+                        throw new Error("input.error.balanceTooLow");
+                    gasEstimate = await lnrJSConnector.provider.estimateGas({
+                        value: amountBN,
+                        to: destination
+                    });
+                } else {
+                    gasEstimate = await lnrJSConnector.lnrJS[
+                        currency
+                    ].contract.estimateGas.transfer(
+                        destination,
+                        amountBN
+                    );
+                }
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                console.log(e);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.exchange);
+            }
         },
-        //改变激活元素
-        changeActiveItem(index) {
+        showDropdownFun() {
+            setTimeout(() => {
+                this.showDropdown = !this.showDropdown;
+            }, 1);
+        },
+        //点击最大
+        async clickMaxAmount() {
+            if (this.currency[this.selected].name == "ETH") {
+                if (this.canSendEthAmount <= 0) {
+                    this.transferNumber = this.currency[this.selected].avaliable;
+                    this.errors.amountMsg = "You don`t have enought balance of ETH.";
+                    return;
+                }
+                
+                this.errors.amountMsg = "";
+                this.transferNumber = this.canSendEthAmount;
+            } else {
+                this.transferNumber = this.currency[this.selected].avaliable;
+            }
+        },
+        changeAmount(amount) {
+            if (this.currency[this.selected].name == "ETH" && amount > this.canSendEthAmount) {
+                this.errors.amountMsg = "You don`t have enought balance of ETH.";
+            } else {
+                this.errors.amountMsg = "";
+            }
+        },
+        //获取焦点
+        inputFocus(index) {
             this.$nextTick(() => {
-                this.$refs["itemInput" + index].$el
-                    .querySelector("input")
-                    .focus();
+                let currentElement = this.$refs["itemInput" + index].$el;
+                let parentElement = findParents(
+                    currentElement,
+                    "actionInputItem"
+                );
+                addClass(parentElement, "active");
+            });
+        },
+
+        //失去焦点
+        inputBlur(index) {
+            this.$nextTick(() => {
+                let currentElement = this.$refs["itemInput" + index].$el;
+                let parentElement = findParents(
+                    currentElement,
+                    "actionInputItem"
+                );
+                removeClass(parentElement, "active");
             });
         },
         //交易状态页面回调方法 打开etherscan
         etherscan() {
-            let href = `https://${
-                this.networkName === "MAINNET" ? "" : this.networkName + "."
-            }etherscan.io/tx/${this.confirmTransactionHash}`;
-
-            window.open(href, "_blank");
+            openEtherScan(this.confirmTransactionHash);
         },
         //交易状态页面回调方法 回到主页
         homepage() {
@@ -325,7 +560,6 @@ export default {
                         padding: 64px 193px 0;
                         display: flex;
                         flex-direction: column;
-                        align-items: center;
 
                         .text {
                             .title {
@@ -356,7 +590,8 @@ export default {
                             .icon {
                                 border: solid 1px #deddde;
                             }
-                            &:hover {
+                            &:hover,
+                            &.active {
                                 box-shadow: 0 2px 12px #deddde;
                                 border-color: white;
                             }
@@ -365,6 +600,9 @@ export default {
                             margin-top: 92px;
                             display: flex;
                             position: relative;
+                            &.error {
+                                border-color: #df434c;
+                            }
                             & > div {
                                 height: 100%;
                                 display: flex;
@@ -403,6 +641,11 @@ export default {
                                     font-family: Gilroy-Bold;
                                     font-size: 12px;
                                     cursor: pointer;
+                                    transition: $animete-time linear;
+
+                                    &:hover {
+                                        opacity: 1;
+                                    }
                                 }
                             }
                             .arrow {
@@ -445,7 +688,7 @@ export default {
                                     .number {
                                         flex: 1;
                                         color: #c6c4c7;
-                                        font-family: Gilroy-Bold;
+                                        font-family: Gilroy;
                                         font-size: 32px;
                                         text-align: right;
 
@@ -490,7 +733,7 @@ export default {
                                 }
                                 .avaliable {
                                     color: #c6c4c7;
-                                    font-family: Gilroy-Medium;
+                                    font-family: Gilroy;
                                     font-size: 12px;
                                     width: 100%;
                                     text-align: right;
@@ -535,51 +778,46 @@ export default {
                                         color: #5a575c;
                                         font-family: Gilroy-Bold;
                                         font-size: 16px;
-                                        input {
+                                        span {
                                             width: 91px;
                                             height: 24px;
                                             background: #f6f5f6;
                                             color: #c6c4c7;
-                                            font-family: Gilroy-Medium;
+                                            font-family: Gilroy;
                                             font-size: 12px;
                                             padding: 7px 16px;
                                             border-radius: 24px;
                                             margin: 0 5px;
-                                            border: none;
-                                        }
-                                        input:focus,
-                                        textarea:focus {
-                                            outline: none;
                                         }
                                     }
                                 }
                             }
                             .li_2 {
                                 flex: 1;
-                                color: #1b05a1;
-                                opacity: 0.2;
-                                color: #c6c4c7;
-                                font-family: "Gilroy-Bold";
-                                font-size: 14px;
+                                color: #5a575c;
+                                font-family: Gilroy;
                                 transform: translateY(-12px);
-                                input {
-                                    border: none;
-                                    width: 100%;
-                                }
-                                input:focus,
-                                textarea:focus {
-                                    outline: none;
+                                .ivu-input-wrapper {
+                                    input {
+                                        font-size: 14px;
+                                        border: none;
+                                        box-shadow: none;
+                                        outline: none;
+                                    }
                                 }
                                 &::placeholder {
+                                    font-family: Gilroy-Bold;
                                     color: #c6c4c7;
                                 }
                             }
                         }
                         .someWrong {
                             color: #df434c;
-                            margin-left: 193px;
-                            font-family: Gilroy-Medium;
+                            font-family: Gilroy;
+                            font-weight: 700;
                             font-size: 12px;
+                            text-transform: uppercase;
+                            letter-spacing: 1.25px;
                         }
 
                         #gasEditor {
@@ -589,7 +827,7 @@ export default {
 
                         .dropdown {
                             position: absolute;
-                            top: 397px;
+                            top: 343px;
                             width: 400px;
                             height: 280px;
                             background: #fff;
@@ -600,18 +838,12 @@ export default {
                             transition: box-shadow $animete-time linear;
                             display: flex;
                             flex-direction: column;
-                            & .gray {
-                                .p_1 {
-                                    color: #c6c4c7 !important;
-                                }
-                                .avaliable {
-                                    color: #c6c4c7 !important;
-                                }
-                            }
                             & .activity {
-                                background: #f6f5f6;
-                                .avaliable {
-                                    color: #5a575c !important;
+                                background: rgba(27, 5, 161, 0.1);
+                                .midle {
+                                    .p_1 {
+                                        color: #1b05a1;
+                                    }
                                 }
                             }
                             .dropdownItem > div {
@@ -619,6 +851,21 @@ export default {
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
+                            }
+                            .dropdownItem:first-child {
+                                border-top-left-radius: 8px;
+                                border-top-right-radius: 8px;
+                            }
+                            .dropdownItem:last-child {
+                                border-bottom-left-radius: 8px;
+                                border-bottom-right-radius: 8px;
+                            }
+                            .dropdownItem:hover {
+                                .midle {
+                                    .p_1 {
+                                        color: #1b05a1;
+                                    }
+                                }
                             }
                             & > div {
                                 height: 100%;
@@ -628,7 +875,7 @@ export default {
                                 cursor: pointer;
                             }
                             .iconBox {
-                                width: 104px;
+                                width: 74px;
                                 .icon {
                                     text-align: center;
                                     width: 40px;
@@ -650,19 +897,9 @@ export default {
                                     width: 100%;
                                 }
                                 .p_1 {
-                                    color: #5a575c;
                                     font-family: Gilroy-Bold;
-                                    font-size: 24px;
-                                }
-                            }
-                            .value {
-                                width: 175px;
-                                flex-direction: column;
-                                .avaliable {
                                     color: #5a575c;
-                                    font-family: Gilroy-Regular;
                                     font-size: 16px;
-                                    text-align: center;
                                 }
                             }
                         }
@@ -675,7 +912,7 @@ export default {
                         position: absolute;
                         bottom: 0px;
                         color: #ffffff;
-                        font-family: Gilroy-Bold;
+                        font-family: Gilroy;
                         font-size: 24px;
                         font-weight: 400;
                         line-height: 32px;

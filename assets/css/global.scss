@@ -23,3 +23,87 @@
 $mainColor: #1B05A1;
 $mainTextColor: #5A575C;
 $secondaryTextColor: #C6C4C7;
+
+
+//全局poptip样式
+.globalInfoStyle.ivu-tooltip {
+    line-height: 1;
+    .ivu-tooltip-rel {
+        transition: $animete-time linear;
+        opacity: 0.2;
+        line-height: 1;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        img {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+        }
+    }
+
+    .ivu-tooltip-popper {
+
+        &[x-placement="top"] {
+            .ivu-tooltip-arrow {
+                border-right: 1px solid #1b05a1;
+                border-bottom: 1px solid #1b05a1;
+            }
+        }
+
+        &[x-placement^="bottom"] {
+            .ivu-tooltip-arrow {
+                border-left: 1px solid #1b05a1;
+                border-top: 1px solid #1b05a1;
+            }
+        }
+
+        &[x-placement="left"] {
+            .ivu-tooltip-arrow {
+                border-top: 1px solid #1b05a1;
+                border-right: 1px solid #1b05a1;
+            }
+        }
+
+        &[x-placement^="right"] {
+            .ivu-tooltip-arrow {
+                border-left: 1px solid #1b05a1;
+                border-bottom: 1px solid #1b05a1;
+            }
+        }
+
+        .ivu-tooltip-arrow {
+            transform: rotate(45deg);
+            width: 10px;
+            height: 10px;
+            background: white;
+            border: none;
+        }
+
+        .ivu-tooltip-inner {
+            width: 100%;
+            background-color: #fff;
+            font-family: Gilroy;
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: 500;
+            color: #5a575c;
+            padding: 10px 16px;
+            border: 1px solid #1b05a1;
+            box-shadow: 0 2px 12px 0 #deddde;
+            border-radius: 12px;
+            overflow: hidden;
+            text-align: left;
+            word-break: keep-all;
+            white-space: break-spaces;
+        }
+
+  
+    }
+}
+
+$mainColor: #1b05a1;
+$mainTextColor: #5a575c;
+$secondaryTextColor: #c6c4c7;

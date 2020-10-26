@@ -14,34 +14,15 @@
             <closeSvg></closeSvg>
         </div>
 
-        <div v-if="!hasTrack" class="noTrackBox">
+        <div class="transactionBox">
             <div class="title">Track Debt</div>
             <div class="context">
-                Track your debt over time, with charts via
-                <a href="#">
-                    Zapper.FR
-                    <svg
-                        width="12px"
-                        height="9px"
-                        viewBox="0 0 12 9"
-                        version="1.1"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <desc>Created with Lunacy</desc>
-                        <path
-                            d="M7.8091 0.139803L7.87191 0.195262L11.3678 3.69111C11.6081 3.93143 11.6266 4.30959 11.4232 4.57112L11.3678 4.63392L7.87191 8.12977C7.61156 8.39012 7.18945 8.39012 6.9291 8.12977C6.68878 7.88945 6.67029 7.51129 6.87364 7.24976L6.9291 7.18696L9.44133 4.67418L0.666667 4.67469C0.298477 4.67469 0 4.37621 0 4.00802C0 3.66613 0.25736 3.38435 0.588919 3.34584L0.666667 3.34135L9.132 3.34084L6.9291 1.13807C6.66875 0.877722 6.66875 0.455612 6.9291 0.195262C7.16942 -0.0450605 7.54758 -0.0635469 7.8091 0.139803Z"
-                            id="Combined-Shape"
-                            fill="#1B05A1"
-                            stroke="none"
-                        />
-                    </svg>
-                </a>
+                Track your debt over time, with charts
             </div>
             <div class="data">
                 <div class="li_1">
                     <div class="p_1">
-                        0
+                        {{ formatNumber(debtData.issuedDebt) }}
                     </div>
                     <div class="p_2">
                         Total Issued Debt (ℓUSD)
@@ -50,7 +31,7 @@
                 <div class="line"></div>
                 <div class="li_2">
                     <div class="p_1">
-                        0
+                        {{ formatNumber(debtData.currentDebt) }}
                     </div>
                     <div class="p_2">
                         Total Current Debt (ℓUSD)
@@ -58,103 +39,155 @@
                 </div>
             </div>
             <div class="chart">
-                <echarts
-                    :data="line1Data"
+                <trackchart
+                    key="1"
+                    v-if="!hasTrackData"
+                    :data="emptyData"
+                    :color="{
+                        lineColor: '#fff',
+                        areaColorTop: '#fff'
+                    }"
+                    :title="'Total Current Debt\n(ℓUSD)'"
+                ></trackchart>
+
+                <trackchart
+                    key="2"
+                    v-else
+                    :data="trackData"
                     tooltip
                     area
-                    :color="{ lineColor: '#1b05a1', areaColorTop: '#1b05a1' }"
-                    formatter="USDT : {a0}-{b0}-{c0}"
-                ></echarts>
+                    :color="{
+                        lineColor: '#1b05a1',
+                        areaColorTop: '#1b05a1'
+                    }"
+                    :formatter="`ℓUSD : {c0}`"
+                    :title="'Total Current Debt\n(ℓUSD)'"
+                ></trackchart>
             </div>
             <div class="table">
                 <Table
-                    v-if="data1.length != 0"
-                    :columns="columns1"
-                    :data="data1"
-                ></Table>
+                    v-if="trackTableData.length != 0"
+                    :columns="trackTableColumn"
+                    :data="trackTableData"
+                    max-height="210"
+                >
+                    <template slot-scope="{ row }" slot="name">
+                        <img :src="tokenIcon[row.name]" /> {{ row.name }}
+                    </template>
+
+                    <template slot-scope="{ row }" slot="balance">
+                        {{ formatNumber(row.balance) }} ℓUSD
+                    </template>
+
+                    <template slot-scope="{ row }" slot="valueUSD">
+                        $ {{ formatNumber(row.valueUSD) }} USD
+                    </template>
+                </Table>
                 <div class="nothing" v-else>
+                    <img src="@/static/line_charts.svg" alt="" />
                     <div class="text">
                         <span class="title">No Debts</span> <br />
                         <span class="subject"
                             >You don’t have any debts yet</span
                         >
                     </div>
-                    <img src="@/static/line_charts.svg" alt="" />
                 </div>
             </div>
         </div>
 
-        <div v-else class="transactionBox"></div>
+        <Spin fix v-if="loading"> </Spin>
     </Modal>
 </template>
 
 <script>
 import _ from "lodash";
-import Clipboard from "clipboard";
-import echarts from "@/components/echarts/areachart";
+import trackchart from "@/components/echarts/trackchart";
 import closeSvg from "@/components/svg/close";
+import { format } from "date-fns";
+import { formatEtherToNumber } from "@/assets/linearLibrary/linearTools/format";
+import { tokenIcon } from "@/common/options";
+
+import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import linearData from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
+import { CRYPTO_CURRENCY_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/currency";
+
+import {
+    getExchangeRates,
+    getBalances
+} from "@/assets/linearLibrary/linearTools/request";
+
+import {
+    formatNumber
+} from "@/assets/linearLibrary/linearTools/format";
+
+import { fetchTrackDebt } from "@/assets/linearLibrary/linearTools/request/trackDebt";
 
 export default {
     name: "trackModal",
     data() {
         return {
             trackModal: false,
-            hasTrack: false, //有无交易记录
-            line1Data: {
+            hasTrackData: false, //有无图表记录
+
+            trackData: {
                 xAxis: {
-                    type: "category",
-                    data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+                    data: ["", "", ""]
                 },
-                yAxis: {
-                    type: "value"
-                },
-                series: [820, 932, 901, 934, 1290, 1330, 1320]
+                series: [0, 0, 0]
             },
-            columns1: [
+
+            debtData: {'issuedDebt': 0, 'currentDebt': 0},
+
+            emptyData: {
+                xAxis: {
+                    data: _.map([0, 0, 0, 0], (item, index) =>
+                        format(
+                            new Date().getTime() + index * 24 * 60 * 60 * 1000,
+                            "d MMM yy"
+                        )
+                    )
+                },
+                series: [0, 0, 0, 0]
+            },
+
+            trackTableColumn: [
                 {
                     title: "Your Asset",
-                    key: "asset"
+                    key: "name",
+                    slot: "name",
+                    className: "cellAsset"
                 },
                 {
                     title: "Issued Debt",
-                    key: "issued"
+                    key: "balance",
+                    slot: "balance"
                 },
                 {
                     title: "Current Debt",
-                    key: "current"
+                    key: "valueUSD",
+                    slot: "valueUSD"
                 }
             ],
-            data1: [
-                {
-                    asset: "John Brown",
-                    issued: 18,
-                    current: "New York No. 1 Lake Park",
-                    date: "2016-10-03"
-                },
-                {
-                    asset: "Jim Green",
-                    issued: 24,
-                    current: "London No. 1 Lake Park",
-                    date: "2016-10-01"
-                },
-                {
-                    asset: "Joe Black",
-                    issued: 30,
-                    current: "Sydney No. 1 Lake Park",
-                    date: "2016-10-02"
-                },
-                {
-                    asset: "Jon Snow",
-                    issued: 26,
-                    current: "Ottawa No. 2 Lake Park",
-                    date: "2016-10-04"
-                }
-            ]
+
+            trackTableData: [],
+
+            formatNumber,
+            tokenIcon,
+
+            loading: false
         };
     },
     components: {
-        echarts,
+        trackchart,
         closeSvg
+    },
+    watch: {
+        walletAddress() {}
+    },
+    computed: {
+        walletAddress() {
+            return this.$store.state?.wallet?.address;
+        }
     },
     created() {
         //订阅组件改变事件
@@ -162,16 +195,94 @@ export default {
             this.trackModal = params;
         });
     },
-    watch: {},
-    computed: {},
     methods: {
-        trackModalChange(status) {
-            if (status) {
-                //获取交易记录
-            } else {
-                this.$pub.publish("trackModalCloseEvent");
+        openSocial(slug) {
+            switch (slug) {
+                case 0:
+                    window.open("https://t.me/joinchat/Tb3iAhuMZsyfspxhEWQLvw");
+                    break;
+                case 1:
+                    window.open("https://www.linkedin.com/company/linearfinance/");
+                    break;
+                case 2:
+                    window.open("https://medium.com/@linear.finance");
+                    break;
+                case 3:
+                    window.open("https://twitter.com/LinearFinance");
+                    break;
+                default:
+                    break;
+            }
+        },
 
-                //to do list: 清理筛选条件
+        trackModalChange(status) {
+            try {
+                this.debtData = {'issuedDebt': 0, 'currentDebt': 0};
+                this.trackTableData = [];
+
+                if (status) {
+                    this.loading = true;
+                    //获取交易记录
+                    this.getTrackData()
+                        .then(res => {
+                            //有图表数据
+                            if (!_.isEmpty(res.chartData)) {
+                                this.trackData = {
+                                    xAxis: {
+                                        data: _.map(
+                                            res.chartData,
+                                            item => format(item[0], "MMM d") 
+                                        )
+                                    },
+                                    series: _.map(
+                                        res.chartData,
+                                        item => formatNumber(item[1]) ?? 0
+                                    )
+                                };
+
+                                this.hasTrackData = true;
+                            }
+
+                            //表格数据
+                            this.trackTableData =  res.tableData ?? [];
+
+                            this.debtData = res.debet;
+                        })
+                        .finally(() => {
+                            this.loading = false;
+                        });
+                } else {
+                    this.hasTrackData = false;
+                    this.$pub.publish("trackModalCloseEvent");
+                }
+            } catch (e) {
+                console.error(e, "trackModalChange");
+            }
+        },
+
+        async getTrackData() {
+            try {
+                const {
+                    lnrJS: {
+                        lUSD
+                    }
+                } = lnrJSConnector;
+
+                let trackData = await fetchTrackDebt(this.walletAddress);
+                let getlUSDBalance = await lUSD.balanceOf(this.walletAddress);
+                let lUSDBalance = formatEtherToNumber(getlUSDBalance);
+
+                return {
+                    'chartData': trackData.currentDebt,
+                    'tableData': [{
+                                            name: "ℓUSD",
+                                            balance: lUSDBalance,
+                                            valueUSD: lUSDBalance
+                                        }],
+                    'debet': {'issuedDebt': trackData.issuedDebt, 'currentDebt': trackData.currentDebt[trackData.currentDebt.length - 1][1]}
+                };
+            } catch (e) {
+                console.error(e, "getTrackData");
             }
         }
     }
@@ -199,7 +310,7 @@ export default {
                 right: 24px;
             }
 
-            .noTrackBox {
+            .transactionBox {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -228,8 +339,8 @@ export default {
 
                 .data {
                     width: 100%;
-                    height: 120px;
                     display: flex;
+                    margin-bottom: 40px;
                     .li_1,
                     .li_2 {
                         flex: 1;
@@ -252,34 +363,91 @@ export default {
                     }
                 }
                 .chart {
-                    width: 100%;
+                    position: relative;
+                    width: 786px;
                     height: 270px;
                 }
                 .table {
                     width: 100%;
                     height: 200px;
+                    margin-top: 5px;
+
+                    .ivu-table {
+                        .ivu-table-header {
+                            [class^="ivu-table-column-"] {
+                                background-color: #fafafa;
+                                font-family: Gilroy;
+                                font-size: 12px;
+                                font-weight: bold;
+                                line-height: 16px;
+                                color: #5a575c;
+                                border-color: #f6f5f6;
+                            }
+                        }
+
+                        .ivu-table-tbody {
+                            .ivu-table-row {
+                                [class^="ivu-table-column-"] {
+                                    height: 56px;
+                                    border-color: #f6f5f6;
+                                }
+                                .ivu-table-cell-slot {
+                                    font-family: Gilroy;
+                                    font-size: 12px;
+                                    font-weight: 500;
+                                    line-height: 16px;
+                                    color: #5a575c;
+                                }
+                                .cellAsset {
+                                    .ivu-table-cell-slot {
+                                        display: flex;
+                                        align-items: center;
+                                        font-size: 16px;
+                                        font-weight: bold;
+                                        line-height: 24px;
+
+                                        img {
+                                            width: 32px;
+                                            height: auto;
+                                            vertical-align: middle;
+                                            margin-right: 8px;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        &::before {
+                            content: none;
+                        }
+                    }
+
                     .nothing {
                         width: 100%;
                         height: 100%;
                         border-radius: 8px;
                         border: solid 1px #deddde;
-                        padding: 78px 122px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
                         img {
-                            float: left;
-                            transform: translateY(3px);
+                            margin-right: 16px;
+                            vertical-align: middle;
                         }
                         .text {
-                            float: right;
                             .title {
                                 font-family: Gilroy;
                                 font-size: 16px;
                                 font-weight: bold;
-                                line-height: 16px;
+                                line-height: 24px;
+                                color: #5a575c;
                             }
                             .subject {
                                 font-family: Gilroy;
                                 font-size: 16px;
-                                font-weight: normal;
+                                line-height: 24px;
+                                color: #5a575c;
                             }
                         }
                     }

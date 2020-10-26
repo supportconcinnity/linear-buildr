@@ -3,8 +3,7 @@ const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
 const env = require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` }); //读取环境变量
 
 module.exports = {
-    //   mode: 'universal',
-    mode: "spa",
+    ssr: false,
     env: {
         baseUrl: env.BASE_URL,
     },
@@ -16,20 +15,20 @@ module.exports = {
      ** Headers of the page
      */
     head: {
-        title: process.env.npm_package_name || "",
+        title: "Buildr - Testnet",
         meta: [
             { charset: "utf-8" },
             {
                 name: "viewport",
-                content: "width=device-width, initial-scale=1",
+                content: "width=device-width, initial-scale=1"
             },
             {
                 hid: "description",
                 name: "description",
-                content: process.env.npm_package_description || "",
-            },
+                content: process.env.npm_package_description || ""
+            }
         ],
-        link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+        link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
     },
     /*
      ** Customize the progress-bar color
@@ -40,19 +39,19 @@ module.exports = {
         name: "folding-cube",
         // name: "@/static/customLoading.html",
         background: "#345785",
-        color: "#fff",
+        color: "#fff"
     },
     /*
      ** Global CSS
      */
     css: [
-        "@/static/font/Gilroy/Gilroy.css", // 全局字体
+        "@/static/font/Gilroy/Gilroy.css" // 全局字体
     ],
     /*
      ** 全局 SCSS
      */
     styleResources: {
-        scss: "./assets/css/*.scss",
+        scss: "./assets/css/*.scss"
     },
     /*
      ** Plugins to load before mounting the App
@@ -64,6 +63,8 @@ module.exports = {
         { src: "@/plugins/i18n", ssr: false }, //多语言
         { src: "@/plugins/localStorage", ssr: false }, //vuex持久化
         { src: "@/plugins/pubsub", ssr: false }, //发布订阅消息
+        { src: "@/plugins/walletListener", ssr: false }, //全局钱包改变监听
+        { src: "@/plugins/refreshListen", ssr: false } //全局钱包面板数据更新监听
     ],
     /*
      ** Nuxt.js dev-modules
@@ -75,7 +76,6 @@ module.exports = {
     modules: [
         // Doc: https://axios.nuxtjs.org/usage
         "@nuxtjs/axios",
-        "@nuxtjs/pwa",
         // Doc: https://github.com/nuxt-community/dotenv-module
         [
             "@nuxtjs/dotenv",
@@ -90,8 +90,8 @@ module.exports = {
      ** See https://axios.nuxtjs.org/options
      */
     axios: {
-        prefix: "/api", //url前缀
-        proxy: false, //开启跨域代理
+        prefix: "/buildr_api", //url前缀
+        proxy: false //开启跨域代理
     },
     /**
      * url 代理
@@ -121,7 +121,7 @@ module.exports = {
         extractCSS: true, //css分离
 
         splitChunks: {
-            layouts: true, //layout文件分离
+            layouts: false, //layout文件分离
         },
 
         vendor: ["axios"], // 防止重复打包
@@ -135,7 +135,7 @@ module.exports = {
                 // jQuery: "jquery",
                 // "window.jQuery": "jquery"
             }),
-            new LodashModuleReplacementPlugin(),
+            new LodashModuleReplacementPlugin({ shorthands: true })
         ],
 
         //按需引入
@@ -146,17 +146,17 @@ module.exports = {
                     "import",
                     {
                         libraryName: "view-design",
-                        libraryDirectory: "src/components",
-                    },
-                ],
-            ],
+                        libraryDirectory: "src/components"
+                    }
+                ]
+            ]
         },
 
         /*
          ** You can extend webpack config here
          */
-        extend(config, ctx) {},
+        extend(config, ctx) {}
     },
 
-    telemetry: false, //取消参与调查提示
+    telemetry: false //取消参与调查提示
 };

@@ -1,38 +1,47 @@
 <template>
     <div id="actions">
         <div class="headerBox">
-            <img
-                class="linearBuildrlogo"
-                src="@/static/linear_buildr_logo.svg"
-                alt=""
-            />
+            <a href="/">
+                <img
+                    class="linearBuildrlogo"
+                    src="@/static/linear_buildr_logo.svg"
+                    alt=""
+                />
+            </a>
             <div
                 class="action"
                 :class="{ activited: currentAction == 1 }"
                 @click="actionChange(1)"
             >
-                Build
+                BUILD
             </div>
             <div
                 class="action"
                 :class="{ activited: currentAction == 2 }"
                 @click="actionChange(2)"
             >
-                Burn
+                BURN
             </div>
             <div
                 class="action"
                 :class="{ activited: currentAction == 3 }"
                 @click="actionChange(3)"
             >
-                Claim
+                CLAIM
             </div>
             <div
                 class="action"
                 :class="{ activited: currentAction == 4 }"
                 @click="actionChange(4)"
             >
-                Transfer
+                TRANSFER
+            </div>
+            <div
+                class="action"
+                :class="{ activited: currentAction == 5 }"
+                @click="actionChange(5)"
+            >
+                SWAP
             </div>
         </div>
 
@@ -41,7 +50,8 @@
             <build v-else-if="currentAction == 1"></build>
             <burn v-else-if="currentAction == 2"></burn>
             <claim v-else-if="currentAction == 3"></claim>
-            <transfer v-else></transfer>
+            <transfer v-else-if="currentAction == 4"></transfer>
+            <swap v-else></swap>
 
             <referralModal></referralModal>
             <transactionModal></transactionModal>
@@ -59,6 +69,7 @@ import build from "@/components/appPage/actions/build";
 import burn from "@/components/appPage/actions/burn";
 import claim from "@/components/appPage/actions/claim";
 import transfer from "@/components/appPage/actions/transfer";
+import swap from "@/components/appPage/actions/swap";
 
 import referralModal from "@/components/appPage/walletDetails/actions/referralModal";
 import transactionModal from "@/components/appPage/walletDetails/actions/transactionModal";
@@ -72,6 +83,7 @@ export default {
         burn,
         claim,
         transfer,
+        swap,
         trackModal,
         referralModal,
         notificationQueue,
@@ -89,7 +101,6 @@ export default {
     },
     computed: {
         currentActionComputed() {
-            console.log(this.$store.state.currentAction);
             return this.$store.state.currentAction;
         }
     },
@@ -124,22 +135,35 @@ export default {
         align-items: center;
 
         .linearBuildrlogo {
-            widows: 216px;
+            width: 216px;
             height: 40px;
             cursor: pointer;
         }
 
         .action {
-            color: #c6c4c7;
+            width: 85px;
+            height: 40px;
+            color: #1b05a1;
+            opacity: .2;
+            border-radius: 20px;
+            border: solid 1px #FAFAFA;
             font-family: Gilroy;
-            font-size: 16px;
+            font-size: 12px;
             font-weight: 700;
+            line-height: 40px;
+            text-align: center;
             cursor: pointer;
-            transition: $animete-time linear;
 
-            &:hover,
-            &.activited {
+            &:hover {
+                opacity: 1;
                 color: #1b05a1;
+                border-color: #1b05a1;
+            }
+
+            &.activited {
+                opacity: 1;
+                color: #fff!important;
+                background: #1b05a1;
             }
         }
     }

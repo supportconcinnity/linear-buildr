@@ -1,180 +1,235 @@
 <template>
-    <div class="notification" :class="{normal: status == 0, success: status == 1, error: status == 2}">
+    <div
+        id="notification"
+        :class="{
+            normal: status == 0,
+            success: status == 1,
+            error: status == 2
+        }"
+    >
         <div class="statusIcon">
-            <template v-if="status == 0">
-                <i-circle
-                :size="40"
-                :trail-width="4"
-                :stroke-width="4"
-                :percent="mintPercent"
-                stroke-linecap="square"
-                stroke-color="#1b05a1"
-                >
-                </i-circle>
-            </template>
-            <template v-if="status == 1">
+            <div class="icon">
                 <img
-                    src="@/static/completed.svg"
+                    v-if="status == 0"
+                    class="loading"
+                    src="@/static/transferProgress/loading.svg"
+                />
+                <img
+                    v-if="status == 1"
+                    src="@/static/transferProgress/completed.svg"
                     alt=""
                 />
-            </template>
-            <template v-if="status == 2">
                 <img
-                    src="@/static/failed.svg"
+                    v-if="status == 2"
+                    src="@/static/transferProgress/failed.svg"
                     alt=""
                 />
-            </template>
+            </div>
         </div>
         <div class="text" v>
-            <div class="title">Category</div>
-            <div class="description" v-if="status == 0">Transaction in progress…</div>
-            <div class="description" v-if="status == 1">Transaction Completed.<span @click="openEtherScan">view</span></div>
-            <div class="description" v-if="status == 2">Transaction Failed.<span @click="openEtherScan">view</span></div>
-            
+            <div class="title">
+                {{ handleTypeName }}
+                <template v-if="status == 1">Completed</template
+                ><template v-if="status == 2">Failed</template>
+            </div>
+            <div class="description">
+                {{ value }} &nbsp;
+                <span @click="openEtherScan(hash)">view</span>
+            </div>
         </div>
         <div class="btns">
             <Icon type="ios-close" @click="close" />
+        </div>
+
+        <div
+            class="loadingBar"
+            :class="{ error: status == 2, loading: status == 0 }"
+        >
+            <div class="slider"></div>
         </div>
     </div>
 </template>
 
 <script>
-// 
+import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import { openEtherScan } from "@/common/utils";
 
 export default {
-    name: "nitification",
+    name: "notification",
     data() {
         return {
-            mintPercent: 0, //等待进度
-            mintPercentTimeId: 0, //等待进度计时器ID
+            status: 0,
+            openEtherScan,
         };
     },
     props: {
-        // 交易hash, 操作类型, 价值和单位
-        hash: '',
-        type: '',
-        value: '',
-        unit: '',
-    },
-    created() {
+        // 交易hash, 操作类型, 当前步骤提示和单位
+        hash: "",
+        type: "",
+        value: "",
+        unit: "" //暂无用,无用时删除
     },
     watch: {
-        mintPercentFunc() {},
-    },
-    mounted() {
-        this.onListen()
+        handleTypeName() {}
     },
     computed: {
-        networkName() {
-            return ''//this.$store.state?.walletNetworkName;
-        },
-        mintPercentFunc() {
-            this.mintPercentTimeId = setInterval(() => {
-                this.mintPercent++;
-            }, 50);
-        },
-        destroyed() {
-            clearInterval(this.mintPercentTimeId);
-        },
-        status() {
-            let status = this.hash % 2 == 0 ? 1: 2
-            if(status === 0) {
-                status = 2
-            } else {
-                status = status 
+        //处理操作名
+        handleTypeName() {
+            let typeName = this.type;
+            if(typeName == 'Claiming Rewards'){
+                return "Claim";
             }
-            status = 0
-            return status
+
+            if ([1, 2].includes(this.status)) {
+                //去掉开头的Confirm
+                typeName = typeName.replace(/^Confirm/i, "");
+            }
+            return typeName;
         }
+    },
+    created() {
+        this.onListen();
     },
     methods: {
         async onListen() {
-        
+            try {
+                // this.status = this.unit;  //测试用,无用时删除
+                const status = await lnrJSConnector.utils.waitForTransaction(
+                    this.hash
+                );
 
+                if (status === null) {
+                    this.status = 0;
+                } else if (status) {
+                    this.status = 1;
+                } else {
+                    this.status = 2;
+                }
+            } catch (error) {
+                this.status = 2;
+            } finally {
+                clearInterval(this.waitPercentTimeId);
+            }
         },
         async close() {
-            this.$emit('closeNotification', this.hash)
-        },
-        /**
-         * 打开etherscan查询tx
-         */
-        openEtherScan() {
-            let href = `https://${
-                this.networkName === "MAINNET" ? "" : this.networkName + "."
-            }etherscan.io/tx/${this.hash}`;
-
-            window.open(href, "_blank");
-        },
+            this.$emit("closeNotification", this.hash);
+        }
     }
 };
 </script>
 
 <style lang="scss">
-
-.notification {
+#notification {
     width: 100%;
     min-height: 64px;
-    margin-bottom: 20px;
-    border: solid 1px #1b05a1;
     box-shadow: 0 2px 6px 0 #deddde;
-    border-radius: 5px;
+    border-radius: 4px;
     display: flex;
     background: #fff;
-    
-    &.normal {
-        background: #fff;
-    }
-    &.success {
-    }
-    &.error {
-        border: solid 1px #df434c;
-    }
+    padding: 14px 16px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+    position: relative;
+    overflow: hidden;
 
     .statusIcon {
-        width: 64px;
-        height: 64px;
-        line-height: 64px;
-        svg,
-        img {
-            width: 40px;
-            height: 40px;
-            margin: 12px 0 0 12px;
+        margin-right: 8px;
+        .icon {
+            img {
+                width: 32px;
+                height: 32px;
+                vertical-align: middle;
+            }
+
+            .loading {
+                animation: rotate 3s linear infinite;
+            }
         }
     }
     .text {
         flex: 1;
-        padding: 17px 0 0 0;
+
         .title {
-            height: 16px;
             font-family: Gilroy;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: bold;
+            line-height: 16px;
+            color: #5a575c;
         }
         .description {
-            height: 16px;
             font-family: Gilroy;
             font-size: 12px;
             font-weight: 500;
-            font-stretch: normal;
-            font-style: normal;
-            letter-spacing: normal;
-            color: #c6c4c7;
+            line-height: 16px;
+            color: #c1c1c1;
+
+            span {
+                opacity: 0.2;
+                font-family: Gilroy;
+                font-size: 10px;
+                font-weight: bold;
+                line-height: 16px;
+                letter-spacing: 1.25px;
+                color: #1b05a1;
+                transition: $animete-time linear;
+                cursor: pointer;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
         }
     }
     .btns {
-        width: 34px;
-        line-height: 64px;
+        width: 20px;
         i {
-            transform: translateY(5px);
             color: #deddde;
             font-size: 30px;
             cursor: pointer;
+            transition: $animete-time linear;
             &:hover {
                 color: #1b05a1;
             }
         }
     }
 
+    .loadingBar {
+        height: 6px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #1b05a1;
+        overflow: hidden;
+
+        &.error {
+            background-color: #df434c;
+        }
+
+        .slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            left: -100%;
+            background-color: #fff;
+        }
+
+        &.loading {
+            .slider {
+                animation: loop 4s linear infinite;
+            }
+        }
+    }
 }
 
+@keyframes loop {
+    /* 修改背景定位 */
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
 </style>

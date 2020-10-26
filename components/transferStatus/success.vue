@@ -11,7 +11,7 @@
 
         <div class="title">Congratulations!</div>
 
-        <div class="descript">Your transaction can not be processed.</div>
+        <div class="descript">Your transaction has been processed!</div>
 
         <div class="btns">
             <div class="homepage" @click="$emit('homepage')">
@@ -57,7 +57,7 @@ export default {
         width: 410px;
         height: 40px;
         color: #5a575c;
-        font-family: "Gilroy-Bold";
+        font-family: "Gilroy";
         font-size: 24px;
         font-weight: 400;
         line-height: 40px;
@@ -89,7 +89,7 @@ export default {
         border-radius: 20px;
         background: #1b05a1;
         color: #ffffff;
-        font-family: "Gilroy-Bold";
+        font-family: "Gilroy";
         font-size: 12px;
         font-weight: 400;
         line-height: 40px;
