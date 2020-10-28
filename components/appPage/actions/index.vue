@@ -8,6 +8,7 @@
                     alt=""
                 />
             </a>
+            <div class="network">{{networkName}}</div>
             <div
                 class="action"
                 :class="{ activited: currentAction == 1 }"
@@ -97,12 +98,17 @@ export default {
     watch: {
         currentActionComputed(newVal, oldVal) {
             this.currentAction = this.currentActionComputed;
-        }
+        },
+        networkName() {
+        },
     },
     computed: {
         currentActionComputed() {
             return this.$store.state.currentAction;
-        }
+        },
+        networkName() {
+            return this.$store.state?.walletNetworkName;
+        },
     },
     methods: {
         //切换功能
@@ -138,6 +144,20 @@ export default {
             width: 216px;
             height: 40px;
             cursor: pointer;
+        }
+
+        .network {
+            width: 77px;
+            height: 32px;
+            border-radius: 16px;
+            background-color: rgba(27,5,161,0.03);
+
+            font-family: Gilroy;
+            font-size: 12px;
+            line-height: 32px;
+            text-align: center;
+            font-weight: 500;
+            color: #1b05a1;
         }
 
         .action {

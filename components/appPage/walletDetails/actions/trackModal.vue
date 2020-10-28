@@ -108,7 +108,7 @@ import { formatEtherToNumber } from "@/assets/linearLibrary/linearTools/format";
 import { tokenIcon } from "@/common/options";
 
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-import linearData from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
+import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/exchangeData";
 import { CRYPTO_CURRENCY_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/currency";
 
 import {
@@ -158,7 +158,7 @@ export default {
                     className: "cellAsset"
                 },
                 {
-                    title: "Issued Debt",
+                    title: "Balance",
                     key: "balance",
                     slot: "balance"
                 },
@@ -256,7 +256,7 @@ export default {
                     this.$pub.publish("trackModalCloseEvent");
                 }
             } catch (e) {
-                console.error(e, "trackModalChange");
+                console.error(e, "trackModalChange err");
             }
         },
 
@@ -264,25 +264,45 @@ export default {
             try {
                 const {
                     lnrJS: {
-                        lUSD
+                        lUSD,
+                        lBTC,
+                        lETH
                     }
                 } = lnrJSConnector;
 
                 let trackData = await fetchTrackDebt(this.walletAddress);
-                let getlUSDBalance = await lUSD.balanceOf(this.walletAddress);
-                let lUSDBalance = formatEtherToNumber(getlUSDBalance);
+
+                const results = await Promise.all([
+                    lUSD.balanceOf(this.walletAddress),
+                    lBTC.balanceOf(this.walletAddress),
+                    lETH.balanceOf(this.walletAddress)
+                ]);
+
+                let lUSDBalance = formatEtherToNumber(results[0]);
+                let lBTCBalance = formatEtherToNumber(results[1]);
+                let lETHBalance = formatEtherToNumber(results[2]);
+
+                const [
+                    lBTCPrice,
+                    lETHPrice
+                ] = await Promise.all([
+                    exchangeData.exchange.pricesLast({source: "lBTC"}),
+                    exchangeData.exchange.pricesLast({source: "lETH"})
+                ]);
+
+                let tableData = [];
+
+                if (lUSDBalance > 0) tableData.push({name: "ℓUSD", balance: lUSDBalance, valueUSD: lUSDBalance});
+                if (lBTCBalance > 0) tableData.push({name: "ℓBTC", balance: lBTCBalance, valueUSD: _.floor(lBTCBalance * lBTCPrice[0].currentPrice, 2)});
+                if (lETHBalance > 0) tableData.push({name: "ℓETH", balance: lETHBalance, valueUSD: _.floor(lETHBalance * lETHPrice[0].currentPrice, 2)});
 
                 return {
                     'chartData': trackData.currentDebt,
-                    'tableData': [{
-                                            name: "ℓUSD",
-                                            balance: lUSDBalance,
-                                            valueUSD: lUSDBalance
-                                        }],
+                    'tableData': tableData,
                     'debet': {'issuedDebt': trackData.issuedDebt, 'currentDebt': trackData.currentDebt[trackData.currentDebt.length - 1][1]}
                 };
             } catch (e) {
-                console.error(e, "getTrackData");
+                console.error(e, "getTrackData err");
             }
         }
     }

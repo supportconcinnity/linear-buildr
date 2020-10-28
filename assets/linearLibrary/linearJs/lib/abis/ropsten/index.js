@@ -14,8 +14,10 @@ import LnBuildBurnSystem from './LnBuildBurnSystem';
 import lUSD from './lUSD';
 import LnFeeSystem from './LnFeeSystem';
 import LnFeeSystemTest from './LnFeeSystemTest';
+import lBTC from './lBTC';
+import lETH from './lETH';
   
   export default {
-    LnTokenStorage, LnProxyERC20, LinearFinance, LnAccessControl, LnConfig, LnChainLinkPrices, LnTokenCliffLocker, LnRewardLocker, LnAssetSystem, LnDebtSystem, LnCollateralSystem, LnBuildBurnSystem, lUSD, LnFeeSystem, LnFeeSystemTest
+    LnTokenStorage, LnProxyERC20, LinearFinance, LnAccessControl, LnConfig, LnChainLinkPrices, LnTokenCliffLocker, LnRewardLocker, LnAssetSystem, LnDebtSystem, LnCollateralSystem, LnBuildBurnSystem, lUSD, LnFeeSystem, LnFeeSystemTest, lBTC, lETH
   };
     

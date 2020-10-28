@@ -23,7 +23,9 @@ export const fetchTrackDebt = async walletAddress => {
 		burned.map((record, index) => {
 			totalBuild += record.value;
 		});
-
+		//it`s shouldn`t record in burn when user exchange lusd to other synth
+		//console.log(minted, burned);
+		//console.log(issuedDebt, totalMinted, totalBuild);
 		issuedDebt = totalMinted - totalBuild;
 
 		if (totalMinted) {
@@ -34,13 +36,13 @@ export const fetchTrackDebt = async walletAddress => {
 				utils
 			} = lnrJSConnector;
 
-			let timestampArr = [], tomorrowZeroTime = 0;
+			let timestampArr = [], todayZeroTime = 0;
 
-			tomorrowZeroTime = (new Date(new Date().toLocaleDateString()).getTime()) / 1000;
+			todayZeroTime = (new Date(new Date().toLocaleDateString()).getTime()) / 1000;
 
-			timestampArr.push(tomorrowZeroTime-(86400*2));
-			timestampArr.push(tomorrowZeroTime-(86400*1));
-			timestampArr.push(tomorrowZeroTime);
+			timestampArr.push(todayZeroTime-(86400*2));
+			timestampArr.push(todayZeroTime-(86400*1));
+			timestampArr.push(todayZeroTime);
 			
 			const [
 				selfDebt3,
