@@ -61,7 +61,6 @@ export const timeFormat = (time, fmStr) => {
     fmStr = fmStr.replace("W", weekCN[week - 1]);
     fmStr = fmStr.replace("ww", weekEN[week - 1]);
     fmStr = fmStr.replace("w", week);
-    // console.log(fmStr, "timeFormat");
     return fmStr;
 };
 
@@ -97,7 +96,6 @@ export const toNonExponential = num => {
             return basis.padStart(index + basis.length, 0).replace(/^0/, "0.");
         }
     } catch (error) {
-        console.log(error,num,'toNonExponential');
         return 0;
     }
 };
@@ -189,7 +187,6 @@ export const openEtherScan = $hash => {
                 networkName === "MAINNET" ? "" : networkName + "."
             }etherscan.io/tx/${$hash}`;
 
-            // console.log(href);
 
             window.open(href, "_blank");
         }

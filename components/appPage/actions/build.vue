@@ -433,12 +433,6 @@ export default {
         async handlePriceChange() {
             const priceRates = await getPriceRates(["LINA", "lUSD"]);
 
-            //console.log(
-            //    utils.formatEther(this.buildData.priceRates.LINA),
-            //    "<--before     LINAPrice     current-->",
-            //    utils.formatEther(priceRates.LINA)
-            //);
-
             //不等于之前价格则更新对应数据
             if (!this.buildData.priceRates.LINA.eq(priceRates.LINA)) {
                 //更新转换率
@@ -615,19 +609,13 @@ export default {
                 buildData.maxPRatio = maxPRatio;
 
                 //计算最小PRatio
-                // buildData.stakeAmount = utils.formatEther(maxAvaliableLINA);
-                // buildData.buildAmount = utils.formatEther(maxAvaliablelUSD);
-                // const minPRatio = this.calcPRatio(buildData);
                 this.minPRatio = 100 / utils.formatEther(buildRatio);
 
                 buildData.stakeAmount = 0;
                 buildData.buildAmount = 0;
 
-                // console.log(buildData, "buildData");
-
                 return buildData;
             } catch (e) {
-                console.log(e, "getBuildData");
             } finally {
                 this.processing = false;
             }
@@ -672,7 +660,6 @@ export default {
                     100
                 ); */
             } catch (error) {
-                // console.log(error, "calcPRatio");
                 return 0;
             }
         },
@@ -723,7 +710,6 @@ export default {
                 // amountDebt2lUSD
                 // );
             } catch (error) {
-                // console.log(error, "calclUSD");
                 return 0;
             }
         },
@@ -767,7 +753,6 @@ export default {
                 //     beforeCollateralLINA - collateralLINA
                 // );
             } catch (error) {
-                // console.log(error, "calcLINA");
                 return 0;
             }
         },
@@ -899,6 +884,7 @@ export default {
                     this.waitProcessArray = [];
                     this.confirmTransactionStep = 0;
 
+
                     // 1:授权要抵押的LINA数
                     // 如果要抵押的差值大于之前授权的值,要重新approve,才能抵押LINA
                     if (diffCollateralLINA.gt(approveAmount)) {
@@ -925,11 +911,8 @@ export default {
                     await this.waitProcessFlow();
                 }
             } catch (error) {
-                console.log(error, "clickBuild");
                 this.transactionErrMsg =
                     "Something went wrong, please try again.";
-
-                // this.actionTabs = "m3"; //进入错误页
             } finally {
                 this.processing = false;
             }
@@ -962,7 +945,6 @@ export default {
                         await this.startBuildContract();
                     }
                 } catch (error) {
-                    console.log(error, "startFlow");
                     //自定义错误
                     if (
                         _.has(error, "code") &&
@@ -989,8 +971,6 @@ export default {
                 utils
             } = lnrJSConnector;
 
-            //console.log("开始授权:", utils.formatEther(approveAmountLINA));
-
             //取合约地址
             const LnCollateralSystemAddress =
                 LnCollateralSystem.contract.address;
@@ -1000,19 +980,17 @@ export default {
                 gasLimit: this.gasLimit
             };
 
+            //set max number to approve
+            const MAX_SAFE_INTEGER = n2bn(Number.MAX_SAFE_INTEGER);
+
             transactionSettings.gasLimit = await this.getGasEstimateFromApprove(
                 LnCollateralSystemAddress,
-                approveAmountLINA
+                MAX_SAFE_INTEGER
             );
-
-            //console.log(
-            //    transactionSettings.gasLimit,
-            //    "getGasEstimateFromApprove"
-            //);
 
             let transaction = await LnProxyERC20.approve(
                 LnCollateralSystemAddress,
-                approveAmountLINA,
+                MAX_SAFE_INTEGER,
                 transactionSettings
             );
 
@@ -1051,8 +1029,6 @@ export default {
                 utils
             } = lnrJSConnector;
 
-            //console.log("开始抵押:", utils.formatEther(stakeAmountLINA));
-
             const transactionSettings = {
                 gasPrice: this.$store.state?.gasDetails?.price,
                 gasLimit: this.gasLimit
@@ -1061,11 +1037,6 @@ export default {
             transactionSettings.gasLimit = await this.getGasEstimateFromStaking(
                 stakeAmountLINA
             );
-
-            //console.log(
-            //    transactionSettings.gasLimit,
-            //    "getGasEstimateFromStaking"
-            //);
 
             let transaction = await LnCollateralSystem.Collateral(
                 utils.formatBytes32String("LINA"),
@@ -1121,8 +1092,6 @@ export default {
                 utils
             } = lnrJSConnector;
 
-            //console.log("开始build:" + buildAmountlUSD);
-
             const transactionSettings = {
                 gasPrice: this.$store.state?.gasDetails?.price,
                 gasLimit: this.gasLimit
@@ -1132,11 +1101,6 @@ export default {
                 buildAmountlUSD,
                 maxAvaliablelUSD
             );
-
-            //console.log(
-            //    transactionSettings.gasLimit,
-            //    "getGasEstimateFromBuild"
-            //);
 
             const maxAvaliablelUSD = _.floor(
                 formatEtherToNumber(this.buildData.maxAvaliablelUSD),
@@ -1204,8 +1168,6 @@ export default {
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
-                console.log(e, "getGasEstimateFromApprove");
-                // throw new Error(e);
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.approve);
             }
         },
@@ -1232,8 +1194,6 @@ export default {
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
-                console.log(e, "getGasEstimateFromStaking");
-                // throw new Error(e);
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
             }
         },
@@ -1263,14 +1223,12 @@ export default {
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
-                console.log(e, "getGasEstimateFromBuild");
-                // throw new Error(e);
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.build);
             }
         },
 
         //改变激活元素
-         //Select item here
+        //Select item here
         changeFocusItem(index) {
             // this.activeItem = index;
             this.$nextTick(() => {
@@ -1294,7 +1252,7 @@ export default {
         },
 
         //失去焦点
-        //Select different inputbox 
+        //Select different inputbox
         inputBlur(index) {
             this.$nextTick(() => {
                 let currentElement = this.$refs["itemInput" + index].$el;
@@ -1387,7 +1345,6 @@ export default {
                             font-weight: 700;
                             line-height: 40px;
                         }
-
 
                         .actionDesc {
                             margin-top: 8px;

@@ -349,7 +349,7 @@ export default {
         },
 
         //失去焦点
-        inputBlur(index) {console.log(index);
+        inputBlur(index) {
             this.$nextTick(() => {
                 let currentElement = this.$refs["itemInput" + index].$el;
                 let parentElement = findParents(

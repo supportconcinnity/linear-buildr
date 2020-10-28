@@ -6,17 +6,6 @@ import { formatNumber, formatEtherToNumber } from "../format";
 import { WALLET_STATUS } from "../network";
 import { BigNumber } from "ethers";
 
-import {
-    bnAdd,
-    bnSub,
-    bnMul,
-    bnDiv,
-    bnAdd2N,
-    bnSub2N,
-    bnMul2N,
-    bnDiv2N
-} from "@/common/bnCalc";
-
 /**
  * 获取Liquids总数
  */
@@ -140,55 +129,12 @@ export const storeDetailsData = async (store, wallet) => {
                 liquids,
                 amountDebt
             ] = result.map(formatEtherToNumber);
-            // console.log(amountDebt[0], "amountDebt request");
             //获取货币->USD 兑换率
             const priceRates = await getPriceRates(CRYPTO_CURRENCIES);
             const LINA2USDRate = priceRates.LINA / 1e18 || 1;
             const lUSD2USDRate = priceRates.lUSD / 1e18 || 1;
             const ETH2USDRate = priceRates.ETH / 1e18 || 1;
 
-            // console.log(priceRates, "priceRates");
-
-            //大数计算测试,无用时删除
-            /*  console.log(
-                priceRates.LINA.toString(),
-                priceRates.lUSD.toString(),
-                priceRates.ETH.toString(),
-                "bigNumber------------------------",
-                bnAdd(priceRates.LINA, priceRates.ETH),
-                bnSub(priceRates.LINA, priceRates.ETH),
-                bnMul(priceRates.LINA, priceRates.ETH),
-                bnDiv(priceRates.LINA, priceRates.ETH),
-                "bigNumber To Number------------------------",
-                bnAdd2N(priceRates.LINA, priceRates.ETH),
-                bnSub2N(priceRates.LINA, priceRates.ETH),
-                bnMul2N(priceRates.LINA, priceRates.ETH),
-                bnDiv2N(priceRates.LINA, priceRates.ETH),
-                "formatEther------------------------",
-                utils.formatEther(bnAdd(priceRates.LINA, priceRates.ETH)),
-                utils.formatEther(bnSub(priceRates.LINA, priceRates.ETH)),
-                utils.formatEther(bnMul(priceRates.LINA, priceRates.ETH)),
-                utils.formatEther(bnDiv(priceRates.LINA, priceRates.ETH)),
-                "Manual To Number------------------------",
-                bnAdd(priceRates.LINA, priceRates.ETH) / 1e18,
-                bnSub(priceRates.LINA, priceRates.ETH) / 1e18,
-                bnMul(priceRates.LINA, priceRates.ETH) / 1e18,
-                bnDiv(priceRates.LINA, priceRates.ETH) / 1e18,
-                "composition",
-                bnAdd(
-                    bnAdd(priceRates.LINA, priceRates.ETH),
-                    bnSub(priceRates.LINA, priceRates.ETH)
-                ) / 1e18,
-                bnMul(
-                    bnAdd(priceRates.LINA, priceRates.ETH),
-                    bnDiv(priceRates.LINA, priceRates.ETH)
-                ) / 1e18
-            ); */
-
-            // console.log(
-            //     totalCollateralInUsd / (priceRates.lUSD / 1e18),
-            //     "totalCollateralInUsd"
-            // );
 
             const currentRatioPercent =
                 totalCollateralInUsd != 0 && amountDebt[0] != 0

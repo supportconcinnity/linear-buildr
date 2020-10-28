@@ -34,14 +34,6 @@ export const fetchTransactionHistory = async walletAddress => {
 			linearData.lnr.referral({ to: walletAddress }),
 		]);
 
-		// console.log("Build",Build);
-		// console.log("burned",burned);
-		// console.log("feesClaimed",feesClaimed);
-		// console.log("collaterals",collaterals);
-		// console.log("redeemCollaterals",redeemCollaterals);
-		// console.log("transfers",transfers);
-		// console.log("referrals",referrals);
-
 		//referrals 这里记得加上去
 		const mergedArray = flatten(
 			[Build, burned, feesClaimed, collaterals, redeemCollaterals, transfers, referrals]
