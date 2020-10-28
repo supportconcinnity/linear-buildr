@@ -38,9 +38,9 @@
         return await this.contract.Log4(callData, topic1, topic2, topic3, topic4, txParams);
       };
     
-      this.admin = async () => {
-        
-        return await this.contract.admin();
+      this.admin = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.admin(txParams);
       };
     
       this.becomeAdmin = async (txParams) => {
@@ -48,9 +48,9 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
-      this.candidate = async () => {
-        
-        return await this.contract.candidate();
+      this.candidate = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.candidate(txParams);
       };
     
       this.setCandidate = async (_candidate, txParams) => {
@@ -63,39 +63,39 @@
         return await this.contract.setTarget(_target, txParams);
       };
     
-      this.target = async () => {
-        
-        return await this.contract.target();
+      this.target = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.target(txParams);
       };
     
-      this.name = async () => {
-        
-        return await this.contract.name();
+      this.name = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.name(txParams);
       };
     
-      this.symbol = async () => {
-        
-        return await this.contract.symbol();
+      this.symbol = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.symbol(txParams);
       };
     
-      this.decimals = async () => {
-        
-        return await this.contract.decimals();
+      this.decimals = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.decimals(txParams);
       };
     
-      this.totalSupply = async () => {
-        
-        return await this.contract.totalSupply();
+      this.totalSupply = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.totalSupply(txParams);
       };
     
-      this.balanceOf = async (account) => {
-        
-        return await this.contract.balanceOf(account);
+      this.balanceOf = async (account, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.balanceOf(account, txParams);
       };
     
-      this.allowance = async (owner, spender) => {
-        
-        return await this.contract.allowance(owner, spender);
+      this.allowance = async (owner, spender, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.allowance(owner, spender, txParams);
       };
     
       this.transfer = async (to, value, txParams) => {

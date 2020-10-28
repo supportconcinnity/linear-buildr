@@ -38,6 +38,11 @@
         return await this.contract.RecordUserDebt(user, debtProportion, debtFactor, txParams);
       };
     
+      this.SetPeriodData = async (index, id, startingDebtFactor, startTime, feesToDistribute, feesClaimed, rewardsToDistribute, rewardsClaimed, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.SetPeriodData(index, id, startingDebtFactor, startTime, feesToDistribute, feesClaimed, rewardsToDistribute, rewardsClaimed, txParams);
+      };
+    
       this.addCollateralRewards = async (reward, txParams) => {
         txParams = txParams || {};
         return await this.contract.addCollateralRewards(reward, txParams);

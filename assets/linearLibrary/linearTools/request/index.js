@@ -1,5 +1,6 @@
 import _ from "lodash";
 import lnrJSConnector from "../lnrJSConnector";
+import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/exchangeData";
 
 import { CRYPTO_CURRENCIES } from "../constants/currency";
 import { formatNumber, formatEtherToNumber } from "../format";
@@ -9,7 +10,7 @@ import { BigNumber } from "ethers";
 /**
  * 获取Liquids总数
  */
-export const getLiquids = async () => {
+export const getLiquids = async (wallet) => {
     const {
         lnrJS: {
             LnAssetSystem,
@@ -21,20 +22,22 @@ export const getLiquids = async () => {
     //获取资产列表
     const assetAddress = await LnAssetSystem.getAssetAddresses();
 
-    let liquids = BigNumber.from(0);
+    let liquids = 0;
 
     //遍历资产合约
-    assetAddress.map(address => {
-        Object.keys(addressList).map(async key => {
-            if (addressList[key] == address) {
+    for (let i = 0; i < assetAddress.length; i++) {
+        for (const key in addressList) {
+            if (addressList[key] == assetAddress[i]) {
                 let asset = lnrJSConnector.lnrJS[key];
-                let balance = await asset.balanceOf(address);
-                liquids = liquids == null ? balance : liquids.add(balance);
-            }
-        });
-    });
+                let balance = await asset.balanceOf(wallet);
+                let price = await exchangeData.exchange.pricesLast({source: key});
 
-    return liquids;
+                liquids += formatEtherToNumber(balance) * price[0].currentPrice;
+            }
+        }
+    }
+
+    return utils.parseEther(liquids.toString());
 };
 
 /**
@@ -114,7 +117,7 @@ export const storeDetailsData = async (store, wallet) => {
                 LnRewardLocker.balanceOf(wallet),
                 lUSD.balanceOf(wallet),
                 provider.getBalance(wallet),
-                getLiquids(),
+                getLiquids(wallet),
                 LnDebtSystem.GetUserDebtBalanceInUsd(wallet)
             ]);
 
@@ -135,7 +138,6 @@ export const storeDetailsData = async (store, wallet) => {
             const lUSD2USDRate = priceRates.lUSD / 1e18 || 1;
             const ETH2USDRate = priceRates.ETH / 1e18 || 1;
 
-
             const currentRatioPercent =
                 totalCollateralInUsd != 0 && amountDebt[0] != 0
                     ? (totalCollateralInUsd / amountDebt[0]) * 100
@@ -145,7 +147,7 @@ export const storeDetailsData = async (store, wallet) => {
             const amountLINA2USD = avaliableLINA * LINA2USDRate;
             const amountlUSD2USD = amountlUSD * lUSD2USDRate;
             const amountETH2USD = amountETH * ETH2USDRate;
-            const liquids2USD = liquids * lUSD2USDRate;
+            const liquids2USD = liquids;
             const amountDebt2USD = amountDebt[0] * lUSD2USDRate;
             const totalCryptoBalanceInUSD =
                 amountLINA2USD + amountETH2USD + liquids2USD;
@@ -171,8 +173,6 @@ export const storeDetailsData = async (store, wallet) => {
                 amountETH,
                 ETH2USDRate,
                 amountETH2USD,
-                liquids,
-                liquids2USD,
                 amountDebt: amountDebt[0],
                 amountDebt2USD,
                 totalCryptoBalanceInUSD,
@@ -190,6 +190,8 @@ export const storeDetailsData = async (store, wallet) => {
             formatData.priceRates = priceRates;
             //不需要格式化
             formatData.transferableAssets = transferableAssets;
+            formatData.liquids = _.floor(liquids, 2);
+            formatData.liquids2USD = _.floor(liquids2USD, 2);
 
             await store.commit("setWalletDetails", formatData);
             await store.commit("mergeWallet", { status: WALLET_STATUS.FINISH });

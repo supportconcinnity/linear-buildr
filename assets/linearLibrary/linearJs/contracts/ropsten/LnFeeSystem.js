@@ -98,6 +98,11 @@
         return await this.contract.Init(_exchangeSystem, _rewardDistri, txParams);
       };
     
+      this.SetPeriodData = async (index, id, startingDebtFactor, startTime, feesToDistribute, feesClaimed, rewardsToDistribute, rewardsClaimed, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.SetPeriodData(index, id, startingDebtFactor, startTime, feesToDistribute, feesClaimed, rewardsToDistribute, rewardsClaimed, txParams);
+      };
+    
       this.setExchangeSystemAddress = async (_address, txParams) => {
         txParams = txParams || {};
         return await this.contract.setExchangeSystemAddress(_address, txParams);

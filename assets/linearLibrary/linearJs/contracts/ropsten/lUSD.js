@@ -13,14 +13,14 @@
         );
   
         
-      this.admin = async () => {
-        
-        return await this.contract.admin();
+      this.admin = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.admin(txParams);
       };
     
-      this.allowance = async (owner, spender) => {
-        
-        return await this.contract.allowance(owner, spender);
+      this.allowance = async (owner, spender, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.allowance(owner, spender, txParams);
       };
     
       this.approve = async (spender, value, txParams) => {
@@ -28,9 +28,9 @@
         return await this.contract.approve(spender, value, txParams);
       };
     
-      this.balanceOf = async (account) => {
-        
-        return await this.contract.balanceOf(account);
+      this.balanceOf = async (account, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.balanceOf(account, txParams);
       };
     
       this.becomeAdmin = async (txParams) => {
@@ -38,34 +38,34 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
-      this.candidate = async () => {
-        
-        return await this.contract.candidate();
+      this.candidate = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.candidate(txParams);
       };
     
-      this.decimals = async () => {
-        
-        return await this.contract.decimals();
+      this.decimals = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.decimals(txParams);
       };
     
-      this.integrationProxy = async () => {
-        
-        return await this.contract.integrationProxy();
+      this.integrationProxy = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.integrationProxy(txParams);
       };
     
-      this.messageSender = async () => {
-        
-        return await this.contract.messageSender();
+      this.messageSender = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.messageSender(txParams);
       };
     
-      this.name = async () => {
-        
-        return await this.contract.name();
+      this.name = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.name(txParams);
       };
     
-      this.proxy = async () => {
-        
-        return await this.contract.proxy();
+      this.proxy = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.proxy(txParams);
       };
     
       this.setCandidate = async (_candidate, txParams) => {
@@ -93,19 +93,19 @@
         return await this.contract.setTokenStorage(_tokenStorage, txParams);
       };
     
-      this.symbol = async () => {
-        
-        return await this.contract.symbol();
+      this.symbol = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.symbol(txParams);
       };
     
-      this.tokenStorage = async () => {
-        
-        return await this.contract.tokenStorage();
+      this.tokenStorage = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.tokenStorage(txParams);
       };
     
-      this.totalSupply = async () => {
-        
-        return await this.contract.totalSupply();
+      this.totalSupply = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.totalSupply(txParams);
       };
     
       this.transfer = async (to, value, txParams) => {
@@ -118,9 +118,9 @@
         return await this.contract.transferFrom(from, to, value, txParams);
       };
     
-      this.keyName = async () => {
-        
-        return await this.contract.keyName();
+      this.keyName = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.keyName(txParams);
       };
     
       this.updateAddressCache = async (_addressStorage, txParams) => {

@@ -163,8 +163,7 @@ export default [
     name: 'admin',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -174,8 +173,7 @@ export default [
     name: 'allowance',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -192,8 +190,7 @@ export default [
     name: 'balanceOf',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
@@ -207,16 +204,14 @@ export default [
     name: 'candidate',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
     name: 'decimals',
     outputs: [ { internalType: 'uint8', name: '', type: 'uint8' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
@@ -229,24 +224,21 @@ export default [
       }
     ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
     name: 'messageSender',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
     name: 'name',
     outputs: [ { internalType: 'string', name: '', type: 'string' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
@@ -259,8 +251,7 @@ export default [
       }
     ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -322,8 +313,7 @@ export default [
     name: 'symbol',
     outputs: [ { internalType: 'string', name: '', type: 'string' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
@@ -336,16 +326,14 @@ export default [
       }
     ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
     name: 'totalSupply',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -373,8 +361,7 @@ export default [
     name: 'keyName',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [

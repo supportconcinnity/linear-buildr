@@ -1,13 +1,13 @@
 
       import {Contract} from 'ethers';
       import ContractSettings from '../../contractSettings';
-      import abi from '../../lib/abis/ropsten/lETH';
+      import abi from '../../lib/abis/ropsten/lHB10';
   
-      function lETH(contractSettings) {
+      function lHB10(contractSettings) {
         this.contractSettings = contractSettings || new ContractSettings();
   
         this.contract = new Contract(
-          this.contractSettings.addressList['lETH'],
+          this.contractSettings.addressList['lHB10'],
           abi,
           this.contractSettings.signer || this.contractSettings.provider
         );
@@ -140,5 +140,5 @@
     
       }
   
-      export default lETH;
+      export default lHB10;
     

@@ -24,6 +24,7 @@ import "echarts/lib/chart/line";
 import "echarts/lib/component/tooltip";
 import "echarts/lib/component/title";
 import _ from "lodash";
+import numbro from "numbro";
 
 export default {
     props: {
@@ -232,7 +233,10 @@ export default {
                 tooltip: {
                     show: this.tooltip, //是否显示
                     trigger: "axis",
-                    formatter: this.formatter, //输入内容
+                    formatter: function(val) {
+                        if (!val[0].data || !Number(val[0].data)) return 0;
+                        return numbro(_.floor(val[0].data, 2)).format("0,0." + "0".repeat(2));
+                    }, //格式化输入内容
                     confine: true, //不显示在图标外
                     axisPointer: {
                         animation: this.animation, //关闭动画

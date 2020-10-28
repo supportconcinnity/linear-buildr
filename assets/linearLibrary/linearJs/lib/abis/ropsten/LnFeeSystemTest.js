@@ -170,6 +170,38 @@ export default [
     type: 'function'
   },
   {
+    inputs: [
+      { internalType: 'int16', name: 'index', type: 'int16' },
+      { internalType: 'uint256', name: 'id', type: 'uint256' },
+      {
+        internalType: 'uint256',
+        name: 'startingDebtFactor',
+        type: 'uint256'
+      },
+      { internalType: 'uint256', name: 'startTime', type: 'uint256' },
+      {
+        internalType: 'uint256',
+        name: 'feesToDistribute',
+        type: 'uint256'
+      },
+      { internalType: 'uint256', name: 'feesClaimed', type: 'uint256' },
+      {
+        internalType: 'uint256',
+        name: 'rewardsToDistribute',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: 'rewardsClaimed',
+        type: 'uint256'
+      }
+    ],
+    name: 'SetPeriodData',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
     inputs: [ { internalType: 'uint256', name: 'reward', type: 'uint256' } ],
     name: 'addCollateralRewards',
     outputs: [],

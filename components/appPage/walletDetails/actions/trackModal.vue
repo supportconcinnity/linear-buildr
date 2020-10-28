@@ -236,7 +236,7 @@ export default {
                                     },
                                     series: _.map(
                                         res.chartData,
-                                        item => formatNumber(item[1]) ?? 0
+                                        item => _.floor(item[1], 2)
                                     )
                                 };
 
@@ -266,7 +266,8 @@ export default {
                     lnrJS: {
                         lUSD,
                         lBTC,
-                        lETH
+                        lETH,
+                        lHB10
                     }
                 } = lnrJSConnector;
 
@@ -275,19 +276,23 @@ export default {
                 const results = await Promise.all([
                     lUSD.balanceOf(this.walletAddress),
                     lBTC.balanceOf(this.walletAddress),
-                    lETH.balanceOf(this.walletAddress)
+                    lETH.balanceOf(this.walletAddress),
+                    lHB10.balanceOf(this.walletAddress)
                 ]);
 
                 let lUSDBalance = formatEtherToNumber(results[0]);
                 let lBTCBalance = formatEtherToNumber(results[1]);
                 let lETHBalance = formatEtherToNumber(results[2]);
+                let lHB10Balance = formatEtherToNumber(results[3]);
 
                 const [
                     lBTCPrice,
-                    lETHPrice
+                    lETHPrice,
+                    lHB10Price
                 ] = await Promise.all([
                     exchangeData.exchange.pricesLast({source: "lBTC"}),
-                    exchangeData.exchange.pricesLast({source: "lETH"})
+                    exchangeData.exchange.pricesLast({source: "lETH"}),
+                    exchangeData.exchange.pricesLast({source: "lHB10"})
                 ]);
 
                 let tableData = [];
@@ -295,6 +300,7 @@ export default {
                 if (lUSDBalance > 0) tableData.push({name: "ℓUSD", balance: lUSDBalance, valueUSD: lUSDBalance});
                 if (lBTCBalance > 0) tableData.push({name: "ℓBTC", balance: lBTCBalance, valueUSD: _.floor(lBTCBalance * lBTCPrice[0].currentPrice, 2)});
                 if (lETHBalance > 0) tableData.push({name: "ℓETH", balance: lETHBalance, valueUSD: _.floor(lETHBalance * lETHPrice[0].currentPrice, 2)});
+                if (lHB10Balance > 0) tableData.push({name: "ℓHB10", balance: lHB10Balance, valueUSD: _.floor(lHB10Balance * lHB10Price[0].currentPrice, 2)});
 
                 return {
                     'chartData': trackData.currentDebt,
