@@ -146,7 +146,6 @@ export default {
             ? this.color.tooltipLineColor
             : innerColor.lineColor;
 
-        // console.log(innerColor);
         /* 初始化颜色配置 */
         return {
             option: {
