@@ -300,7 +300,7 @@ export default {
                 if (lUSDBalance > 0) tableData.push({name: "ℓUSD", balance: lUSDBalance, valueUSD: lUSDBalance});
                 if (lBTCBalance > 0) tableData.push({name: "ℓBTC", balance: lBTCBalance, valueUSD: _.floor(lBTCBalance * lBTCPrice[0].currentPrice, 2)});
                 if (lETHBalance > 0) tableData.push({name: "ℓETH", balance: lETHBalance, valueUSD: _.floor(lETHBalance * lETHPrice[0].currentPrice, 2)});
-                if (lHB10Balance > 0) tableData.push({name: "ℓHB10", balance: lHB10Balance, valueUSD: _.floor(lHB10Balance * lHB10Price[0].currentPrice, 2)});
+                if (lHB10Balance > 0) tableData.push({name: "ℓHB-10", balance: lHB10Balance, valueUSD: _.floor(lHB10Balance * lHB10Price[0].currentPrice, 2)});
 
                 return {
                     'chartData': trackData.currentDebt,
