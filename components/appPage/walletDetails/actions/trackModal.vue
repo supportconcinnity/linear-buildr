@@ -72,7 +72,7 @@
                     max-height="210"
                 >
                     <template slot-scope="{ row }" slot="name">
-                        <img :src="tokenIcon[row.name]" /> {{ row.name }}
+                        <img :src="currencies[row.name].icon" /> {{ currencies[row.name].name }}
                     </template>
 
                     <template slot-scope="{ row }" slot="balance">
@@ -109,7 +109,7 @@ import { tokenIcon } from "@/common/options";
 
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/exchangeData";
-import { CRYPTO_CURRENCY_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/currency";
+import currencies from "@/common/currency";
 
 import {
     getExchangeRates,
@@ -126,6 +126,7 @@ export default {
     name: "trackModal",
     data() {
         return {
+            currencies,
             trackModal: false,
             hasTrackData: false, //有无图表记录
 
@@ -297,10 +298,10 @@ export default {
 
                 let tableData = [];
 
-                if (lUSDBalance > 0) tableData.push({name: "ℓUSD", balance: lUSDBalance, valueUSD: lUSDBalance});
-                if (lBTCBalance > 0) tableData.push({name: "ℓBTC", balance: lBTCBalance, valueUSD: _.floor(lBTCBalance * lBTCPrice[0].currentPrice, 2)});
-                if (lETHBalance > 0) tableData.push({name: "ℓETH", balance: lETHBalance, valueUSD: _.floor(lETHBalance * lETHPrice[0].currentPrice, 2)});
-                if (lHB10Balance > 0) tableData.push({name: "ℓHB-10", balance: lHB10Balance, valueUSD: _.floor(lHB10Balance * lHB10Price[0].currentPrice, 2)});
+                if (lUSDBalance > 0) tableData.push({name: "lUSD", balance: lUSDBalance, valueUSD: lUSDBalance});
+                if (lBTCBalance > 0) tableData.push({name: "lBTC", balance: lBTCBalance, valueUSD: _.floor(lBTCBalance * lBTCPrice[0].currentPrice, 2)});
+                if (lETHBalance > 0) tableData.push({name: "lETH", balance: lETHBalance, valueUSD: _.floor(lETHBalance * lETHPrice[0].currentPrice, 2)});
+                if (lHB10Balance > 0) tableData.push({name: "lHB10", balance: lHB10Balance, valueUSD: _.floor(lHB10Balance * lHB10Price[0].currentPrice, 2)});
 
                 return {
                     'chartData': trackData.currentDebt,

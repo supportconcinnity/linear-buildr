@@ -1,116 +1,147 @@
-const Currencies = {
-    ℓUSD: {
-        name: "lUSD",
+const currencies = {
+    lUSD: {
+        name: "ℓUSD",
+        fullName: "ℓUSD",
+        type: "crypto",
+    },
+    lBTC: {
+        name: "ℓBTC",
+        fullName: "Liquid Bitcoin",
         type: "crypto"
     },
-    ℓBTC: {
-        name: "lBTC",
+    lETH: {
+        name: "ℓETH",
+        fullName: "Liquid Ether",
         type: "crypto"
     },
-    ℓETH: {
-        name: "lETH",
+    lBCH: {
+        name: "ℓBCH",
+        fullName: "ℓBCH",
         type: "crypto"
     },
-    ℓBCH: {
-        name: "lBCH",
+    lEOS: {
+        name: "ℓEOS",
+        fullName: "ℓEOS",
         type: "crypto"
     },
-    ℓEOS: {
-        name: "lEOS",
+    lLTC: {
+        name: "ℓLTC",
+        fullName: "ℓLTC",
         type: "crypto"
     },
-    ℓLTC: {
-        name: "lLTC",
+    lXRP: {
+        name: "ℓXRP",
+        fullName: "ℓXRP",
         type: "crypto"
     },
-    ℓXRP: {
-        name: "lXRP",
+    lTRON: {
+        name: "ℓTRON",
+        fullName: "ℓTRON",
         type: "crypto"
     },
-    ℓTRON: {
-        name: "lTRON",
+    lBSV: {
+        name: "ℓBSV",
+        fullName: "ℓBSV",
         type: "crypto"
     },
-    ℓBSV: {
-        name: "lBSV",
+    lLINK: {
+        name: "ℓLINK",
+        fullName: "ℓLINK",
         type: "crypto"
     },
-    ℓLINK: {
-        name: "lLINK",
+    lZEC: {
+        name: "ℓZEC",
+        fullName: "ℓZEC",
         type: "crypto"
     },
-    ℓZEC: {
-        name: "lZEC",
+    lNEO: {
+        name: "ℓNEO",
+        fullName: "ℓNEO",
         type: "crypto"
     },
-    ℓNEO: {
-        name: "lNEO",
+    lBNB: {
+        name: "ℓBNB",
+        fullName: "ℓBNB",
         type: "crypto"
     },
-    ℓBNB: {
-        name: "lBNB",
+    lDASH: {
+        name: "ℓDASH",
+        fullName: "ℓDASH",
         type: "crypto"
     },
-    ℓDASH: {
-        name: "lDASH",
+    lJUST: {
+        name: "ℓJUST",
+        fullName: "ℓJUST",
         type: "crypto"
     },
-    ℓJUST: {
-        name: "lJUST",
+    lDOT: {
+        name: "ℓDOT",
+        fullName: "ℓDOT",
         type: "crypto"
     },
-    ℓDOT: {
-        name: "lDOT",
-        type: "crypto"
+    lXCF: {
+        name: "ℓXCF",
+        fullName: "ℓXCF",
+        type: " "
     },
-    ℓXCF: {
-        name: "lXCF",
+    lXAU: {
+        name: "ℓXAU",
+        fullName: "ℓXAU",
         type: "commodity"
     },
-    ℓXAU: {
-        name: "lXAU",
+    lXAG: {
+        name: "ℓXAG",
+        fullName: "ℓXAG",
         type: "commodity"
     },
-    ℓXAG: {
-        name: "lXAG",
+    lSOY: {
+        name: "ℓSOY",
+        fullName: "ℓSOY",
         type: "commodity"
     },
-    ℓSOY: {
-        name: "lSOY",
+    lOIL: {
+        name: "ℓOIL",
+        fullName: "ℓOIL",
         type: "commodity"
     },
-    ℓOIL: {
-        name: "lOIL",
-        type: "commodity"
-    },
-    ℓNIKK: {
-        name: "lNIKK",
+    lNIKK: {
+        name: "ℓNIKK",
+        fullName: "ℓNIKK",
         type: "index"
     },
-    ℓFTSE: {
-        name: "lFTSE",
+    lFTSE: {
+        name: "ℓFTSE",
+        fullName: "ℓFTSE",
         type: "index"
     },
-    ℓCAC: {
-        name: "lCAC",
+    lCAC: {
+        name: "ℓCAC",
+        fullName: "ℓCAC",
         type: "index"
     },
-    ℓDAX: {
-        name: "lDAX",
+    lDAX: {
+        name: "ℓDAX",
+        fullName: "ℓDAX",
         type: "index"
-    }
+    },
+    lHB10: {
+        name: "ℓHB-10",
+        fullName: "Liquid Huobi index",
+        type: "index"
+    },
 };
 
 //导入资源路径
 const requireIcon = () => {
-    return Object.keys(Currencies).map(key => {
-        let currency = Currencies[key];
-        const icons = {
-            icon: require(`@/static/currency/${currency.name}.svg`),
-            icon_inactive: require(`@/static/currency/${currency.name}_inactive.svg`)
-        };
-        Currencies[key] = { ...currency, ...icons };
+    return Object.keys(currencies).map(key => {
+        let currency = currencies[key];
+        currency.icon = require(`@/static/currency/${key}.svg`);
+        currency.icon_inactive = require(`@/static/currency/${key}_inactive.svg`);
     });
 };
+
 requireIcon();
-export default Currencies;
+
+export const sourceKey = "lUSD";
+
+export default currencies;
