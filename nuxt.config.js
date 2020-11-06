@@ -91,17 +91,17 @@ module.exports = {
      */
     axios: {
         prefix: "/buildr_api", //url前缀
-        proxy: false //开启跨域代理
+        proxy: true //开启跨域代理
     },
     /**
      * url 代理
      */
     proxy: {
         //匹配名称
-        "/api/": {
-            target: env.BASE_URL, //代理地址
+        "/buildr_api/": {
+            target: process.env.BASE_URL, //代理地址
             pathRewrite: {
-                "^/api/": "/", //将前缀替换成 /
+                "^/buildr_api/": "/", //将前缀替换成 /
                 changeOrigin: true, //标识跨域
                 secure: false, //https使用
             },
