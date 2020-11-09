@@ -29,8 +29,17 @@ export const getLiquids = async (wallet) => {
         for (const key in addressList) {
             if (addressList[key] == assetAddress[i]) {
                 let asset = lnrJSConnector.lnrJS[key];
-                let balance = await asset.balanceOf(wallet);
-                let price = await exchangeData.exchange.pricesLast({source: key});
+
+                let [
+                    balance,
+                    price
+                ] = await Promise.all([
+                    asset.balanceOf(wallet),
+                    exchangeData.exchange.pricesLast({source: key})
+                ]);
+
+                //let balance = await asset.balanceOf(wallet);
+                //let price = await exchangeData.exchange.pricesLast({source: key});
 
                 liquids += formatEtherToNumber(balance) * price[0].currentPrice;
             }
