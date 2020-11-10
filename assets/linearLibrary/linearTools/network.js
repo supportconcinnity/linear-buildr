@@ -9,6 +9,7 @@ import { URLS } from "./constants/urls";
 export const SUPPORTED_NETWORKS = {
     1: "MAINNET",
     3: "ROPSTEN",
+    56: "BSCMAINNET",
     97: "BSCTESTNET"
 };
 

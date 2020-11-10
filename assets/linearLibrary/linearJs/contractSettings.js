@@ -4,12 +4,14 @@ import addresses from "./lib/addresses";
 const SUPPORTED_NETWORKS = {
     1: "mainnet",
     3: "ropsten",
+    56: "bscmainnet",
+    97: "bsctestnet"
 };
 
 const API_KEY = {
     infura: process.env.INFURA_PROJECT_ID,
     alchemy: process.env.ALCHEMY_KEY,
-    etherscan: process.env.ETHERSCAN_KEY,
+    etherscan: process.env.ETHERSCAN_KEY
 };
 
 class ContractSettings {
@@ -20,7 +22,19 @@ class ContractSettings {
         this.network = SUPPORTED_NETWORKS[Number(this.networkId)];
         this.provider = provider || getDefaultProvider();
         if (!provider && networkId) {
-            this.provider = getDefaultProvider(this.network, API_KEY);
+            let tempNetwork;
+            switch (this.networkId) {
+                case 56: //BSC主网ID
+                    tempNetwork = "mainnet";
+                    break;
+                case 97: //BSC测试网ID
+                    tempNetwork = "ropsten";
+                    break;
+                default:
+                    tempNetwork = this.network;
+                    break;
+            }
+            this.provider = getDefaultProvider(tempNetwork, API_KEY);
         }
         this.signer = signer;
         this.addressList = addresses[this.networkId];
