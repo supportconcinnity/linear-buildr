@@ -265,7 +265,6 @@ export default {
             processing: false, //burn按钮防抖
 
             activeItemBtn: -1, //当前激活按钮 0 unstack max, 1 burn max
-            burnFirst: false, //需要先销毁才能取回要取得LINA
 
             confirmTransactionStep: 0, //当前交易进度
             confirmTransactionStatus: false, //当前交易确认状态
@@ -310,7 +309,7 @@ export default {
         gasEditor
     },
     async created() {
-        this.getDebtData(this.walletAddress);
+        this.getBurnData(this.walletAddress);
     },
     watch: {
         walletAddress() {}
@@ -321,7 +320,6 @@ export default {
             return (
                 (_.lte(this.inputData.unStake, 0) &&
                     _.lte(this.inputData.amount, 0)) ||
-                this.cratioError ||
                 this.errors.unStakeMsg ||
                 this.errors.amountMsg ||
                 this.errors.ratioMsg||
@@ -336,7 +334,7 @@ export default {
     },
     methods: {
         //获取数据
-        async getDebtData(walletAddress) {
+        async getBurnData(walletAddress) {
             try {
                 this.processing = true;
                 
@@ -362,7 +360,7 @@ export default {
                     lUSD.balanceOf(walletAddress), //lUSD余额
                     LnCollateralSystem.GetUserTotalCollateralInUsd(
                         walletAddress
-                    ), //个人全部抵押物兑lUSD
+                    ), //个人全部抵押物兑lUSD,用于计算pratio
                     getBuildRatio(), //目标抵押率
                     LnProxyERC20.balanceOf(walletAddress), //LINA余额
                     LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress) //总债务
@@ -416,7 +414,7 @@ export default {
                 //获取当前抵押率
                 this.inputData.ratio = this.burnData.currentRatio;
             } catch (e) {
-                console.log(e, "getDebtData err");
+                console.log(e, "getBurnData err");
             } finally {
                 this.processing = false;
             }
@@ -992,7 +990,7 @@ export default {
 
             if (!unstakedAmount) {
                 this.errors.unStakeMsg = "You can't unstake the amount of LINA above.";
-                return null;
+                return;
             } else {
                 this.errors.unStakeMsg = "";
             }
@@ -1176,7 +1174,7 @@ export default {
 
             if (!burnAmount || this.burnData.lUSDBN.eq('0')) {
                 this.errors.amountMsg = "You can't burn the amount of ℓUSD.";
-                return null;
+                return;
             }
 
             if (this.burnData.debtBN.eq('0')) {
@@ -1294,15 +1292,15 @@ export default {
                 this.inputData.amount = 0;
                 this.inputData.ratio = ratioAmount;
                 this.errors.ratioMsg = "The P-Ratio cant be below target ratio.";
-                return null;
+                return;
             } else if (
                 ratioAmount == this.burnData.currentRatio
             ) {
-                //ratioAmount 等于 targetRatio 与 currentRatio 之间较小那个，不需要操作
+                //ratioAmount 等于 targetRatio，不需要操作
                 this.inputData.unStake = 0;
                 this.inputData.amount = 0;
                 this.inputData.ratio = ratioAmount;
-                return null;
+                return;
             } else if (
                 (this.burnData.targetRatio > this.burnData.currentRatio &&
                     ratioAmount < this.burnData.currentRatio) ||
@@ -1314,11 +1312,10 @@ export default {
                 this.inputData.amount = 0;
                 this.inputData.ratio = ratioAmount;
                 this.errors.ratioMsg = "The P-Ratio is too low.";
-                return null;
+                return;
             }
 
-            let maxRatioAfterBurnMax = BigNumber.from('0'),
-                needBurnAmount = BigNumber.from('0');
+            let maxRatioAfterBurnMax = BigNumber.from('0');
 
             if (this.burnData.lUSDBN.lt(this.burnData.debtBN)) {
                 maxRatioAfterBurnMax = bnMul(
@@ -1419,7 +1416,7 @@ export default {
                         this.inputData.amount = 0;
                         this.inputData.ratio = ratioAmount;
                         this.errors.ratioMsg = "Can not set this P-Ratio.";
-                        return null;
+                        return;
                     }
                 }
 
@@ -1461,9 +1458,10 @@ export default {
         setDefaultTab() {
             this.actionTabs = "m0";
             this.activeItemBtn = -1;
-            this.resetInputData();
 
-            this.getDebtData(this.walletAddress);
+            this.getBurnData(this.walletAddress);
+
+            this.resetInputData();
         },
 
         //重试
