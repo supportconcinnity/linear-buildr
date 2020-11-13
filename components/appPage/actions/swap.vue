@@ -1,6 +1,6 @@
 <template>
     <div id="swap">
-        <div class="comingSoon">
+        <!-- <div class="comingSoon">
             <img class="noticeImg" src="@/static/notice.svg" alt="">
             <div class="title">Coming Soon</div>
             <div class="context">Stay tuned to our social media</div>
@@ -59,36 +59,57 @@
                     </svg>
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <!-- <Tabs v-model="actionTabs" class="actionTabs">
+        <Tabs v-model="actionTabs" class="actionTabs">
             <TabPane name="m0">
                 <div class="swapBox">
                     <div class="actionBody">
                         <div class="actionTitle">Swap</div>
                         <div class="actionDesc">
-                            You can select the type of currency and 
-                            enter the amount you want to swap 
+                            You can select the type of currency and enter the
+                            amount you want to swap
                         </div>
 
                         <div class="fromToBox">
                             <div class="box">
-                                <div class="title">{{currentChain==0?"Ethereum":"Binance"}}</div>
-                                <img v-if="currentChain==0" src="@/static/tokenIcon/ETH.svg" alt="">
-                                <img v-else src="@/static/tokenIcon/ETH.svg" alt="">
+                                <img
+                                    v-if="currentChain == 0"
+                                    src="@/static/ETH.svg"
+                                />
+                                <img v-else src="@/static/bnb_yellow.svg" />
+                                <div class="title">
+                                    {{
+                                        currentChain == 0
+                                            ? "Ethereum Chain"
+                                            : "Binance Smart Chain"
+                                    }}
+                                </div>
                             </div>
-                            <Icon type="md-arrow-round-forward" />
+                            <img
+                                class="arrow"
+                                src="@/static/swap_arrow_right.svg"
+                            />
                             <div class="box">
-                                <div class="title">{{currentChain==0?"Binance":"Ethereum"}}</div>
-                                <img v-if="currentChain==0" src="@/static/tokenIcon/ETH.svg" alt="">
-                                <img v-else src="@/static/tokenIcon/ETH.svg" alt="">
+                                <img
+                                    v-if="currentChain == 0"
+                                    src="@/static/bnb_yellow.svg"
+                                />
+                                <img v-else src="@/static/ETH.svg" />
+                                <div class="title">
+                                    {{
+                                        currentChain == 0
+                                            ? "Binance Smart Chain"
+                                            : "Ethereum Chain"
+                                    }}
+                                </div>
                             </div>
                         </div>
 
                         <div
                             class="swapInputBox"
                             :class="{
-                                error: true
+                                error: errors.amountMsg
                             }"
                         >
                             <div class="iconBox">
@@ -98,7 +119,7 @@
                             </div>
                             <div class="midle">
                                 <div class="p_1">
-                                    Amount
+                                    {{currentSelectCurrency.name}}
                                 </div>
                                 <div class="p_2" @click="clickMaxAmount">
                                     MAX
@@ -148,8 +169,8 @@
                             </div>
                         </div>
 
-                        <div class="someWrong" v-show="true">
-                            someWrong
+                        <div class="someWrong" v-show="errors.amountMsg">
+                            {{ errors.amountMsg }}
                         </div>
 
                         <div class="dropdown" v-if="showDropdown">
@@ -210,14 +231,21 @@
                     @homepage="goHomePage"
                 ></wrong>
             </TabPane>
-        </Tabs> -->
+        </Tabs>
     </div>
 </template>
 
 <script>
 import _ from "lodash";
 import gasEditor from "@/components/gasEditor";
-import { toNonExponential, openEtherScan, setCursorRange, findParents, removeClass, addClass } from "@/common/utils";
+import {
+    toNonExponential,
+    openEtherScan,
+    setCursorRange,
+    findParents,
+    removeClass,
+    addClass
+} from "@/common/utils";
 
 export default {
     name: "swap",
@@ -235,11 +263,14 @@ export default {
             transferNumber: null,
             processing: false, //swap按钮防抖
             confirmTransactionStatus: false, //确认交易状态
-            confirmTransactionHash: "" //交易hash
+            confirmTransactionHash: "", //交易hash
+
+            errors: {
+                amountMsg: ""
+            }
         };
     },
-    created() {
-    },
+    created() {},
     mounted() {
         document.documentElement.addEventListener("click", () => {
             this.showDropdown = false;
@@ -268,18 +299,19 @@ export default {
         currency() {
             var tempData = [];
 
-            if (this.$store.state?.walletDetails?.allAssets) {
-                for (let key in this.$store.state.walletDetails.allAssets) {
+            if (this.$store.state?.walletDetails?.transferableAssets) {
+                for (let key in this.$store.state.walletDetails
+                    .transferableAssets) {
                     var img = "";
                     if (key == "ETH") img = require("@/static/ETH.svg");
+                    if (key == "BNB") img = require("@/static/bnb_yellow.svg");
                     if (key == "lUSD") img = require("@/static/lina_usd.svg");
                     if (key == "LINA") img = require("@/static/lina_icon.svg");
                     tempData.push({
                         name: key,
                         img: img,
-                        avaliable: this.$store.state.walletDetails.allAssets[
-                            key
-                        ]
+                        avaliable: this.$store.state.walletDetails
+                            .transferableAssets[key]
                     });
                 }
             }
@@ -296,30 +328,42 @@ export default {
             } else {
                 return tempData;
             }
+        },
+
+        currentSelectCurrency() {
+            return this.currency[this.selected] || {};
         }
     },
     methods: {
-        openSocial(slug) {
-            switch (slug) {
-                case 0:
-                    window.open("https://t.me/joinchat/Tb3iAhuMZsyfspxhEWQLvw");
-                    break;
-                case 1:
-                    window.open("https://www.linkedin.com/company/linearfinance/");
-                    break;
-                case 2:
-                    window.open("https://medium.com/@linear.finance");
-                    break;
-                case 3:
-                    window.open("https://twitter.com/LinearFinance");
-                    break;
-                default:
-                    break;
-            }
-        },
+        // openSocial(slug) {
+        //     switch (slug) {
+        //         case 0:
+        //             window.open("https://t.me/joinchat/Tb3iAhuMZsyfspxhEWQLvw");
+        //             break;
+        //         case 1:
+        //             window.open(
+        //                 "https://www.linkedin.com/company/linearfinance/"
+        //             );
+        //             break;
+        //         case 2:
+        //             window.open("https://medium.com/@linear.finance");
+        //             break;
+        //         case 3:
+        //             window.open("https://twitter.com/LinearFinance");
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        // },
 
         clickSwap() {
             // console.log('click swap');
+        },
+
+        async selectCurrencyFun(index) {
+            this.errors.amountMsg = "";
+            this.selected = index;
+            this.transferNumber = 0;
         },
 
         showDropdownFun() {
@@ -332,7 +376,7 @@ export default {
         clickMaxAmount() {
             this.transferNumber = this.currency[this.selected].avaliable;
 
-            var el = document.getElementById('transfer_number_input');
+            var el = document.getElementById("transfer_number_input");
             this.setCursorRange(el, 0, 0);
         },
 
@@ -340,10 +384,7 @@ export default {
         inputFocus(index) {
             this.$nextTick(() => {
                 let currentElement = this.$refs["itemInput" + index].$el;
-                let parentElement = findParents(
-                    currentElement,
-                    "swapInputBox"
-                );
+                let parentElement = findParents(currentElement, "swapInputBox");
                 addClass(parentElement, "active");
             });
         },
@@ -352,10 +393,7 @@ export default {
         inputBlur(index) {
             this.$nextTick(() => {
                 let currentElement = this.$refs["itemInput" + index].$el;
-                let parentElement = findParents(
-                    currentElement,
-                    "swapInputBox"
-                );
+                let parentElement = findParents(currentElement, "swapInputBox");
                 removeClass(parentElement, "active");
             });
         },
@@ -390,59 +428,59 @@ export default {
 
 <style lang="scss">
 #swap {
-    .comingSoon {
-        text-align: center;
+    // .comingSoon {
+    //     text-align: center;
 
-        .noticeImg {
-            width: 120px;
-            margin-top: 246px;
-        }
-        .title {
-            margin-top: 56px;
-            font-family: Gilroy;
-            font-size: 24px;
-            font-weight: bold;
-            color: #5a575c;
-        }
-        .context {
-            font-family: Gilroy;
-            font-size: 16px;
-            color: #5a575c;
-        }
-        .socialBox {
-            margin-top: 48px;
-            display: flex;
-            justify-content: center;
+    //     .noticeImg {
+    //         width: 120px;
+    //         margin-top: 246px;
+    //     }
+    //     .title {
+    //         margin-top: 56px;
+    //         font-family: Gilroy;
+    //         font-size: 24px;
+    //         font-weight: bold;
+    //         color: #5a575c;
+    //     }
+    //     .context {
+    //         font-family: Gilroy;
+    //         font-size: 16px;
+    //         color: #5a575c;
+    //     }
+    //     .socialBox {
+    //         margin-top: 48px;
+    //         display: flex;
+    //         justify-content: center;
 
-            .box {
-                width: 40px;
-                height: 40px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                border: solid 1px #deddde;
-                border-radius: 50%;
-                margin: 0 12px 0 12px;
-                cursor: pointer;
+    //         .box {
+    //             width: 40px;
+    //             height: 40px;
+    //             display: flex;
+    //             justify-content: center;
+    //             align-items: center;
+    //             border: solid 1px #deddde;
+    //             border-radius: 50%;
+    //             margin: 0 12px 0 12px;
+    //             cursor: pointer;
 
-                svg {
-                    width: 16px;
-                }
+    //             svg {
+    //                 width: 16px;
+    //             }
 
-                &:hover {
-                    border-color: #1b05a1;
+    //             &:hover {
+    //                 border-color: #1b05a1;
 
-                    svg {
-                        path {
-                            fill: #1b05a1;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    //                 svg {
+    //                     path {
+    //                         fill: #1b05a1;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
-    /* .actionTabs {
+    .actionTabs {
         .ivu-tabs-bar {
             display: none;
         }
@@ -469,42 +507,42 @@ export default {
                         padding: 64px 193px 0;
 
                         .actionTitle {
-                            color: #5a575c;
-                            font-family: Gilroy;
+                            font-family: Gilroy-Bold;
                             font-size: 32px;
-                            font-weight: 700;
+                            font-weight: bold;
                             line-height: 40px;
                             text-align: center;
+                            color: #5a575c;
                         }
 
                         .actionDesc {
-                            margin: 8px 0 120px 0;
-                            color: #c6c4c7;
+                            margin: 8px 55px 100px;
                             font-family: Gilroy-Regular;
-                            font-size: 16px;
-                            font-weight: 400;
+                            font-size: 14px;
                             line-height: 18px;
                             text-align: center;
+                            color: #99999a;
                         }
                     }
 
                     .fromToBox {
-                        padding: 0 91px;
+                        // padding: 0 46px;
                         display: flex;
                         align-items: center;
-                        justify-content: space-between;
-                        
+                        justify-content: space-around;
+
                         .box {
                             display: flex;
                             flex-direction: column;
                             align-items: center;
 
                             .title {
-                                font-family: Gilroy;
-                                font-size: 16px;
+                                font-family: Gilroy-Bold;
+                                font-size: 14px;
                                 font-weight: bold;
-                                color: #c1c1c1;
-                                margin-bottom: 16px;
+                                line-height: 18px;
+                                color: #99999a;
+                                margin-top: 20px;
                             }
 
                             img {
@@ -512,9 +550,9 @@ export default {
                             }
                         }
 
-                        i {
-                            font-size: 32px;
-                            margin-top: 39px;
+                        .arrow {
+                            width: 42px;
+                            align-self: flex-start;
                         }
                     }
 
@@ -525,7 +563,7 @@ export default {
                         border: 1px solid #deddde;
                         transition: $animete-time linear;
                         box-shadow: 0 0 0 #deddde;
-                        margin: 40px 0 0;
+                        margin-top: 64px;
                         display: flex;
                         position: relative;
 
@@ -563,7 +601,7 @@ export default {
                                 }
                             }
                         }
-                        
+
                         .midle {
                             flex: 1;
                             flex-direction: column;
@@ -571,17 +609,22 @@ export default {
                                 width: 100%;
                             }
                             .p_1 {
-                                color: #5a575c;
-                                font-family: Gilroy;
+                                font-family: Gilroy-Bold;
                                 font-size: 16px;
+                                font-weight: bold;
+                                line-height: 24px;
+                                color: #5a575c;
                             }
                             .p_2 {
-                                color: #1b05a1;
                                 opacity: 0.2;
-                                font-family: Gilroy;
-                                font-size: 12px;
                                 cursor: pointer;
                                 transition: $animete-time linear;
+                                font-family: Gilroy-Bold;
+                                font-size: 12px;
+                                font-weight: bold;
+                                line-height: 16px;
+                                letter-spacing: 1.5px;
+                                color: #1b05a1;
 
                                 &:hover {
                                     opacity: 1;
@@ -648,13 +691,13 @@ export default {
                                             .ivu-input-number-input {
                                                 text-align: right;
                                                 color: #5a575c;
-                                                font-family: Gilroy;
+                                                font-family: Gilroy-Bold;
                                                 font-size: 32px;
-                                                font-weight: 700;
+                                                font-weight: bold;
                                                 line-height: 40px;
 
                                                 &::placeholder {
-                                                    color: #c6c4c7;
+                                                    color: #99999a;
                                                 }
                                             }
                                         }
@@ -687,14 +730,18 @@ export default {
                         font-weight: 700;
                         font-size: 12px;
                         text-transform: uppercase;
-                        margin-bottom: 142px;
+                    }
+
+                    #gasEditor {
+                        margin-top: 24px;
                     }
 
                     .dropdown {
                         position: absolute;
-                        top: 517px;
+                        top: 521px;
                         width: 400px;
-                        height: 280px;
+                        height: 232px;
+                        padding: 8px 0;
                         background: #fff;
                         box-shadow: 0 2px 12px #deddde;
                         z-index: 1;
@@ -713,19 +760,19 @@ export default {
                             }
                         }
                         .dropdownItem > div {
-                            height: 100%;
+                            height: 72px;
                             display: flex;
                             align-items: center;
                             justify-content: center;
                         }
-                        .dropdownItem:first-child {
-                            border-top-left-radius: 8px;
-                            border-top-right-radius: 8px;
-                        }
-                        .dropdownItem:last-child {
-                            border-bottom-left-radius: 8px;
-                            border-bottom-right-radius: 8px;
-                        }
+                        // .dropdownItem:first-child {
+                        //     border-top-left-radius: 8px;
+                        //     border-top-right-radius: 8px;
+                        // }
+                        // .dropdownItem:last-child {
+                        //     border-bottom-left-radius: 8px;
+                        //     border-bottom-right-radius: 8px;
+                        // }
                         .dropdownItem:hover {
                             .midle {
                                 .p_1 {
@@ -752,8 +799,7 @@ export default {
                                 align-items: center;
                                 justify-content: center;
                                 border: solid 1px #deddde;
-                                img {
-                                }
+                                background-color: #fff;
                             }
                         }
                         .midle {
@@ -763,9 +809,11 @@ export default {
                                 width: 100%;
                             }
                             .p_1 {
-                                color: #5a575c;
-                                font-family: Gilroy;
+                                font-family: Gilroy-Bold;
                                 font-size: 16px;
+                                font-weight: bold;
+                                line-height: 24px;
+                                color: #5a575c;
                             }
                         }
                     }
@@ -777,10 +825,6 @@ export default {
                         position: absolute;
                         bottom: 0px;
                         color: #ffffff;
-                        font-family: Gilroy;
-                        font-size: 24px;
-                        font-weight: 400;
-                        line-height: 32px;
                         display: flex;
                         align-items: center;
                         justify-content: center;
@@ -788,6 +832,10 @@ export default {
                         letter-spacing: 3px;
                         cursor: pointer;
                         transition: $animete-time linear;
+                        font-family: Gilroy-Bold;
+                        font-size: 24px;
+                        font-weight: bold;
+                        line-height: 32px;
 
                         &:hover {
                             &:not(.disabled) {
@@ -807,6 +855,6 @@ export default {
                 }
             }
         }
-    } */
+    }
 }
 </style>

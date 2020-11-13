@@ -121,7 +121,7 @@
                 >
                     <div class="leftRect">
                         <div class="icon">
-                            <img src="@/static/eth_icon.svg" />
+                            <img src="@/static/ETH.svg" />
                         </div>
 
                         <div class="desc">

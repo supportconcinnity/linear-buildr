@@ -70,3 +70,5 @@ Vue.component("Panel", Panel);
 Vue.component("Table", Table);
 
 // Vue.prototype.$Notice = Notice;
+
+Vue.prototype.$Spin = Spin;

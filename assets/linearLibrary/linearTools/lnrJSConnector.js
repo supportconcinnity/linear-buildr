@@ -160,14 +160,18 @@ const getSignerConfig = ({ type, networkId }) => {
     return {};
 };
 
-export const selectedWallet = async walletType => {
+export const selectedWallet = async (walletType, chainChange = false) => {
     try {
+        $nuxt.$Spin.show();
+
         //连接钱包
         const walletStatus = await connectToWallet(walletType);
         const store = $nuxt.$store;
 
         //连接成功
         if (walletStatus && walletStatus?.currentWallet) {
+            chainChange && $pub.publish("onWalletStatusChange");
+
             store.commit(
                 "setWalletNetworkName",
                 walletStatus?.networkName.toUpperCase()
@@ -183,45 +187,54 @@ export const selectedWallet = async walletType => {
             if (walletType == SUPPORTED_WALLETS_MAP.METAMASK) {
                 store.commit("setCurrentChain", 0);
 
-                onMetamaskAccountChange(async (wallet, walletType) => {
-                    const address = await lnrJSConnector.signer.getNextAddresses();
-                    const signer = new lnrJSConnector.signers[
-                        SUPPORTED_WALLETS_MAP.METAMASK
-                    ]({});
-                    lnrJSConnector.setContractSettings({
-                        networkId: walletStatus.networkId,
-                        signer
-                    });
+                //当前链的钱包切换时才执行更新
+                onMetamaskAccountChange(async accounts => {
+                    if (store.state.currentChain == 0) {
+                        $nuxt.$Spin.show();
+                        $pub.publish("onWalletStatusChange");
+                        const address = await lnrJSConnector.signer.getNextAddresses();
+                        const signer = new lnrJSConnector.signers[
+                            SUPPORTED_WALLETS_MAP.METAMASK
+                        ]({});
+                        lnrJSConnector.setContractSettings({
+                            networkId: walletStatus.networkId,
+                            signer
+                        });
 
-                    store.commit("mergeWallet", {
-                        address: address[0]
-                    });
+                        store.commit("mergeWallet", {
+                            address: address[0]
+                        });
 
-                    //回到起始页,防止数据错误
-                    store.commit("setCurrentAction", 0);
-                    storeDetailsData();
+                        await storeDetailsData();
+                        $nuxt.$Spin.hide();
+                    }
                 });
             } else if (walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN) {
                 store.commit("setCurrentChain", 1);
 
-                onBinanceAccountChange(async wallet => {
-                    const address = await lnrJSConnector.signer.getNextAddresses();
-                    const signer = new lnrJSConnector.signers[
-                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
-                    ]({});
+                onBinanceAccountChange(async accounts => {
+                    //当前链的钱包切换时才执行更新
+                    if (store.state.currentChain == 1) {
+                        $nuxt.$Spin.show();
+                        $pub.publish("onWalletStatusChange");
 
-                    lnrJSConnector.setContractSettings({
-                        networkId: walletStatus.networkId,
-                        signer
-                    });
+                        const address = await lnrJSConnector.signer.getNextAddresses();
+                        const signer = new lnrJSConnector.signers[
+                            SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                        ]({});
 
-                    store.commit("mergeWallet", {
-                        address: address[0]
-                    });
+                        lnrJSConnector.setContractSettings({
+                            networkId: walletStatus.networkId,
+                            signer
+                        });
 
-                    //回到起始页,防止数据错误
-                    store.commit("setCurrentAction", 0);
-                    storeDetailsData();
+                        store.commit("mergeWallet", {
+                            address: address[0]
+                        });
+
+                        await storeDetailsData();
+                        $nuxt.$Spin.hide();
+                    }
                 });
 
                 //切换网络刷新页面
@@ -231,17 +244,14 @@ export const selectedWallet = async walletType => {
             } else if (walletType == SUPPORTED_WALLETS_MAP.WALLET_CONNECT) {
             }
 
-            //连接成功,更新数据
-            storeDetailsData();
-
-            return true;
+            await storeDetailsData();
         } else {
             console.log("Connect wallet fail");
-            return false;
         }
     } catch (error) {
         console.log(error, "selectedWallet error");
-        return false;
+    } finally {
+        $nuxt.$Spin.hide();
     }
 };
 

@@ -12,12 +12,12 @@
                 <Collapse v-model="introduct" accordion>
                     <Panel name="1">
                         <div class="line"></div>
-                        Welcome to Linear.
+                        Welcome to Linear!
                         <p slot="content">
                             The first cross-chain compatible, decentralized
                             delta-one asset protocol to quickly and
                             cost-effectively, create, trade, and manage
-                            synthetic assets (Liquids).
+                            synthetic assets (Liquids)
                         </p>
                     </Panel>
                     <Panel name="2">
@@ -31,7 +31,7 @@
                     </Panel>
                     <Panel name="3">
                         <div class="line"></div>
-                        Why Stake LINA?
+                        Why stake LINA?
                         <p slot="content">
                             By staking LINA to build ℓUSD for self use / provide
                             liquidity for traders, users are entitled to staking
@@ -41,11 +41,11 @@
                     </Panel>
                     <Panel name="4">
                         <div class="line"></div>
-                        What do LINA Stakers Need to Do?
+                        What do I do with ℓUSD?
                         <p slot="content">
                             Users can use ℓUSD to purchase synthetic assets on
                             our exchange or even move it to other protocols or
-                            dApps within the DeFi ecosystem.
+                            dapps within the DeFi ecosystem.
                         </p>
                     </Panel>
                 </Collapse>
@@ -90,11 +90,12 @@
                     >
                         <img
                             class="boxLogo"
-                            src="@/static/metamask.svg"
+                            src="@/static/ETH.svg"
                             alt=""
                         />
-                        <div class="boxDesc">Connect Wallet</div>
-                        <div class="boxTitle">MetaMask</div>
+
+                        <div class="boxDesc">Access<br />Ethereum chain</div>
+                        <div class="boxTitle">via MetaMask</div>
                     </div>
 
                     <div
@@ -108,8 +109,10 @@
                             src="@/static/binance.svg"
                             alt=""
                         />
-                        <div class="boxDesc">Connect Wallet</div>
-                        <div class="boxTitle">Binance Chain Wallet</div>
+                        <div class="boxDesc">
+                            Access<br />Binance Chain Wallet
+                        </div>
+                        <div class="boxTitle">via Binance Chain Wallet</div>
                     </div>
                 </div>
             </div>
@@ -118,17 +121,9 @@
 </template>
 
 <script>
-import {
-    // connectToWallet,
-    selectedWallet
-} from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import { selectedWallet } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 
-import {
-    SUPPORTED_WALLETS_MAP
-    // onMetamaskAccountChange,
-    // onBinanceAccountChange,
-    // onBinanceChainChange
-} from "@/assets/linearLibrary/linearTools/network";
+import { SUPPORTED_WALLETS_MAP } from "@/assets/linearLibrary/linearTools/network";
 
 export default {
     name: "landingPage",
@@ -145,10 +140,10 @@ export default {
             this.introduct = "1";
         }, 100);
         //调试用,进入指定页,不用时屏蔽
-        // this.$store.commit("setCurrentAction", 4); //设置为build
-        // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
+        // this.$store.commit("setCurrentAction", 5); //
+        // // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
         // setTimeout(
-        //     () => this.selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
+        //     () => selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
         //     1000
         // ); //自动连接BINANCE
         //调试用,进入指定页,不用时屏蔽
@@ -172,10 +167,11 @@ export default {
     .headerBox {
         width: 1440px;
         height: 120px;
-        padding: 40px 0 0 120px;
+        padding-left: 120px;
+        display: flex;
+        align-content: center;
 
         img {
-            height: 40px;
             cursor: pointer;
         }
     }
@@ -198,19 +194,23 @@ export default {
             .ivu-collapse {
                 background: unset;
                 border: unset;
+                padding-left: 120px;
 
                 .ivu-collapse-item {
-                    margin: 0 0 24px 138px;
+                    margin-bottom: 24px;
                     border: unset;
 
                     .ivu-collapse-header {
-                        color: #c6c4c7;
-                        font-family: Gilroy-Bold;
-                        font-size: 24px;
-                        font-weight: 700;
+                        padding: 0;
                         border: unset;
                         display: flex;
                         align-items: center;
+                        font-family: Gilroy-Bold;
+                        font-size: 24px;
+                        font-weight: bold;
+                        line-height: 32px;
+                        color: #99999a;
+                        height: unset;
 
                         i {
                             display: none;
@@ -218,22 +218,24 @@ export default {
 
                         .line {
                             width: 4px;
-                            height: 20px;
-                            margin-right: 25px;
+                            height: 24px;
+                            margin-right: 30px;
                             border-radius: 4px;
                             background: #c6c4c7;
+                            transition: $animete-time linear;
                         }
                     }
 
                     .ivu-collapse-content {
                         width: 774px;
+                        padding: 0;
 
                         .ivu-collapse-content-box {
-                            padding-left: 30px;
-                            color: #5a575c;
+                            padding-left: 34px;
                             font-family: Gilroy-Regular;
                             font-size: 16px;
-                            font-weight: 400;
+                            line-height: 24px;
+                            color: #5a575c;
 
                             p {
                                 width: 400px;
@@ -245,10 +247,11 @@ export default {
                 .ivu-collapse-item-active {
                     .ivu-collapse-header {
                         color: #5a575c;
-                        font-size: 38px;
+                        font-size: 56px;
+                        line-height: 64px;
 
                         .line {
-                            height: 30px;
+                            height: 55px;
                             background: #1b05a1;
                         }
                     }
@@ -268,8 +271,8 @@ export default {
                 justify-content: space-between;
 
                 .boxItem {
+                    padding: 100px 0 90px;
                     cursor: pointer;
-                    padding: 56px;
                     border: solid 1px #ffffff;
                     display: flex;
                     align-items: center;
@@ -280,16 +283,29 @@ export default {
                     box-shadow: 0 2px 12px 0 #deddde;
                     background-color: #ffffff;
 
+                    &.buyLINA {
+                        flex-direction: row;
+                        justify-content: space-between;
+                        padding: 19px 24px;
+                        .boxLogo {
+                            padding: 0;
+                            width: 40px;
+                            height: 40px;
+                            border: solid 1px #deddde;
+                            border-radius: 50%;
+                            margin-right: 16px;
+                        }
+
+                        .boxDesc {
+                            flex: 1;
+                            margin: 0;
+                            text-align: left;
+                        }
+                    }
+
                     .boxLogo {
                         width: 80px;
                         height: 80px;
-                    }
-
-                    &.buyLINA {
-                        .boxLogo {
-                            border: solid 1px #deddde;
-                            border-radius: 50%;
-                        }
                     }
 
                     .boxDesc {
@@ -302,7 +318,7 @@ export default {
                         letter-spacing: 2px;
                         text-align: center;
                         color: #1b05a1;
-                        margin: 24px 0 5px;
+                        margin: 16px 0 3px;
                         text-transform: uppercase;
                     }
 

@@ -46,7 +46,7 @@
                     </svg>
                 </Tooltip>
             </div>
-            <div class="chainChange">
+            <div class="chainChange" :class="{ chainChanging }">
                 <div
                     class="ethBox"
                     :class="{ selected: currentChain == 0 }"
@@ -434,7 +434,9 @@ export default {
             trackIconStatus: 0, //鼠标状态 0离开,1进入
 
             referStatus: false, //推荐窗口状态
-            referIconStatus: 0 //鼠标状态 0离开,1进入
+            referIconStatus: 0, //鼠标状态 0离开,1进入
+
+            chainChanging: false
         };
     },
     watch: {
@@ -501,15 +503,14 @@ export default {
         this.$pub.subscribe("referralModalCloseEvent", (msg, params) => {
             this.referStatus = false;
         });
-        //订阅钱包改变事件
+        //订阅钱包账户改变事件
         this.$pub.subscribe("onWalletAccountChange", (msg, params) => {
-            //切换钱包关闭窗口,防止出错
-            this.referStatus = false;
-            this.transactionStatus = false;
-            this.trackStatus = false;
-            this.$pub.publish("referralModalChange", this.referStatus);
-            this.$pub.publish("transactionModalChange", this.transactionStatus);
-            this.$pub.publish("trackModalChange", this.trackStatus);
+            this.walletStatusChange();
+        });
+
+        //订阅链改变事件
+        this.$pub.subscribe("onWalletStatusChange", (msg, params) => {
+            this.walletStatusChange();
         });
 
         //等待钱包设置完毕
@@ -567,7 +568,7 @@ export default {
 
         async changeChain(value) {
             //不重复连接
-            if (value == this.currentChain) return;
+            if (value == this.currentChain || this.chainChanging) return;
 
             //连接类型
             const selectType =
@@ -575,10 +576,11 @@ export default {
                     ? SUPPORTED_WALLETS_MAP.METAMASK
                     : SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
 
-            //重新连接
-            const result = await selectedWallet(selectType);
-            //回到起始页,防止数据错误
-            this.$store.commit("setCurrentAction", 0);
+            this.$Spin.show();
+            this.chainChanging = true;
+            await selectedWallet(selectType, true);
+            this.chainChanging = false;
+            this.$Spin.hide();
         },
 
         //获取当前钱包详情数据
@@ -634,6 +636,17 @@ export default {
                 );
                 this.$pub.publish("referralModalChange", this.referStatus);
             }
+        },
+
+        walletStatusChange() {
+            //切换钱包关闭窗口,防止出错
+            this.referStatus = false;
+            this.transactionStatus = false;
+            this.trackStatus = false;
+            this.$pub.publish("referralModalChange", this.referStatus);
+            this.$pub.publish("transactionModalChange", this.transactionStatus);
+            this.$pub.publish("trackModalChange", this.trackStatus);
+            this.$store.commit("setCurrentAction", 0);
         }
     }
 };
@@ -722,6 +735,14 @@ export default {
             display: flex;
             border-radius: 20px;
             background: #f6f5f6;
+
+            &.chainChanging {
+                .ethBox,
+                .bscBox {
+                    opacity: 0.2 !important;
+                    cursor: not-allowed !important;
+                }
+            }
 
             .ethBox,
             .bscBox {
