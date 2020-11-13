@@ -680,17 +680,17 @@ export default {
         //重置输入框状态
         resetInputData() {
             //输入框展示数据
-            this.inputData = { 
-                unStake: null, 
-                amount: null, 
-                ratio: 0 
+            this.inputData = {
+                unStake: null,
+                amount: null,
+                ratio: 0
             };
 
             //真实操作数据
-            this.actionDatas = { 
-                unStake: BigNumber.from('0'), 
-                amount: BigNumber.from('0'), 
-                ratio: 0 
+            this.actionDatas = {
+                unStake: BigNumber.from('0'),
+                amount: BigNumber.from('0'),
+                ratio: 0
             };
         },
 

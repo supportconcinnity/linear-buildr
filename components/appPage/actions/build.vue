@@ -750,6 +750,136 @@ export default {
             this.actionData.amount = utils.parseEther(buildAmount.toString());
         },
 
+         //ratio改变事件
+         changeRatio(ratioAmount) {
+            this.resetErrorsMsg();
+            this.resetInputData();
+
+            if (this.buildData.debtBN.eq('0')) {
+                this.errors.ratioMsg = "There is no debt.";
+                return;
+            }
+
+            if (ratioAmount == 0) {
+                this.inputData.stake = 0;
+                this.inputData.amount = 0;
+                this.inputData.ratio = ratioAmount;
+                this.errors.ratioMsg = "The P-Ratio cant be below target ratio.";
+                return;
+            } else if (
+                ratioAmount == this.buildData.currentRatio
+            ) {
+                //ratioAmount 等于 targetRatio，不需要操作
+                this.inputData.stake = 0;
+                this.inputData.amount = 0;
+                this.inputData.ratio = ratioAmount;
+                return;
+            } else if (
+                (this.buildData.targetRatio > this.buildData.currentRatio &&
+                    ratioAmount < this.buildData.currentRatio) ||
+                (this.buildData.targetRatio < this.buildData.currentRatio &&
+                    ratioAmount < this.buildData.targetRatio)
+            ) {
+                //ratioAmount 不允许小于 targetRatio 与 currentRatio 之间较小那个
+                this.inputData.stake = 0;
+                this.inputData.amount = 0;
+                this.inputData.ratio = ratioAmount;
+                this.errors.ratioMsg = "The P-Ratio is too low.";
+                return;
+            }
+
+            let maxRatioAfterStakeMax = BigNumber.from('0');
+
+            maxRatioAfterStakeMax = bnMul(
+                                        bnDiv(
+                                            bnMul(
+                                                bnAdd(
+                                                    bnAdd(
+                                                        this.buildData.stakedBN,
+                                                        this.buildData.lockBN
+                                                    ),
+                                                    this.buildData.LINABN
+                                                ),
+                                                this.buildData.LINA2USDBN
+                                            ), 
+                                            this.buildData.debtBN
+                                        ), 
+                                        utils.parseEther('100')
+                                    );
+
+            //大于最大可上调的pratio
+            if (
+                !maxRatioAfterStakeMax.eq('0') &&
+                utils.parseEther(ratioAmount.toString()).gt(maxRatioAfterStakeMax)
+            ) {
+                this.errors.ratioMsg =
+                    "The P-Ratio can't be larger than your staking amount of LINA.";
+                return;
+            }
+
+            if (ratioAmount > this.buildData.currentRatio) {
+                //上调抵押率，计算stake lina，lusd不动
+                //计算达成ratioAmount时，需要再stake多少lina
+                let stakeWhenRaisePratio = bnSub(
+                                                bnDiv(
+                                                    bnMul(
+                                                        utils.parseEther((ratioAmount/100).toString()),
+                                                        this.buildData.debtBN
+                                                    ),
+                                                    this.buildData.LINA2USDBN
+                                                ),
+                                                this.buildData.lockBN
+                                            );
+
+                let needStake = bnSub(
+                                    stakeWhenRaisePratio,
+                                    this.buildData.stakedBN
+                                );
+
+                //需要approve
+                if (needStake.gt(BigNumber.from("0")) && needStake.gt(this.buildData.approvedBN)) {
+                    this.actionData.needApprove = n2bn("10000000000");
+                }
+
+                this.inputData.stake = formatEtherToNumber(needStake);
+                this.actionData.stake =  needStake;
+
+                this.inputData.amount = 0;
+                this.actionData.amount = BigNumber.from('0');
+
+                this.inputData.ratio = ratioAmount;
+                this.actionData.ratio = BigNumber.from(ratioAmount.toString());
+            } else if (
+                ratioAmount < this.buildData.currentRatio &&
+                ratioAmount >= this.buildData.targetRatio
+            ) {
+                //下调抵押率，计算lusd，stake lina不动
+                //下调抵押率至ratioAmount需要生成多少债务
+                let debtWhenFallPratio = bnDiv(
+                                                bnMul(
+                                                    bnAdd(
+                                                        this.buildData.stakedBN,
+                                                        this.buildData.lockBN
+                                                    ),
+                                                    this.buildData.LINA2USDBN
+                                                ),
+                                                utils.parseEther((ratioAmount/100).toString())
+                                            );
+
+                //下调抵押率至ratioAmount需要build多少lusd
+                let needBuildAmount = bnSub(debtWhenFallPratio, this.buildData.debtBN);
+
+                this.inputData.stake = 0;
+                this.actionData.stake =  BigNumber.from('0');
+
+                this.inputData.amount = formatEtherToNumber(needBuildAmount);
+                this.actionData.amount = needBuildAmount;
+
+                this.inputData.ratio = ratioAmount;
+                this.actionData.ratio = BigNumber.from(ratioAmount.toString());
+            }
+        },
+
         /**
          * 点击build
          */
@@ -1070,146 +1200,13 @@ export default {
             }
         },
 
-        //ratio改变事件
-        changeRatio(ratioAmount) {
-            this.resetErrorsMsg();
-            this.resetInputData();
-
-            if (this.buildData.debtBN.eq('0')) {
-                this.errors.ratioMsg = "There is no debt.";
-                return;
-            }
-
-            if (ratioAmount == 0) {
-                this.inputData.stake = 0;
-                this.inputData.amount = 0;
-                this.inputData.ratio = ratioAmount;
-                this.errors.ratioMsg = "The P-Ratio cant be below target ratio.";
-                return;
-            } else if (
-                ratioAmount == this.buildData.currentRatio
-            ) {
-                //ratioAmount 等于 targetRatio，不需要操作
-                this.inputData.stake = 0;
-                this.inputData.amount = 0;
-                this.inputData.ratio = ratioAmount;
-                return;
-            } else if (
-                (this.buildData.targetRatio > this.buildData.currentRatio &&
-                    ratioAmount < this.buildData.currentRatio) ||
-                (this.buildData.targetRatio < this.buildData.currentRatio &&
-                    ratioAmount < this.buildData.targetRatio)
-            ) {
-                //ratioAmount 不允许小于 targetRatio 与 currentRatio 之间较小那个
-                this.inputData.stake = 0;
-                this.inputData.amount = 0;
-                this.inputData.ratio = ratioAmount;
-                this.errors.ratioMsg = "The P-Ratio is too low.";
-                return;
-            }
-
-            let maxRatioAfterStakeMax = BigNumber.from('0');
-
-            maxRatioAfterStakeMax = bnMul(
-                                        bnDiv(
-                                            bnMul(
-                                                bnAdd(
-                                                    bnAdd(
-                                                        this.buildData.stakedBN,
-                                                        this.buildData.lockBN
-                                                    ),
-                                                    this.buildData.LINABN
-                                                ),
-                                                this.buildData.LINA2USDBN
-                                            ), 
-                                            this.buildData.debtBN
-                                        ), 
-                                        utils.parseEther('100')
-                                    );
-
-            //大于最大可上调的pratio
-            if (
-                !maxRatioAfterStakeMax.eq('0') &&
-                utils.parseEther(ratioAmount.toString()).gt(maxRatioAfterStakeMax)
-            ) {
-                this.errors.ratioMsg =
-                    "The P-Ratio can't be larger than your staking amount of LINA.";
-                return;
-            }
-
-            if (ratioAmount > this.buildData.currentRatio) {
-                //上调抵押率，计算stake lina，lusd不动
-                //计算达成ratioAmount时，需要再stake多少lina
-                let stakeWhenRaisePratio = bnSub(
-                                    bnDiv(
-                                        bnMul(
-                                            utils.parseEther((ratioAmount/100).toString()),
-                                            this.buildData.debtBN
-                                        ),
-                                        this.buildData.LINA2USDBN
-                                    ),
-                                    this.buildData.lockBN
-                                );
-
-                let needStake = bnSub(
-                                    stakeWhenRaisePratio,
-                                    bnAdd(
-                                        this.buildData.stakedBN,
-                                        this.buildData.lockBN
-                                    )
-                                );
-
-                //需要approve
-                if (needStake.gt(BigNumber.from("0")) && needStake.gt(this.buildData.approvedBN)) {
-                    this.actionData.needApprove = n2bn("10000000000");
-                }
-
-                this.inputData.stake = formatEtherToNumber(needStake);
-                this.actionData.stake =  needStake;
-
-                this.inputData.amount = 0;
-                this.actionData.amount = BigNumber.from('0');
-
-                this.inputData.ratio = ratioAmount;
-                this.actionData.ratio = BigNumber.from(ratioAmount.toString());
-            } else if (
-                ratioAmount < this.buildData.currentRatio &&
-                ratioAmount >= this.buildData.targetRatio
-            ) {
-                //下调抵押率，计算lusd，stake lina不动
-                //下调抵押率至ratioAmount需要生成多少债务
-                let debtWhenFallPratio = bnDiv(
-                                                bnMul(
-                                                    bnAdd(
-                                                        this.buildData.stakedBN,
-                                                        this.buildData.lockBN
-                                                    ),
-                                                    this.buildData.LINA2USDBN
-                                                ),
-                                                utils.parseEther((ratioAmount/100).toString())
-                                            );
-
-                //下调抵押率至ratioAmount需要build多少lusd
-                let needBuildAmount = bnSub(debtWhenFallPratio, this.buildData.debtBN);
-
-                this.inputData.stake = 0;
-                this.actionData.stake =  BigNumber.from('0');
-
-                this.inputData.amount = formatEtherToNumber(needBuildAmount);
-                this.actionData.amount = needBuildAmount;
-
-                this.inputData.ratio = ratioAmount;
-                this.actionData.ratio = BigNumber.from(ratioAmount.toString());
-            }
-        },
-
         //重置输入框状态
         resetInputData() {
             //输入框展示数据
             this.inputData = {
                 stake: null,
                 amount: null,
-                ratio: this.buildData.currentRatio
+                ratio: 0
             };
 
             //真实操作数据
@@ -1217,7 +1214,7 @@ export default {
                 stake: BigNumber.from('0'), 
                 amount: BigNumber.from('0'),
                 needApprove: BigNumber.from('0'),
-                ratio: this.buildData.currentRatioBN 
+                ratio: BigNumber.from('0')
             };
         },
 
