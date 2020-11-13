@@ -9,7 +9,7 @@ const SUPPORTED_NETWORKS = {
 };
 
 const API_KEY = {
-    infura: process.env.INFURA_PROJECT_ID,
+    // infura: process.env.INFURA_PROJECT_ID,
     alchemy: process.env.ALCHEMY_KEY,
     etherscan: process.env.ETHERSCAN_KEY
 };
@@ -25,10 +25,11 @@ class ContractSettings {
             let tempNetwork;
             switch (this.networkId) {
                 case 56: //BSC主网ID
-                    tempNetwork = "mainnet";
+                    tempNetwork = "https://bsc-dataseed.binance.org/";
                     break;
                 case 97: //BSC测试网ID
-                    tempNetwork = "ropsten";
+                    tempNetwork =
+                        "https://data-seed-prebsc-1-s1.binance.org:8545/";
                     break;
                 default:
                     tempNetwork = this.network;

@@ -7,7 +7,8 @@
                         <div class="text">
                             <div class="title">Transfer</div>
                             <div class="descript">
-                                Transfer different currencies to specified wallet address
+                                Transfer different currencies to specified
+                                wallet address
                             </div>
                         </div>
                         <div
@@ -79,7 +80,7 @@
                                 opacity: errors.amountMsg ? '1' : '0'
                             }"
                         >
-                            {{errors.amountMsg}}
+                            {{ errors.amountMsg }}
                         </div>
 
                         <div
@@ -140,7 +141,11 @@
                                 </div>
                                 <div class="midle">
                                     <div class="p_1">
-                                        {{ item.name == "lUSD" ? "ℓUSD" : item.name }}
+                                        {{
+                                            item.name == "lUSD"
+                                                ? "ℓUSD"
+                                                : item.name
+                                        }}
                                     </div>
                                 </div>
                             </div>
@@ -149,7 +154,7 @@
 
                     <div
                         class="transferBtn"
-                        :class="{ disabled: transferDisabled || walletError}"
+                        :class="{ disabled: transferDisabled || walletError }"
                         @click="onSend"
                     >
                         TRANSFER NOW
@@ -185,7 +190,13 @@
 </template>
 
 <script>
-import { toNonExponential, openEtherScan, findParents, removeClass, addClass } from "@/common/utils";
+import {
+    toNonExponential,
+    openEtherScan,
+    findParents,
+    removeClass,
+    addClass
+} from "@/common/utils";
 
 import _ from "lodash";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
@@ -198,7 +209,7 @@ import {
 
 import {
     formatEtherToNumber,
-    formatNumber,
+    formatNumber
 } from "@/assets/linearLibrary/linearTools/format";
 
 export default {
@@ -225,12 +236,17 @@ export default {
     watch: {
         walletAddress() {},
         walletAddressEllipsis() {},
-        networkName() {}
+        networkName() {},
+        currentChain() {}
     },
     computed: {
         //transfer按钮禁止状态
         transferDisabled() {
-            return _.lte(this.transferNumber, 0) || this.processing || !this.transferToAddress;
+            return (
+                _.lte(this.transferNumber, 0) ||
+                this.processing ||
+                !this.transferToAddress
+            );
         },
         walletError() {
             if (/^0x[a-fA-F0-9]{40}$/.test(this.transferToAddress)) {
@@ -254,17 +270,18 @@ export default {
             var tempData = [];
 
             if (this.$store.state?.walletDetails?.transferableAssets) {
-                for (let key in this.$store.state.walletDetails.transferableAssets) {
+                for (let key in this.$store.state.walletDetails
+                    .transferableAssets) {
                     var img = "";
                     if (key == "ETH") img = require("@/static/ETH.svg");
+                    if (key == "BNB") img = require("@/static/bnb_yellow.svg");
                     if (key == "lUSD") img = require("@/static/lina_usd.svg");
                     if (key == "LINA") img = require("@/static/lina_icon.svg");
                     tempData.push({
                         name: key,
                         img: img,
-                        avaliable: this.$store.state.walletDetails.transferableAssets[
-                            key
-                        ]
+                        avaliable: this.$store.state.walletDetails
+                            .transferableAssets[key]
                     });
                 }
             }
@@ -283,15 +300,24 @@ export default {
             }
         },
         canSendEthAmount() {
-            return this.currency[this.selected].avaliable - (lnrJSConnector.utils.formatEther(this.$store.state?.gasDetails?.price.toString()) * this.ethGasLimit)
+            return (
+                this.currency[this.selected].avaliable -
+                lnrJSConnector.utils.formatEther(
+                    this.$store.state?.gasDetails?.price.toString()
+                ) *
+                    this.ethGasLimit
+            );
+        },
+        currentChain() {
+            return this.$store.state?.currentChain;
         }
     },
     async created() {
         //获取ETH gas limit评估
         let ethGasLimit = await this.getGasEstimate(
-            "ETH",
+            this.currentChain == 0 ? "ETH" : "BNB",
             lnrJSConnector.utils.parseEther("1"),
-            "0xBE99e7347aC3263E7294648CE948A468c6C48f42"
+            this.walletAddress
         );
 
         this.ethGasLimit = ethGasLimit;
@@ -337,7 +363,7 @@ export default {
                         gasPrice: this.$store.state?.gasDetails?.price,
                         gasLimit: gasLimit
                     };
-                    
+
                     sendAmount = lnrJSConnector.utils.parseEther(
                         sendAmount.toString()
                     );
@@ -375,14 +401,7 @@ export default {
 
                         //成功则更新数据
                         status &&
-                            _.delay(
-                                async () =>
-                                    await storeDetailsData(
-                                        this.$store,
-                                        this.walletAddress
-                                    ),
-                                5000
-                            );
+                            _.delay(async () => await storeDetailsData(), 5000);
                     }
                 } catch (e) {
                     console.log(e);
@@ -403,7 +422,7 @@ export default {
                     amount,
                     settings
                 );
-            } else if (currency === "ETH") {
+            } else if (["ETH", "BNB"].includes(currency)) {
                 return lnrJSConnector.signer.sendTransaction({
                     value: amount,
                     to: destination,
@@ -422,22 +441,26 @@ export default {
         async getGasEstimate(currency, amount, destination) {
             try {
                 if (!currency || !amount || !destination) return;
-                if (amount > this.selectedAssetMaxValue)                   //大于最大余额
+                if (amount > this.selectedAssetMaxValue)
+                    //大于最大余额
                     throw new Error("input.error.balanceTooLow");
                 if (!Number(amount))
                     throw new Error("input.error.invalidAmount");
 
                 let gasEstimate;
 
-                const amountBN = lnrJSConnector.utils.parseEther(amount.toString());
-                
+                const amountBN = lnrJSConnector.utils.parseEther(
+                    amount.toString()
+                );
+
                 if (currency === "LINA") {
                     gasEstimate = await lnrJSConnector.lnrJS.LnProxyERC20.contract.estimateGas.transfer(
                         destination,
                         amountBN
                     );
-                } else if (currency === "ETH") {
-                    if (amount === this.selectedAssetMaxValue)                   //不能转全部eth,需要留手续费
+                } else if (["ETH", "BNB"].includes(currency)) {
+                    if (amount === this.selectedAssetMaxValue)
+                        //不能转全部eth,需要留手续费
                         throw new Error("input.error.balanceTooLow");
                     gasEstimate = await lnrJSConnector.provider.estimateGas({
                         value: amountBN,
@@ -446,10 +469,7 @@ export default {
                 } else {
                     gasEstimate = await lnrJSConnector.lnrJS[
                         currency
-                    ].contract.estimateGas.transfer(
-                        destination,
-                        amountBN
-                    );
+                    ].contract.estimateGas.transfer(destination, amountBN);
                 }
 
                 return bufferGasLimit(gasEstimate);
@@ -465,13 +485,17 @@ export default {
         },
         //点击最大
         async clickMaxAmount() {
-            if (this.currency[this.selected].name == "ETH") {
+            if (["ETH", "BNB"].includes(this.currency[this.selected].name)) {
                 if (this.canSendEthAmount <= 0) {
-                    this.transferNumber = this.currency[this.selected].avaliable;
-                    this.errors.amountMsg = "You don`t have enought balance of ETH.";
+                    this.transferNumber = this.currency[
+                        this.selected
+                    ].avaliable;
+                    this.errors.amountMsg = `You don\`t have enought balance of ${
+                        this.currency[this.selected].name
+                    }.`;
                     return;
                 }
-                
+
                 this.errors.amountMsg = "";
                 this.transferNumber = this.canSendEthAmount;
             } else {
@@ -479,8 +503,13 @@ export default {
             }
         },
         changeAmount(amount) {
-            if (this.currency[this.selected].name == "ETH" && amount > this.canSendEthAmount) {
-                this.errors.amountMsg = "You don`t have enought balance of ETH.";
+            if (
+                ["ETH", "BNB"].includes(this.currency[this.selected].name) &&
+                amount > this.canSendEthAmount
+            ) {
+                this.errors.amountMsg = `You don\`t have enought balance of ${
+                    this.currency[this.selected].name
+                }.`;
             } else {
                 this.errors.amountMsg = "";
             }
@@ -620,8 +649,7 @@ export default {
                                     display: flex;
                                     align-items: center;
                                     justify-content: center;
-                                    img {
-                                    }
+                                    background-color: #fff;
                                 }
                             }
                             .midle {
@@ -764,8 +792,7 @@ export default {
                                         display: flex;
                                         align-items: center;
                                         justify-content: center;
-                                        img {
-                                        }
+                                        background-color: #fff;
                                     }
                                 }
                                 .midle {
@@ -886,8 +913,7 @@ export default {
                                     align-items: center;
                                     justify-content: center;
                                     border: solid 1px #deddde;
-                                    img {
-                                    }
+                                    background-color: #fff;
                                 }
                             }
                             .midle {

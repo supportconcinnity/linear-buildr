@@ -8,7 +8,7 @@
                     alt=""
                 />
             </a>
-            <div class="network">{{networkName}}</div>
+            <div class="network">{{ networkName }}</div>
             <div
                 class="action"
                 :class="{ activited: currentAction == 1 }"
@@ -64,7 +64,7 @@
 
 <script>
 import homePage from "@/components/appPage/actions/homePage";
-import notificationQueue from "@/components/notification/notificationQueue.vue"
+import notificationQueue from "@/components/notification/notificationQueue.vue";
 
 import build from "@/components/appPage/actions/build";
 import burn from "@/components/appPage/actions/burn";
@@ -99,8 +99,7 @@ export default {
         currentActionComputed(newVal, oldVal) {
             this.currentAction = this.currentActionComputed;
         },
-        networkName() {
-        },
+        networkName() {}
     },
     computed: {
         currentActionComputed() {
@@ -108,7 +107,7 @@ export default {
         },
         networkName() {
             return this.$store.state?.walletNetworkName;
-        },
+        }
     },
     methods: {
         //切换功能
@@ -141,48 +140,44 @@ export default {
         align-items: center;
 
         .linearBuildrlogo {
-            width: 216px;
-            height: 40px;
+            // width: 216px;
+            height: 32px;
             cursor: pointer;
         }
 
         .network {
-            width: 77px;
-            height: 32px;
+            padding: 7px 16px;
             border-radius: 16px;
-            background-color: rgba(27,5,161,0.03);
-
-            font-family: Gilroy;
-            font-size: 12px;
-            line-height: 32px;
+            background-color: rgba(#1b05a1, 0.03);
             text-align: center;
+            font-family: Gilroy-Medium;
+            font-size: 12px;
             font-weight: 500;
+            line-height: 16px;
             color: #1b05a1;
         }
 
         .action {
-            width: 85px;
-            height: 40px;
+            padding: 6px 24px;
             color: #1b05a1;
-            opacity: .2;
             border-radius: 20px;
-            border: solid 1px #FAFAFA;
-            font-family: Gilroy;
-            font-size: 12px;
-            font-weight: 700;
-            line-height: 40px;
-            text-align: center;
+            border: solid 1px #fafafa;
             cursor: pointer;
+            font-family: Gilroy-Bold;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            text-align: center;
 
             &:hover {
                 opacity: 1;
                 color: #1b05a1;
-                border-color: #1b05a1;
+                border-color:unset;
             }
 
             &.activited {
                 opacity: 1;
-                color: #fff!important;
+                color: #fff !important;
                 background: #1b05a1;
             }
         }

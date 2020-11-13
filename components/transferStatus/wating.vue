@@ -11,7 +11,8 @@
             stroke-color="#1b05a1"
         >
             <div>
-                <img src="@/static/metamask.svg" />
+                <img v-if="currentChain == 0" src="@/static/metamask.svg" />
+                <img v-if="currentChain == 1" src="@/static/binance.svg" />
             </div>
         </i-circle>
 
@@ -35,12 +36,20 @@
 <script>
 export default {
     name: "transferWating",
-    props: ["value"],//实现v-model
+    props: ["value"], //实现v-model
     data() {
         return {
             waitPercent: 0, //等待进度
             waitPercentTimeId: 0 //等待进度计时器ID
         };
+    },
+    watch: {
+        currentChain() {}
+    },
+    computed: {
+        currentChain() {
+            return this.$store.state?.currentChain;
+        }
     },
     mounted() {
         this.waitPercentTimeId = setInterval(() => {
@@ -51,7 +60,7 @@ export default {
         //实现v-model
         handleInput(e) {
             this.$emit("input", e.target.value);
-        },
+        }
     },
     destroyed() {
         clearInterval(this.waitPercentTimeId);
@@ -75,6 +84,11 @@ export default {
     .ivu-chart-circle {
         margin: 150px 0 0 50%;
         transform: translateX(-50%);
+
+        img {
+            width: 80px;
+            height: 80px;
+        }
     }
     .loading {
         width: 103px;

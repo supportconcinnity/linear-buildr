@@ -1,4 +1,4 @@
-import _ from "lodash"
+import _ from "lodash";
 
 /**
  * 时间格式化函数, 按照指定格式化字符串格式化传入时间
@@ -106,7 +106,7 @@ export const toNonExponential = num => {
  * @param {String} className 要查找的类名
  * @return {Element} 返回找到的元素
  */
-//findParents 
+//findParents
 export const findParents = ($el, $className) => {
     try {
         let parentNode = $el.parentNode;
@@ -181,15 +181,26 @@ export const addClass = ($el, $className) => {
  */
 export const openEtherScan = $hash => {
     try {
+        let href;
+        let currentChain = $nuxt.$store.state?.currentChain;
         let networkName = $nuxt.$store.state?.walletNetworkName;
-        if (networkName) {
-            let href = `https://${
-                networkName === "MAINNET" ? "" : networkName + "."
-            }etherscan.io/tx/${$hash}`;
 
-
-            window.open(href, "_blank");
+        if (currentChain == 0) {
+            if (networkName) {
+                href = `https://${
+                    networkName === "MAINNET" ? "" : networkName + "."
+                }etherscan.io/tx/${$hash}`;
+            }
+        } else if (currentChain == 1) {
+            ("BSCTESTNET");
+            if (networkName) {
+                href = `https://${
+                    networkName === "BSCMAINNET" ? "" : "testnet."
+                }bscscan.com/tx/${$hash}`;
+            }
         }
+
+        window.open(href, "_blank");
     } catch (error) {
         console.log(error, "openEtherScan");
     }

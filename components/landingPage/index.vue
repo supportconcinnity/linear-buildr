@@ -52,21 +52,23 @@
             </div>
             <div class="walletBox">
                 <div class="box">
-                    <div class="buyLINA">
-                        <a href="javascript:(void 0)">
-                            <!-- <a target="_blank" href="https://app.uniswap.org/#/swap?inputCurrency=0x3e9bc21c9b189c09df3ef1b824798658d5011937&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7"> -->
-                            <img
-                                class="LINALogo"
-                                src="@/static/LINA_logo.svg"
-                                alt=""
-                            />
-                            Buy LINA on Uniswap
-                            <img src="@/static/arrow_right.svg" alt="" />
-                        </a>
+                    <div class="boxItem buyLINA" @click="openBuy">
+                        <img
+                            class="boxLogo"
+                            src="@/static/LINA_logo.svg"
+                            alt=""
+                        />
+                        <div class="boxDesc">Buy LINA</div>
+
+                        <img
+                            class="rightArrow"
+                            src="@/static/arrow_right.svg"
+                            alt=""
+                        />
                     </div>
-                    <div class="connectWallet">
-                        <!-- <div
-                            class="walletConnectBox"
+
+                    <!-- <div
+                            class="boxItem walletConnectBox"
                             @click="
                                 selectedWallet(
                                     SUPPORTED_WALLETS_MAP.WALLET_CONNECT
@@ -74,21 +76,40 @@
                             "
                         >
                             <img
+                                class="boxLogo"
                                 src="@/static/wallect_connect_logo.svg"
-                                alt=""
+                               
                             />
-                            WalletConnect
+                            <div class="boxTitle">Connect Wallet</div>
+                            <div class="boxDesc">WalletConnect</div>
+                            
                         </div> -->
-                        <div
-                            class="metaMaskBox"
-                            @click="
-                                selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)
-                            "
-                        >
-                            <img src="@/static/metamask.svg" alt="" />
-                            <div class="context">Connect Wallet</div>
-                            <div class="walletName">MetaMask</div>
-                        </div>
+                    <div
+                        class="boxItem metaMaskBox"
+                        @click="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
+                    >
+                        <img
+                            class="boxLogo"
+                            src="@/static/metamask.svg"
+                            alt=""
+                        />
+                        <div class="boxDesc">Connect Wallet</div>
+                        <div class="boxTitle">MetaMask</div>
+                    </div>
+
+                    <div
+                        class="boxItem binanceBox"
+                        @click="
+                            selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)
+                        "
+                    >
+                        <img
+                            class="boxLogo"
+                            src="@/static/binance.svg"
+                            alt=""
+                        />
+                        <div class="boxDesc">Connect Wallet</div>
+                        <div class="boxTitle">Binance Chain Wallet</div>
                     </div>
                 </div>
             </div>
@@ -97,13 +118,16 @@
 </template>
 
 <script>
-import lnrJSConnector, {
-    connectToWallet
+import {
+    // connectToWallet,
+    selectedWallet
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 
 import {
-    SUPPORTED_WALLETS_MAP,
-    onMetamaskAccountChange
+    SUPPORTED_WALLETS_MAP
+    // onMetamaskAccountChange,
+    // onBinanceAccountChange,
+    // onBinanceChainChange
 } from "@/assets/linearLibrary/linearTools/network";
 
 export default {
@@ -111,72 +135,30 @@ export default {
     data() {
         return {
             SUPPORTED_WALLETS_MAP,
-            introduct: "0"
+            introduct: "0",
+            selectedWallet
         };
     },
     mounted() {
         //进入界面的欢迎效果
-        setTimeout(()=> {this.introduct = "1";}, 100);
+        setTimeout(() => {
+            this.introduct = "1";
+        }, 100);
         //调试用,进入指定页,不用时屏蔽
-        // this.$store.commit("setCurrentAction", 1); //设置为build
+        // this.$store.commit("setCurrentAction", 4); //设置为build
         // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
+        // setTimeout(
+        //     () => this.selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
+        //     1000
+        // ); //自动连接BINANCE
         //调试用,进入指定页,不用时屏蔽
     },
     methods: {
-        //将选择的钱包类型设置为全局状态
-        async selectedWallet(walletType) {
-            //连接钱包
-            const walletStatus = await connectToWallet(walletType);
-
-            //连接成功
-            if (walletStatus && walletStatus?.currentWallet) {
-                this.$store.commit(
-                    "setWalletNetworkName",
-                    walletStatus?.networkName.toUpperCase()
-                );
-                this.$store.commit("setWalletType", walletType);
-
-                //防止onWalletAccountChange内数据未更新时,太快进入功能子页获取不到wallet的问题
-                await this.$store.commit("mergeWallet", {
-                    address: walletStatus?.currentWallet
-                });
-
-                //绑定metamask事件
-                if (walletType == SUPPORTED_WALLETS_MAP.METAMASK) {
-                    onMetamaskAccountChange(async (wallet, walletType) => {
-                        const address = await lnrJSConnector.signer.getNextAddresses();
-                        const signer = new lnrJSConnector.signers[
-                            SUPPORTED_WALLETS_MAP.METAMASK
-                        ]({});
-                        lnrJSConnector.setContractSettings({
-                            networkId: walletStatus.networkId,
-                            signer
-                        });
-
-                        //回到起始页,防止数据错误
-                        this.$store.commit("setCurrentAction", 0);
-                        this.$pub.publish("onWalletAccountChange", address[0]);
-                    });
-
-                    this.$emit(
-                        "selectedWallet",
-                        SUPPORTED_WALLETS_MAP.METAMASK
-                    ); //通知父组件已选择了钱包，跳到app page组件
-                } else if (walletType == SUPPORTED_WALLETS_MAP.WALLET_CONNECT) {
-                    this.$emit(
-                        "selectedWallet",
-                        SUPPORTED_WALLETS_MAP.WALLET_CONNECT
-                    );
-                }
-
-                //已获取钱包 触发数据更新
-                this.$pub.publish(
-                    "onWalletAccountChange",
-                    walletStatus.currentWallet
-                );
-            } else {
-                console.log("Connect wallet fail");
-            }
+        openBuy() {
+            return;
+            window.open(
+                "https://app.uniswap.org/#/swap?inputCurrency=0x3e9bc21c9b189c09df3ef1b824798658d5011937&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7"
+            );
         }
     }
 };
@@ -285,101 +267,59 @@ export default {
                 flex-direction: column;
                 justify-content: space-between;
 
-                .title {
-                    color: #c6c4c7;
-                    font-family: Gilroy;
-                    font-size: 16px;
-                    font-weight: 700;
-                    text-align: center;
-                    letter-spacing: 2px;
-                }
-
-                .buyLINA {
-                    width: 306px;
-                    height: 408px;
-                    background-color: #ffffff;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 12px 0 #deddde;
+                .boxItem {
+                    cursor: pointer;
+                    padding: 56px;
                     border: solid 1px #ffffff;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     flex-direction: column;
                     transition: $animete-time linear;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 12px 0 #deddde;
+                    background-color: #ffffff;
 
-                    .LINALogo {
+                    .boxLogo {
                         width: 80px;
                         height: 80px;
-                        margin-bottom: 24px;
-                        border: solid 1px #deddde;
-                        border-radius: 50%;
                     }
 
-                    a {
-                        color: #1b05a1;
-                        font-family: Gilroy;
-                        font-size: 16px;
-                        font-weight: 700;
-                        line-height: 32px;
-                        text-align: center;
-                        text-transform: uppercase;
-                        letter-spacing: 1px;
-
-                        img {
-                            width: 24px;
-                            margin: 5px auto 0;
-                            display: block;
+                    &.buyLINA {
+                        .boxLogo {
+                            border: solid 1px #deddde;
+                            border-radius: 50%;
                         }
+                    }
+
+                    .boxDesc {
+                        font-family: Gilroy-Bold;
+                        font-size: 16px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.5;
+                        letter-spacing: 2px;
+                        text-align: center;
+                        color: #1b05a1;
+                        margin: 24px 0 5px;
+                        text-transform: uppercase;
+                    }
+
+                    .rightArrow {
+                        width: 24px;
+                    }
+
+                    .boxTitle {
+                        font-family: Gilroy-Regular;
+                        font-size: 14px;
+                        line-height: 18px;
+                        text-align: center;
+                        color: #99999a;
                     }
 
                     &:hover {
                         border-color: #1b05a1;
-                    }
-                }
-
-                .connectWallet {
-                    .walletConnectBox,
-                    .metaMaskBox {
-                        width: 306px;
-                        height: 408px;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 8px;
-                        box-shadow: 0 2px 12px 0 #deddde;
-                        border: solid 1px #ffffff;
-                        background-color: #ffffff;
-                        color: #5a575c;
-                        font-family: Gilroy;
-                        font-weight: 700;
-                        font-size: 16px;
-                        text-transform: uppercase;
-                        letter-spacing: 2px;
-                        cursor: pointer;
-                        transition: $animete-time linear;
-
-                        img {
-                            width: 80px;
-                            margin-bottom: 24px;
-                        }
-
-                        .context {
-                            color: #1b05a1;
-                        }
-
-                        .walletName {
-                            margin-top: 4px;
-                            color: #c1c1c1;
-                        }
-
-                        &:hover {
-                            border-color: #1b05a1;
-                        }
-                    }
-
-                    .walletConnectBox {
-                        margin-bottom: 16px;
                     }
                 }
             }

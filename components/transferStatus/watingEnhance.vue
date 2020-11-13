@@ -1,6 +1,8 @@
 <template>
     <div id="transferWatingEnhance">
-        <img class="wallteLogo" src="@/static/metamask.svg" />
+
+        <img v-if="currentChain == 0" class="wallteLogo" src="@/static/metamask.svg" />
+        <img v-if="currentChain == 1" class="wallteLogo" src="@/static/binance.svg" />
 
         <div class="close" @click.stop="$emit('close')">
             <closeSvg></closeSvg>
@@ -154,6 +156,14 @@ export default {
         return {
             openEtherScan
         };
+    },
+    watch: {
+        currentChain() {}
+    },
+    computed: {
+        currentChain() {
+            return this.$store.state?.currentChain;
+        }
     },
     mounted() {},
     methods: {

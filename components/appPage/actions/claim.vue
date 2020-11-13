@@ -64,7 +64,13 @@
                                     class="status"
                                     :class="{ open: feesAreClaimable }"
                                 >
-                                    {{ feesAreClaimable ? "Open" : hasClaim ? "Claimed" : "Closed" }}
+                                    {{
+                                        feesAreClaimable
+                                            ? "Open"
+                                            : hasClaim
+                                            ? "Claimed"
+                                            : "Closed"
+                                    }}
                                 </div>
                             </div>
                             <div class="periodBox">
@@ -168,7 +174,11 @@ export default {
 
         //claim按钮禁止状态
         claimDisabled() {
-            return !this.feesAreClaimable || this.processing || (this.tradingRewards == 0 && this.stakingRewards == 0);
+            return (
+                !this.feesAreClaimable ||
+                this.processing ||
+                (this.tradingRewards == 0 && this.stakingRewards == 0)
+            );
         }
     },
     methods: {
@@ -189,16 +199,16 @@ export default {
                     this.actionTabs = "m1"; //进入等待页
 
                     let {
-                        lnrJS: { LnFeeSystemTest,LnFeeSystem }
+                        lnrJS: { LnFeeSystemTest, LnFeeSystem }
                     } = lnrJSConnector;
 
                     let transaction = null;
-                    if(this.networkName == "ROPSTEN"){
-                        transaction= await LnFeeSystemTest.claimFees(
+                    if (this.networkName == "ROPSTEN") {
+                        transaction = await LnFeeSystemTest.claimFees(
                             transactionSettings
                         );
-                    }else{
-                        transaction= await LnFeeSystem.claimFees(
+                    } else {
+                        transaction = await LnFeeSystem.claimFees(
                             transactionSettings
                         );
                     }
@@ -223,15 +233,7 @@ export default {
                         this.actionTabs = status ? "m2" : "m3";
 
                         //成功则更新数据
-                        status &&
-                            _.delay(
-                                async () =>
-                                    await storeDetailsData(
-                                        this.$store,
-                                        this.walletAddress
-                                    ),
-                                5000
-                            );
+                        status && _.delay(async () => await storeDetailsData(), 5000);
                     }
                 } catch (e) {
                     console.log(e);
@@ -277,10 +279,10 @@ export default {
             try {
                 this.processing = true;
 
-                let contract =null;
-                if(this.networkName == "ROPSTEN"){
+                let contract = null;
+                if (this.networkName == "ROPSTEN") {
                     contract = lnrJSConnector.lnrJS.LnFeeSystemTest;
-                }else{
+                } else {
                     contract = lnrJSConnector.lnrJS.LnFeeSystem;
                 }
 
@@ -293,19 +295,11 @@ export default {
                     lastClaimedId
                 ] = await Promise.all([
                     contract.feePeriodDuration(),
-                    contract.recentFeePeriods(
-                        FEE_PERIOD
-                    ),
-                    contract.isFeesClaimable(
-                        walletAddress
-                    ),
-                    contract.feesAvailable(
-                        walletAddress
-                    ),
+                    contract.recentFeePeriods(FEE_PERIOD),
+                    contract.isFeesClaimable(walletAddress),
+                    contract.feesAvailable(walletAddress),
                     contract.preRewardPeriod(),
-                    contract.userLastClaimedId(
-                        walletAddress
-                    )
+                    contract.userLastClaimedId(walletAddress)
                 ]);
 
                 this.closeIn = this.getFeePeriodCountdown(
@@ -316,11 +310,11 @@ export default {
                 this.feesAreClaimable = feesAreClaimable;
                 this.tradingRewards =
                     feesAvailable && feesAvailable[0] && !this.hasClaim
-                        ? formatNumber(feesAvailable[0]/1e18)
+                        ? formatNumber(feesAvailable[0] / 1e18)
                         : 0;
                 this.stakingRewards =
                     feesAvailable && feesAvailable[1] && !this.hasClaim
-                        ? formatNumber(feesAvailable[1]/1e18)
+                        ? formatNumber(feesAvailable[1] / 1e18)
                         : 0;
             } catch (e) {
                 console.log(e);
@@ -333,11 +327,11 @@ export default {
         async getGasEstimate() {
             try {
                 const {
-                    lnrJS: { LnFeeSystemTest,LnFeeSystem }
+                    lnrJS: { LnFeeSystemTest, LnFeeSystem }
                 } = lnrJSConnector;
 
                 let gasEstimate = null;
-                if(this.networkName == "ROPSTEN")
+                if (this.networkName == "ROPSTEN")
                     gasEstimate = await LnFeeSystemTest.contract.estimateGas.claimFees();
                 else
                     gasEstimate = await LnFeeSystem.contract.estimateGas.claimFees();
@@ -381,7 +375,6 @@ export default {
 
 <style lang="scss">
 #claim {
-
     .actionTabs {
         .ivu-tabs-bar {
             display: none;

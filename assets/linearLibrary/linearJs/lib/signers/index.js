@@ -1,9 +1,11 @@
-import Metamask from './metamaskSigner';
-import WalletConnect from './walletConnectSigner';
-import PrivateKey from './privateKeySigner';
+import MetaMask from "./metamaskSigner";
+import BinanceChain from "./binanceSigner";
+import WalletConnect from "./walletConnectSigner";
+import PrivateKey from "./privateKeySigner";
 
 export default {
-  Metamask,
-  WalletConnect,
-  PrivateKey,
+    MetaMask,
+    BinanceChain,
+    WalletConnect,
+    PrivateKey
 };

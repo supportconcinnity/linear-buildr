@@ -55,18 +55,19 @@
                     <img src="@/static/ETH.svg" alt="" />
                 </div>
                 <div
-                    class="bscBox"
+                    class="bscBox bsc"
                     :class="{ selected: currentChain == 1 }"
                     @click="changeChain(1)"
                 >
-                    <Tooltip
+                    <!-- <Tooltip
                         class="globalInfoStyle"
                         content="Coming soon"
                         placement="bottom"
                         offset="0 4"
                     >
-                        <img src="@/static/bnb.svg" alt="" />
-                    </Tooltip>
+                        <img src="@/static/bnb_yellow.svg" alt="" />
+                    </Tooltip> -->
+                    <img src="@/static/bnb_yellow.svg" alt="" />
                 </div>
             </div>
         </div>
@@ -265,24 +266,55 @@
                     </div>
                 </div>
                 <div class="ETHBox">
-                    <img class="tokenIcon" src="@/static/ETH_logo.svg" />
-                    <div class="box">
-                        <div class="tokenItems">
-                            <div class="left">ETH</div>
-                            <div class="right">
-                                {{ walletDetails.amountETH || 0 }} ETH
+                    <template v-if="currentChain == 0">
+                        <img class="tokenIcon" src="@/static/ETH_logo.svg" />
+                        <div class="box">
+                            <div class="tokenItems">
+                                <div class="left">ETH</div>
+                                <div class="right">
+                                    {{ walletDetails.amountETH || 0 }} ETH
+                                </div>
+                            </div>
+                            <div class="tokenToUSDItems">
+                                <div class="left">
+                                    1 ETH = ${{
+                                        walletDetails.ETH2USDRate || 0
+                                    }}
+                                    USD
+                                </div>
+                                <div class="right">
+                                    ≈ ${{ walletDetails.amountETH2USD || 0 }}
+                                    USD
+                                </div>
                             </div>
                         </div>
-                        <div class="tokenToUSDItems">
-                            <div class="left">
-                                1 ETH = ${{ walletDetails.ETH2USDRate || 0 }}
-                                USD
+                    </template>
+                    <template v-else-if="currentChain == 1">
+                        <img
+                            class="tokenIcon bsc"
+                            src="@/static/bnb_yellow.svg"
+                        />
+                        <div class="box">
+                            <div class="tokenItems">
+                                <div class="left">BNB</div>
+                                <div class="right">
+                                    {{ walletDetails.amountETH || 0 }} BNB
+                                </div>
                             </div>
-                            <div class="right">
-                                ≈ ${{ walletDetails.amountETH2USD || 0 }} USD
+                            <div class="tokenToUSDItems">
+                                <div class="left">
+                                    1 BNB = ${{
+                                        walletDetails.ETH2USDRate || 0
+                                    }}
+                                    USD
+                                </div>
+                                <div class="right">
+                                    ≈ ${{ walletDetails.amountETH2USD || 0 }}
+                                    USD
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
                 </div>
                 <div class="assetBox">
                     <img class="tokenIcon" src="@/static/LUSD_logo.svg" />
@@ -379,6 +411,13 @@
 import _ from "lodash";
 import Clipboard from "clipboard";
 import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
+import {
+    SUPPORTED_WALLETS,
+    SUPPORTED_WALLETS_MAP
+} from "@/assets/linearLibrary/linearTools/network";
+import lnrJSConnector, {
+    selectedWallet
+} from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 
 export default {
     name: "walletDetails",
@@ -414,13 +453,12 @@ export default {
         walletStatus() {
             return this.$store.state?.wallet?.status;
         },
-        walletType(){
-            let metaStr = this.$store.state.walletType;
-            metaStr = metaStr.toLowerCase();
-            if(metaStr == "metamask")
-                return "MetaMask";
-            else
-                return this.$store.state.walletType;
+        walletType() {
+            return this.$store.state?.walletType;
+            // let metaStr = this.$store.state.walletType;
+            // metaStr = metaStr.toLowerCase();
+            // if (metaStr == "metamask") return "MetaMask";
+            // else return this.$store.state.walletType;
         },
         walletAddress() {
             if (this.$store.state?.wallet?.address) {
@@ -477,7 +515,7 @@ export default {
         //等待钱包设置完毕
         this.waitWalletAddressInit().then(() => {
             //开启自动刷新
-            this.$pub.publish("onWalletDetailsLoopRefreshStart");
+            // this.$pub.publish("onWalletDetailsLoopRefreshStart");
         });
     },
     destroyed() {
@@ -527,17 +565,26 @@ export default {
             }, 300);
         },
 
-        changeChain(value) {
-            //this.$store.commit("setCurrentChain", value);
+        async changeChain(value) {
+            //不重复连接
+            if (value == this.currentChain) return;
+
+            //连接类型
+            const selectType =
+                value == 0
+                    ? SUPPORTED_WALLETS_MAP.METAMASK
+                    : SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+
+            //重新连接
+            const result = await selectedWallet(selectType);
+            //回到起始页,防止数据错误
+            this.$store.commit("setCurrentAction", 0);
         },
 
         //获取当前钱包详情数据
         async getdata() {
             // this.refreshing = true;
-            await storeDetailsData(
-                this.$store,
-                this.$store.state?.wallet?.address
-            );
+            await storeDetailsData();
             // this.refreshing = false;
         },
 
@@ -631,8 +678,7 @@ export default {
         align-items: center;
 
         .info {
-            width: 278px;
-            height: 40px;
+            padding: 7px 16px;
             display: flex;
             justify-content: space-evenly;
             align-items: center;
@@ -640,23 +686,26 @@ export default {
             background: #f6f5f6;
 
             .wallet {
+                font-family: Gilroy-Bold;
+                font-size: 14px;
+                font-weight: bold;
+                line-height: 18px;
                 color: #5a575c;
-                font-family: Gilroy;
-                font-size: 16px;
-                font-weight: 700;
+                margin-right: 5px;
             }
 
             .address {
-                width: 154px;
-                color: #c6c4c7;
                 font-family: Gilroy-Regular;
-                font-size: 16px;
-                font-weight: 400;
+                font-size: 14px;
+                line-height: 18px;
+                color: #99999a;
+                margin-right: 16px;
             }
 
             .copyBtn {
-                margin-top: 6px;
                 cursor: pointer;
+                width: 16px;
+                height: 16px;
 
                 &:hover {
                     #Combined-Shape {
@@ -668,32 +717,37 @@ export default {
         }
 
         .chainChange {
-            width: 80px;
-            height: 40px;
+            width: 64px;
+            height: 32px;
             display: flex;
             border-radius: 20px;
             background: #f6f5f6;
 
             .ethBox,
             .bscBox {
-                width: 40px;
-                height: 40px;
+                width: 32px;
+                height: 32px;
                 border-radius: 50%;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 cursor: pointer;
                 transition: $animete-time linear;
+                opacity: 0.2;
 
                 img {
-                    height: 20px;
+                    height: 16px;
                 }
 
-            }
+                &:hover {
+                    opacity: 1;
+                }
 
-            .selected {
-                box-shadow: 0 2px 6px 0 #deddde;
-                background-color: #ffffff;
+                &.selected {
+                    opacity: 1;
+                    box-shadow: 0 2px 6px 0 #deddde;
+                    background-color: #ffffff;
+                }
             }
         }
     }
@@ -819,6 +873,12 @@ export default {
             .tokenIcon {
                 border-radius: 50%;
                 border: solid 1px #deddde;
+
+                &.bsc {
+                    width: 42px;
+                    padding: 10px;
+                    background: white;
+                }
             }
 
             .title {

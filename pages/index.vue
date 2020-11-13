@@ -1,7 +1,7 @@
 <template>
     <div id="mainPage">
         <div class="container">
-            <landingPage v-if="!selectedWallet"></landingPage>
+            <landingPage v-if="!walletType"></landingPage>
             <appPage v-else></appPage>
         </div>
     </div>
@@ -19,13 +19,13 @@ export default {
     name: "mainPage",
     data() {
         return {
-            selectedWallet: false, //没选择钱包显示landding页，选择显示app页
+            // selectedWallet: false, //没选择钱包显示landding页，选择显示app页
         };
     },
     watch: {
-        walletType() {
-            this.selectedWallet = true;
-        }
+        // walletType() {
+        //     this.selectedWallet = true;
+        // }
     },
     computed: {
         walletType() {

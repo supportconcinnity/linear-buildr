@@ -5,12 +5,14 @@ import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/
 import { CRYPTO_CURRENCIES } from "../constants/currency";
 import { formatNumber, formatEtherToNumber } from "../format";
 import { WALLET_STATUS } from "../network";
-import { BigNumber } from "ethers";
+import config from "@/config/common";
+
+let loopId = 0;
 
 /**
  * 获取Liquids总数
  */
-export const getLiquids = async (wallet) => {
+export const getLiquids = async wallet => {
     const {
         lnrJS: {
             LnAssetSystem,
@@ -30,12 +32,9 @@ export const getLiquids = async (wallet) => {
             if (addressList[key] == assetAddress[i]) {
                 let asset = lnrJSConnector.lnrJS[key];
 
-                let [
-                    balance,
-                    price
-                ] = await Promise.all([
+                let [balance, price] = await Promise.all([
                     asset.balanceOf(wallet),
-                    exchangeData.exchange.pricesLast({source: key})
+                    exchangeData.exchange.pricesLast({ source: key })
                 ]);
 
                 //let balance = await asset.balanceOf(wallet);
@@ -89,16 +88,19 @@ export const getPriceRates = async currency => {
 
 /**
  * 保存详情面板下所有数据到store中
- * @param {Store} store
- * @param {String} wallet 钱包地址
  */
-export const storeDetailsData = async (store, wallet) => {
-    if (wallet) {
-        //记录之前状态
-        // const status = store.state?.wallet?.status || WALLET_STATUS.UNINIT;
+export const storeDetailsData = async () => {
+    const store = $nuxt.$store;
+    const walletAddress = store.state?.wallet?.address;
+
+    if (walletAddress) {
+        clearTimeout(loopId);
+
+        //之前状态
+        // const status = store.state?.wallet?.status;
+
         try {
-            await store.commit("setWallet", {
-                address: wallet,
+            await store.commit("mergeWallet", {
                 status: WALLET_STATUS.UPDATING
             });
 
@@ -116,18 +118,18 @@ export const storeDetailsData = async (store, wallet) => {
 
             //可以直接转换数值的组
             const result = await Promise.all([
-                LnCollateralSystem.GetUserTotalCollateralInUsd(wallet),
+                LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress),
                 getBuildRatio(),
-                LnProxyERC20.balanceOf(wallet),
+                LnProxyERC20.balanceOf(walletAddress),
                 LnCollateralSystem.userCollateralData(
-                    wallet,
+                    walletAddress,
                     utils.formatBytes32String("LINA")
                 ),
-                LnRewardLocker.balanceOf(wallet),
-                lUSD.balanceOf(wallet),
-                provider.getBalance(wallet),
-                getLiquids(wallet),
-                LnDebtSystem.GetUserDebtBalanceInUsd(wallet)
+                LnRewardLocker.balanceOf(walletAddress),
+                lUSD.balanceOf(walletAddress),
+                provider.getBalance(walletAddress),
+                getLiquids(walletAddress),
+                LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress)
             ]);
 
             const [
@@ -163,10 +165,17 @@ export const storeDetailsData = async (store, wallet) => {
 
             //所有资产余额
             const transferableAssets = {
-                ETH: amountETH,
                 LINA: avaliableLINA,
                 lUSD: amountlUSD
             };
+
+            let keyName;
+            if (store.state.currentChain == 0) {
+                keyName = "ETH";
+            } else if (store.state.currentChain == 1) {
+                keyName = "BNB";
+            }
+            transferableAssets[keyName] = amountETH;
 
             let formatData = {
                 currentRatioPercent,
@@ -202,12 +211,21 @@ export const storeDetailsData = async (store, wallet) => {
             formatData.liquids = _.floor(liquids, 2);
             formatData.liquids2USD = _.floor(liquids2USD, 2);
 
+            // console.log(formatData,'storeDetailsData');
+
             await store.commit("setWalletDetails", formatData);
             await store.commit("mergeWallet", { status: WALLET_STATUS.FINISH });
             return formatData;
         } catch (error) {
             await store.commit("mergeWallet", { status: WALLET_STATUS.ERROR });
             console.log(error, "storeDetailsData error");
+        } finally {
+            if (store.state.walletDetailsLoopRefreshStatus) {
+                loopId = setTimeout(
+                    storeDetailsData,
+                    config.walletDetailsRefreshTimeout
+                );
+            }
         }
     }
 };

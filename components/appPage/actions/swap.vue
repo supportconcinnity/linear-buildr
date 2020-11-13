@@ -319,7 +319,7 @@ export default {
         },
 
         clickSwap() {
-            console.log('click swap');
+            // console.log('click swap');
         },
 
         showDropdownFun() {
