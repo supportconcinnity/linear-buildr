@@ -576,11 +576,9 @@ export default {
                     ? SUPPORTED_WALLETS_MAP.METAMASK
                     : SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
 
-            this.$Spin.show();
-            this.chainChanging = true;
+            // this.chainChanging = true;
             await selectedWallet(selectType, true);
-            this.chainChanging = false;
-            this.$Spin.hide();
+            // this.chainChanging = false;
         },
 
         //获取当前钱包详情数据

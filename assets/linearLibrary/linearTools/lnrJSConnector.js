@@ -162,10 +162,9 @@ const getSignerConfig = ({ type, networkId }) => {
 
 export const selectedWallet = async (walletType, chainChange = false) => {
     try {
-        $nuxt.$Spin.show();
-
         //连接钱包
         const walletStatus = await connectToWallet(walletType);
+        $nuxt.$Spin.show();
         const store = $nuxt.$store;
 
         //连接成功
