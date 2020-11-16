@@ -2,7 +2,14 @@
     <div id="gasEditor">
         <div class="editInfo">
             <div class="infoLeft">
-                <span class="editTitle">Ethereum Network Fee</span>
+                <span class="editTitle">
+                    <template v-if="currentChain == 0">
+                        Ethereum Network Fee
+                    </template>
+                    <template v-else-if="currentChain == 1">
+                        Binance Smart Chain fee
+                    </template>
+                </span>
                 <span class="editBtn" @click="gasEditorModal = true"
                     ><svg width="16px" height="16px" viewBox="0 0 16 16">
                         <g>
@@ -121,11 +128,24 @@
                 >
                     <div class="leftRect">
                         <div class="icon">
-                            <img src="@/static/ETH.svg" />
+                             <template v-if="currentChain == 0">
+                                    <img src="@/static/ETH.svg" />
+                                </template>
+                                <template v-else-if="currentChain == 1">
+                                    <img src="@/static/bnb_yellow.svg" />
+                                </template>
+                            
                         </div>
 
                         <div class="desc">
-                            <div class="descTop">Ethereum Network Fee</div>
+                            <div class="descTop">
+                                <template v-if="currentChain == 0">
+                                    Ethereum Network Fee
+                                </template>
+                                <template v-else-if="currentChain == 1">
+                                    Binance Smart Chain fee
+                                </template>
+                            </div>
                             <div class="unit">GWEI</div>
                         </div>
                     </div>
@@ -165,6 +185,7 @@ import {
     unFormatGasPrice
 } from "@/assets/linearLibrary/linearTools/network";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
+import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 
 export default {
     data() {
@@ -175,17 +196,16 @@ export default {
             networkSpeeds: { SLOW: {}, MEDIUM: {}, FAST: {} }, //网络速度
             speedLoading: false, //加载状态
             customPrice: null, //自定义的gas
-            NETWORK_SPEEDS_TO_KEY, //速度类型
+            NETWORK_SPEEDS_TO_KEY //速度类型
         };
     },
-    filters:{
-        capitalize(val){
-            if(_.isNull(val)){
+    filters: {
+        capitalize(val) {
+            if (_.isNull(val)) {
                 return;
-            }else{
+            } else {
                 return _.capitalize(val);
             }
-
         }
     },
     components: {
@@ -203,7 +223,8 @@ export default {
         }
     },
     watch: {
-        selectedTypeChangeListener() {}
+        selectedTypeChangeListener() {},
+        currentChain() {}
     },
 
     computed: {
@@ -217,6 +238,10 @@ export default {
 
         disabledConfirmBtn() {
             return this.selectedType == "CUSTOM" && _.lte(this.customPrice, 0);
+        },
+
+        currentChain() {
+            return this.$store.state?.currentChain;
         }
     },
 
@@ -523,7 +548,6 @@ export default {
                                 justify-content: center;
                                 align-items: center;
                                 border-radius: 50%;
-                                background-color: #f6f5f6;
                                 margin-right: 16px;
                             }
 

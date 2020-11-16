@@ -5,6 +5,7 @@ import {
     GAS_LIMIT_BUFFER
 } from "./constants/network";
 import { URLS } from "./constants/urls";
+import lnrJSConnector from "./lnrJSConnector";
 
 export const SUPPORTED_NETWORKS = {
     1: "MAINNET",
@@ -102,35 +103,56 @@ export async function getBinanceNetwork() {
 }
 
 export const getNetworkSpeeds = async () => {
-    let result = await fetch(URLS.ETH_GAS_STATION, {
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json"
-        }
-    });
-    if (result?.status != 200) {
-        result = await fetch(URLS.DEFI_PULSE_STATION, {
+    const currentChain = $nuxt.$store.state?.currentChain;
+
+    if (currentChain == 0) {
+        let result = await fetch(URLS.ETH_GAS_STATION, {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json"
             }
         });
-    }
-    const networkInfo = await result.json();
-    return {
-        [NETWORK_SPEEDS_TO_KEY.SLOW]: {
-            price: networkInfo.safeLow / 10,
-            time: networkInfo.safeLowWait
-        },
-        [NETWORK_SPEEDS_TO_KEY.MEDIUM]: {
-            price: networkInfo.average / 10,
-            time: networkInfo.avgWait
-        },
-        [NETWORK_SPEEDS_TO_KEY.FAST]: {
-            price: networkInfo.fast / 10,
-            time: networkInfo.fastWait
+        if (result?.status != 200) {
+            result = await fetch(URLS.DEFI_PULSE_STATION, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                }
+            });
         }
-    };
+        const networkInfo = await result.json();
+        return {
+            [NETWORK_SPEEDS_TO_KEY.SLOW]: {
+                price: networkInfo.safeLow / 10,
+                time: networkInfo.safeLowWait
+            },
+            [NETWORK_SPEEDS_TO_KEY.MEDIUM]: {
+                price: networkInfo.average / 10,
+                time: networkInfo.avgWait
+            },
+            [NETWORK_SPEEDS_TO_KEY.FAST]: {
+                price: networkInfo.fast / 10,
+                time: networkInfo.fastWait
+            }
+        };
+    } else {
+        const { signer } = lnrJSConnector;
+        const currentGasPrice = unFormatGasPrice(await signer.getGasPrice());
+        return {
+            [NETWORK_SPEEDS_TO_KEY.SLOW]: {
+                price: currentGasPrice * 0.75,
+                time: 3
+            },
+            [NETWORK_SPEEDS_TO_KEY.MEDIUM]: {
+                price: currentGasPrice,
+                time: 2
+            },
+            [NETWORK_SPEEDS_TO_KEY.FAST]: {
+                price: currentGasPrice * 1.25,
+                time: 1
+            }
+        };
+    }
 };
 
 export const formatGasPrice = gasPrice => gasPrice * GWEI_UNIT;

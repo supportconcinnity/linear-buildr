@@ -161,24 +161,23 @@ export default {
             padding: 6px 24px;
             color: #1b05a1;
             border-radius: 20px;
-            border: solid 1px #fafafa;
+            border: solid 1px rgba(#fff, 0);
             cursor: pointer;
             font-family: Gilroy-Bold;
             font-size: 12px;
             font-weight: bold;
             letter-spacing: 1.5px;
             text-align: center;
+            transition: $animete-time linear;
 
             &:hover {
-                opacity: 1;
-                color: #1b05a1;
-                border-color:unset;
+                border-color: #1b05a1;
             }
 
             &.activited {
-                opacity: 1;
-                color: #fff !important;
+                border-color: #1b05a1;
                 background: #1b05a1;
+                color: #fff;
             }
         }
     }
