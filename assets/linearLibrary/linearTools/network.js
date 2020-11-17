@@ -5,7 +5,7 @@ import {
     GAS_LIMIT_BUFFER
 } from "./constants/network";
 import { URLS } from "./constants/urls";
-import lnrJSConnector from "./lnrJSConnector";
+import api from "@/api";
 
 export const SUPPORTED_NETWORKS = {
     1: "MAINNET",
@@ -136,8 +136,11 @@ export const getNetworkSpeeds = async () => {
             }
         };
     } else {
-        const { signer } = lnrJSConnector;
-        const currentGasPrice = unFormatGasPrice(await signer.getGasPrice());
+        let currentGasPrice = 0;
+        const res = await api.getBSCGasPrice();
+        if (res?.result) {
+            currentGasPrice = unFormatGasPrice(res.result);
+        }
         return {
             [NETWORK_SPEEDS_TO_KEY.SLOW]: {
                 price: currentGasPrice * 0.75,

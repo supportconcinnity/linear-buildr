@@ -55,7 +55,7 @@
                     <img src="@/static/ETH.svg" alt="" />
                 </div>
                 <div
-                    class="bscBox bsc"
+                    class="bscBox"
                     :class="{ selected: currentChain == 1 }"
                     @click="changeChain(1)"
                 >
@@ -457,17 +457,9 @@ export default {
         },
         walletType() {
             return this.$store.state?.walletType;
-            // let metaStr = this.$store.state.walletType;
-            // metaStr = metaStr.toLowerCase();
-            // if (metaStr == "metamask") return "MetaMask";
-            // else return this.$store.state.walletType;
         },
         walletAddress() {
-            if (this.$store.state?.wallet?.address) {
-                return (
-                    this.$store.state.wallet.address.substring(0, 15) + "..."
-                );
-            }
+            return this.$store.state?.wallet?.address;
         },
         walletNetworkName() {
             return this.$store.state?.walletNetworkName;
@@ -689,6 +681,7 @@ export default {
         align-items: center;
 
         .info {
+            width: 294px;
             padding: 7px 16px;
             display: flex;
             justify-content: space-evenly;
@@ -706,11 +699,15 @@ export default {
             }
 
             .address {
+                flex: 1;
                 font-family: Gilroy-Regular;
                 font-size: 14px;
                 line-height: 18px;
                 color: #99999a;
                 margin-right: 16px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .copyBtn {
