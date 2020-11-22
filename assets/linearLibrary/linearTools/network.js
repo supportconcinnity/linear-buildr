@@ -55,24 +55,24 @@ export const SUPPORTED_WALLETS_MAP = {
 };
 
 export async function getEthereumNetwork() {
-    if (!window.web3) {
+    if (!window.ethereum) {
         window.open(WALLET_EXTENSIONS.METAMASK);
         return { name: "MAINNET", networkId: 1 };
     }
     let networkId = 1;
     try {
-        if (window.web3?.eth?.net) {
-            networkId = await window.web3.eth.net.getId();
+        if (window.ethereum?.chainId) {
+            networkId = Number(window.ethereum?.chainId);
             return {
                 name: SUPPORTED_NETWORKS[networkId],
-                networkId: Number(networkId)
+                networkId: networkId
             };
-        } else if (window.web3?.version?.network) {
-            networkId = Number(window.web3.version.network);
-            return { name: SUPPORTED_NETWORKS[networkId], networkId };
         } else if (window.ethereum?.networkVersion) {
             networkId = Number(window.ethereum?.networkVersion);
-            return { name: SUPPORTED_NETWORKS[networkId], networkId };
+            return {
+                name: SUPPORTED_NETWORKS[networkId],
+                networkId: networkId
+            };
         }
         return { name: "MAINNET", networkId };
     } catch (e) {
@@ -144,7 +144,7 @@ export const getNetworkSpeeds = async () => {
         return {
             [NETWORK_SPEEDS_TO_KEY.SLOW]: {
                 price: currentGasPrice * 0.75,
-                time:1
+                time: 1
             },
             [NETWORK_SPEEDS_TO_KEY.MEDIUM]: {
                 price: currentGasPrice,
