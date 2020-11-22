@@ -144,15 +144,15 @@ export const getNetworkSpeeds = async () => {
         return {
             [NETWORK_SPEEDS_TO_KEY.SLOW]: {
                 price: currentGasPrice * 0.75,
-                time: 3
+                time:1
             },
             [NETWORK_SPEEDS_TO_KEY.MEDIUM]: {
                 price: currentGasPrice,
-                time: 2
+                time: 0.5
             },
             [NETWORK_SPEEDS_TO_KEY.FAST]: {
                 price: currentGasPrice * 1.25,
-                time: 1
+                time: 0.2
             }
         };
     }

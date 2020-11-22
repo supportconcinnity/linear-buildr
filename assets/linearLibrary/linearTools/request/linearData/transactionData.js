@@ -3,7 +3,9 @@
 const pageResults = require('graph-results-pager');
 
 const graphAPIEndpoints = {
-	lnr: 'https://api.thegraph.com/subgraphs/name/ssscott2019/linear',
+	// lnr: 'https://api.thegraph.com/subgraphs/name/ssscott2019/linear',
+	lnr: 'https://api.thegraph.com/subgraphs/name/linear-tech/linear-buildr-ropsten',
+
 };
 
 const maxRequest = 100;

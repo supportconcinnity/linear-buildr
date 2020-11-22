@@ -104,6 +104,8 @@ export const storeDetailsData = async () => {
                 status: WALLET_STATUS.UPDATING
             });
 
+            const currentChain = store.state.currentChain;
+
             const {
                 lnrJS: {
                     LnProxyERC20,
@@ -147,7 +149,9 @@ export const storeDetailsData = async () => {
             const priceRates = await getPriceRates(CRYPTO_CURRENCIES);
             const LINA2USDRate = priceRates.LINA / 1e18 || 1;
             const lUSD2USDRate = priceRates.lUSD / 1e18 || 1;
-            const ETH2USDRate = priceRates.ETH / 1e18 || 1;
+            const ETH2USDRate =
+                (currentChain == 0 ? priceRates.ETH : priceRates.BNB) / 1e18 ||
+                1;
 
             const currentRatioPercent =
                 totalCollateralInUsd != 0 && amountDebt[0] != 0
@@ -170,9 +174,9 @@ export const storeDetailsData = async () => {
             };
 
             let keyName;
-            if (store.state.currentChain == 0) {
+            if (currentChain == 0) {
                 keyName = "ETH";
-            } else if (store.state.currentChain == 1) {
+            } else if (currentChain == 1) {
                 keyName = "BNB";
             }
             transferableAssets[keyName] = amountETH;

@@ -3,8 +3,8 @@
 const pageResults = require("graph-results-pager");
 
 const graphAPIEndpoints = {
-    exchange:
-        "https://api.thegraph.com/subgraphs/name/ssscott2019/linearexchange"
+    // exchange:"https://api.thegraph.com/subgraphs/name/ssscott2019/linearexchange"
+    exchange:"https://api.thegraph.com/subgraphs/name/linear-tech/linear-exchange-ropsten"
 };
 
 const maxRequest = 1000;

@@ -12,7 +12,7 @@
                             1 LINA =
                             {{
                                 formatNumberFromBigNumber(
-                                    buildData.LINA2USD,
+                                    buildData.LINA2USDBN ,
                                     4
                                 )
                             }}
@@ -407,6 +407,8 @@ export default {
                     ), //个人全部抵押物兑lUSD,用于计算pratio
                 ]);
 
+               
+
                 const [
                     avaliableLINA,
                     stakedLina,
@@ -430,22 +432,28 @@ export default {
                 const LINAPrice = priceRates.LINA / priceRates.lUSD;
                 const LINAPriceBN = bnDiv(priceRates.LINA, priceRates.lUSD);
 
+
                 this.buildData.LINA = _.floor(avaliableLINA, 2);
                 this.buildData.LINABN = results[0];
+
 
                 this.buildData.LINA2USD = _.floor(LINAPrice, 2);
                 this.buildData.LINA2USDBN = LINAPriceBN;
 
+
                 this.buildData.staked = _.floor(stakedLina, 2);
                 this.buildData.stakedBN = results[1];
 
+
                 this.buildData.lock = _.floor(lockLina, 2);
                 this.buildData.lockBN = results[2];
+
 
                 this.buildData.approvedBN = results[3];
 
                 this.buildData.debt = _.floor(amountDebt[0], 2);
                 this.buildData.debtBN = results[4][0];
+
 
                 this.buildData.targetRatio = targetRatioPercent;
                 this.buildData.currentRatio = formatEtherToNumber(currentRatioPercent);
