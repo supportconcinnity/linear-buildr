@@ -24,10 +24,10 @@ class ContractSettings {
         if (!provider && networkId) {
             let tempNetwork;
             switch (this.networkId) {
-                case 56: //BSC主网ID
+                case 56: //BSC主网RPC
                     tempNetwork = "https://bsc-dataseed.binance.org/";
                     break;
-                case 97: //BSC测试网ID
+                case 97: //BSC测试网RPC
                     tempNetwork =
                         "https://data-seed-prebsc-1-s1.binance.org:8545/";
                     break;

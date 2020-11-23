@@ -4,7 +4,7 @@ import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/
 
 import { CRYPTO_CURRENCIES } from "../constants/currency";
 import { formatNumber, formatEtherToNumber } from "../format";
-import { WALLET_STATUS } from "../network";
+import { isBinanceNetwork, isEthereumNetwork, WALLET_STATUS } from "../network";
 import config from "@/config/common";
 
 let loopId = 0;
@@ -104,7 +104,9 @@ export const storeDetailsData = async () => {
                 status: WALLET_STATUS.UPDATING
             });
 
-            const currentChain = store.state.currentChain;
+            const walletNetworkId = store.state.walletNetworkId;
+            const isEthereum = isEthereumNetwork(walletNetworkId);
+            const isBinance = isBinanceNetwork(walletNetworkId);
 
             const {
                 lnrJS: {
@@ -150,8 +152,8 @@ export const storeDetailsData = async () => {
             const LINA2USDRate = priceRates.LINA / 1e18 || 1;
             const lUSD2USDRate = priceRates.lUSD / 1e18 || 1;
             const ETH2USDRate =
-                (currentChain == 0 ? priceRates.ETH : priceRates.BNB) / 1e18 ||
-                1;
+                (isEthereum ? priceRates.ETH : isBinance ? priceRates.BNB : 1) /
+                    1e18 || 1;
 
             const currentRatioPercent =
                 totalCollateralInUsd != 0 && amountDebt[0] != 0
@@ -174,9 +176,9 @@ export const storeDetailsData = async () => {
             };
 
             let keyName;
-            if (currentChain == 0) {
+            if (isEthereum) {
                 keyName = "ETH";
-            } else if (currentChain == 1) {
+            } else if (isBinance) {
                 keyName = "BNB";
             }
             transferableAssets[keyName] = amountETH;

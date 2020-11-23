@@ -161,10 +161,10 @@ export default {
     },
     watch: {
         walletAddress() {},
-        networkName() {}
+        walletNetworkName() {}
     },
     computed: {
-        networkName() {
+        walletNetworkName() {
             return this.$store.state?.walletNetworkName;
         },
 
@@ -203,7 +203,7 @@ export default {
                     } = lnrJSConnector;
 
                     let transaction = null;
-                    if (this.networkName == "ROPSTEN") {
+                    if (["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName)) {
                         transaction = await LnFeeSystemTest.claimFees(
                             transactionSettings
                         );
@@ -233,7 +233,8 @@ export default {
                         this.actionTabs = status ? "m2" : "m3";
 
                         //成功则更新数据
-                        status && _.delay(async () => await storeDetailsData(), 5000);
+                        status &&
+                            _.delay(async () => await storeDetailsData(), 5000);
                     }
                 } catch (e) {
                     console.log(e);
@@ -280,7 +281,8 @@ export default {
                 this.processing = true;
 
                 let contract = null;
-                if (this.networkName == "ROPSTEN") {
+                if (["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName)) {
+                    //测试合约, 较短时间
                     contract = lnrJSConnector.lnrJS.LnFeeSystemTest;
                 } else {
                     contract = lnrJSConnector.lnrJS.LnFeeSystem;
@@ -316,6 +318,9 @@ export default {
                     feesAvailable && feesAvailable[1] && !this.hasClaim
                         ? formatNumber(feesAvailable[1] / 1e18)
                         : 0;
+
+
+                
             } catch (e) {
                 console.log(e);
             } finally {
@@ -331,7 +336,7 @@ export default {
                 } = lnrJSConnector;
 
                 let gasEstimate = null;
-                if (this.networkName == "ROPSTEN")
+                if (["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName))
                     gasEstimate = await LnFeeSystemTest.contract.estimateGas.claimFees();
                 else
                     gasEstimate = await LnFeeSystem.contract.estimateGas.claimFees();

@@ -11,8 +11,8 @@
             stroke-color="#1b05a1"
         >
             <div>
-                <img v-if="currentChain == 0" src="@/static/metamask.svg" />
-                <img v-if="currentChain == 1" src="@/static/binance.svg" />
+                <img v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK" src="@/static/metamask.svg" />
+                <img v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN" src="@/static/binance.svg" />
             </div>
         </i-circle>
 
@@ -34,21 +34,26 @@
 </template>
 
 <script>
+import {
+    SUPPORTED_WALLETS_MAP
+} from "@/assets/linearLibrary/linearTools/network";
 export default {
     name: "transferWating",
     props: ["value"], //实现v-model
     data() {
         return {
             waitPercent: 0, //等待进度
-            waitPercentTimeId: 0 //等待进度计时器ID
+            waitPercentTimeId: 0, //等待进度计时器ID
+
+            SUPPORTED_WALLETS_MAP
         };
     },
     watch: {
-        currentChain() {}
+        walletType() {}
     },
     computed: {
-        currentChain() {
-            return this.$store.state?.currentChain;
+        walletType() {
+            return this.$store.state?.walletType;
         }
     },
     mounted() {

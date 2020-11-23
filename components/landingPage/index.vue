@@ -90,7 +90,7 @@
                     >
                         <img
                             class="boxLogo"
-                            src="@/static/ETH.svg"
+                            src="@/static/metamask.svg"
                             alt=""
                         />
 
@@ -110,7 +110,7 @@
                             alt=""
                         />
                         <div class="boxDesc">
-                            Access<br />Binance Chain Wallet
+                            Access<br />Binance Smart Chain
                         </div>
                         <div class="boxTitle">via Binance Chain Wallet</div>
                     </div>
@@ -141,7 +141,7 @@ export default {
         }, 100);
         //调试用,进入指定页,不用时屏蔽
         // this.$store.commit("setCurrentAction", 5); //
-        // // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
+        // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
         // setTimeout(
         //     () => selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
         //     1000

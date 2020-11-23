@@ -3,10 +3,10 @@
         <div class="editInfo">
             <div class="infoLeft">
                 <span class="editTitle">
-                    <template v-if="currentChain == 0">
+                    <template v-if="isEthereumNetwork">
                         Ethereum Network Fee
                     </template>
-                    <template v-else-if="currentChain == 1">
+                    <template v-else-if="isBinanceNetwork">
                         Binance Smart Chain fee
                     </template>
                 </span>
@@ -128,21 +128,20 @@
                 >
                     <div class="leftRect">
                         <div class="icon">
-                             <template v-if="currentChain == 0">
-                                    <img src="@/static/ETH.svg" />
-                                </template>
-                                <template v-else-if="currentChain == 1">
-                                    <img src="@/static/bnb_yellow.svg" />
-                                </template>
-                            
+                            <template v-if="isEthereumNetwork">
+                                <img src="@/static/ETH.svg" />
+                            </template>
+                            <template v-else-if="isBinanceNetwork">
+                                <img src="@/static/bnb_yellow.svg" />
+                            </template>
                         </div>
 
                         <div class="desc">
                             <div class="descTop">
-                                <template v-if="currentChain == 0">
+                                <template v-if="isEthereumNetwork">
                                     Ethereum Network Fee
                                 </template>
-                                <template v-else-if="currentChain == 1">
+                                <template v-else-if="isBinanceNetwork">
                                     Binance Smart Chain fee
                                 </template>
                             </div>
@@ -182,7 +181,9 @@ import closeSvg from "@/components/svg/close";
 import {
     getNetworkSpeeds,
     formatGasPrice,
-    unFormatGasPrice
+    unFormatGasPrice,
+    isEthereumNetwork,
+    isBinanceNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
@@ -224,7 +225,9 @@ export default {
     },
     watch: {
         selectedTypeChangeListener() {},
-        currentChain() {}
+        isEthereumNetwork() {},
+        isBinanceNetwork() {},
+        walletNetworkId() {}
     },
 
     computed: {
@@ -240,8 +243,16 @@ export default {
             return this.selectedType == "CUSTOM" && _.lte(this.customPrice, 0);
         },
 
-        currentChain() {
-            return this.$store.state?.currentChain;
+        isEthereumNetwork() {
+            return isEthereumNetwork(this.walletNetworkId);
+        },
+
+        isBinanceNetwork() {
+            return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        walletNetworkId() {
+            return this.$store.state?.walletNetworkId;
         }
     },
 

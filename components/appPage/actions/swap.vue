@@ -74,16 +74,20 @@
                         <div class="fromToBox">
                             <div class="box">
                                 <img
-                                    v-if="currentChain == 0"
+                                    v-if="isEthereumNetwork"
                                     src="@/static/ETH.svg"
                                 />
-                                <img v-else src="@/static/bnb_yellow.svg" />
+                                <img
+                                    v-else-if="isBinanceNetwork"
+                                    src="@/static/bnb_yellow.svg"
+                                />
                                 <div class="title">
-                                    {{
-                                        currentChain == 0
-                                            ? "Ethereum Chain"
-                                            : "Binance Smart Chain"
-                                    }}
+                                    <template v-if="isEthereumNetwork"
+                                        >Ethereum Chain</template
+                                    >
+                                    <template v-else-if="isBinanceNetwork"
+                                        >Binance Smart Chain</template
+                                    >
                                 </div>
                             </div>
                             <img
@@ -92,16 +96,20 @@
                             />
                             <div class="box">
                                 <img
-                                    v-if="currentChain == 0"
+                                    v-if="isEthereumNetwork"
                                     src="@/static/bnb_yellow.svg"
                                 />
-                                <img v-else src="@/static/ETH.svg" />
+                                <img
+                                    v-else-if="isBinanceNetwork"
+                                    src="@/static/ETH.svg"
+                                />
                                 <div class="title">
-                                    {{
-                                        currentChain == 0
-                                            ? "Binance Smart Chain"
-                                            : "Ethereum Chain"
-                                    }}
+                                    <template v-if="isEthereumNetwork"
+                                        >Binance Smart Chain</template
+                                    >
+                                    <template v-else-if="isBinanceNetwork"
+                                        >Ethereum Chain</template
+                                    >
                                 </div>
                             </div>
                         </div>
@@ -119,7 +127,7 @@
                             </div>
                             <div class="midle">
                                 <div class="p_1">
-                                    {{currentSelectCurrency.name}}
+                                    {{ currentSelectCurrency.name }}
                                 </div>
                                 <div class="p_2" @click="clickMaxAmount">
                                     MAX
@@ -246,6 +254,10 @@ import {
     removeClass,
     addClass
 } from "@/common/utils";
+import {
+    isBinanceNetwork,
+    isEthereumNetwork
+} from "@/assets/linearLibrary/linearTools/network";
 
 export default {
     name: "swap",
@@ -277,18 +289,22 @@ export default {
         });
     },
     watch: {
-        currentChain() {},
         walletAddress() {},
-        networkName() {}
+        isEthereumNetwork() {},
+        isBinanceNetwork() {},
+        walletNetworkId() {}
     },
     computed: {
-        //当前选择的是什么链 0eth 1bsc
-        currentChain() {
-            return this.$store.state?.currentChain;
+        isEthereumNetwork() {
+            return isEthereumNetwork(this.walletNetworkId);
         },
 
-        networkName() {
-            return this.$store.state?.walletNetworkName;
+        isBinanceNetwork() {
+            return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        walletNetworkId() {
+            return this.$store.state?.walletNetworkId;
         },
 
         walletAddress() {

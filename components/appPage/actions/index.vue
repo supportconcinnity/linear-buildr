@@ -8,7 +8,6 @@
                     alt=""
                 />
             </a>
-            <div class="network">{{ networkName }}</div>
             <div
                 class="action"
                 :class="{ activited: currentAction == 1 }"
@@ -98,15 +97,11 @@ export default {
     watch: {
         currentActionComputed(newVal, oldVal) {
             this.currentAction = this.currentActionComputed;
-        },
-        networkName() {}
+        }
     },
     computed: {
         currentActionComputed() {
             return this.$store.state.currentAction;
-        },
-        networkName() {
-            return this.$store.state?.walletNetworkName;
         }
     },
     methods: {
@@ -136,13 +131,14 @@ export default {
     .headerBox {
         height: 120px;
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
 
         .linearBuildrlogo {
             // width: 216px;
             height: 32px;
             cursor: pointer;
+            margin-right: 40px;
         }
 
         .network {
@@ -158,6 +154,7 @@ export default {
         }
 
         .action {
+            margin-right: 16px;
             padding: 6px 24px;
             color: #1b05a1;
             border-radius: 20px;

@@ -1,16 +1,17 @@
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
+import { SUPPORTED_NETWORKS } from "~/assets/linearLibrary/linearTools/network";
 
 export const state = () => ({
     locale: "en", //默认语言
     theme: "light", //默认主题,light或dark
-    walletType: "", //选择了什么钱包
     currentAction: 0, //应用页面跳转控制 1build 2burn 3claim 4transfer
-    currentChain: 0, //当前链 0eth 1bsc
     gasDetails: { price: 0, type: NETWORK_SPEEDS_TO_KEY.MEDIUM, status: -1 }, //gas设置详情,-1未初始化,1已初始化
     wallet: { address: "", status: -1 }, //钱包 address=钱包地址,status:-1=未初始化数据,0:更新中,1更新完成,2更新失败,
     walletDetails: {}, //钱包详情
     walletDetailsLoopRefreshStatus: true,
-    walletNetworkName: "MAINNET"
+    walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS_MAP
+    walletNetworkId: "1", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
+    walletNetworkName: SUPPORTED_NETWORKS["1"] ,//当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
 });
 
 export const mutations = {
@@ -22,8 +23,8 @@ export const mutations = {
         state.locale = locale;
     },
 
-    setWalletType(state, walletType) {
-        state.walletType = walletType;
+    setWalletNetworkId(state, walletNetworkId) {
+        state.walletNetworkId = walletNetworkId;
     },
 
     setGasDetails(state, gasDetails) {
@@ -38,8 +39,8 @@ export const mutations = {
         state.currentAction = data;
     },
 
-    setCurrentChain(state, value) {
-        state.currentChain = value;
+    setWalletType(state, value) {
+        state.walletType = value;
     },
 
     setWallet(state, wallet) {

@@ -1,8 +1,15 @@
 <template>
     <div id="transferWatingEnhance">
-
-        <img v-if="currentChain == 0" class="wallteLogo" src="@/static/metamask.svg" />
-        <img v-if="currentChain == 1" class="wallteLogo" src="@/static/binance.svg" />
+        <img
+            v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
+            class="wallteLogo"
+            src="@/static/metamask.svg"
+        />
+        <img
+            v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
+            class="wallteLogo"
+            src="@/static/binance.svg"
+        />
 
         <div class="close" @click.stop="$emit('close')">
             <closeSvg></closeSvg>
@@ -123,6 +130,7 @@
 <script>
 import { openEtherScan } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
+import { SUPPORTED_WALLETS_MAP } from "@/assets/linearLibrary/linearTools/network";
 export default {
     name: "transferWatingEnhance",
     components: {
@@ -154,15 +162,16 @@ export default {
     },
     data() {
         return {
-            openEtherScan
+            openEtherScan,
+            SUPPORTED_WALLETS_MAP
         };
     },
     watch: {
-        currentChain() {}
+        walletType() {}
     },
     computed: {
-        currentChain() {
-            return this.$store.state?.currentChain;
+        walletType() {
+            return this.$store.state?.walletType;
         }
     },
     mounted() {},

@@ -1,7 +1,7 @@
 <template>
     <div id="mainPage">
         <div class="container">
-            <landingPage v-if="!walletType"></landingPage>
+            <landingPage v-if="!walletAddress"></landingPage>
             <appPage v-else></appPage>
         </div>
     </div>
@@ -18,22 +18,17 @@ export default {
     },
     name: "mainPage",
     data() {
-        return {
-            // selectedWallet: false, //没选择钱包显示landding页，选择显示app页
-        };
+        return {};
     },
     watch: {
-        // walletType() {
-        //     this.selectedWallet = true;
-        // }
+        walletAddress() {}
     },
     computed: {
-        walletType() {
-            return this.$store.state.walletType;
+        walletAddress() {
+           return this.$store.state?.wallet?.address;
         }
     },
-    methods: {
-    }
+    methods: {}
 };
 </script>
 
@@ -42,7 +37,7 @@ export default {
     width: 100vw;
     height: 100vh;
     overflow: auto;
-    background: #FAFAFA;
+    background: #fafafa;
 
     .container {
         margin: 0 auto;

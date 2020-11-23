@@ -7,11 +7,32 @@ import {
 import { URLS } from "./constants/urls";
 import api from "@/api";
 
-export const SUPPORTED_NETWORKS = {
+export const ETHEREUM_NETWORKS = {
     1: "MAINNET",
-    3: "ROPSTEN",
+    3: "ROPSTEN"
+};
+
+export const BINANCE_NETWORKS = {
     56: "BSCMAINNET",
     97: "BSCTESTNET"
+};
+
+export const isEthereumNetwork = walletNetworkId => {
+    return ETHEREUM_NETWORKS.hasOwnProperty(walletNetworkId);
+};
+
+export const isBinanceNetwork = walletNetworkId => {
+    return BINANCE_NETWORKS.hasOwnProperty(walletNetworkId);
+};
+
+export const SUPPORTED_NETWORKS = { ...ETHEREUM_NETWORKS, ...BINANCE_NETWORKS };
+
+export const SUPPORTED_NETWORKS_MAP = _.invert(SUPPORTED_NETWORKS);
+
+export const SUPPORTED_WALLETS_MAP = {
+    METAMASK: "MetaMask",
+    BINANCE_CHAIN: "BinanceChain",
+    WALLET_CONNECT: "WalletConnect"
 };
 
 export const WALLET_EXTENSIONS = {
@@ -20,8 +41,6 @@ export const WALLET_EXTENSIONS = {
     BINANCE:
         "https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp"
 };
-
-export const SUPPORTED_NETWORKS_MAP = _.invert(SUPPORTED_NETWORKS);
 
 export const DEFAULT_GAS_LIMIT = {
     approve: 220000,
@@ -46,12 +65,6 @@ export const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID;
 export const INFURA_JSON_RPC_URLS = {
     1: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
     3: `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`
-};
-
-export const SUPPORTED_WALLETS_MAP = {
-    METAMASK: "MetaMask",
-    BINANCE_CHAIN: "BinanceChain",
-    WALLET_CONNECT: "WalletConnect"
 };
 
 export async function getEthereumNetwork() {
@@ -103,9 +116,9 @@ export async function getBinanceNetwork() {
 }
 
 export const getNetworkSpeeds = async () => {
-    const currentChain = $nuxt.$store.state?.currentChain;
+    const walletNetworkId = $nuxt.$store.state?.walletNetworkId;
 
-    if (currentChain == 0) {
+    if (isEthereumNetwork(walletNetworkId)) {
         let result = await fetch(URLS.ETH_GAS_STATION, {
             headers: {
                 "Content-Type": "application/json",
@@ -135,7 +148,7 @@ export const getNetworkSpeeds = async () => {
                 time: networkInfo.fastWait
             }
         };
-    } else {
+    } else if (isBinanceNetwork(walletNetworkId)) {
         let currentGasPrice = 0;
         const res = await api.getBSCGasPrice();
         if (res?.result) {
@@ -166,6 +179,12 @@ export function onMetamaskAccountChange(cb) {
     if (!window.ethereum) return;
     const listener = _.throttle(cb, 2000);
     window.ethereum.on("accountsChanged", listener);
+}
+
+export function onMetamaskChainChange(cb) {
+    if (!window.ethereum) return;
+    const listener = _.throttle(cb, 2000);
+    window.ethereum.on("chainChanged", listener);
 }
 
 export function onBinanceAccountChange(cb) {

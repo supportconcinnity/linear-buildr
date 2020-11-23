@@ -3,7 +3,7 @@
         <div class="walletAndAddressBox">
             <div class="info">
                 <div class="wallet">
-                    {{ walletType }}
+                    {{ walletNetworkName }}
                 </div>
                 <div class="address">
                     {{ walletAddress }}
@@ -49,25 +49,22 @@
             <div class="chainChange" :class="{ chainChanging }">
                 <div
                     class="ethBox"
-                    :class="{ selected: currentChain == 0 }"
-                    @click="changeChain(0)"
+                    :class="{
+                        selected: walletType == SUPPORTED_WALLETS_MAP.METAMASK
+                    }"
+                    @click="changeChain(SUPPORTED_WALLETS_MAP.METAMASK)"
                 >
-                    <img src="@/static/ETH.svg" alt="" />
+                    <metamaskSvg :selected="walletType == SUPPORTED_WALLETS_MAP.METAMASK" />
                 </div>
                 <div
                     class="bscBox"
-                    :class="{ selected: currentChain == 1 }"
-                    @click="changeChain(1)"
+                    :class="{
+                        selected:
+                            walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                    }"
+                    @click="changeChain(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)"
                 >
-                    <!-- <Tooltip
-                        class="globalInfoStyle"
-                        content="Coming soon"
-                        placement="bottom"
-                        offset="0 4"
-                    >
-                        <img src="@/static/bnb_yellow.svg" alt="" />
-                    </Tooltip> -->
-                    <img src="@/static/bnb_yellow.svg" alt="" />
+                    <binanceSvg :selected=" walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN" />
                 </div>
             </div>
         </div>
@@ -266,7 +263,7 @@
                     </div>
                 </div>
                 <div class="ETHBox">
-                    <template v-if="currentChain == 0">
+                    <template v-if="isEthereumNetwork">
                         <img class="tokenIcon" src="@/static/ETH_logo.svg" />
                         <div class="box">
                             <div class="tokenItems">
@@ -289,7 +286,7 @@
                             </div>
                         </div>
                     </template>
-                    <template v-else-if="currentChain == 1">
+                    <template v-else-if="isBinanceNetwork">
                         <img
                             class="tokenIcon bsc"
                             src="@/static/bnb_yellow.svg"
@@ -412,12 +409,15 @@ import _ from "lodash";
 import Clipboard from "clipboard";
 import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 import {
-    SUPPORTED_WALLETS,
+    isBinanceNetwork,
+    isEthereumNetwork,
     SUPPORTED_WALLETS_MAP
 } from "@/assets/linearLibrary/linearTools/network";
 import lnrJSConnector, {
     selectedWallet
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import metamaskSvg from "@/components/svg/metamask";
+import binanceSvg from "@/components/svg/binance";
 
 export default {
     name: "walletDetails",
@@ -436,33 +436,48 @@ export default {
             referStatus: false, //推荐窗口状态
             referIconStatus: 0, //鼠标状态 0离开,1进入
 
-            chainChanging: false
+            chainChanging: false,
+
+            SUPPORTED_WALLETS_MAP
         };
+    },
+    components: {
+        metamaskSvg,
+        binanceSvg
     },
     watch: {
         trackStatusChange() {},
-        currentChain() {},
         walletStatus() {},
         walletAddress() {},
-        walletNetworkName() {},
-        walletDetails() {}
+        walletDetails() {},
+        isEthereumNetwork() {},
+        isBinanceNetwork() {},
+        walletNetworkId() {},
+        walletType() {}
     },
     computed: {
-        //当前选择的是什么链 0eth 1bsc
-        currentChain() {
-            return this.$store.state?.currentChain;
+        isEthereumNetwork() {
+            return isEthereumNetwork(this.walletNetworkId);
         },
-        walletStatus() {
-            return this.$store.state?.wallet?.status;
+
+        isBinanceNetwork() {
+            return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        walletNetworkId() {
+            return this.$store.state?.walletNetworkId;
         },
         walletType() {
             return this.$store.state?.walletType;
         },
-        walletAddress() {
-            return this.$store.state?.wallet?.address;
+        walletStatus() {
+            return this.$store.state?.wallet?.status;
         },
         walletNetworkName() {
             return this.$store.state?.walletNetworkName;
+        },
+        walletAddress() {
+            return this.$store.state?.wallet?.address;
         },
         walletDetails() {
             return _.clone(this.$store.state?.walletDetails);
@@ -558,18 +573,12 @@ export default {
             }, 300);
         },
 
-        async changeChain(value) {
+        async changeChain(walletType) {
             //不重复连接
-            if (value == this.currentChain || this.chainChanging) return;
-
-            //连接类型
-            const selectType =
-                value == 0
-                    ? SUPPORTED_WALLETS_MAP.METAMASK
-                    : SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+            if (walletType == this.walletType || this.chainChanging) return;
 
             // this.chainChanging = true;
-            await selectedWallet(selectType, true);
+            await selectedWallet(walletType, true);
             // this.chainChanging = false;
         },
 
@@ -695,7 +704,7 @@ export default {
                 font-weight: bold;
                 line-height: 18px;
                 color: #5a575c;
-                margin-right: 5px;
+                margin-right: 8px;
             }
 
             .address {
@@ -749,18 +758,8 @@ export default {
                 align-items: center;
                 cursor: pointer;
                 transition: $animete-time linear;
-                opacity: 0.2;
-
-                img {
-                    height: 16px;
-                }
-
-                &:hover {
-                    opacity: 1;
-                }
 
                 &.selected {
-                    opacity: 1;
                     box-shadow: 0 2px 6px 0 #deddde;
                     background-color: #ffffff;
                 }

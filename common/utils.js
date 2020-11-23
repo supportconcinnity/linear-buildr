@@ -1,4 +1,9 @@
 import _ from "lodash";
+import {
+    isBinanceNetwork,
+    isEthereumNetwork,
+    SUPPORTED_NETWORKS_MAP
+} from "@/assets/linearLibrary/linearTools/network";
 
 /**
  * 时间格式化函数, 按照指定格式化字符串格式化传入时间
@@ -182,20 +187,24 @@ export const addClass = ($el, $className) => {
 export const openEtherScan = $hash => {
     try {
         let href;
-        let currentChain = $nuxt.$store.state?.currentChain;
-        let networkName = $nuxt.$store.state?.walletNetworkName;
+        let walletNetworkId = $nuxt.$store.state?.walletNetworkId;
+        let walletNetworkName = $nuxt.$store.state?.walletNetworkName;
 
-        if (currentChain == 0) {
-            if (networkName) {
+        if (isEthereumNetwork(walletNetworkId)) {
+            if (walletNetworkName) {
                 href = `https://${
-                    networkName === "MAINNET" ? "" : networkName + "."
+                    walletNetworkName === SUPPORTED_NETWORKS_MAP.MAINNET
+                        ? ""
+                        : walletNetworkName + "."
                 }etherscan.io/tx/${$hash}`;
             }
-        } else if (currentChain == 1) {
+        } else if (isBinanceNetwork(walletNetworkId)) {
             ("BSCTESTNET");
-            if (networkName) {
+            if (walletNetworkName) {
                 href = `https://${
-                    networkName === "BSCMAINNET" ? "" : "testnet."
+                    walletNetworkName === SUPPORTED_NETWORKS_MAP.BSCMAINNET
+                        ? ""
+                        : "testnet."
                 }bscscan.com/tx/${$hash}`;
             }
         }

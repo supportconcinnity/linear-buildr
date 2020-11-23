@@ -5,7 +5,8 @@ import {
     INFURA_PROJECT_ID,
     onMetamaskAccountChange,
     onBinanceAccountChange,
-    onBinanceChainChange
+    onBinanceChainChange,
+    onMetamaskChainChange
 } from "./network";
 import { LinearJs } from "../linearJs";
 import $pub from "pubsub-js";
@@ -175,7 +176,10 @@ export const selectedWallet = async (walletType, chainChange = false) => {
                 "setWalletNetworkName",
                 walletStatus?.networkName.toUpperCase()
             );
-            store.commit("setWalletType", walletType);
+            store.commit(
+                "setWalletNetworkId",
+                walletStatus.networkId.toString()
+            );
 
             //防止onWalletAccountChange内数据未更新时,太快进入功能子页获取不到wallet的问题
             store.commit("mergeWallet", {
@@ -184,11 +188,13 @@ export const selectedWallet = async (walletType, chainChange = false) => {
 
             //绑定事件
             if (walletType == SUPPORTED_WALLETS_MAP.METAMASK) {
-                store.commit("setCurrentChain", 0);
+                store.commit("setWalletType", SUPPORTED_WALLETS_MAP.METAMASK);
 
                 //当前链的钱包切换时才执行更新
                 onMetamaskAccountChange(async accounts => {
-                    if (store.state.currentChain == 0) {
+                    if (
+                        store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
+                    ) {
                         $nuxt.$Spin.show();
                         $pub.publish("onWalletStatusChange");
                         const address = await lnrJSConnector.signer.getNextAddresses();
@@ -208,12 +214,27 @@ export const selectedWallet = async (walletType, chainChange = false) => {
                         $nuxt.$Spin.hide();
                     }
                 });
+
+                //切换网络刷新页面
+                onMetamaskChainChange(chainId => {
+                    if (
+                        store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
+                    ) {
+                        location.reload();
+                    }
+                });
             } else if (walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN) {
-                store.commit("setCurrentChain", 1);
+                store.commit(
+                    "setWalletType",
+                    SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                );
 
                 onBinanceAccountChange(async accounts => {
                     //当前链的钱包切换时才执行更新
-                    if (store.state.currentChain == 1) {
+                    if (
+                        store.state.walletType ==
+                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                    ) {
                         $nuxt.$Spin.show();
                         $pub.publish("onWalletStatusChange");
 
@@ -238,7 +259,12 @@ export const selectedWallet = async (walletType, chainChange = false) => {
 
                 //切换网络刷新页面
                 onBinanceChainChange(chainId => {
-                    location.reload();
+                    if (
+                        store.state.walletType ==
+                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                    ) {
+                        location.reload();
+                    }
                 });
             } else if (walletType == SUPPORTED_WALLETS_MAP.WALLET_CONNECT) {
             }

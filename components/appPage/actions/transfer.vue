@@ -204,7 +204,9 @@ import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 import gasEditor from "@/components/gasEditor";
 import {
     bufferGasLimit,
-    DEFAULT_GAS_LIMIT
+    DEFAULT_GAS_LIMIT,
+    isBinanceNetwork,
+    isEthereumNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 
 import {
@@ -236,8 +238,9 @@ export default {
     watch: {
         walletAddress() {},
         walletAddressEllipsis() {},
-        networkName() {},
-        currentChain() {}
+        isEthereumNetwork() {},
+        isBinanceNetwork() {},
+        walletNetworkId() {}
     },
     computed: {
         //transfer按钮禁止状态
@@ -253,9 +256,6 @@ export default {
                 return false;
             }
             return true;
-        },
-        networkName() {
-            return this.$store.state?.walletNetworkName;
         },
         walletAddressEllipsis() {
             if (this.$store.state?.wallet?.address) {
@@ -308,14 +308,28 @@ export default {
                     this.ethGasLimit
             );
         },
-        currentChain() {
-            return this.$store.state?.currentChain;
+
+        isEthereumNetwork() {
+            return isEthereumNetwork(this.walletNetworkId);
+        },
+
+        isBinanceNetwork() {
+            return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        walletNetworkId() {
+            return this.$store.state?.walletNetworkId;
         }
     },
     async created() {
+        const currency = isEthereumNetwork
+            ? "ETH"
+            : isBinanceNetwork
+            ? "BNB"
+            : "ETH";
         //获取ETH gas limit评估
         let ethGasLimit = await this.getGasEstimate(
-            this.currentChain == 0 ? "ETH" : "BNB",
+            currency,
             lnrJSConnector.utils.parseEther("1"),
             this.walletAddress
         );
