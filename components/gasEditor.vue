@@ -3,10 +3,10 @@
         <div class="editInfo">
             <div class="infoLeft">
                 <span class="editTitle">
-                    <template v-if="isEthereumNetwork">
+                    <template v-if="isEthereumNetwork || forceBTH">
                         Ethereum Network Fee
                     </template>
-                    <template v-else-if="isBinanceNetwork">
+                    <template v-else-if="isBinanceNetwork || forceBSC">
                         Binance Smart Chain fee
                     </template>
                 </span>
@@ -26,7 +26,14 @@
             </div>
             <div class="infoRight">
                 <span class="price">{{ price }}</span>
-                <span class="unit">GWEI</span>
+                <span class="unit">
+                    <template v-if="isEthereumNetwork || forceBTH">
+                        GWEI
+                    </template>
+                    <template v-else-if="isBinanceNetwork || forceBSC">
+                        BNB
+                    </template>
+                </span>
             </div>
         </div>
 
@@ -199,6 +206,10 @@ export default {
             customPrice: null, //自定义的gas
             NETWORK_SPEEDS_TO_KEY //速度类型
         };
+    },
+    props: {
+        forceBTH: false,
+        forceBSC: false,
     },
     filters: {
         capitalize(val) {

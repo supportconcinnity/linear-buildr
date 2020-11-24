@@ -204,7 +204,8 @@
                             </div>
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor :forceBTH="true"></gasEditor>
+                        <gasEditor :forceBSC="true" style="margin-top: 14px;"></gasEditor>
                     </div>
 
                     <div
