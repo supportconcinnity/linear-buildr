@@ -25,7 +25,14 @@
                 >
             </div>
             <div class="infoRight">
-                <span class="price">{{ price }}</span>
+                <span class="price">
+                    <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
+                        {{ price }}
+                    </template>
+                    <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
+                        {{ priceBSC }}
+                    </template>
+                </span>
                 <span class="unit">
                     <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
                         GWEI
@@ -206,8 +213,10 @@ export default {
     data() {
         return {
             price: unFormatGasPrice(this.$store.state?.gasDetails?.price), //当前选中的gas
+            priceBSC: unFormatGasPrice(this.$store.state?.gasDetailsBSC?.price), //当前选中的gas BSC
             gasEditorModal: false, //设置弹窗
             selectedType: this.$store.state?.gasDetails?.type, //当前选择类型
+            selectedTypeBSC: this.$store.state?.gasDetailsBSC?.type, //当前选择类型 BSC
             networkSpeeds: { SLOW: {}, MEDIUM: {}, FAST: {} }, //网络速度
             speedLoading: false, //加载状态
             customPrice: null, //自定义的gas
@@ -233,8 +242,10 @@ export default {
         //获取数据
         await this.getNetworkSpeeds();
 
+        let status = this.typeSelector('status')
+        
         //初始化当前数据
-        if (this.$store.state?.gasDetails?.status == -1) {
+        if (status == -1) {
             this.setGasDetails(this.price, this.selectedType);
         } else {
             this.gasEditorModalChange(true);
@@ -281,10 +292,10 @@ export default {
                 console.log(this.forceNetwork, 'this.forceNetwork')
                 let netID = this.$store.state?.walletNetworkId
                 if(netID == 1 || netID == 56) {
-                    //期望取到 主网 bth
+                    //期望取到 主网
                     forceNetwork = this.forceNetwork == 'ETH' ? '1': '56'
                 } else {
-                    //期望取到 测试 bth
+                    //期望取到 测试
                     forceNetwork = this.forceNetwork == 'ETH' ? '3': '97'
                 }
             }
@@ -295,15 +306,24 @@ export default {
                     .then(res => {
                         this.networkSpeeds = res;
 
-                        this.selectedType = this.$store.state?.gasDetails?.type;
+                        this.selectedType = this.typeSelector('type')
 
                         //判断赋值
                         if (this.selectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
-                            this.price = this.customPrice = unFormatGasPrice(
-                                this.$store.state?.gasDetails?.price
-                            );
+                            if(this.forceNetwork != 'BSC') {
+                                this.price = this.customPrice = unFormatGasPrice(
+                                    this.$store.state?.gasDetails?.price
+                                );
+                            } else {
+                                this.priceBSC = this.customPrice = unFormatGasPrice(
+                                    this.$store.state?.gasDetailsBSC?.price
+                                );
+                            }
                         } else {
                             this.price = this.networkSpeeds[
+                                this.selectedType
+                            ].price;
+                            this.priceBSC = this.networkSpeeds[
                                 this.selectedType
                             ].price;
                         }
@@ -376,11 +396,24 @@ export default {
 
         //设置gas
         setGasDetails(price, type) {
-            this.$store.commit("setGasDetails", {
-                price: formatGasPrice(price),
-                type,
-                status: 1
-            });
+
+            if(this.forceNetwork != 'BSC') {
+                this.$store.commit("setGasDetails", {
+                    price: formatGasPrice(price),
+                    type,
+                    status: 1
+                });
+            } else {
+                this.$store.commit("setGasDetailsBSC", {
+                    price: formatGasPrice(price),
+                    type,
+                    status: 1
+                });
+            }
+        },
+
+        typeSelector(param) {
+            return this.forceNetwork != 'BSC' ? this.$store.state?.gasDetails[param] : this.$store.state?.gasDetailsBSC[param]
         }
     }
 };
