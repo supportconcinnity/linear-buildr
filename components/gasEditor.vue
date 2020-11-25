@@ -3,11 +3,11 @@
         <div class="editInfo">
             <div class="infoLeft">
                 <span class="editTitle">
-                    <template v-if="isEthereumNetwork || forceBTH">
+                    <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
                         Ethereum Network Fee
                     </template>
-                    <template v-else-if="isBinanceNetwork || forceBSC">
-                        Binance Smart Chain fee
+                    <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
+                        Binance Smart Chain Fee
                     </template>
                 </span>
                 <span class="editBtn" @click="gasEditorModal = true"
@@ -27,10 +27,10 @@
             <div class="infoRight">
                 <span class="price">{{ price }}</span>
                 <span class="unit">
-                    <template v-if="isEthereumNetwork || forceBTH">
+                    <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
                         GWEI
                     </template>
-                    <template v-else-if="isBinanceNetwork || forceBSC">
+                    <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
                         BNB
                     </template>
                 </span>
@@ -135,24 +135,31 @@
                 >
                     <div class="leftRect">
                         <div class="icon">
-                            <template v-if="isEthereumNetwork">
+                            <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
                                 <img src="@/static/ETH.svg" />
                             </template>
-                            <template v-else-if="isBinanceNetwork">
+                            <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
                                 <img src="@/static/bnb_yellow.svg" />
                             </template>
                         </div>
 
                         <div class="desc">
                             <div class="descTop">
-                                <template v-if="isEthereumNetwork">
+                                <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
                                     Ethereum Network Fee
                                 </template>
-                                <template v-else-if="isBinanceNetwork">
+                                <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
                                     Binance Smart Chain fee
                                 </template>
                             </div>
-                            <div class="unit">GWEI</div>
+                            <div class="unit">
+                                <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
+                                    GWEI
+                                </template>
+                                <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
+                                    BNB
+                                </template>
+                            </div>
                         </div>
                     </div>
 
@@ -190,7 +197,7 @@ import {
     formatGasPrice,
     unFormatGasPrice,
     isEthereumNetwork,
-    isBinanceNetwork
+    isBinanceNetwork,
 } from "@/assets/linearLibrary/linearTools/network";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
@@ -208,8 +215,7 @@ export default {
         };
     },
     props: {
-        forceBTH: false,
-        forceBSC: false,
+        forceNetwork: '',
     },
     filters: {
         capitalize(val) {
@@ -270,10 +276,22 @@ export default {
     methods: {
         //获取网络速度
         async getNetworkSpeeds() {
+            let forceNetwork = ''
+            if(this.forceNetwork) {
+                console.log(this.forceNetwork, 'this.forceNetwork')
+                let netID = this.$store.state?.walletNetworkId
+                if(netID == 1 || netID == 56) {
+                    //期望取到 主网 bth
+                    forceNetwork = this.forceNetwork == 'ETH' ? '1': '56'
+                } else {
+                    //期望取到 测试 bth
+                    forceNetwork = this.forceNetwork == 'ETH' ? '3': '97'
+                }
+            }
             try {
                 this.speedLoading = true;
 
-                await getNetworkSpeeds()
+                await getNetworkSpeeds(forceNetwork)
                     .then(res => {
                         this.networkSpeeds = res;
 

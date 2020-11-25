@@ -204,8 +204,8 @@
                             </div>
                         </div>
 
-                        <gasEditor :forceBTH="true"></gasEditor>
-                        <gasEditor :forceBSC="true" style="margin-top: 14px;"></gasEditor>
+                        <gasEditor :forceNetwork="'ETH'"></gasEditor>
+                        <gasEditor :forceNetwork="'BSC'" style="margin-top: 14px;"></gasEditor>
                     </div>
 
                     <div
