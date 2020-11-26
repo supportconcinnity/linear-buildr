@@ -379,7 +379,7 @@ export default {
     },
     async created() {
         //获取数据
-        await this.getNetworkSpeeds();
+        await this.getNetworkSpeeds(true);
 
         let status = this.$store.state?.gasDetailsETH.status
         let statusBSC = this.$store.state?.gasDetailsBSC.status
@@ -444,7 +444,7 @@ export default {
 
     methods: {
         //获取网络速度
-        async getNetworkSpeeds() {
+        async getNetworkSpeeds(both) { //param is need both request
             let forceETHNetwork
             let forceBSCNetwork
             if(this.walletNetworkId == '3' || this.walletNetworkId == '97') {
@@ -457,42 +457,46 @@ export default {
             
             try {
                 this.speedLoading = true;
-                await getNetworkSpeeds(forceETHNetwork)
-                    .then(res => {
-                        this.networkSpeeds = res;
-                        this.selectedType = this.$store.state?.gasDetailsETH?.type
-                        //判断赋值
-                        if (this.selectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
-                            this.price = this.customPrice = unFormatGasPrice(
-                                this.$store.state?.gasDetailsETH?.price
-                            );
-                        } else {
-                            this.price = this.networkSpeeds[
-                                this.selectedType
-                            ].price;
-                        }
-                    })
-                    .finally(() => {
-                        this.speedLoading = false;
-                    });
-                await getNetworkSpeeds(forceBSCNetwork)
-                    .then(res => {
-                        this.networkSpeedsBSC = res;
-                        this.selectedTypeBSC = this.$store.state?.gasDetailsBSC?.type
-                        //判断赋值
-                        if (this.selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
-                            this.priceBSC = this.customPriceBSC = unFormatGasPrice(
-                                this.$store.state?.gasDetailsBSC?.price
-                            );
-                        } else {
-                            this.priceBSC = this.networkSpeedsBSC[
-                                this.selectedTypeBSC
-                            ].price;
-                        }
-                    })
-                    .finally(() => {
-                        this.speedLoading = false;
-                    });
+                if(this.gasEditorETHModal || both) {
+                    await getNetworkSpeeds(forceETHNetwork)
+                        .then(res => {
+                            this.networkSpeeds = res;
+                            this.selectedType = this.$store.state?.gasDetailsETH?.type
+                            //判断赋值
+                            if (this.selectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
+                                this.price = this.customPrice = unFormatGasPrice(
+                                    this.$store.state?.gasDetailsETH?.price
+                                );
+                            } else {
+                                this.price = this.networkSpeeds[
+                                    this.selectedType
+                                ].price;
+                            }
+                        })
+                        .finally(() => {
+                            this.speedLoading = false;
+                        });
+                }
+                if(this.gasEditorBSCModal || both) {
+                    await getNetworkSpeeds(forceBSCNetwork)
+                        .then(res => {
+                            this.networkSpeedsBSC = res;
+                            this.selectedTypeBSC = this.$store.state?.gasDetailsBSC?.type
+                            //判断赋值
+                            if (this.selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
+                                this.priceBSC = this.customPriceBSC = unFormatGasPrice(
+                                    this.$store.state?.gasDetailsBSC?.price
+                                );
+                            } else {
+                                this.priceBSC = this.networkSpeedsBSC[
+                                    this.selectedTypeBSC
+                                ].price;
+                            }
+                        })
+                        .finally(() => {
+                            this.speedLoading = false;
+                        });
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -603,7 +607,6 @@ export default {
                         }
 
                         this.priceBSC = price;
-    console.log(price, this.selectedTypeBSC, 'price, this.selectedTypeBSC')
                         this.setGasDetailsBSC(price, this.selectedTypeBSC);
                     }
                 }
