@@ -204,8 +204,7 @@
                             </div>
                         </div>
 
-                        <gasEditor :forceNetwork="'ETH'"></gasEditor>
-                        <gasEditor :forceNetwork="'BSC'" style="margin-top: 14px;"></gasEditor>
+                        <gasEditorSwap></gasEditorSwap>
                     </div>
 
                     <div
@@ -246,7 +245,7 @@
 
 <script>
 import _ from "lodash";
-import gasEditor from "@/components/gasEditor";
+import gasEditorSwap from "@/components/gasEditorSwap";
 import {
     toNonExponential,
     openEtherScan,
@@ -263,7 +262,7 @@ import {
 export default {
     name: "swap",
     components: {
-        gasEditor
+        gasEditorSwap
     },
     data() {
         return {
