@@ -1,16 +1,11 @@
 <template>
-    <div id="gasEditor">
+    <div id="gasEditorSwap">
         <div class="editInfo">
             <div class="infoLeft">
                 <span class="editTitle">
-                    <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
-                        Ethereum Network Fee
-                    </template>
-                    <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
-                        Binance Smart Chain Fee
-                    </template>
+                    Ethereum Network Fee
                 </span>
-                <span class="editBtn" @click="gasEditorModal = true"
+                <span class="editBtn" @click="gasEditorETHModal = true"
                     ><svg width="16px" height="16px" viewBox="0 0 16 16">
                         <g>
                             <path
@@ -26,26 +21,44 @@
             </div>
             <div class="infoRight">
                 <span class="price">
-                    <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
-                        {{ price }}
-                    </template>
-                    <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
-                        {{ priceBSC }}
-                    </template>
+                    {{ price }}
                 </span>
                 <span class="unit">
-                    <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
-                        GWEI
-                    </template>
-                    <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
-                        BNB
-                    </template>
+                    GWEI
+                </span>
+            </div>
+        </div>
+        <div class="editInfo">
+            <div class="infoLeft">
+                <span class="editTitle">
+                    Binance Smart Chain Fee
+                </span>
+                <span class="editBtn" @click="gasEditorBSCModal = true"
+                    ><svg width="16px" height="16px" viewBox="0 0 16 16">
+                        <g>
+                            <path
+                                d="M1.3334 0L2.6668 0C3.40322 0 4.0002 0.596984 4.0002 1.3334L4.0002 9.82349C4.0002 10.0555 3.93967 10.2835 3.82459 10.4849L2.579 12.6653C2.32307 13.1133 1.67713 13.1133 1.4212 12.6653L0.175608 10.4849C0.0605293 10.2835 0 10.0555 0 9.82349L0 1.3334C0 0.596984 0.596984 0 1.3334 0ZM3.3335 1.3334C3.3335 0.965192 3.03501 0.6667 2.6668 0.6667L1.3334 0.6667C0.965192 0.6667 0.6667 0.965192 0.6667 1.3334L0.6667 9.82349C0.6667 9.93949 0.696965 10.0535 0.754504 10.1542L2.0001 12.3346L3.2457 10.1542C3.30324 10.0535 3.3335 9.93949 3.3335 9.82349L3.3335 1.3334Z"
+                                transform="matrix(0.70710677 0.70710677 -0.70710677 0.70710677 11.182764 1.8231096)"
+                                fill="#deddde"
+                                fill-rule="evenodd"
+                                stroke="none"
+                            />
+                        </g></svg
+                    >EDIT</span
+                >
+            </div>
+            <div class="infoRight">
+                <span class="price">
+                    {{ priceBSC }}
+                </span>
+                <span class="unit">
+                    BNB
                 </span>
             </div>
         </div>
 
         <Modal
-            v-model="gasEditorModal"
+            v-model="gasEditorETHModal"
             :footer-hide="true"
             :closable="false"
             :transfer="false"
@@ -53,11 +66,11 @@
             scrollable
             fullscreen
             class-name="vertical-center-modal"
-            class="gasEditorModal"
-            @on-visible-change="gasEditorModalChange"
+            class="gasEditorSwapModal"
+            @on-visible-change="gasEditorETHModalChange"
         >
             <div class="header">
-                <div class="closeBtn" @click="gasEditorModal = false">
+                <div class="closeBtn" @click="gasEditorETHModal = false">
                     <closeSvg></closeSvg>
                 </div>
             </div>
@@ -142,30 +155,15 @@
                 >
                     <div class="leftRect">
                         <div class="icon">
-                            <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
-                                <img src="@/static/ETH.svg" />
-                            </template>
-                            <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
-                                <img src="@/static/bnb_yellow.svg" />
-                            </template>
+                            <img src="@/static/ETH.svg" />
                         </div>
 
                         <div class="desc">
                             <div class="descTop">
-                                <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
-                                    Ethereum Network Fee
-                                </template>
-                                <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
-                                    Binance Smart Chain fee
-                                </template>
+                                Ethereum Network Fee
                             </div>
                             <div class="unit">
-                                <template v-if="isEthereumNetwork && forceNetwork == undefined || forceNetwork == 'ETH'">
-                                    GWEI
-                                </template>
-                                <template v-else-if="isBinanceNetwork && forceNetwork == undefined || forceNetwork == 'BSC'">
-                                    BNB
-                                </template>
+                                GWEI
                             </div>
                         </div>
                     </div>
@@ -187,7 +185,141 @@
             <div
                 class="confirm"
                 :class="{ disabled: disabledConfirmBtn }"
-                @click="confirmGas"
+                @click="confirmGas(networkType.ETH)"
+            >
+                CONFIRM
+            </div>
+        </Modal>
+
+        <Modal
+            v-model="gasEditorBSCModal"
+            :footer-hide="true"
+            :closable="false"
+            :transfer="false"
+            :mask="false"
+            scrollable
+            fullscreen
+            class-name="vertical-center-modal"
+            class="gasEditorSwapModal"
+            @on-visible-change="gasEditorBSCModalChange"
+        >
+            <div class="header">
+                <div class="closeBtn" @click="gasEditorBSCModal = false">
+                    <closeSvg></closeSvg>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="contentTitle">Edit</div>
+                <div class="contentDesc">
+                    Adjust the gas price (BNB) below to set the transaction
+                    speed by recommended ones or entering manually
+                </div>
+
+                <div class="selections">
+                    <div
+                        class="selectionItem"
+                        @click="selectedTypeChangeBSC(NETWORK_SPEEDS_TO_KEY.SLOW)"
+                        :class="{
+                            active: selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.SLOW
+                        }"
+                    >
+                        <div class="itemSpeed">
+                            {{ NETWORK_SPEEDS_TO_KEY.SLOW | capitalize }}
+                        </div>
+
+                        <div class="itemNumBox">
+                            {{ networkSpeedsBSC.SLOW.price }}
+                        </div>
+
+                        <div class="itemTime">
+                            {{ networkSpeedsBSC.SLOW.time }} mins
+                        </div>
+                    </div>
+
+                    <div
+                        class="selectionItem"
+                        @click="
+                            selectedTypeChangeBSC(NETWORK_SPEEDS_TO_KEY.MEDIUM)
+                        "
+                        :class="{
+                            active: selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.MEDIUM
+                        }"
+                    >
+                        <div class="itemSpeed">
+                            {{ NETWORK_SPEEDS_TO_KEY.MEDIUM | capitalize }}
+                        </div>
+
+                        <div class="itemNumBox">
+                            {{ networkSpeedsBSC.MEDIUM.price }}
+                        </div>
+
+                        <div class="itemTime">
+                            {{ networkSpeedsBSC.MEDIUM.time }} mins
+                        </div>
+                    </div>
+
+                    <div
+                        class="selectionItem"
+                        @click="selectedTypeChangeBSC(NETWORK_SPEEDS_TO_KEY.FAST)"
+                        :class="{
+                            active: selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.FAST
+                        }"
+                    >
+                        <div class="itemSpeed">
+                            {{ NETWORK_SPEEDS_TO_KEY.FAST | capitalize }}
+                        </div>
+
+                        <div class="itemNumBox">
+                            {{ networkSpeedsBSC.FAST.price }}
+                        </div>
+
+                        <div class="itemTime">
+                            {{ networkSpeedsBSC.FAST.time }} mins
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="custom"
+                    :class="{
+                        active: selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.CUSTOM
+                    }"
+                    @click="customPriceFocusBSC"
+                >
+                    <div class="leftRect">
+                        <div class="icon">
+                            <img src="@/static/bnb_yellow.svg" />
+                        </div>
+
+                        <div class="desc">
+                            <div class="descTop">
+                                Binance Smart Chain fee
+                            </div>
+                            <div class="unit">
+                                BNB
+                            </div>
+                        </div>
+                    </div>
+
+                    <InputNumber
+                        class="rightNum"
+                        ref="numbsc"
+                        :min="0"
+                        :max="10000"
+                        v-model="customPriceBSC"
+                        placeholder="0"
+                        :formatter="value => `${parseInt(value)}`"
+                    ></InputNumber>
+                </div>
+
+                <Spin size="large" fix v-if="speedLoading"></Spin>
+            </div>
+
+            <div
+                class="confirm"
+                :class="{ disabled: disabledConfirmBtnBSC }"
+                @click="confirmGas(networkType.BSC)"
             >
                 CONFIRM
             </div>
@@ -212,15 +344,22 @@ import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 export default {
     data() {
         return {
-            price: unFormatGasPrice(this.$store.state?.gasDetails?.price), //当前选中的gas
+            price: unFormatGasPrice(this.$store.state?.gasDetailsETH?.price), //当前选中的gas
             priceBSC: unFormatGasPrice(this.$store.state?.gasDetailsBSC?.price), //当前选中的gas BSC
-            gasEditorModal: false, //设置弹窗
-            selectedType: this.$store.state?.gasDetails?.type, //当前选择类型
+            gasEditorETHModal: false, //设置弹窗
+            gasEditorBSCModal: false, //设置弹窗
+            selectedType: this.$store.state?.gasDetailsETH?.type, //当前选择类型
             selectedTypeBSC: this.$store.state?.gasDetailsBSC?.type, //当前选择类型 BSC
             networkSpeeds: { SLOW: {}, MEDIUM: {}, FAST: {} }, //网络速度
+            networkSpeedsBSC: { SLOW: {}, MEDIUM: {}, FAST: {} }, //网络速度
             speedLoading: false, //加载状态
             customPrice: null, //自定义的gas
-            NETWORK_SPEEDS_TO_KEY //速度类型
+            customPriceBSC: null, //自定义的gas
+            NETWORK_SPEEDS_TO_KEY, //速度类型
+            networkType: {
+                ETH: 'ETH',
+                BSC: 'BSC',
+            }
         };
     },
     props: {
@@ -242,17 +381,25 @@ export default {
         //获取数据
         await this.getNetworkSpeeds();
 
-        let status = this.typeSelector('status')
+        let status = this.$store.state?.gasDetailsETH.status
+        let statusBSC = this.$store.state?.gasDetailsBSC.status
         
+        //初始化当前数据
+        if (statusBSC == -1) {
+            this.setGasDetailsBSC(this.priceBSC, this.selectedTypeBSC);
+        }
+
         //初始化当前数据
         if (status == -1) {
             this.setGasDetails(this.price, this.selectedType);
         } else {
-            this.gasEditorModalChange(true);
+            this.gasEditorETHModalChange(true);
+            this.gasEditorBSCModalChange(true);
         }
     },
     watch: {
         selectedTypeChangeListener() {},
+        selectedTypeChangeListenerBSC() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
         walletNetworkId() {}
@@ -266,9 +413,20 @@ export default {
             }
             return;
         },
+        //监听选择类型改变
+        selectedTypeChangeListenerBSC() {
+            if (this.selectedTypeBSC != "CUSTOM") {
+                this.customPriceBSC = null;
+            }
+            return;
+        },
 
         disabledConfirmBtn() {
             return this.selectedType == "CUSTOM" && _.lte(this.customPrice, 0);
+        },
+
+        disabledConfirmBtnBSC() {
+            return this.selectedTypeBSC == "CUSTOM" && _.lte(this.customPriceBSC, 0);
         },
 
         isEthereumNetwork() {
@@ -287,44 +445,48 @@ export default {
     methods: {
         //获取网络速度
         async getNetworkSpeeds() {
-            let forceNetwork = ''
-            if(this.forceNetwork) {
-                console.log(this.forceNetwork, 'this.forceNetwork')
-                let netID = this.$store.state?.walletNetworkId
-                if(netID == 1 || netID == 56) {
-                    //期望取到 主网
-                    forceNetwork = this.forceNetwork == 'ETH' ? '1': '56'
-                } else {
-                    //期望取到 测试
-                    forceNetwork = this.forceNetwork == 'ETH' ? '3': '97'
-                }
+            let forceETHNetwork
+            let forceBSCNetwork
+            if(this.walletNetworkId == '3' || this.walletNetworkId == '97') {
+                forceETHNetwork = '3'
+                forceBSCNetwork = '97'
+            } else {
+                forceETHNetwork = '1'
+                forceBSCNetwork = '56'
             }
+            
             try {
                 this.speedLoading = true;
-
-                await getNetworkSpeeds(forceNetwork)
+                await getNetworkSpeeds(forceETHNetwork)
                     .then(res => {
                         this.networkSpeeds = res;
-
-                        this.selectedType = this.typeSelector('type')
-
+                        this.selectedType = this.$store.state?.gasDetailsETH?.type
                         //判断赋值
                         if (this.selectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
-                            if(this.forceNetwork != 'BSC') {
-                                this.price = this.customPrice = unFormatGasPrice(
-                                    this.$store.state?.gasDetails?.price
-                                );
-                            } else {
-                                this.priceBSC = this.customPrice = unFormatGasPrice(
-                                    this.$store.state?.gasDetailsBSC?.price
-                                );
-                            }
+                            this.price = this.customPrice = unFormatGasPrice(
+                                this.$store.state?.gasDetailsETH?.price
+                            );
                         } else {
                             this.price = this.networkSpeeds[
                                 this.selectedType
                             ].price;
-                            this.priceBSC = this.networkSpeeds[
-                                this.selectedType
+                        }
+                    })
+                    .finally(() => {
+                        this.speedLoading = false;
+                    });
+                await getNetworkSpeeds(forceBSCNetwork)
+                    .then(res => {
+                        this.networkSpeedsBSC = res;
+                        this.selectedTypeBSC = this.$store.state?.gasDetailsBSC?.type
+                        //判断赋值
+                        if (this.selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
+                            this.priceBSC = this.customPriceBSC = unFormatGasPrice(
+                                this.$store.state?.gasDetailsBSC?.price
+                            );
+                        } else {
+                            this.priceBSC = this.networkSpeedsBSC[
+                                this.selectedTypeBSC
                             ].price;
                         }
                     })
@@ -337,16 +499,36 @@ export default {
         },
 
         //gas设置窗口改变事件
-        async gasEditorModalChange(status) {
+        async gasEditorETHModalChange(status) {
             //每次显示时都重新获取最新的数据
             if (status) {
                 //重新获取选中项
-                this.selectedType = this.$store.state?.gasDetails?.type;
+                this.selectedType = this.$store.state?.gasDetailsETH?.type;
 
                 await this.getNetworkSpeeds();
 
                 const gwei = unFormatGasPrice(
-                    this.$store.state?.gasDetails?.price
+                    this.$store.state?.gasDetailsETH?.price
+                );
+
+                //如果price发生变化时,更新数据
+                if (this.price != gwei) {
+                    this.setGasDetails(this.price, this.selectedType);
+                }
+            }
+        },
+
+        //gas设置窗口改变事件
+        async gasEditorBSCModalChange(status) {
+            //每次显示时都重新获取最新的数据
+            if (status) {
+                //重新获取选中项
+                this.selectedType = this.$store.state?.gasDetailsBSC?.type;
+
+                await this.getNetworkSpeeds();
+
+                const gwei = unFormatGasPrice(
+                    this.$store.state?.gasDetailsBSC?.price
                 );
 
                 //如果price发生变化时,更新数据
@@ -360,6 +542,10 @@ export default {
         selectedTypeChange(type) {
             this.selectedType = type;
         },
+        //选择类型改变
+        selectedTypeChangeBSC(type) {
+            this.selectedTypeBSC = type;
+        },
 
         //自定义gas输入框获取焦点事件
         customPriceFocus() {
@@ -369,64 +555,93 @@ export default {
             });
         },
 
+        //自定义gas输入框获取焦点事件
+        customPriceFocusBSC() {
+            this.selectedTypeChangeBSC("CUSTOM");
+            this.$nextTick(() => {
+                this.$refs.numbsc.$el.querySelector("input").focus();
+            });
+        },
+
         //确认gas
-        confirmGas() {
-            if (!this.disabledConfirmBtn) {
-                let price;
+        confirmGas(networkType) {
 
-                //获取price
-                if (this.selectedType == "CUSTOM") {
-                    price = this.customPrice;
+                if(networkType == this.networkType.ETH) {
+                    if (!this.disabledConfirmBtn) {
+                        let price;
+                        //获取price
+                        if (this.selectedType == "CUSTOM") {
+                            price = this.customPrice;
+                        } else {
+                            price = this.networkSpeeds[this.selectedType].price;
+                        }
+
+                        //防止为null
+                        if (price == null) {
+                            this.customPrice = price = 0;
+                        }
+
+                        this.price = price;
+
+                        this.setGasDetails(price, this.selectedType);
+                    }
+
                 } else {
-                    price = this.networkSpeeds[this.selectedType].price;
+                    if (!this.disabledConfirmBtnBSC) {
+                        let price;
+
+                        //获取price
+                        if (this.selectedTypeBSC == "CUSTOM") {
+                            price = this.customPriceBSC;
+                        } else {
+                            price = this.networkSpeedsBSC[this.selectedTypeBSC].price;
+                        }
+
+                        //防止为null
+                        if (price == null) {
+                            this.customPriceBSC = price = 0;
+                        }
+
+                        this.priceBSC = price;
+    console.log(price, this.selectedTypeBSC, 'price, this.selectedTypeBSC')
+                        this.setGasDetailsBSC(price, this.selectedTypeBSC);
+                    }
                 }
 
-                //防止为null
-                if (price == null) {
-                    this.customPrice = price = 0;
-                }
-
-                this.price = price;
-
-                this.setGasDetails(price, this.selectedType);
-
-                this.gasEditorModal = false;
-            }
+                this.gasEditorETHModal = false;
+                this.gasEditorBSCModal = false;
         },
 
         //设置gas
         setGasDetails(price, type) {
-
-            if(this.forceNetwork != 'BSC') {
-                this.$store.commit("setGasDetails", {
-                    price: formatGasPrice(price),
-                    type,
-                    status: 1
-                });
-            } else {
-                this.$store.commit("setGasDetailsBSC", {
-                    price: formatGasPrice(price),
-                    type,
-                    status: 1
-                });
-            }
+            this.$store.commit("setGasDetailsETH", {
+                price: formatGasPrice(price),
+                type,
+                status: 1
+            });
         },
 
-        typeSelector(param) {
-            return this.forceNetwork != 'BSC' ? this.$store.state?.gasDetails[param] : this.$store.state?.gasDetailsBSC[param]
+        //设置gas
+        setGasDetailsBSC(price, type) {
+            this.$store.commit("setGasDetailsBSC", {
+                price: formatGasPrice(price),
+                type,
+                status: 1
+            });
         }
     }
 };
 </script>
 
 <style lang="scss">
-#gasEditor {
+#gasEditorSwap {
     width: 100%;
 
     .editInfo {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin-top: 10px;
 
         .infoLeft {
             display: flex;
@@ -498,7 +713,7 @@ export default {
         }
     }
 
-    .gasEditorModal {
+    .gasEditorSwapModal {
         .ivu-modal {
             .ivu-modal-body {
                 position: relative;

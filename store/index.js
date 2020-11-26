@@ -6,6 +6,7 @@ export const state = () => ({
     theme: "light", //默认主题,light或dark
     currentAction: 0, //应用页面跳转控制 1build 2burn 3claim 4transfer
     gasDetails: { price: 0, type: NETWORK_SPEEDS_TO_KEY.MEDIUM, status: -1 }, //gas设置详情,-1未初始化,1已初始化
+    gasDetailsETH: { price: 0, type: NETWORK_SPEEDS_TO_KEY.MEDIUM, status: -1 }, //gas设置详情,-1未初始化,1已初始化
     gasDetailsBSC: { price: 0, type: NETWORK_SPEEDS_TO_KEY.MEDIUM, status: -1 }, //gas设置详情,-1未初始化,1已初始化
     wallet: { address: "", status: -1 }, //钱包 address=钱包地址,status:-1=未初始化数据,0:更新中,1更新完成,2更新失败,
     walletDetails: {}, //钱包详情
@@ -30,6 +31,10 @@ export const mutations = {
 
     setGasDetails(state, gasDetails) {
         state.gasDetails = gasDetails;
+    },
+
+    setGasDetailsETH(state, gasDetails) {
+        state.gasDetailsETH = gasDetails;
     },
 
     setGasDetailsBSC(state, gasDetails) {
