@@ -337,6 +337,7 @@ import {
     unFormatGasPrice,
     isEthereumNetwork,
     isBinanceNetwork,
+    SUPPORTED_NETWORKS_MAP,
 } from "@/assets/linearLibrary/linearTools/network";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
@@ -445,20 +446,10 @@ export default {
     methods: {
         //获取网络速度
         async getNetworkSpeeds(both) { //param is need both request
-            let forceETHNetwork
-            let forceBSCNetwork
-            if(this.walletNetworkId == '3' || this.walletNetworkId == '97') {
-                forceETHNetwork = '3'
-                forceBSCNetwork = '97'
-            } else {
-                forceETHNetwork = '1'
-                forceBSCNetwork = '56'
-            }
-            
             try {
                 this.speedLoading = true;
                 if(this.gasEditorETHModal || both) {
-                    await getNetworkSpeeds(forceETHNetwork)
+                    await getNetworkSpeeds(SUPPORTED_NETWORKS_MAP.MAINNET)
                         .then(res => {
                             this.networkSpeeds = res;
                             this.selectedType = this.$store.state?.gasDetailsETH?.type
@@ -478,7 +469,7 @@ export default {
                         });
                 }
                 if(this.gasEditorBSCModal || both) {
-                    await getNetworkSpeeds(forceBSCNetwork)
+                    await getNetworkSpeeds(SUPPORTED_NETWORKS_MAP.BSCMAINNET)
                         .then(res => {
                             this.networkSpeedsBSC = res;
                             this.selectedTypeBSC = this.$store.state?.gasDetailsBSC?.type
@@ -537,7 +528,7 @@ export default {
 
                 //如果price发生变化时,更新数据
                 if (this.price != gwei) {
-                    this.setGasDetails(this.price, this.selectedType);
+                    this.setGasDetailsBSC(this.price, this.selectedType);
                 }
             }
         },
