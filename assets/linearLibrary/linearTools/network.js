@@ -67,6 +67,11 @@ export const INFURA_JSON_RPC_URLS = {
     3: `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`
 };
 
+export const GRAPH_API = {
+    ETHEREUM: "ethereum",
+    BINANCE: "binance"
+};
+
 export async function getEthereumNetwork() {
     if (!window.ethereum) {
         window.open(WALLET_EXTENSIONS.METAMASK);
@@ -115,9 +120,10 @@ export async function getBinanceNetwork() {
     }
 }
 
-export const getNetworkSpeeds = async (forceNetwork) => {
-    const walletNetworkId = forceNetwork == '' ? $nuxt.$store.state?.walletNetworkId : forceNetwork
-    
+export const getNetworkSpeeds = async forceNetwork => {
+    const walletNetworkId =
+        forceNetwork == "" ? $nuxt.$store.state?.walletNetworkId : forceNetwork;
+
     if (isEthereumNetwork(walletNetworkId)) {
         let result = await fetch(URLS.ETH_GAS_STATION, {
             headers: {

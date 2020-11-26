@@ -92,7 +92,7 @@
                                 currentConfirm &&
                                 !currentErrMsg
                         "
-                        @click.stop="openEtherScan(currentHash)"
+                        @click.stop="openBlockchainScan(currentHash)"
                     >
                         View on Etherscan
                         <img src="@/static/arrow_right.svg" />
@@ -128,7 +128,7 @@
 </template>
 
 <script>
-import { openEtherScan } from "@/common/utils";
+import { openBlockchainScan } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
 import { SUPPORTED_WALLETS_MAP } from "@/assets/linearLibrary/linearTools/network";
 export default {
@@ -162,7 +162,7 @@ export default {
     },
     data() {
         return {
-            openEtherScan,
+            openBlockchainScan,
             SUPPORTED_WALLETS_MAP
         };
     },

@@ -249,7 +249,7 @@ import _ from "lodash";
 import gasEditor from "@/components/gasEditor";
 import {
     toNonExponential,
-    openEtherScan,
+    openBlockchainScan,
     setCursorRange,
     findParents,
     removeClass,

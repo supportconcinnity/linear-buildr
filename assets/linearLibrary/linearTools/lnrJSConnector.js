@@ -6,7 +6,10 @@ import {
     onMetamaskAccountChange,
     onBinanceAccountChange,
     onBinanceChainChange,
-    onMetamaskChainChange
+    onMetamaskChainChange,
+    GRAPH_API,
+    isEthereumNetwork,
+    isBinanceNetwork
 } from "./network";
 import { LinearJs } from "../linearJs";
 import $pub from "pubsub-js";
@@ -185,6 +188,15 @@ export const selectedWallet = async (walletType, chainChange = false) => {
             store.commit("mergeWallet", {
                 address: walletStatus?.currentWallet
             });
+
+            //子图接口api
+            let graphApi;
+            if (isEthereumNetwork(walletStatus.networkId)) {
+                graphApi = GRAPH_API.ETHEREUM;
+            } else if (isBinanceNetwork(walletStatus.networkId)) {
+                graphApi = GRAPH_API.BINANCE;
+            }
+            store.commit("setCurrentGraphApi", graphApi);
 
             //绑定事件
             if (walletType == SUPPORTED_WALLETS_MAP.METAMASK) {

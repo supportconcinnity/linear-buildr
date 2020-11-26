@@ -1109,8 +1109,6 @@ export default {
                 return;
             }
 
-            console.log(this.burnData.lockBN, this.burnData.LINA2USDBN);
-
             //当前价格的lock lina能生成多少lusd
             let lockLINAToBuildLUSDBN = bnDiv(
                 bnMul(this.burnData.lockBN, this.burnData.LINA2USDBN),
