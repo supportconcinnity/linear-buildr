@@ -67,6 +67,11 @@ export const INFURA_JSON_RPC_URLS = {
     3: `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`
 };
 
+export const GRAPH_API = {
+    ETHEREUM: "ethereum",
+    BINANCE: "binance"
+};
+
 export async function getEthereumNetwork() {
     if (!window.ethereum) {
         window.open(WALLET_EXTENSIONS.METAMASK);

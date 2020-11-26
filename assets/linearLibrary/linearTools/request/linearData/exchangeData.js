@@ -4,7 +4,11 @@ const pageResults = require("graph-results-pager");
 
 const graphAPIEndpoints = {
     // exchange:"https://api.thegraph.com/subgraphs/name/ssscott2019/linearexchange"
-    exchange:"https://api.thegraph.com/subgraphs/name/linear-tech/linear-exchange-ropsten"
+    ethereum:
+        "https://api.thegraph.com/subgraphs/name/linear-tech/linear-exchange-ropsten",
+
+    binance:
+        "https://api.thegraph.com/subgraphs/name/linear-tech/linear-exchange-ropsten"
 };
 
 const maxRequest = 1000;
@@ -13,9 +17,16 @@ module.exports = {
     pageResults,
     graphAPIEndpoints,
     exchange: {
-        pricesLast({ max = maxRequest, source = undefined } = {}) {
+        pricesLast({
+            max = maxRequest,
+            source = undefined,
+            graphApi = undefined
+        } = {}) {
+            if (!graphApi) {
+                graphApi = $nuxt.$store.state?.currentGraphApi;
+            }
             return pageResults({
-                api: graphAPIEndpoints.exchange,
+                api: graphAPIEndpoints[graphApi],
                 max,
                 query: {
                     entity: "pricesLasts",

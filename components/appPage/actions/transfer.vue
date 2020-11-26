@@ -192,7 +192,7 @@
 <script>
 import {
     toNonExponential,
-    openEtherScan,
+    openBlockchainScan,
     findParents,
     removeClass,
     addClass
@@ -553,7 +553,7 @@ export default {
         },
         //交易状态页面回调方法 打开etherscan
         etherscan() {
-            openEtherScan(this.confirmTransactionHash);
+            openBlockchainScan(this.confirmTransactionHash);
         },
         //交易状态页面回调方法 回到主页
         homepage() {

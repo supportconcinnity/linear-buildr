@@ -184,7 +184,7 @@ export const addClass = ($el, $className) => {
  * 根据HASH打开网站
  * @param {String} hash  交易hash
  */
-export const openEtherScan = $hash => {
+export const openBlockchainScan = $hash => {
     try {
         let href;
         let walletNetworkId = $nuxt.$store.state?.walletNetworkId;
@@ -211,7 +211,7 @@ export const openEtherScan = $hash => {
 
         window.open(href, "_blank");
     } catch (error) {
-        console.log(error, "openEtherScan");
+        console.log(error, "openBlockchainScan");
     }
 };
 

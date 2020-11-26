@@ -1,5 +1,5 @@
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
-import { SUPPORTED_NETWORKS } from "~/assets/linearLibrary/linearTools/network";
+import { SUPPORTED_NETWORKS,GRAPH_API } from "@/assets/linearLibrary/linearTools/network";
 
 export const state = () => ({
     locale: "en", //默认语言
@@ -13,7 +13,8 @@ export const state = () => ({
     walletDetailsLoopRefreshStatus: true,
     walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS_MAP
     walletNetworkId: "1", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
-    walletNetworkName: SUPPORTED_NETWORKS["1"] ,//当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
+    walletNetworkName: SUPPORTED_NETWORKS["1"], //当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
+    currentGraphApi: GRAPH_API.ETHEREUM //当前钱包网络子图接口地址
 });
 
 export const mutations = {
@@ -39,6 +40,10 @@ export const mutations = {
 
     setGasDetailsBSC(state, gasDetails) {
         state.gasDetailsBSC = gasDetails;
+    },
+
+    setCurrentGraphApi(state, graphApi) {
+        state.currentGraphApi = graphApi;
     },
 
     mergeGasDetails(state, gasDetails) {

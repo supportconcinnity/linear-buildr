@@ -34,7 +34,7 @@
             </div>
             <div class="description">
                 {{ value }} &nbsp;
-                <span @click="openEtherScan(hash)">view</span>
+                <span @click="openBlockchainScan(hash)">view</span>
             </div>
         </div>
         <div class="btns">
@@ -52,14 +52,14 @@
 
 <script>
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-import { openEtherScan } from "@/common/utils";
+import { openBlockchainScan } from "@/common/utils";
 
 export default {
     name: "notification",
     data() {
         return {
             status: 0,
-            openEtherScan,
+            openBlockchainScan,
         };
     },
     props: {
