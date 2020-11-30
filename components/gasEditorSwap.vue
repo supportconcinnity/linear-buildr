@@ -52,7 +52,7 @@
                     {{ priceBSC }}
                 </span>
                 <span class="unit">
-                    BNB
+                    GWEI
                 </span>
             </div>
         </div>
@@ -212,7 +212,7 @@
             <div class="content">
                 <div class="contentTitle">Edit</div>
                 <div class="contentDesc">
-                    Adjust the gas price (BNB) below to set the transaction
+                    Adjust the gas price (GWEI) below to set the transaction
                     speed by recommended ones or entering manually
                 </div>
 
@@ -297,7 +297,7 @@
                                 Binance Smart Chain fee
                             </div>
                             <div class="unit">
-                                BNB
+                                GWEI
                             </div>
                         </div>
                     </div>

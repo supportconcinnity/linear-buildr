@@ -19,8 +19,7 @@ class Util {
                     const transactionInfo = await this.contractSettings.provider.getTransactionReceipt(
                         transactionHash
                     );
-                    status = transactionInfo.status;
-                    resolve(status == 1);
+                    resolve(transactionInfo?.status == 1);
                 } else {
                     setTimeout(check, 3000);
                 }

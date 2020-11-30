@@ -9,7 +9,7 @@ const SUPPORTED_NETWORKS = {
 };
 
 const API_KEY = {
-    // infura: process.env.INFURA_PROJECT_ID,
+    infura: process.env.INFURA_PROJECT_ID,
     alchemy: process.env.ALCHEMY_KEY,
     etherscan: process.env.ETHERSCAN_KEY
 };
@@ -22,7 +22,7 @@ class ContractSettings {
         this.network = SUPPORTED_NETWORKS[Number(this.networkId)];
         this.provider = provider || getDefaultProvider();
         if (!provider && networkId) {
-            let tempNetwork;
+            let tempNetwork = this.network;
             switch (this.networkId) {
                 case 56: //BSC主网RPC
                     tempNetwork = "https://bsc-dataseed.binance.org/";
@@ -30,9 +30,6 @@ class ContractSettings {
                 case 97: //BSC测试网RPC
                     tempNetwork =
                         "https://data-seed-prebsc-1-s1.binance.org:8545/";
-                    break;
-                default:
-                    tempNetwork = this.network;
                     break;
             }
             this.provider = getDefaultProvider(tempNetwork, API_KEY);
