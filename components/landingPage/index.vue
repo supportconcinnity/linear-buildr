@@ -64,7 +64,7 @@
                         <div class="boxSub">Connect</div>
 
                         <div class="boxTitle">
-                            Etherium<br />
+                            Ethereum<br />
                             Chainlink
                         </div>
 

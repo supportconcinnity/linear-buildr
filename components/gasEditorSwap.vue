@@ -219,9 +219,12 @@
                 <div class="selections">
                     <div
                         class="selectionItem"
-                        @click="selectedTypeChangeBSC(NETWORK_SPEEDS_TO_KEY.SLOW)"
+                        @click="
+                            selectedTypeChangeBSC(NETWORK_SPEEDS_TO_KEY.SLOW)
+                        "
                         :class="{
-                            active: selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.SLOW
+                            active:
+                                selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.SLOW
                         }"
                     >
                         <div class="itemSpeed">
@@ -243,7 +246,8 @@
                             selectedTypeChangeBSC(NETWORK_SPEEDS_TO_KEY.MEDIUM)
                         "
                         :class="{
-                            active: selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.MEDIUM
+                            active:
+                                selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.MEDIUM
                         }"
                     >
                         <div class="itemSpeed">
@@ -261,9 +265,12 @@
 
                     <div
                         class="selectionItem"
-                        @click="selectedTypeChangeBSC(NETWORK_SPEEDS_TO_KEY.FAST)"
+                        @click="
+                            selectedTypeChangeBSC(NETWORK_SPEEDS_TO_KEY.FAST)
+                        "
                         :class="{
-                            active: selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.FAST
+                            active:
+                                selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.FAST
                         }"
                     >
                         <div class="itemSpeed">
@@ -337,7 +344,7 @@ import {
     unFormatGasPrice,
     isEthereumNetwork,
     isBinanceNetwork,
-    SUPPORTED_NETWORKS_MAP,
+    SUPPORTED_NETWORKS_MAP
 } from "@/assets/linearLibrary/linearTools/network";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
@@ -358,13 +365,13 @@ export default {
             customPriceBSC: null, //自定义的gas
             NETWORK_SPEEDS_TO_KEY, //速度类型
             networkType: {
-                ETH: 'ETH',
-                BSC: 'BSC',
+                ETH: "ETH",
+                BSC: "BSC"
             }
         };
     },
     props: {
-        forceNetwork: '',
+        forceNetwork: ""
     },
     filters: {
         capitalize(val) {
@@ -382,12 +389,14 @@ export default {
         //获取数据
         await this.getNetworkSpeeds(true);
 
-        let status = this.$store.state?.gasDetailsETH.status
-        let statusBSC = this.$store.state?.gasDetailsBSC.status
-        
+        let status = this.$store.state?.gasDetailsETH.status;
+        let statusBSC = this.$store.state?.gasDetailsBSC.status;
+
         //初始化当前数据
         if (statusBSC == -1) {
             this.setGasDetailsBSC(this.priceBSC, this.selectedTypeBSC);
+        } else {
+            this.gasEditorBSCModalChange(true);
         }
 
         //初始化当前数据
@@ -395,7 +404,6 @@ export default {
             this.setGasDetails(this.price, this.selectedType);
         } else {
             this.gasEditorETHModalChange(true);
-            this.gasEditorBSCModalChange(true);
         }
     },
     watch: {
@@ -427,7 +435,10 @@ export default {
         },
 
         disabledConfirmBtnBSC() {
-            return this.selectedTypeBSC == "CUSTOM" && _.lte(this.customPriceBSC, 0);
+            return (
+                this.selectedTypeBSC == "CUSTOM" &&
+                _.lte(this.customPriceBSC, 0)
+            );
         },
 
         isEthereumNetwork() {
@@ -445,16 +456,20 @@ export default {
 
     methods: {
         //获取网络速度
-        async getNetworkSpeeds(both) { //param is need both request
+        async getNetworkSpeeds(both) {
+            //param is need both request
             try {
                 this.speedLoading = true;
-                if(this.gasEditorETHModal || both) {
+                if (this.gasEditorETHModal || both) {
                     await getNetworkSpeeds(SUPPORTED_NETWORKS_MAP.MAINNET)
                         .then(res => {
                             this.networkSpeeds = res;
-                            this.selectedType = this.$store.state?.gasDetailsETH?.type
+                            this.selectedType = this.$store.state?.gasDetailsETH?.type;
                             //判断赋值
-                            if (this.selectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
+                            if (
+                                this.selectedType ==
+                                NETWORK_SPEEDS_TO_KEY.CUSTOM
+                            ) {
                                 this.price = this.customPrice = unFormatGasPrice(
                                     this.$store.state?.gasDetailsETH?.price
                                 );
@@ -468,13 +483,16 @@ export default {
                             this.speedLoading = false;
                         });
                 }
-                if(this.gasEditorBSCModal || both) {
+                if (this.gasEditorBSCModal || both) {
                     await getNetworkSpeeds(SUPPORTED_NETWORKS_MAP.BSCMAINNET)
                         .then(res => {
                             this.networkSpeedsBSC = res;
-                            this.selectedTypeBSC = this.$store.state?.gasDetailsBSC?.type
+                            this.selectedTypeBSC = this.$store.state?.gasDetailsBSC?.type;
                             //判断赋值
-                            if (this.selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
+                            if (
+                                this.selectedTypeBSC ==
+                                NETWORK_SPEEDS_TO_KEY.CUSTOM
+                            ) {
                                 this.priceBSC = this.customPriceBSC = unFormatGasPrice(
                                     this.$store.state?.gasDetailsBSC?.price
                                 );
@@ -518,7 +536,7 @@ export default {
             //每次显示时都重新获取最新的数据
             if (status) {
                 //重新获取选中项
-                this.selectedType = this.$store.state?.gasDetailsBSC?.type;
+                this.selectedTypeBSC = this.$store.state?.gasDetailsBSC?.type;
 
                 await this.getNetworkSpeeds();
 
@@ -528,7 +546,7 @@ export default {
 
                 //如果price发生变化时,更新数据
                 if (this.price != gwei) {
-                    this.setGasDetailsBSC(this.price, this.selectedType);
+                    this.setGasDetailsBSC(this.price, this.selectedTypeBSC);
                 }
             }
         },
@@ -560,50 +578,49 @@ export default {
 
         //确认gas
         confirmGas(networkType) {
-
-                if(networkType == this.networkType.ETH) {
-                    if (!this.disabledConfirmBtn) {
-                        let price;
-                        //获取price
-                        if (this.selectedType == "CUSTOM") {
-                            price = this.customPrice;
-                        } else {
-                            price = this.networkSpeeds[this.selectedType].price;
-                        }
-
-                        //防止为null
-                        if (price == null) {
-                            this.customPrice = price = 0;
-                        }
-
-                        this.price = price;
-
-                        this.setGasDetails(price, this.selectedType);
+            if (networkType == this.networkType.ETH) {
+                if (!this.disabledConfirmBtn) {
+                    let price;
+                    //获取price
+                    if (this.selectedType == "CUSTOM") {
+                        price = this.customPrice;
+                    } else {
+                        price = this.networkSpeeds[this.selectedType].price;
                     }
 
-                } else {
-                    if (!this.disabledConfirmBtnBSC) {
-                        let price;
-
-                        //获取price
-                        if (this.selectedTypeBSC == "CUSTOM") {
-                            price = this.customPriceBSC;
-                        } else {
-                            price = this.networkSpeedsBSC[this.selectedTypeBSC].price;
-                        }
-
-                        //防止为null
-                        if (price == null) {
-                            this.customPriceBSC = price = 0;
-                        }
-
-                        this.priceBSC = price;
-                        this.setGasDetailsBSC(price, this.selectedTypeBSC);
+                    //防止为null
+                    if (price == null) {
+                        this.customPrice = price = 0;
                     }
+
+                    this.price = price;
+
+                    this.setGasDetails(price, this.selectedType);
                 }
+            } else {
+                if (!this.disabledConfirmBtnBSC) {
+                    let price;
 
-                this.gasEditorETHModal = false;
-                this.gasEditorBSCModal = false;
+                    //获取price
+                    if (this.selectedTypeBSC == "CUSTOM") {
+                        price = this.customPriceBSC;
+                    } else {
+                        price = this.networkSpeedsBSC[this.selectedTypeBSC]
+                            .price;
+                    }
+
+                    //防止为null
+                    if (price == null) {
+                        this.customPriceBSC = price = 0;
+                    }
+
+                    this.priceBSC = price;
+                    this.setGasDetailsBSC(price, this.selectedTypeBSC);
+                }
+            }
+
+            this.gasEditorETHModal = false;
+            this.gasEditorBSCModal = false;
         },
 
         //设置gas

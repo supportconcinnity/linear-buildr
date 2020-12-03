@@ -108,9 +108,16 @@ export const storeDetailsData = async () => {
             const isEthereum = isEthereumNetwork(walletNetworkId);
             const isBinance = isBinanceNetwork(walletNetworkId);
 
+            let LnProxy;
+
+            if (isEthereum) {
+                LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+            } else if (isBinance) {
+                LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
+            }
+
             const {
                 lnrJS: {
-                    LnProxyERC20,
                     LnCollateralSystem,
                     lUSD,
                     LnDebtSystem,
@@ -124,7 +131,7 @@ export const storeDetailsData = async () => {
             const result = await Promise.all([
                 LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress),
                 getBuildRatio(),
-                LnProxyERC20.balanceOf(walletAddress),
+                LnProxy.balanceOf(walletAddress),
                 LnCollateralSystem.userCollateralData(
                     walletAddress,
                     utils.formatBytes32String("LINA")

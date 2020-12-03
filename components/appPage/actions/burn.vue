@@ -223,7 +223,9 @@ import {
 
 import {
     bufferGasLimit,
-    DEFAULT_GAS_LIMIT
+    DEFAULT_GAS_LIMIT,
+    isBinanceNetwork,
+    isEthereumNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 
 import {
@@ -316,7 +318,10 @@ export default {
         this.getBurnData(this.walletAddress);
     },
     watch: {
-        walletAddress() {}
+        walletAddress() {},
+        isEthereumNetwork() {},
+        isBinanceNetwork() {},
+        walletNetworkId() {}
     },
     computed: {
         //burn按钮禁止状态
@@ -334,6 +339,18 @@ export default {
 
         walletAddress() {
             return this.$store.state?.wallet?.address;
+        },
+
+        isEthereumNetwork() {
+            return isEthereumNetwork(this.walletNetworkId);
+        },
+
+        isBinanceNetwork() {
+            return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        walletNetworkId() {
+            return this.$store.state?.walletNetworkId;
         }
     },
     methods: {
@@ -342,11 +359,17 @@ export default {
             try {
                 this.processing = true;
 
+                let LnProxy;
+                if (this.isEthereumNetwork) {
+                    LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                } else if (this.isBinanceNetwork) {
+                    LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
+                }
+
                 const {
                     lnrJS: {
                         LnCollateralSystem,
                         lUSD,
-                        LnProxyERC20,
                         LnDebtSystem,
                         LnRewardLocker
                     },
@@ -366,7 +389,7 @@ export default {
                         walletAddress
                     ), //个人全部抵押物兑lUSD,用于计算pratio
                     getBuildRatio(), //目标抵押率
-                    LnProxyERC20.balanceOf(walletAddress), //LINA余额
+                    LnProxy.balanceOf(walletAddress), //LINA余额
                     LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress) //总债务
                 ]);
 
@@ -543,10 +566,7 @@ export default {
 
             this.confirmTransactionStatus = false;
 
-            const burnGasLimit = await this.getBurnGasEstimate(
-                "lUSD",
-                burnAmount
-            );
+            const burnGasLimit = await this.getBurnGasEstimate(burnAmount);
 
             let transaction = await LnBuildBurnSystem.BurnAsset(burnAmount, {
                 gasPrice: this.$store.state?.gasDetails?.price,
@@ -633,18 +653,18 @@ export default {
         },
 
         //评估 burn gas
-        async getBurnGasEstimate(currency, burnAmount) {
+        async getBurnGasEstimate(burnAmount) {
             try {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.burn);
+                const {
+                    lnrJS: { LnBuildBurnSystem },
+                    utils
+                } = lnrJSConnector;
 
-                //const {
-                //    lnrJS: { LnCollateralSystem },
-                //    utils
-                //} = lnrJSConnector;
-                //
-                //let gasEstimate = await LnCollateralSystem.contract.estimateGas.Redeem(utils.formatBytes32String(currency), burnAmount);
-                //
-                //return bufferGasLimit(gasEstimate);
+                let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BurnAsset(
+                    burnAmount
+                );
+
+                return bufferGasLimit(gasEstimate);
             } catch (e) {
                 console.log(e);
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.burn);
@@ -654,16 +674,17 @@ export default {
         //评估 unstake gas
         async getUnstakeGasEstimate(unstakeAmount) {
             try {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.unstake);
+                const {
+                    lnrJS: { LnCollateralSystem },
+                    utils
+                } = lnrJSConnector;
 
-                //const {
-                //    lnrJS: { LnBuildBurnSystem },
-                //    utils
-                //} = lnrJSConnector;
-                //
-                //let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BurnAsset(unstakeAmount);
-                //
-                //return bufferGasLimit(gasEstimate);
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.Redeem(
+                    utils.formatBytes32String("LINA"),
+                    unstakeAmount
+                );
+
+                return bufferGasLimit(gasEstimate);
             } catch (e) {
                 console.log(e);
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.unstake);

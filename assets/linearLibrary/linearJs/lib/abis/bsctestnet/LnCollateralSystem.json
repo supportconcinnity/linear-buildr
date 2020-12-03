@@ -188,7 +188,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "Currency_ETH",
+		"name": "Currency_BNB",
 		"outputs": [
 			{
 				"internalType": "bytes32",
@@ -751,7 +751,7 @@
 	},
 	{
 		"inputs": [],
-		"name": "CollateralEth",
+		"name": "CollateralBnb",
 		"outputs": [
 			{
 				"internalType": "bool",
@@ -771,7 +771,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "RedeemETH",
+		"name": "RedeemBNB",
 		"outputs": [
 			{
 				"internalType": "bool",

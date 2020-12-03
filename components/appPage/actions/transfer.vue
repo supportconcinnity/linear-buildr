@@ -274,7 +274,8 @@ export default {
                     .transferableAssets) {
                     var img = "";
                     if (key == "ETH") img = require("@/static/ETH_logo.svg");
-                    if (key == "BNB") img = require("@/static/currency/lBNB.svg");
+                    if (key == "BNB")
+                        img = require("@/static/currency/lBNB.svg");
                     if (key == "lUSD") img = require("@/static/lina_usd.svg");
                     if (key == "LINA") img = require("@/static/LINA_logo.svg");
                     tempData.push({
@@ -431,11 +432,14 @@ export default {
         sendTransaction(currency, amount, destination, settings) {
             if (!currency) return null;
             if (currency === "LINA") {
-                return lnrJSConnector.lnrJS.LnProxyERC20.transfer(
-                    destination,
-                    amount,
-                    settings
-                );
+                let LnProxy;
+                if (this.isEthereumNetwork) {
+                    LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                } else if (this.isBinanceNetwork) {
+                    LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
+                }
+
+                return LnProxy.transfer(destination, amount, settings);
             } else if (["ETH", "BNB"].includes(currency)) {
                 return lnrJSConnector.signer.sendTransaction({
                     value: amount,
@@ -468,14 +472,21 @@ export default {
                 );
 
                 if (currency === "LINA") {
-                    gasEstimate = await lnrJSConnector.lnrJS.LnProxyERC20.contract.estimateGas.transfer(
+                    let LnProxy;
+                    if (this.isEthereumNetwork) {
+                        LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                    } else if (this.isBinanceNetwork) {
+                        LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
+                    }
+                    gasEstimate = await LnProxy.contract.estimateGas.transfer(
                         destination,
                         amountBN
                     );
                 } else if (["ETH", "BNB"].includes(currency)) {
-                    if (amount === this.selectedAssetMaxValue)
+                    if (amount === this.selectedAssetMaxValue) {
                         //不能转全部eth,需要留手续费
                         throw new Error("input.error.balanceTooLow");
+                    }
                     gasEstimate = await lnrJSConnector.provider.estimateGas({
                         value: amountBN,
                         to: destination
@@ -630,7 +641,7 @@ export default {
                             border: 1px solid #deddde;
                             transition: $animete-time linear;
                             box-shadow: 0 0 0 #deddde;
-                            
+
                             &:hover,
                             &.active {
                                 box-shadow: 0 2px 12px #deddde;

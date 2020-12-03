@@ -68,6 +68,21 @@
         return await this.contract.decimals();
       };
     
+      this.decreaseAllowance = async (spender, subtractedValue, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.decreaseAllowance(spender, subtractedValue, txParams);
+      };
+    
+      this.getOwner = async () => {
+        
+        return await this.contract.getOwner();
+      };
+    
+      this.increaseAllowance = async (spender, addedValue, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.increaseAllowance(spender, addedValue, txParams);
+      };
+    
       this.integrationProxy = async () => {
         
         return await this.contract.integrationProxy();

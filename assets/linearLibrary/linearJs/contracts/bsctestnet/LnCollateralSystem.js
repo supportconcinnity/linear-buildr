@@ -13,9 +13,9 @@
         );
   
         
-      this.Currency_ETH = async () => {
+      this.Currency_BNB = async () => {
         
-        return await this.contract.Currency_ETH();
+        return await this.contract.Currency_BNB();
       };
     
       this.Currency_LINA = async () => {
@@ -163,14 +163,14 @@
         return await this.contract.Redeem(_currency, _amount, txParams);
       };
     
-      this.CollateralEth = async (txParams) => {
+      this.CollateralBnb = async (txParams) => {
         txParams = txParams || {};
-        return await this.contract.CollateralEth(txParams);
+        return await this.contract.CollateralBnb(txParams);
       };
     
-      this.RedeemETH = async (_amount, txParams) => {
+      this.RedeemBNB = async (_amount, txParams) => {
         txParams = txParams || {};
-        return await this.contract.RedeemETH(_amount, txParams);
+        return await this.contract.RedeemBNB(_amount, txParams);
       };
     
       }

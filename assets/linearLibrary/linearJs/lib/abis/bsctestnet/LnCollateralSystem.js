@@ -182,7 +182,7 @@ export default [
   },
   {
     inputs: [],
-    name: 'Currency_ETH',
+    name: 'Currency_BNB',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
     type: 'function',
@@ -503,7 +503,7 @@ export default [
   },
   {
     inputs: [],
-    name: 'CollateralEth',
+    name: 'CollateralBnb',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'payable',
     type: 'function',
@@ -511,7 +511,7 @@ export default [
   },
   {
     inputs: [ { internalType: 'uint256', name: '_amount', type: 'uint256' } ],
-    name: 'RedeemETH',
+    name: 'RedeemBNB',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'nonpayable',
     type: 'function'

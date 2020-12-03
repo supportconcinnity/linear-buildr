@@ -1,6 +1,5 @@
 <template>
     <div id="swap">
-
         <Tabs v-model="actionTabs" class="actionTabs">
             <TabPane name="m0">
                 <div class="swapBox">
@@ -10,6 +9,8 @@
                             You can select the type of currency and enter the
                             amount you want to swap
                         </div>
+
+                        <!-- {{ frozenBalance }}-frozenBalance -->
 
                         <div class="fromToBox">
                             <div class="box">
@@ -102,7 +103,7 @@
                                                     currency[selected].avaliable
                                                 "
                                                 type="text"
-                                                v-model="transferNumber"
+                                                v-model="swapNumber"
                                                 placeholder="0"
                                                 @on-focus="inputFocus(0)"
                                                 @on-blur="inputBlur(0)"
@@ -154,31 +155,30 @@
                     >
                         SWAP NOW
                     </div>
+
+                    <Spin fix v-if="processing"></Spin>
                 </div>
             </TabPane>
             <TabPane name="m1">
-                <wating
+                <watingEnhance
                     class="waitingBox"
                     v-if="this.actionTabs == 'm1'"
-                    @etherscan="etherscan"
-                    @homepage="goHomePage"
-                ></wating>
+                    :currentStep="confirmTransactionStep"
+                    :currentHash="confirmTransactionHash"
+                    :currentConfirm="confirmTransactionStatus"
+                    :currentErrMsg="transactionErrMsg"
+                    :setupArray="waitProcessArray"
+                    @tryAgain="waitProcessFlow"
+                    @close="setDefaultTab"
+                ></watingEnhance>
             </TabPane>
-            <TabPane name="m2">
+            <!-- <TabPane name="m2">
                 <success
                     class="successBox"
                     @homepage="goHomePage"
                     @close="setDefaultTab"
                 ></success>
-            </TabPane>
-            <TabPane name="m3">
-                <wrong
-                    class="wrongBox"
-                    @again="tryAgain"
-                    @close="setDefaultTab"
-                    @homepage="goHomePage"
-                ></wrong>
-            </TabPane>
+            </TabPane> -->
         </Tabs>
     </div>
 </template>
@@ -195,9 +195,19 @@ import {
     addClass
 } from "@/common/utils";
 import {
+    bufferGasLimit,
+    DEFAULT_GAS_LIMIT,
     isBinanceNetwork,
-    isEthereumNetwork
+    isEthereumNetwork,
+    SUPPORTED_WALLETS_MAP
 } from "@/assets/linearLibrary/linearTools/network";
+import lnrJSConnector, {
+    connectToWallet,
+    selectedWallet
+} from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import { log } from "util";
+import { bn2n, bnSub, n2bn } from "~/common/bnCalc";
+import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
 
 export default {
     name: "swap",
@@ -208,21 +218,29 @@ export default {
         return {
             toNonExponential,
             setCursorRange,
-            actionTabs: "m0", //子页(m0默认,m1等待,m2成功,m3错误)
-            swapDisabled: false,
+            actionTabs: "m0", //子页(m0默认,m1等待)
             showDropdown: false,
             selected: 0,
-            transferNumber: null,
-            processing: false, //swap按钮防抖
-            confirmTransactionStatus: false, //确认交易状态
-            confirmTransactionHash: "", //交易hash
+            swapNumber: null,
+
+            confirmTransactionStep: 0, //当前交易进度
+            confirmTransactionStatus: false, //当前交易确认状态
+            confirmTransactionHash: "", //当前交易hash
+            transactionErrMsg: "", //交易错误信息
+            processing: false, // 处理状态, 防止重复点击
+            waitProcessArray: [], //等待交易进度组
+            waitProcessFlow: Function, //flow闭包函数
+
+            frozenBalance: 0,
 
             errors: {
                 amountMsg: ""
             }
         };
     },
-    created() {},
+    async created() {
+        await this.getFrozenBalance();
+    },
     mounted() {
         document.documentElement.addEventListener("click", () => {
             this.showDropdown = false;
@@ -288,38 +306,443 @@ export default {
 
         currentSelectCurrency() {
             return this.currency[this.selected] || {};
+        },
+
+        swapDisabled() {
+            return !this.swapNumber || this.processing;
         }
     },
     methods: {
-        // openSocial(slug) {
-        //     switch (slug) {
-        //         case 0:
-        //             window.open("https://t.me/joinchat/Tb3iAhuMZsyfspxhEWQLvw");
-        //             break;
-        //         case 1:
-        //             window.open(
-        //                 "https://www.linkedin.com/company/linearfinance/"
-        //             );
-        //             break;
-        //         case 2:
-        //             window.open("https://medium.com/@linear.finance");
-        //             break;
-        //         case 3:
-        //             window.open("https://twitter.com/LinearFinance");
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        // },
+        async getFrozenBalance() {
+            try {
+                this.processing = true;
+                let LnBridge;
+                if (this.isEthereumNetwork) {
+                    LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+                } else if (this.isBinanceNetwork) {
+                    LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+                }
 
-        clickSwap() {
-            // console.log('click swap');
+                this.frozenBalance = bn2n(
+                    await LnBridge.frozenOf(this.walletAddress)
+                );
+            } catch (error) {
+                this.frozenBalance = 0;
+                console.log(error, "getFrozenBalance error");
+            } finally {
+                this.processing = false;
+            }
+        },
+
+        async clickSwap() {
+            try {
+                if (!this.swapDisabled) {
+                    this.processing = true;
+
+                    //清空之前数据
+                    this.waitProcessArray = [];
+                    this.confirmTransactionStep = 0;
+
+                    let LnProxy, LnBridge;
+                    if (this.isEthereumNetwork) {
+                        LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                        LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+                    } else if (this.isBinanceNetwork) {
+                        LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                        LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+                    }
+
+                    //取合约地址
+                    const LnBridgeAddress = LnBridge.contract.address;
+
+                    //获取之前approve的数量
+                    const approveAmount = await LnProxy.allowance(
+                        this.walletAddress,
+                        LnBridgeAddress
+                    );
+
+                    const freezeAmount = n2bn(this.swapNumber);
+
+                    //LINA差值
+                    const diffCollateralLINA = bnSub(
+                        freezeAmount,
+                        approveAmount
+                    );
+
+                    if (diffCollateralLINA.gt(approveAmount)) {
+                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.APPROVE);
+                    }
+
+                    //  this.waitProcessArray.push(BUILD_PROCESS_SETUP.APPROVE);
+
+                    this.waitProcessArray.push(BUILD_PROCESS_SETUP.FREEZE);
+                    this.waitProcessArray.push(BUILD_PROCESS_SETUP.UNFREEZE);
+
+                    this.actionTabs = "m1"; //进入等待页
+
+                    this.waitProcessFlow = this.startFlow();
+
+                    //开始逻辑流处理函数
+                    await this.waitProcessFlow();
+                }
+            } catch (error) {
+                this.frozenBalance = 0;
+                console.log(error, "getFrozenBalance error");
+            } finally {
+                this.processing = false;
+            }
+        },
+
+        startFlow() {
+            let sourceType, sourceWallet;
+            if (this.isEthereumNetwork) {
+                sourceType = SUPPORTED_WALLETS_MAP.METAMASK;
+            } else if (this.isBinanceNetwork) {
+                sourceType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+            }
+
+            return async () => {
+                try {
+                    this.transactionErrMsg = "";
+
+                    if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.APPROVE
+                    ) {
+                        await this.startApproveContract(
+                            n2bn(Number.MAX_SAFE_INTEGER)
+                        );
+                    }
+
+                    let swapNumber = this.swapNumber;
+
+                    if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.FREEZE
+                    ) {
+                        await this.startFreezeContract(n2bn(swapNumber));
+                    }
+
+                    if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.UNFREEZE
+                    ) {
+                        await this.startUnFreezeContract(n2bn(swapNumber));
+                    }
+                } catch (error) {
+                    console.log(error, "error");
+                    //自定义错误
+                    if (
+                        _.has(error, "code") &&
+                        [6100001, 6100002, 6100003, 6100004].includes(
+                            error.code
+                        )
+                    ) {
+                        this.transactionErrMsg = error.message;
+                    } else {
+                        //通用错误
+                        this.transactionErrMsg =
+                            "Something went wrong, please try again.";
+                    }
+                } finally {
+                    await selectedWallet(sourceType, false, false);
+                }
+            };
+        },
+
+        //开始Approve合约调用
+        async startApproveContract(approveAmountLINA) {
+            this.confirmTransactionStatus = false;
+
+            let LnProxy, LnBridge, gasPrice;
+            if (this.isEthereumNetwork) {
+                LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+                gasPrice = this.$store.state?.gasDetailsETH?.price;
+            } else if (this.isBinanceNetwork) {
+                LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+                gasPrice = this.$store.state?.gasDetailsBSC?.price;
+            }
+
+            const { utils } = lnrJSConnector;
+
+            //取合约地址
+            const LnBridgeAddress = LnBridge.contract.address;
+
+            const transactionSettings = {
+                gasPrice,
+                gasLimit: this.gasLimit
+            };
+
+            transactionSettings.gasLimit = await this.getGasEstimateFromApprove(
+                LnBridgeAddress,
+                approveAmountLINA
+            );
+
+            let transaction = await LnProxy.approve(
+                LnBridgeAddress,
+                approveAmountLINA,
+                transactionSettings
+            );
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: BUILD_PROCESS_SETUP.APPROVE,
+                    value: `Approve ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
+                });
+                let status = await utils.waitForTransaction(transaction.hash);
+
+                if (!status) {
+                    throw {
+                        code: 6100001,
+                        message:
+                            "Something went wrong while gaining approval from the contract, please try again."
+                    };
+                }
+
+                //成功后累加当前进度
+                this.confirmTransactionStep += 1;
+            }
+        },
+
+        //评估Approve的gas
+        async getGasEstimateFromApprove(contractAddress, approveAmountLINA) {
+            try {
+                const { utils } = lnrJSConnector;
+
+                let LnProxy;
+                if (this.isEthereumNetwork) {
+                    LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                } else if (this.isBinanceNetwork) {
+                    LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                }
+
+                if (
+                    approveAmountLINA.isZero() ||
+                    approveAmountLINA.lt("0") //小于等于0
+                ) {
+                    throw new Error("invalid approveAmountLINA");
+                }
+
+                let gasEstimate = await LnProxy.contract.estimateGas.approve(
+                    contractAddress,
+                    approveAmountLINA
+                );
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.approve);
+            }
+        },
+
+        async startFreezeContract(swapNumber) {
+            this.confirmTransactionStatus = false;
+
+            let LnBridge, gasPrice;
+            if (this.isEthereumNetwork) {
+                LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+                gasPrice = this.$store.state?.gasDetailsETH?.price;
+            } else if (this.isBinanceNetwork) {
+                LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+                gasPrice = this.$store.state?.gasDetailsBSC?.price;
+            }
+
+            const { utils } = lnrJSConnector;
+
+            const transactionSettings = {
+                gasPrice,
+                gasLimit: DEFAULT_GAS_LIMIT.freeze
+            };
+
+            transactionSettings.gasLimit = await this.getGasEstimateFromFreeze(
+                LnBridge,
+                swapNumber
+            );
+
+            let transaction;
+
+            transaction = await LnBridge.freeze(
+                swapNumber,
+                transactionSettings
+            );
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: BUILD_PROCESS_SETUP.FREEZE,
+                    value: `Freezing ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
+                });
+
+                let status = await utils.waitForTransaction(transaction.hash);
+
+                if (!status) {
+                    throw {
+                        code: 6100002,
+                        message:
+                            "Something went wrong while Freezing your LINA, please try again."
+                    };
+                }
+
+                this.confirmTransactionStep += 1;
+            }
+        },
+
+        async getGasEstimateFromFreeze(LnBridge, swapNumber) {
+            try {
+                const { utils } = lnrJSConnector;
+
+                if (
+                    swapNumber.lte(n2bn("0")) //小于等于0
+                ) {
+                    throw new Error("invalid freezeAmount");
+                }
+
+                let gasEstimate;
+
+                gasEstimate = await LnBridge.contract.estimateGas.freeze(
+                    swapNumber
+                );
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.freeze);
+            }
+        },
+
+        async startUnFreezeContract(swapNumber) {
+            this.confirmTransactionStatus = false;
+
+            let walletType;
+            // sourceWallet = this.walletAddress;
+            if (this.isEthereumNetwork) {
+                walletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+            } else if (this.isBinanceNetwork) {
+                walletType = SUPPORTED_WALLETS_MAP.METAMASK;
+            }
+
+            const walletStatus = await selectedWallet(walletType, false, false);
+
+            // console.log(sourceWallet, this.walletAddress);
+
+            // if (this.walletAddress != sourceWallet) {
+            //     throw {
+            //         code: 6100004,
+            //         message:
+            //             "The wallet address is inconsistent, please confirm and try again"
+            //     };
+            // }
+
+            if (walletStatus) {
+                let LnBridge, gasPrice;
+                if (this.isEthereumNetwork) {
+                    LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+                    gasPrice = this.$store.state?.gasDetailsETH?.price;
+                } else if (this.isBinanceNetwork) {
+                    LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+                    gasPrice = this.$store.state?.gasDetailsBSC?.price;
+                }
+
+                const { utils } = lnrJSConnector;
+
+                const transactionSettings = {
+                    gasPrice,
+                    gasLimit: DEFAULT_GAS_LIMIT.freeze
+                };
+
+                transactionSettings.gasLimit = await this.getGasEstimateFromUnFreeze(
+                    LnBridge,
+                    swapNumber
+                );
+
+                let transaction;
+
+                transaction = await LnBridge.unfreeze(
+                    swapNumber,
+                    transactionSettings
+                );
+
+                if (transaction) {
+                    this.confirmTransactionStatus = true;
+                    this.confirmTransactionHash = transaction.hash;
+
+                    // 发起右下角通知
+                    this.$pub.publish("notificationQueue", {
+                        hash: this.confirmTransactionHash,
+                        type: BUILD_PROCESS_SETUP.UNFREEZE,
+                        value: `UnFreezing ${this.confirmTransactionStep +
+                            1} / ${this.waitProcessArray.length}`
+                    });
+
+                    let status = await utils.waitForTransaction(
+                        transaction.hash
+                    );
+
+                    if (!status) {
+                        throw {
+                            code: 6100003,
+                            message:
+                                "Something went wrong while Freezing your LINA, please try again."
+                        };
+                    }
+
+                    this.confirmTransactionStep += 1;
+                }
+            } else {
+                throw {
+                    code: 6100004,
+                    message:
+                        "Something went wrong, please try again or install wallet extensions."
+                };
+            }
+        },
+
+        async getGasEstimateFromUnFreeze(LnBridge, swapNumber) {
+            try {
+                const { utils } = lnrJSConnector;
+
+                if (
+                    swapNumber.lte(n2bn("0")) //小于等于0
+                ) {
+                    throw new Error("invalid freezeAmount");
+                }
+
+                let gasEstimate;
+
+                gasEstimate = await LnBridge.contract.estimateGas.unfreeze(
+                    swapNumber
+                );
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.freeze);
+            }
         },
 
         async selectCurrencyFun(index) {
             this.errors.amountMsg = "";
             this.selected = index;
-            this.transferNumber = 0;
+            this.swapNumber = 0;
+        },
+
+        //回到默认状态
+        setDefaultTab() {
+            this.actionTabs = "m0";
+            this.waitProcessArray = [];
+            this.confirmTransactionStep = 0;
+            this.swapNumber = 0;
+            this.getFrozenBalance();
         },
 
         showDropdownFun() {
@@ -330,7 +753,7 @@ export default {
 
         //点击最大
         clickMaxAmount() {
-            this.transferNumber = this.currency[this.selected].avaliable;
+            this.swapNumber = this.currency[this.selected].avaliable;
 
             var el = document.getElementById("transfer_number_input");
             this.setCursorRange(el, 0, 0);
@@ -354,29 +777,14 @@ export default {
             });
         },
 
-        //到 etherscan 查看交易记录详情
-        etherscan() {
-            //模拟跳到错误页
-            this.actionTabs = "m3";
-        },
-
         //交易状态页面回调方法 回到主页
         goHomePage() {
             this.$store.commit("setCurrentAction", 0);
         },
 
-        //回到默认状态
-        setDefaultTab() {
-            this.activeItemBtn = -1;
-            this.burnData = { unStake: null, amount: null, ratio: 750 };
-            this.actionTabs = "m0";
-
-            //重新拉取新数据
-        },
-
         //重试
         tryAgain() {
-            this.actionTabs = "m0";
+            this.setDefaultTab();
         }
     }
 };
@@ -554,7 +962,6 @@ export default {
                                 align-items: center;
                                 justify-content: center;
                                 img {
-
                                     width: 100%;
                                     height: 100%;
                                 }

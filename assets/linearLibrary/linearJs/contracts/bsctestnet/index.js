@@ -1,7 +1,8 @@
 
   import LnTokenStorage from './LnTokenStorage';
-import LnProxyERC20 from './LnProxyERC20';
+import LnProxyBEP20 from './LnProxyBEP20';
 import LinearFinance from './LinearFinance';
+import LnBep20Bridge from './LnBep20Bridge';
 import LnAssetSystem from './LnAssetSystem';
 import LnConfig from './LnConfig';
 import LnAccessControl from './LnAccessControl';
@@ -18,6 +19,6 @@ import lETH from './lETH';
 import lHB10 from './lHB10';
   
   export default {
-    LnTokenStorage, LnProxyERC20, LinearFinance, LnAssetSystem, LnConfig, LnAccessControl, LnChainLinkPrices, LnDebtSystem, LnCollateralSystem, LnBuildBurnSystem, LnRewardLocker, LnFeeSystemTest, lUSD, LnFeeSystem, lBTC, lETH, lHB10
+    LnTokenStorage, LnProxyBEP20, LinearFinance, LnBep20Bridge, LnAssetSystem, LnConfig, LnAccessControl, LnChainLinkPrices, LnDebtSystem, LnCollateralSystem, LnBuildBurnSystem, LnRewardLocker, LnFeeSystemTest, lUSD, LnFeeSystem, lBTC, lETH, lHB10
   };
     

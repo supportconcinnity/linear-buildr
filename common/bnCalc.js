@@ -7,8 +7,11 @@ export const MAX_DECIMAL_LENGTH = 18;
 //大数转换基数
 export const BIGNUMBER_BASENUMBER = (1e18).toString();
 
-//数字乘1e18,转bigNumber
+//Number转bigNumber
 export const n2bn = num => utils.parseEther(num.toString());
+
+//bigNumber转Number
+export const bn2n = num => Number(utils.formatEther(num.toString()));
 
 //数字字符串直接转bigNumber
 export const numberStrToBN = num => BigNumber.from(num.toString());

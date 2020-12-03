@@ -164,7 +164,11 @@ const getSignerConfig = ({ type, networkId }) => {
     return {};
 };
 
-export const selectedWallet = async (walletType, chainChange = false) => {
+export const selectedWallet = async (
+    walletType,
+    chainChange = false,
+    waitStore = true
+) => {
     try {
         //连接钱包
         const walletStatus = await connectToWallet(walletType);
@@ -281,12 +285,17 @@ export const selectedWallet = async (walletType, chainChange = false) => {
             } else if (walletType == SUPPORTED_WALLETS_MAP.WALLET_CONNECT) {
             }
 
-            await storeDetailsData();
+            waitStore ? await storeDetailsData() : storeDetailsData();
+
+            return true;
         } else {
             console.log("Connect wallet fail");
         }
+
+        return false;
     } catch (error) {
         console.log(error, "selectedWallet error");
+        return false;
     } finally {
         $nuxt.$Spin.hide();
     }

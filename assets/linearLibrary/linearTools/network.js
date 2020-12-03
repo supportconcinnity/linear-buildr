@@ -49,7 +49,9 @@ export const DEFAULT_GAS_LIMIT = {
     burn: 500000,
     unstake: 500000,
     claim: 140000,
-    exchange: 22000
+    exchange: 22000,
+    freeze: 220000,
+    unfreez: 220000
 };
 
 export const WALLET_STATUS = {
@@ -120,9 +122,12 @@ export async function getBinanceNetwork() {
     }
 }
 
-export const getNetworkSpeeds = async (forceNetwork) => {
-    const walletNetworkId = forceNetwork == '' || forceNetwork == undefined ? $nuxt.$store.state?.walletNetworkId : forceNetwork
-    
+export const getNetworkSpeeds = async forceNetwork => {
+    const walletNetworkId =
+        forceNetwork == "" || forceNetwork == undefined
+            ? $nuxt.$store.state?.walletNetworkId
+            : forceNetwork;
+
     if (isEthereumNetwork(walletNetworkId)) {
         let result = await fetch(URLS.ETH_GAS_STATION, {
             headers: {

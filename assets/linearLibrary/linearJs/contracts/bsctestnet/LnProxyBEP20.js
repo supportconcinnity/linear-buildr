@@ -1,13 +1,13 @@
 
       import {Contract} from 'ethers';
       import ContractSettings from '../../contractSettings';
-      import abi from '../../lib/abis/bsctestnet/LnProxyERC20';
+      import abi from '../../lib/abis/bsctestnet/LnProxyBEP20';
   
-      function LnProxyERC20(contractSettings) {
+      function LnProxyBEP20(contractSettings) {
         this.contractSettings = contractSettings || new ContractSettings();
   
         this.contract = new Contract(
-          this.contractSettings.addressList['LnProxyERC20'],
+          this.contractSettings.addressList['LnProxyBEP20'],
           abi,
           this.contractSettings.signer || this.contractSettings.provider
         );
@@ -73,6 +73,11 @@
         return await this.contract.name();
       };
     
+      this.getOwner = async () => {
+        
+        return await this.contract.getOwner();
+      };
+    
       this.symbol = async () => {
         
         return await this.contract.symbol();
@@ -115,5 +120,5 @@
     
       }
   
-      export default LnProxyERC20;
+      export default LnProxyBEP20;
     

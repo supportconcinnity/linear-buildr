@@ -1,3 +1,3 @@
-import lUSD from '../ropsten/lUSD';
+import lUSD from '../bsctestnet/LnProxyBEP20';
       export default lUSD;
       
