@@ -3,11 +3,10 @@
 const pageResults = require("graph-results-pager");
 
 const graphAPIEndpoints = {
-    // lnr: 'https://api.thegraph.com/subgraphs/name/ssscott2019/linear',
     ethereum:
         "https://api.thegraph.com/subgraphs/name/linear-tech/linear-buildr-ropsten", //Ethereum chain
     binance:
-        "http://graph-api.linear.finance/subgraphs/name/linear-tech/bsc-buildr" // Binance Smart chain
+        "http://graph-api.linear.finance/subgraphs/name/linear-tech/linear-buildr-bsc" // Binance Smart chain
 };
 
 const maxRequest = 100;

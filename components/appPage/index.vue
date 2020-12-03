@@ -25,7 +25,6 @@ export default {
 <style lang="scss">
 #appPage {
     display: flex;
-    justify-content: space-evenly;
-    padding-bottom: 64px;
+    padding: 0 120px 64px;
 }
 </style>

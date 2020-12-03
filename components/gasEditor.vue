@@ -132,7 +132,7 @@
                                 <img src="@/static/ETH.svg" />
                             </template>
                             <template v-else-if="isBinanceNetwork">
-                                <img src="@/static/bnb_yellow.svg" />
+                                <img src="@/static/bnb.svg" />
                             </template>
                         </div>
 

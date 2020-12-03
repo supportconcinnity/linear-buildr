@@ -1,65 +1,5 @@
 <template>
     <div id="swap">
-        <!-- <div class="comingSoon">
-            <img class="noticeImg" src="@/static/notice.svg" alt="">
-            <div class="title">Coming Soon</div>
-            <div class="context">Stay tuned to our social media</div>
-            <div class="socialBox">
-                <div class="box" @click="openSocial(0)">
-                    <svg enable-background="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg">
-                        <path d="m9.417 15.181-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267
-                         1.998-.931l3.622-16.972.001-.001c.321-1.496-.541-2.081-1.527-1.714l-21.29 8.151c-1.453.564-1.431 1.374-.247
-                          1.741l5.443 1.693 12.643-7.911c.595-.394 1.136-.176.691.218z" fill="#c1c1c1"/>
-                    </svg>
-                </div>
-                <div class="box" @click="openSocial(1)">
-                    <svg t="1598342108609" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                        p-id="3371" width="32" height="32" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <defs>
-                            <style type="text/css"></style>
-                        </defs>
-                        <path d="M260.096 155.648c0 27.307008-9.899008 50.516992-29.696 69.632-19.796992 19.115008-45.396992 28.672-76.8
-                         28.672-30.036992 0-54.612992-9.556992-73.728-28.672-19.115008-19.115008-28.672-42.324992-28.672-69.632 0-28.672
-                          9.556992-52.224 28.672-70.656 19.115008-18.432 44.372992-27.648 75.776-27.648 31.403008 0 56.32 9.216 74.752 27.648
-                           18.432 18.432 28.331008 41.984 29.696 70.656 0 0 0 0 0 0m-202.752 808.96c0 0 0-632.832 0-632.832 0 0 196.608 0 196.608
-                            0 0 0 0 632.832 0 632.832 0 0-196.608 0-196.608 0 0 0 0 0 0 0m313.344-430.08c0-58.708992-1.364992-126.292992-4.096-202.752
-                             0 0 169.984 0 169.984 0 0 0 10.24 88.064 10.24 88.064 0 0 4.096 0 4.096 0 40.96-68.267008 105.812992-102.4 194.56-102.4
-                              68.267008 0 123.220992 22.868992 164.864 68.608 41.643008 45.739008 62.464 113.664 62.464 203.776 0 0 0 374.784 0 374.784
-                               0 0-196.608 0-196.608 0 0 0 0-350.208 0-350.208 0-91.476992-33.451008-137.216-100.352-137.216-47.787008 0-81.236992
-                                24.576-100.352 73.728-4.096 8.192-6.144 24.576-6.144 49.152 0 0 0 364.544 0 364.544 0 0-198.656 0-198.656 0 0 0 0-430.08
-                                 0-430.08 0 0 0 0 0 0" p-id="3372" fill="#c1c1c1">
-                        </path>
-                    </svg>
-                </div>
-                <div class="box" @click="openSocial(2)">
-                    <svg width="24px" height="21px" viewBox="0 0 24 21" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-                        <desc>Created with Lunacy</desc>
-                        <g id="medium-icon">
-                            <path d="M22.1842 18.4458L24 20.2638L24 20.3241L14.79 20.3241L14.79 20.2638L16.6388 18.4458C16.836 18.2774 16.9305 18.0102 16.8851
-                            17.7477L16.8851 6.12578C16.8851 5.63461 16.8851 4.97078 16.9676 4.403L10.755 20.5567L10.6811 20.5567L4.248 5.69489L3.97687 5.04856L3.97687
-                             14.7933C3.8998 15.4451 4.00538 16.1061 4.281 16.6973L6.86925 20.2642L6.86925 20.3245L0 20.3245L0 20.2642L2.58825 16.6888C2.862 16.1008
-                              2.96325 15.4428 2.892 14.7933L2.892 4.02344C2.934 3.493 2.78137 2.96567 2.4645 2.55033L0.632625 0.0602778L0.632625 0L7.20563 0L12.7106
-                               12.5876L17.5583 0L23.9918 0L23.9918 0.0602778L22.1842 2.17117C21.9675 2.33722 21.8595 2.61761 21.9049 2.8945L21.9049 17.7477C21.8565
-                                18.0173 21.966 18.291 22.1842 18.4458Z" id="Path" fill="#c1c1c1" stroke="none" />
-                        </g>
-                    </svg>
-                </div>
-                <div class="box" @click="openSocial(3)">
-                    <svg width="24px" height="20px" viewBox="0 0 24 20" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-                        <desc>Created with Lunacy</desc>
-                        <g id="twitter-official">
-                            <path d="M7.54753 19.9056C16.6042 19.9056 21.5577 12.2466 21.5577 5.60489C21.5577 5.38728 21.5577 5.17072 21.5434 4.95417C22.507 4.24299
-                             23.3388 3.36239 24 2.35359C23.1013 2.76007 22.148 3.02664 21.1718 3.14441C22.1997 2.51629 22.9691 1.52837 23.3366 0.364502C22.37 0.949928
-                              21.3126 1.3625 20.2099 1.58441C18.6835 -0.0721782 16.2583 -0.47761 14.294 0.595451C12.3297 1.66851 11.3149 3.95321 11.8186 6.16843C7.85944
-                               5.96581 4.17072 4.057 1.67044 0.917038C0.363516 3.21355 1.03102 6.15149 3.19481 7.62642C2.41123 7.6027 1.64473 7.38693 0.96 6.99733L0.96
-                                7.06096C0.960616 9.45352 2.61289 11.5142 4.91044 11.9879C4.18551 12.1897 3.4249 12.2192 2.68706 12.0742C3.33212 14.1216 5.18072 15.5242
-                                 7.28738 15.5646C5.54376 16.9634 3.38982 17.7227 1.17216 17.7204C0.780385 17.7196 0.388994 17.6954 0 17.6479C2.25181 19.1229 4.87192 19.9053
-                                  7.54753 19.9016" id="Path" fill="#c1c1c1" stroke="none" />
-                        </g>
-                    </svg>
-                </div>
-            </div>
-        </div> -->
 
         <Tabs v-model="actionTabs" class="actionTabs">
             <TabPane name="m0">
@@ -79,7 +19,7 @@
                                 />
                                 <img
                                     v-else-if="isBinanceNetwork"
-                                    src="@/static/bnb_yellow.svg"
+                                    src="@/static/bnb.svg"
                                 />
                                 <div class="title">
                                     <template v-if="isEthereumNetwork"
@@ -97,7 +37,7 @@
                             <div class="box">
                                 <img
                                     v-if="isEthereumNetwork"
-                                    src="@/static/bnb_yellow.svg"
+                                    src="@/static/bnb.svg"
                                 />
                                 <img
                                     v-else-if="isBinanceNetwork"
@@ -129,11 +69,11 @@
                                 <div class="p_1">
                                     {{ currentSelectCurrency.name }}
                                 </div>
-                                <div class="p_2" @click="clickMaxAmount">
+                                <span class="p_2" @click="clickMaxAmount">
                                     MAX
-                                </div>
+                                </span>
                             </div>
-                            <div
+                            <!-- <div
                                 class="arrow"
                                 @click.stop="showDropdownFun"
                                 :class="{ perversion: showDropdown }"
@@ -148,7 +88,7 @@
                                     src="@/static/arrow_gray.svg"
                                     alt=""
                                 />
-                            </div>
+                            </div> -->
                             <div class="value">
                                 <div class="price">
                                     <div class="number">
@@ -181,7 +121,7 @@
                             {{ errors.amountMsg }}
                         </div>
 
-                        <div class="dropdown" v-if="showDropdown">
+                        <!-- <div class="dropdown" v-if="showDropdown">
                             <div
                                 class="dropdownItem"
                                 v-for="(item, index) in currency"
@@ -202,7 +142,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <gasEditorSwap></gasEditorSwap>
                     </div>
@@ -320,9 +260,9 @@ export default {
                     .transferableAssets) {
                     var img = "";
                     if (key == "ETH") img = require("@/static/ETH.svg");
-                    if (key == "BNB") img = require("@/static/bnb_yellow.svg");
+                    if (key == "BNB") img = require("@/static/bnb.svg");
                     if (key == "lUSD") img = require("@/static/lina_usd.svg");
-                    if (key == "LINA") img = require("@/static/lina_icon.svg");
+                    if (key == "LINA") img = require("@/static/LINA_logo.svg");
                     tempData.push({
                         name: key,
                         img: img,
@@ -614,6 +554,9 @@ export default {
                                 align-items: center;
                                 justify-content: center;
                                 img {
+
+                                    width: 100%;
+                                    height: 100%;
                                 }
                             }
                         }
@@ -621,6 +564,7 @@ export default {
                         .midle {
                             flex: 1;
                             flex-direction: column;
+                            align-items: flex-start;
                             > div {
                                 width: 100%;
                             }
@@ -814,7 +758,6 @@ export default {
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
-                                border: solid 1px #deddde;
                                 background-color: #fff;
                             }
                         }

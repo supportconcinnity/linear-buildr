@@ -3,12 +3,11 @@
 const pageResults = require("graph-results-pager");
 
 const graphAPIEndpoints = {
-    // exchange:"https://api.thegraph.com/subgraphs/name/ssscott2019/linearexchange"
     ethereum:
         "https://api.thegraph.com/subgraphs/name/linear-tech/linear-exchange-ropsten",
 
     binance:
-        "https://api.thegraph.com/subgraphs/name/linear-tech/linear-exchange-ropsten"
+        "http://graph-api.linear.finance/subgraphs/name/linear-tech/linear-exchange-bsc"
 };
 
 const maxRequest = 1000;

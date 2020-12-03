@@ -49,70 +49,62 @@
                         </p>
                     </Panel>
                 </Collapse>
+
+                <div class="buyLINA" @click="openBuy">
+                    Buy LINA
+                    <Icon type="ios-arrow-round-forward" />
+                </div>
             </div>
             <div class="walletBox">
                 <div class="box">
-                    <div class="boxItem buyLINA" @click="openBuy">
-                        <img
-                            class="boxLogo"
-                            src="@/static/LINA_logo.svg"
-                            alt=""
-                        />
-                        <div class="boxDesc">Buy LINA</div>
-
-                        <img
-                            class="rightArrow"
-                            src="@/static/arrow_right.svg"
-                            alt=""
-                        />
-                    </div>
-
-                    <!-- <div
-                            class="boxItem walletConnectBox"
-                            @click="
-                                selectedWallet(
-                                    SUPPORTED_WALLETS_MAP.WALLET_CONNECT
-                                )
-                            "
-                        >
-                            <img
-                                class="boxLogo"
-                                src="@/static/wallect_connect_logo.svg"
-                               
-                            />
-                            <div class="boxTitle">Connect Wallet</div>
-                            <div class="boxDesc">WalletConnect</div>
-                            
-                        </div> -->
                     <div
-                        class="boxItem metaMaskBox"
+                        class="boxItem"
                         @click="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
                     >
-                        <img
-                            class="boxLogo"
-                            src="@/static/metamask.svg"
-                            alt=""
-                        />
+                        <div class="boxSub">Connect</div>
 
-                        <div class="boxDesc">Access<br />Ethereum chain</div>
-                        <div class="boxTitle">via MetaMask</div>
+                        <div class="boxTitle">
+                            Etherium<br />
+                            Chainlink
+                        </div>
+
+                        <div class="boxDesc">
+                            <img
+                                class="boxLogo"
+                                src="@/static/metamask.svg"
+                                alt=""
+                            />
+                            <div>
+                                <div class="top">via</div>
+                                <div class="bottom">MetaMask</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div
-                        class="boxItem binanceBox"
+                        class="boxItem"
                         @click="
                             selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)
                         "
                     >
-                        <img
-                            class="boxLogo"
-                            src="@/static/binance.svg"
-                            alt=""
-                        />
-                        <div class="boxDesc">
-                            Access<br />Binance Smart Chain
+                        <div class="boxSub">Connect</div>
+
+                        <div class="boxTitle">
+                            Binance<br />
+                            Smart Chainx
                         </div>
-                        <div class="boxTitle">via Binance Chain Wallet</div>
+
+                        <div class="boxDesc">
+                            <img
+                                class="boxLogo"
+                                src="@/static/binance.svg"
+                                alt=""
+                            />
+                            <div>
+                                <div class="top">via</div>
+                                <div class="bottom">Binance Chain Wallet</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -140,7 +132,7 @@ export default {
             this.introduct = "1";
         }, 100);
         //调试用,进入指定页,不用时屏蔽
-        // this.$store.commit("setCurrentAction", 5); //
+        // this.$store.commit("setCurrentAction", 5); 
         // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
         // setTimeout(
         //     () => selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
@@ -169,10 +161,12 @@ export default {
         height: 120px;
         padding-left: 120px;
         display: flex;
-        align-content: center;
+        align-items: center;
 
-        img {
+        .linearBuildrlogo {
             cursor: pointer;
+            width: 163px;
+            height: 32px;
         }
     }
 
@@ -181,15 +175,16 @@ export default {
         padding-bottom: 4px;
 
         .introductBox {
-            width: 1032px;
+            width: 1014px;
             height: 840px;
             position: relative;
-            left: -18px;
             display: flex;
             align-items: center;
             background: #fff;
-            background: #ffffff;
-            border-radius: 18px;
+            border-radius: 16px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            margin-right: 60px;
 
             .ivu-collapse {
                 background: unset;
@@ -208,9 +203,12 @@ export default {
                         font-family: Gilroy-Bold;
                         font-size: 24px;
                         font-weight: bold;
-                        line-height: 32px;
-                        color: #99999a;
                         height: unset;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.33;
+                        letter-spacing: normal;
+                        color: #99999a;
 
                         i {
                             display: none;
@@ -221,7 +219,7 @@ export default {
                             height: 24px;
                             margin-right: 30px;
                             border-radius: 4px;
-                            background: #c6c4c7;
+                            background: #bababa;
                             transition: $animete-time linear;
                         }
                     }
@@ -234,7 +232,11 @@ export default {
                             padding-left: 34px;
                             font-family: Gilroy-Regular;
                             font-size: 16px;
-                            line-height: 24px;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.5;
+                            letter-spacing: normal;
                             color: #5a575c;
 
                             p {
@@ -245,23 +247,59 @@ export default {
                 }
 
                 .ivu-collapse-item-active {
+                    &.ivu-collapse-item {
+                        margin-bottom: 8px;
+                    }
+
                     .ivu-collapse-header {
                         color: #5a575c;
                         font-size: 56px;
                         line-height: 64px;
+                        line-height: 1.14;
 
                         .line {
                             height: 55px;
-                            background: #1b05a1;
+                            background: #1a38f8;
                         }
+                    }
+                }
+            }
+
+            .buyLINA {
+                position: absolute;
+                left: 120px;
+                bottom: 68px;
+                font-family: Gilroy-Bold;
+                font-size: 16px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.5;
+                letter-spacing: normal;
+                color: #1a38f8;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                transition: $animete-time linear;
+
+                .ivu-icon {
+                    font-size: 30px;
+                    color: #1a38f8;
+                    font-weight: bold;
+                    transition: $animete-time linear;
+                    margin-left: 4px;
+                }
+
+                &:hover {
+                    color: #7eb5ff;
+                    .ivu-icon {
+                        color: #7eb5ff;
                     }
                 }
             }
         }
 
         .walletBox {
-            flex: 1;
-
             .box {
                 width: 306px;
                 height: 100%;
@@ -271,71 +309,79 @@ export default {
                 justify-content: space-between;
 
                 .boxItem {
-                    padding: 100px 0 90px;
+                    flex: 1;
                     cursor: pointer;
-                    border: solid 1px #ffffff;
+                    border: solid 1px #e5e5e5;
                     display: flex;
-                    align-items: center;
-                    justify-content: center;
                     flex-direction: column;
                     transition: $animete-time linear;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 12px 0 #deddde;
                     background-color: #ffffff;
+                    padding: 32px 32px 32px 40px;
+                    border-radius: 8px;
+                    justify-content: space-between;
 
-                    &.buyLINA {
-                        flex-direction: row;
-                        justify-content: space-between;
-                        padding: 19px 24px;
-                        .boxLogo {
-                            padding: 0;
-                            width: 40px;
-                            height: 40px;
-                            border: solid 1px #deddde;
-                            border-radius: 50%;
-                            margin-right: 16px;
-                        }
-
-                        .boxDesc {
-                            flex: 1;
-                            margin: 0;
-                            text-align: left;
-                        }
+                    &:not(:last-of-type) {
+                        margin-bottom: 28px;
                     }
 
-                    .boxLogo {
-                        width: 80px;
-                        height: 80px;
-                    }
-
-                    .boxDesc {
-                        font-family: Gilroy-Bold;
+                    .boxSub {
+                        font-family: Gilroy-bold;
                         font-size: 16px;
                         font-weight: bold;
                         font-stretch: normal;
                         font-style: normal;
                         line-height: 1.5;
-                        letter-spacing: 2px;
-                        text-align: center;
-                        color: #1b05a1;
-                        margin: 16px 0 3px;
-                        text-transform: uppercase;
-                    }
-
-                    .rightArrow {
-                        width: 24px;
+                        letter-spacing: normal;
+                        color: #5a575c;
                     }
 
                     .boxTitle {
-                        font-family: Gilroy-Regular;
-                        font-size: 14px;
-                        line-height: 18px;
-                        text-align: center;
-                        color: #99999a;
+                        font-family: Gilroy-bold;
+                        font-size: 32px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.25;
+                        letter-spacing: normal;
+                        color: #1a38f8;
+                    }
+
+                    .boxDesc {
+                        display: flex;
+                        align-items: center;
+
+                        .boxLogo {
+                            width: 54px;
+                            height: 54px;
+                            margin-right: 16px;
+                        }
+
+                        .top {
+                            font-family: Gilroy-Regular;
+                            font-size: 14px;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.29;
+                            letter-spacing: normal;
+                            color: #99999a;
+                        }
+
+                        .bottom {
+                            font-family: Gilroy-Regular;
+                            font-size: 14px;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.29;
+                            letter-spacing: normal;
+                            color: #99999a;
+                        }
                     }
 
                     &:hover {
-                        border-color: #1b05a1;
+                        border: solid 1px #deddde;
+                        box-shadow: 0 2px 12px 0 #e5e5e5;
                     }
                 }
             }

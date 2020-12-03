@@ -28,7 +28,7 @@
                         >
                             <div class="itemLeft">
                                 <div class="itemIcon">
-                                    <img src="@/static/lina_icon.svg" alt="" />
+                                    <img src="@/static/LINA_logo.svg" alt="" />
                                 </div>
                                 <div class="itemType">
                                     <div class="itemTypeTitle">Stake LINA</div>
@@ -1412,11 +1412,10 @@ export default {
                                     align-items: center;
                                     border-radius: 50%;
                                     background: #ffffff;
-                                    border: 1px solid #deddde;
 
                                     img {
-                                        width: 24px;
-                                        height: 24px;
+                                        width: 100%;
+                                        height: 100%;
                                         vertical-align: middle;
                                     }
                                 }

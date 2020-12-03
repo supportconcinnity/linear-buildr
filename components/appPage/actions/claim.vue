@@ -32,7 +32,7 @@
                             <div class="box">
                                 <img
                                     v-if="feesAreClaimable"
-                                    src="@/static/LUSD_logo.svg"
+                                    src="@/static/lina_usd.svg"
                                     alt=""
                                 />
                                 <img

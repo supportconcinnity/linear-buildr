@@ -54,7 +54,9 @@
                     }"
                     @click="changeChain(SUPPORTED_WALLETS_MAP.METAMASK)"
                 >
-                    <metamaskSvg :selected="walletType == SUPPORTED_WALLETS_MAP.METAMASK" />
+                    <metamaskSvg
+                        :selected="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
+                    />
                 </div>
                 <div
                     class="bscBox"
@@ -64,7 +66,11 @@
                     }"
                     @click="changeChain(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)"
                 >
-                    <binanceSvg :selected=" walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN" />
+                    <binanceSvg
+                        :selected="
+                            walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                        "
+                    />
                 </div>
             </div>
         </div>
@@ -73,7 +79,7 @@
             <div class="actionsBox">
                 <div class="box">
                     <div
-                        class="track"
+                        class="boxItem"
                         :class="{ selected: trackStatus }"
                         @click="trackModalClick"
                         @mouseenter="trackIconStatus = 1"
@@ -103,7 +109,7 @@
                 </div>
                 <div class="box">
                     <div
-                        class="transaction"
+                        class="boxItem"
                         :class="{ selected: transactionStatus }"
                         @click="transactionModalClick"
                         @mouseenter="transactionIconStatus = 1"
@@ -139,7 +145,7 @@
                 </div>
                 <div class="box">
                     <div
-                        class="refer"
+                        class="boxItem"
                         :class="{ selected: referStatus }"
                         @click="referralModalClick"
                         @mouseenter="referIconStatus = 1"
@@ -205,16 +211,16 @@
             </div>
             <div class="walletInfo">
                 <div class="title">Wallet Balance</div>
-                <div class="LINABox">
+                <div class=" tokenBox">
                     <img class="tokenIcon" src="@/static/LINA_logo.svg" />
                     <div class="box">
-                        <div class="tokenItems">
+                        <div class="tokenItems obtrusive">
                             <div class="left">LINA</div>
                             <div class="right">
-                                {{ walletDetails.amountLINA || 0 }} LINA
+                                <b>{{ walletDetails.amountLINA || 0 }}</b> LINA
                             </div>
                         </div>
-                        <div class="tokenToUSDItems">
+                        <div class="tokenItems">
                             <div class="left">
                                 1 LINA = ${{ walletDetails.LINA2USDRate || 0 }}
                                 USD
@@ -223,36 +229,36 @@
                                 ≈ ${{ walletDetails.amountLINA2USD || 0 }} USD
                             </div>
                         </div>
-                        <div class="avaliableItems">
+                        <div class="tokenItems unobtrusive">
                             <div class="left">Available</div>
                             <div class="right">
                                 {{ walletDetails.avaliableLINA || 0 }} LINA
                             </div>
                         </div>
-                        <div class="stakedItems">
+                        <div class="tokenItems unobtrusive">
                             <div class="left">Staked</div>
                             <div class="right">
                                 {{ walletDetails.stakedLINA || 0 }} LINA
                             </div>
                         </div>
-                        <div class="lockedItems">
-                            <div class="left">Locked</div>
+                        <div class="tokenItems unobtrusive">
+                            <div class="left ">Locked</div>
                             <div class="right">
                                 {{ walletDetails.lockLINA || 0 }} LINA
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="LUSDBox">
-                    <img class="tokenIcon" src="@/static/LUSD_logo.svg" />
+                <div class=" tokenBox">
+                    <img class="tokenIcon" src="@/static/lina_usd.svg" />
                     <div class="box">
-                        <div class="tokenItems">
+                        <div class="tokenItems obtrusive">
                             <div class="left">ℓUSD</div>
                             <div class="right">
-                                {{ walletDetails.amountlUSD || 0 }} ℓUSD
+                                <b>{{ walletDetails.amountlUSD || 0 }}</b> ℓUSD
                             </div>
                         </div>
-                        <div class="tokenToUSDItems">
+                        <div class="tokenItems">
                             <div class="left">
                                 1 ℓUSD = ${{ walletDetails.lUSD2USDRate }} USD
                             </div>
@@ -262,17 +268,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="ETHBox">
+                <div class=" tokenBox">
                     <template v-if="isEthereumNetwork">
                         <img class="tokenIcon" src="@/static/ETH_logo.svg" />
                         <div class="box">
-                            <div class="tokenItems">
+                            <div class="tokenItems obtrusive">
                                 <div class="left">ETH</div>
                                 <div class="right">
-                                    {{ walletDetails.amountETH || 0 }} ETH
+                                    <b>{{ walletDetails.amountETH || 0 }}</b>
+                                    ETH
                                 </div>
                             </div>
-                            <div class="tokenToUSDItems">
+                            <div class="tokenItems">
                                 <div class="left">
                                     1 ETH = ${{
                                         walletDetails.ETH2USDRate || 0
@@ -289,16 +296,17 @@
                     <template v-else-if="isBinanceNetwork">
                         <img
                             class="tokenIcon bsc"
-                            src="@/static/bnb_yellow.svg"
+                            src="@/static/currency/lBNB.svg"
                         />
                         <div class="box">
-                            <div class="tokenItems">
+                            <div class="tokenItems obtrusive">
                                 <div class="left">BNB</div>
                                 <div class="right">
-                                    {{ walletDetails.amountETH || 0 }} BNB
+                                    <b>{{ walletDetails.amountETH || 0 }}</b>
+                                    BNB
                                 </div>
                             </div>
-                            <div class="tokenToUSDItems">
+                            <div class="tokenItems">
                                 <div class="left">
                                     1 BNB = ${{
                                         walletDetails.ETH2USDRate || 0
@@ -313,49 +321,59 @@
                         </div>
                     </template>
                 </div>
-                <div class="assetBox">
-                    <img class="tokenIcon" src="@/static/LUSD_logo.svg" />
-                    <div class="leftBox">
-                        Liquids
-                        <Tooltip
-                            max-width="200"
-                            class="globalInfoStyle"
-                            content="Total value of synthetic exposure created using Linear.Exchange."
-                            placement="bottom"
-                            offset="0 4"
-                        >
-                            <img src="@/static/info.svg" />
-                        </Tooltip>
-                    </div>
-                    <div class="rightBox">
-                        <div class="tokenItems">
-                            {{ walletDetails.liquids || 0 }} ℓUSD
-                        </div>
-                        <div class="tokenToUSDItems">
-                            ≈ ${{ walletDetails.liquids2USD || 0 }} USD
+                <div class=" tokenBox">
+                    <img class="tokenIcon" src="@/static/lina_usd.svg" />
+                    <div class="box">
+                        <div class="tokenItems obtrusive singer">
+                            <div class="left">
+                                Liquids
+                                <Tooltip
+                                    max-width="200"
+                                    class="globalInfoStyle"
+                                    content="Total value of synthetic exposure created using Linear.Exchange."
+                                    placement="bottom"
+                                    offset="0 4"
+                                >
+                                    <img src="@/static/info.svg" />
+                                </Tooltip>
+                            </div>
+                            <div class="right">
+                                <div class="top">
+                                    <b>{{ walletDetails.liquids || 0 }}</b> ℓUSD
+                                </div>
+                                <div class="bottom">
+                                    ≈ ${{ walletDetails.liquids2USD || 0 }} USD
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="debtBox">
-                    <img class="tokenIcon" src="@/static/LUSD_logo.svg" />
-                    <div class="leftBox">
-                        Debt
-                        <Tooltip
-                            max-width="200"
-                            class="globalInfoStyle"
-                            content="Total value that must be paid off before unlocking collateral. Fluctuates depending on trading activity."
-                            placement="bottom"
-                            offset="0 4"
-                        >
-                            <img src="@/static/info.svg" />
-                        </Tooltip>
-                    </div>
-                    <div class="rightBox">
-                        <div class="tokenItems">
-                            {{ walletDetails.amountDebt || 0 }} ℓUSD
-                        </div>
-                        <div class="tokenToUSDItems">
-                            ≈ ${{ walletDetails.amountDebt2USD || 0 }} USD
+                <div class=" tokenBox">
+                    <img class="tokenIcon" src="@/static/lina_usd.svg" />
+                    <div class="box">
+                        <div class="tokenItems obtrusive singer">
+                            <div class="left">
+                                Debt
+                                <Tooltip
+                                    max-width="200"
+                                    class="globalInfoStyle"
+                                    content="Total value that must be paid off before unlocking collateral. Fluctuates depending on trading activity."
+                                    placement="bottom"
+                                    offset="0 4"
+                                >
+                                    <img src="@/static/info.svg" />
+                                </Tooltip>
+                            </div>
+                            <div class="right">
+                                <div class="top">
+                                    <b>{{ walletDetails.amountDebt || 0 }}</b>
+                                    ℓUSD
+                                </div>
+                                <div class="bottom">
+                                    ≈ ${{ walletDetails.amountDebt2USD || 0 }}
+                                    USD
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -377,26 +395,24 @@
                     height="64"
                     viewBox="0 0 64 64"
                 >
-                    <g class="background" fill="none" fill-rule="evenodd">
-                        <circle
-                            class="border"
-                            cx="32"
-                            cy="32"
-                            r="31.5"
-                            stroke="#DEDDDE"
-                        />
-                        <path
-                            class="shape"
-                            fill="#DEDDDE"
-                            d="M21.345 34.789c1.186 6.082 6.913 10.09 12.794 8.95 3.522-.683 6.395-3.09
-                            7.8-6.371l-5.702 1.104c-.596.115-1.177-.255-1.36-.841l-.035-.14c-.12-.618.23-1.214.794-1.396l.134-.034
-                            7.644-1.482c.595-.115 1.176.255 1.36.84l.035.14 1.59 8.162c.13.665-.284 1.306-.926 1.431-.595.117-1.177-.253-1.36-.84l-.036-.138-.808-4.144c-1.888
-                            3.149-4.986 5.407-8.663 6.12-7.161 1.388-14.139-3.495-15.584-10.908-.13-.666.285-1.307.927-1.432.641-.125 1.266.313
-                            1.396.979zm24.45-8.076c.233.637-.076 1.335-.69 1.56-.614.223-1.3-.112-1.533-.749-2.125-5.822-8.411-8.888-14.04-6.845-2.657.964-4.764
-                            2.924-5.948 5.413l4.955-1.798c.57-.207 1.203.068 1.475.619l.057.132c.215.592-.038 1.235-.567 1.503l-.127.055-7.317
-                            2.655c-.57.207-1.201-.067-1.474-.617l-.057-.131-2.852-7.814c-.232-.637.077-1.335.691-1.56.57-.207 1.202.066 1.476.617l.057.131 1.725
-                            4.73c1.493-2.889 3.976-5.122 7.067-6.243 6.856-2.488 14.512 1.246 17.102 8.342z"
-                        />
+                    <g fill="none" fill-rule="evenodd">
+                        <g>
+                            <g>
+                                <g
+                                    class="border"
+                                    stroke="#E5E5E5"
+                                    transform="translate(-1110 -917) translate(1110 917)"
+                                >
+                                    <circle cx="32" cy="32" r="31.5" />
+                                </g>
+                                <g fill="#99999A" class="shape">
+                                    <path
+                                        d="M9.062 22.422C10.185 27.514 14.718 31.2 20 31.2c4.593 0 8.646-2.79 10.353-6.917l-6.214 1.094c-.387.068-.758-.154-.89-.51l-.037-.139c-.068-.387.154-.757.51-.889l.14-.038 7.878-1.389c.386-.068.757.154.889.51l.037.14 1.39 7.878c.076.435-.214.85-.65.926-.386.069-.757-.153-.889-.51l-.037-.139-.984-5.581C29.385 29.943 24.97 32.8 20 32.8c-6.037 0-11.217-4.212-12.5-10.033-.095-.432.178-.859.609-.954.432-.095.858.178.953.61zm11.22-16.628c6.037 0 11.216 4.213 12.5 10.034.094.431-.178.858-.61.953-.431.095-.858-.178-.953-.609-1.122-5.091-5.655-8.778-10.938-8.778-4.593 0-8.646 2.79-10.352 6.918l6.213-1.095c.387-.068.758.154.89.51l.037.14c.068.386-.154.757-.51.889l-.139.037-7.878 1.39c-.387.068-.758-.154-.89-.51l-.037-.14-1.39-7.878c-.076-.435.215-.85.65-.927.386-.068.757.154.889.51l.037.14.984 5.58c2.112-4.307 6.527-7.164 11.496-7.164z"
+                                        transform="translate(-1110 -917) translate(1110 917) translate(11.8 12.8)"
+                                    />
+                                </g>
+                            </g>
+                        </g>
                     </g>
                 </svg>
             </div>
@@ -699,24 +715,31 @@ export default {
             background: #f6f5f6;
 
             .wallet {
+                margin-right: 8px;
                 font-family: Gilroy-Bold;
                 font-size: 14px;
                 font-weight: bold;
-                line-height: 18px;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.29;
+                letter-spacing: normal;
                 color: #5a575c;
-                margin-right: 8px;
             }
 
             .address {
                 flex: 1;
                 font-family: Gilroy-Regular;
                 font-size: 14px;
-                line-height: 18px;
-                color: #99999a;
                 margin-right: 16px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.29;
+                letter-spacing: normal;
+                color: #99999a;
             }
 
             .copyBtn {
@@ -726,8 +749,8 @@ export default {
 
                 &:hover {
                     #Combined-Shape {
-                        fill: #1b05a1;
-                        stroke: #1b05a1;
+                        fill: #1a38f8;
+                        stroke: #1a38f8;
                     }
                 }
             }
@@ -773,27 +796,26 @@ export default {
 
         .actionsBox {
             display: flex;
-            justify-content: space-between;
-            padding: 0 24px;
+            justify-content: space-around;
 
             .box {
-                .track,
-                .transaction,
-                .refer {
+                .boxItem {
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     flex-direction: column;
-                    color: #c6c4c7;
-                    font-family: Gilroy;
-                    font-size: 12px;
+                    color: #99999a;
                     text-align: center;
                     text-transform: uppercase;
                     cursor: pointer;
                     transition: $animete-time linear;
                     font-weight: bold;
-                    line-height: 16px;
                     letter-spacing: 1.5px;
+                    font-family: Gilroy-bold;
+                    font-size: 12px;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.33;
 
                     .placeholder {
                         width: 48px;
@@ -808,72 +830,85 @@ export default {
                             transform: translateZ(0);
                         }
                     }
-                }
 
-                .track:hover,
-                .transaction:hover,
-                .refer:hover,
-                .selected {
-                    color: #1b05a1;
+                    &:hover,
+                    &.selected {
+                        color: #1a38f8;
+                    }
                 }
             }
         }
 
         .ratioBox {
-            margin: 22px 0 12px;
-            padding: 12px 24px 24px;
-            border-top: solid 2px #f6f5f6;
-            border-bottom: solid 2px #f6f5f6;
+            margin: 16px 0 24px;
+            border-top: solid 1px #e5e5e5;
+            border-bottom: solid 1px #e5e5e5;
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
             .title {
+                width: 100%;
                 display: flex;
-                justify-content: space-between;
                 align-items: center;
-                color: #c6c4c7;
-                font-family: Gilroy;
+                margin-bottom: 27px;
+                font-family: Gilroy-bold;
                 font-size: 14px;
-                font-weight: 700;
-                margin-bottom: 20px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.29;
+                letter-spacing: normal;
+                color: #5a575c;
 
-                img {
-                    margin-top: 3px;
+                .ivu-tooltip {
+                    margin-left: 8px;
                 }
             }
 
             .ratio {
                 display: flex;
+                width: 100%;
 
                 .box {
                     flex: 1;
-                    font-family: Gilroy;
+                    font-family: Gilroy-bold;
                     font-size: 32px;
-                    line-height: 32px;
-                    font-weight: 700;
+                    font-weight: bold;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.25;
+                    letter-spacing: normal;
                     text-align: center;
-                    margin-bottom: 6px;
+                    color: #5a575c;
 
                     .context {
                         font-size: 14px;
                         font-family: Gilroy-Regular;
-                        font-weight: 400;
+                        line-height: 1.29;
                     }
 
                     &:nth-child(1) {
-                        border-right: solid 1.5px #deddde;
-                        color: #5a575c;
+                        border-right: solid 1px #eae9ea;
                     }
 
                     &:nth-child(2) {
-                        color: #c6c4c7;
+                        color: #99999a;
                     }
                 }
             }
 
             .ivu-progress {
+                margin-top: 4px;
+                width: 278px;
                 .ivu-progress-outer {
                     .ivu-progress-inner {
+                        .ivu-progress-bg {
+                            background-color: rgba(#7eb5ff, 0.2) !important;
+                        }
                         .ivu-progress-success-bg {
-                            background-color: #1b05a1;
+                            background-color: #1a38f8;
                         }
                     }
                 }
@@ -881,131 +916,98 @@ export default {
         }
 
         .walletInfo {
-            margin-bottom: 26px;
-            padding: 0 22px;
-            border-bottom: solid 2px #f6f5f6;
+            margin-bottom: 24px;
 
             .tokenIcon {
                 border-radius: 50%;
-                border: solid 1px #deddde;
-
-                &.bsc {
-                    width: 42px;
-                    padding: 10px;
-                    background: white;
-                }
             }
 
             .title {
-                color: #c6c4c7;
-                font-family: Gilroy;
+                font-family: Gilroy-bold;
                 font-size: 14px;
-                font-weight: 700;
-            }
-
-            .LINABox,
-            .LUSDBox,
-            .ETHBox,
-            .assetBox,
-            .debtBox {
-                padding: 16px 0;
-            }
-
-            .tokenItems {
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.29;
+                letter-spacing: normal;
                 color: #5a575c;
-                font-family: Gilroy;
-                font-size: 16px;
-                font-weight: 700;
+                margin-bottom: 8px;
             }
 
-            .tokenToUSDItems {
-                color: #c6c4c7;
-                font-family: Gilroy;
-                font-size: 12px;
-                font-weight: 400;
-            }
-
-            .LINABox {
+            .tokenBox {
+                border-bottom: solid 1px #e5e5e5;
                 display: flex;
-                border-bottom: solid 1px #f6f5f6;
+                padding: 16px 0;
 
-                img {
+                .tokenIcon {
+                    width: 40px;
                     height: 40px;
                     margin-right: 8px;
                 }
 
                 .box {
                     flex: 1;
-
-                    .tokenItems,
-                    .tokenToUSDItems {
-                        display: flex;
-                        justify-content: space-between;
-                    }
-
-                    .tokenToUSDItems {
-                        margin-bottom: 3px;
-                    }
-
-                    .avaliableItems,
-                    .stakedItems,
-                    .lockedItems {
-                        display: flex;
-                        justify-content: space-between;
-                        font-family: Gilroy;
+                    .tokenItems {
+                        font-family: Gilroy-Medium;
                         font-size: 12px;
-                    }
-                }
-            }
-
-            .LUSDBox,
-            .ETHBox {
-                display: flex;
-                border-bottom: solid 1px #f6f5f6;
-
-                img {
-                    margin-right: 8px;
-                }
-
-                .box {
-                    flex: 1;
-
-                    .tokenItems,
-                    .tokenToUSDItems {
+                        font-weight: 500;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.33;
+                        letter-spacing: normal;
+                        color: #5a575c;
                         display: flex;
                         justify-content: space-between;
+
+                        &.obtrusive {
+                            .left {
+                                font-family: Gilroy-bold;
+                                font-size: 16px;
+                                line-height: 1.5;
+                                text-align: left;
+                            }
+
+                            .right {
+                                font-family: Gilroy-Medium;
+                                font-size: 16px;
+                                text-align: right;
+                            }
+
+                            &.singer {
+                                height: 100%;
+                                .left {
+                                    display: flex;
+                                    align-items: center;
+
+                                    .ivu-tooltip {
+                                        margin-left: 8px;
+                                    }
+                                }
+
+                                .right {
+                                    font-family: Gilroy-Medium;
+                                    font-weight: 500;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    letter-spacing: normal;
+                                    color: #5a575c;
+                                    .top {
+                                        font-size: 16px;
+                                        line-height: 1.5;
+                                    }
+                                    .bottom {
+                                        font-size: 12px;
+                                        line-height: 1.33;
+                                    }
+                                }
+                            }
+                        }
+
+                        &.unobtrusive {
+                            color: #99999a;
+                            margin-top: 8px;
+                        }
                     }
-                }
-            }
-
-            .assetBox {
-                border-bottom: solid 1px #f6f5f6;
-            }
-
-            .assetBox,
-            .debtBox {
-                display: flex;
-                justify-content: space-between;
-
-                img {
-                    margin-right: 8px;
-                }
-
-                .leftBox {
-                    display: flex;
-                    align-items: center;
-                    font-family: Gilroy;
-                    font-size: 16px;
-                    font-weight: 700;
-
-                    .ivu-tooltip {
-                        margin-left: 8px;
-                    }
-                }
-
-                .rightBox {
-                    flex: 1;
-                    text-align: right;
                 }
             }
         }
@@ -1017,21 +1019,26 @@ export default {
 
             .box {
                 .title {
-                    color: #c6c4c7;
-                    font-family: Gilroy;
+                    font-family: Gilroy-bold;
                     font-size: 14px;
-                    font-weight: 700;
-                    text-align: center;
-                    margin: 0 0 8px;
+                    font-weight: bold;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.29;
+                    letter-spacing: normal;
+                    color: #5a575c;
+                    margin-bottom: 8px;
                 }
 
                 .amount {
-                    color: #5a575c;
-                    font-family: Gilroy;
+                    font-family: Gilroy-Bold;
                     font-size: 32px;
-                    line-height: 32px;
-                    font-weight: 700;
-                    text-align: center;
+                    font-weight: bold;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.25;
+                    letter-spacing: normal;
+                    color: #5a575c;
                 }
             }
 
@@ -1041,37 +1048,47 @@ export default {
                 .shape {
                     transition: fill $animete-time linear;
                 }
+
+                &:hover {
+                    &:not(.refreshing) {
+                        .border {
+                            stroke: #1A38F8;
+                        }
+                        .shape {
+                            fill: #1A38F8;
+                        }
+                    }
+                }
+
+                &.refreshing {
+                    -webkit-animation: spin 1s linear 1s 5 alternate;
+                    animation: spin 1s linear infinite;
+
+                    .border {
+                        stroke: #1A38F8;
+                        fill: #1A38F8;
+                    }
+                    .shape {
+                        fill: #fff;
+                    }
+
+                    &:hover {
+                        cursor: not-allowed;
+                    }
+                }
             }
 
-            .refreshBtn:hover {
-                .border {
-                    stroke: #1b05a1;
-                }
-                .shape {
-                    fill: #1b05a1;
-                }
-            }
-
-            .refreshBtn:active {
-                .background {
-                    fill: #1b05a1;
-                }
-                .border {
-                    stroke: #fff;
-                }
-                .shape {
-                    fill: #fff;
-                }
-            }
-
-            .refreshing {
-                -webkit-animation: spin 1s linear 1s 5 alternate;
-                animation: spin 1s linear infinite;
-            }
-
-            .refreshing:hover {
-                cursor: not-allowed;
-            }
+            // .refreshBtn:active {
+            //     .background {
+            //         fill: #1b05a1;
+            //     }
+            //     .border {
+            //         stroke: #fff;
+            //     }
+            //     .shape {
+            //         fill: #fff;
+            //     }
+            // }
         }
     }
 }

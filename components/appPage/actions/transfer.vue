@@ -273,10 +273,10 @@ export default {
                 for (let key in this.$store.state.walletDetails
                     .transferableAssets) {
                     var img = "";
-                    if (key == "ETH") img = require("@/static/ETH.svg");
-                    if (key == "BNB") img = require("@/static/bnb_yellow.svg");
+                    if (key == "ETH") img = require("@/static/ETH_logo.svg");
+                    if (key == "BNB") img = require("@/static/currency/lBNB.svg");
                     if (key == "lUSD") img = require("@/static/lina_usd.svg");
-                    if (key == "LINA") img = require("@/static/lina_icon.svg");
+                    if (key == "LINA") img = require("@/static/LINA_logo.svg");
                     tempData.push({
                         name: key,
                         img: img,
@@ -630,9 +630,7 @@ export default {
                             border: 1px solid #deddde;
                             transition: $animete-time linear;
                             box-shadow: 0 0 0 #deddde;
-                            .icon {
-                                border: solid 1px #deddde;
-                            }
+                            
                             &:hover,
                             &.active {
                                 box-shadow: 0 2px 12px #deddde;
@@ -664,6 +662,11 @@ export default {
                                     align-items: center;
                                     justify-content: center;
                                     background-color: #fff;
+
+                                    img {
+                                        width: 100%;
+                                        height: 100%;
+                                    }
                                 }
                             }
                             .midle {
@@ -807,6 +810,10 @@ export default {
                                         align-items: center;
                                         justify-content: center;
                                         background-color: #fff;
+                                        img {
+                                            width: 100%;
+                                            height: 100%;
+                                        }
                                     }
                                 }
                                 .midle {
@@ -926,8 +933,11 @@ export default {
                                     display: flex;
                                     align-items: center;
                                     justify-content: center;
-                                    border: solid 1px #deddde;
                                     background-color: #fff;
+                                    img {
+                                        width: 100%;
+                                        height: 100%;
+                                    }
                                 }
                             }
                             .midle {

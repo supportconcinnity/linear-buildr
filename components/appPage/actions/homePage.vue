@@ -2,27 +2,30 @@
     <div id="homePage">
         <div class="title">Welcome to Buildr</div>
         <div class="context">
-            Our native token LINA is staked in our collateral pool to build ℓUSD. The collateral pool enables infinite liquidity and no slippage.
+            Our native Linear Token (LINA) serves the purpose of staking in our
+            collateral pool with infinite liquidity and no slippage
         </div>
         <div class="actionsBox">
-            <div class="buyLINABox">
+            <div class="boxItem">
                 <div class="imgBox">
                     <img src="@/static/LINA_logo.svg" alt="" />
                 </div>
-                <div class="context">
+                <div class="boxContext">
                     Buy LINA <br />
-                    from other platforms
+                    on other platform
                 </div>
-                <div class="btn">BUY LINA →</div>
-                 <!-- @click="btnClick(1)" -->
+                <div class="btn">
+                    BUY LINA <Icon type="ios-arrow-round-forward" />
+                </div>
+                <!-- @click="btnClick(1)" -->
             </div>
-            <div class="buildBox">
+            <div class="boxItem">
                 <div class="imgBox">
                     <img src="@/static/lina_usd.svg" alt="" />
                 </div>
-                <div class="context">
+                <div class="boxContext">
                     Stake LINA <br />
-                    and Build ℓUSD
+                    Build ℓUSD
                 </div>
                 <div class="btn" @click="btnClick(2)">Build ℓUSD</div>
             </div>
@@ -39,7 +42,9 @@ export default {
     methods: {
         btnClick: function(type) {
             if (type == 1) {
-                window.open("https://app.uniswap.org/#/swap?inputCurrency=0x3e9bc21c9b189c09df3ef1b824798658d5011937&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7");
+                window.open(
+                    "https://app.uniswap.org/#/swap?inputCurrency=0x3e9bc21c9b189c09df3ef1b824798658d5011937&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7"
+                );
             } else {
                 this.$store.commit("setCurrentAction", 1);
             }
@@ -54,78 +59,72 @@ export default {
     height: 840px !important;
     background: #fff;
     text-align: center;
+    padding: 200px 193px 207px;
 
     .title {
-        color: #5a575c;
-        font-family: Gilroy;
+        font-family: Gilroy-bold;
         font-size: 32px;
-        line-height: 32px;
-        font-weight: 700;
-        padding-top: 200px;
-        margin-bottom: 9px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.25;
+        letter-spacing: normal;
+        color: #5a575c;
     }
 
     .context {
-        width: 400px;
-        color: #c6c4c7;
         font-family: Gilroy-Regular;
         font-size: 14px;
-        font-weight: 400;
-        margin: 0 auto 48px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.29;
+        letter-spacing: normal;
+        text-align: center;
+        color: #99999a;
+
+        margin: 9px 0 48px;
     }
 
     .actionsBox {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
 
-        .buyLINABox,
-        .buildBox {
+        .boxItem {
             position: relative;
             width: 188px;
             height: 300px;
-            border-radius: 8px;
-            border: solid 1px #deddde;
             transition: $animete-time linear;
+            padding: 56px 0 0;
+            border-radius: 8px;
+            border: solid 1px #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
             .imgBox {
                 width: 80px;
                 height: 80px;
-                margin: 54px auto 16px;
-                border-radius: 50%;
-                border: solid 1px #deddde;
-                display: flex;
-                justify-content: center;
-                align-items: center;
+                margin-bottom: 16px;
             }
 
-            .context {
+            .boxContext {
                 width: 100%;
                 text-align: center;
+                font-size: 14px;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.29;
+                letter-spacing: normal;
+                text-align: center;
+                color: #5a575c;
+                font-family: Gilroy-Regular;
+                cursor: default;
             }
 
             &:hover {
-                box-shadow: 0px 2px 6px #deddde;
-                border-color: white;
-
-                .btn {
-                    background-color: #1f04c6;
-                }
-            }
-        }
-
-        .buyLINABox {
-            margin-right: 12px;
-
-            img {
-                width: 78px;
-            }
-        }
-
-        .buildBox {
-            margin-left: 12px;
-
-            img {
-                width: 35px;
+                box-shadow: 0 2px 12px 0 #e5e5e5;
             }
         }
 
@@ -134,18 +133,33 @@ export default {
             height: 48px;
             position: absolute;
             bottom: 0px;
-            line-height: 48px;
             border-bottom-left-radius: 8px;
             border-bottom-right-radius: 8px;
-            background: #1b05a1;
+            background: #1a38f8;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #ffffff;
-            font-family: Gilroy;
-            font-size: 16px;
-            font-weight: 700;
             cursor: pointer;
             transition: $animete-time linear;
+            font-family: Gilroy-bold;
+            font-size: 16px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            letter-spacing: 2px;
+            text-align: center;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .ivu-icon {
+                font-size: 27px;
+                margin-left: 12px;
+                font-weight: bold;
+            }
+
+            &:hover {
+                background-color: #7eb5ff;
+            }
         }
     }
 }

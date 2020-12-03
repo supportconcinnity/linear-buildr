@@ -8,40 +8,21 @@
                     alt=""
                 />
             </a>
+
             <div
+                v-for="(item, index) in actions"
+                :key="index"
                 class="action"
-                :class="{ activited: currentAction == 1 }"
-                @click="actionChange(1)"
+                :class="{
+                    activited: currentAction == index + 1,
+                    hover: currentHover == index + 1,
+                    hit: currentAction != 0 || currentHover != 0
+                }"
+                @click="actionChange(index + 1)"
+                @mouseenter="mouseenter(index + 1)"
+                @mouseleave="mouseleave(index + 1)"
             >
-                BUILD
-            </div>
-            <div
-                class="action"
-                :class="{ activited: currentAction == 2 }"
-                @click="actionChange(2)"
-            >
-                BURN
-            </div>
-            <div
-                class="action"
-                :class="{ activited: currentAction == 3 }"
-                @click="actionChange(3)"
-            >
-                CLAIM
-            </div>
-            <div
-                class="action"
-                :class="{ activited: currentAction == 4 }"
-                @click="actionChange(4)"
-            >
-                TRANSFER
-            </div>
-            <div
-                class="action"
-                :class="{ activited: currentAction == 5 }"
-                @click="actionChange(5)"
-            >
-                SWAP
+                {{ item }}
             </div>
         </div>
 
@@ -91,7 +72,9 @@ export default {
     },
     data() {
         return {
-            currentAction: this.$store.state.currentAction //显示不同功能 0homePage 1build 2burn 3claim 4transfer
+            currentAction: this.$store.state.currentAction, //显示不同功能 0homePage 1build 2burn 3claim 4transfer
+            currentHover: 0,
+            actions: ["build", "burn", "claim", "transfer", "swap"]
         };
     },
     watch: {
@@ -119,6 +102,14 @@ export default {
             this.$pub.publish("referralModalChange", false);
             this.$pub.publish("transactionModalChange", false);
             this.$pub.publish("trackModalChange", false);
+        },
+
+        //鼠标进入离开用于设置hover和activeted时,改变其他元素color
+        mouseenter(index) {
+            this.currentHover = index;
+        },
+        mouseleave(index) {
+            this.currentHover = 0;
         }
     }
 };
@@ -127,37 +118,23 @@ export default {
 <style lang="scss" scoped>
 #actions {
     width: 786px;
+    margin-right: 40px;
 
     .headerBox {
         height: 120px;
         display: flex;
-        justify-content: flex-start;
         align-items: center;
 
         .linearBuildrlogo {
-            // width: 216px;
+            vertical-align: middle;
+            width: 163px;
             height: 32px;
             cursor: pointer;
-            margin-right: 40px;
-        }
-
-        .network {
-            padding: 7px 16px;
-            border-radius: 16px;
-            background-color: rgba(#1b05a1, 0.03);
-            text-align: center;
-            font-family: Gilroy-Medium;
-            font-size: 12px;
-            font-weight: 500;
-            line-height: 16px;
-            color: #1b05a1;
+            margin-right: 28px;
         }
 
         .action {
-            margin-right: 16px;
-            padding: 6px 24px;
-            color: #1b05a1;
-            border-radius: 20px;
+            margin-right: 8px;
             border: solid 1px rgba(#fff, 0);
             cursor: pointer;
             font-family: Gilroy-Bold;
@@ -166,14 +143,27 @@ export default {
             letter-spacing: 1.5px;
             text-align: center;
             transition: $animete-time linear;
+            padding: 8px 24px;
+            border-radius: 20px;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
+            color: #5a575c;
 
-            &:hover {
-                border-color: #1b05a1;
+            text-transform: uppercase;
+
+            &.hit {
+                color: #99999a;
+            }
+
+            &.hover {
+                border-color: #1a38f8;
+                color: #1a38f8;
             }
 
             &.activited {
-                border-color: #1b05a1;
-                background: #1b05a1;
+                border-color: #1a38f8;
+                background: #1a38f8;
                 color: #fff;
             }
         }

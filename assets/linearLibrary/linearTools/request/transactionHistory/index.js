@@ -25,7 +25,7 @@ export const fetchTransactionHistory = async walletAddress => {
             transfers,
             referrals
         ] = await Promise.all([
-            linearData.lnr.minted({account: walletAddress}),
+            linearData.lnr.minted({ account: walletAddress }),
             linearData.lnr.burned({ account: walletAddress }),
             linearData.lnr.feesClaimed({ account: walletAddress }),
             linearData.lnr.collateral({ account: walletAddress }),
@@ -34,7 +34,8 @@ export const fetchTransactionHistory = async walletAddress => {
             linearData.lnr.referral({ to: walletAddress })
         ]);
 
-        //referrals 这里记得加上去
+        const graphApi = $nuxt.$store.state?.currentGraphApi;
+
         const mergedArray = flatten(
             [
                 Build,
@@ -59,9 +60,9 @@ export const fetchTransactionHistory = async walletAddress => {
                         ? (event.rewardsLina = _.floor(event.rewardsLina, 2))
                         : null;
                     return event.type
-                        ? { chain: "Ethereum", ...event }
+                        ? { chain: graphApi, ...event }
                         : {
-                              chain: "Ethereum",
+                              chain: graphApi,
                               type: TRANSACTION_EVENTS[i],
                               ...event
                           };

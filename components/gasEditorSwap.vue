@@ -289,7 +289,7 @@
                 >
                     <div class="leftRect">
                         <div class="icon">
-                            <img src="@/static/bnb_yellow.svg" />
+                            <img src="@/static/bnb.svg" />
                         </div>
 
                         <div class="desc">

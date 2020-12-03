@@ -72,7 +72,8 @@
                     max-height="210"
                 >
                     <template slot-scope="{ row }" slot="name">
-                        <img :src="currencies[row.name].icon" /> {{ currencies[row.name].name }}
+                        <img :src="currencies[row.name].icon" />
+                        {{ currencies[row.name].name }}
                     </template>
 
                     <template slot-scope="{ row }" slot="balance">
@@ -116,9 +117,7 @@ import {
     getBalances
 } from "@/assets/linearLibrary/linearTools/request";
 
-import {
-    formatNumber
-} from "@/assets/linearLibrary/linearTools/format";
+import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
 
 import { fetchTrackDebt } from "@/assets/linearLibrary/linearTools/request/trackDebt";
 
@@ -137,7 +136,7 @@ export default {
                 series: [0, 0, 0]
             },
 
-            debtData: {'issuedDebt': 0, 'currentDebt': 0},
+            debtData: { issuedDebt: 0, currentDebt: 0 },
 
             emptyData: {
                 xAxis: {
@@ -203,7 +202,9 @@ export default {
                     window.open("https://t.me/joinchat/Tb3iAhuMZsyfspxhEWQLvw");
                     break;
                 case 1:
-                    window.open("https://www.linkedin.com/company/linearfinance/");
+                    window.open(
+                        "https://www.linkedin.com/company/linearfinance/"
+                    );
                     break;
                 case 2:
                     window.open("https://medium.com/@linear.finance");
@@ -218,7 +219,7 @@ export default {
 
         trackModalChange(status) {
             try {
-                this.debtData = {'issuedDebt': 0, 'currentDebt': 0};
+                this.debtData = { issuedDebt: 0, currentDebt: 0 };
                 this.trackTableData = [];
 
                 if (status) {
@@ -230,14 +231,12 @@ export default {
                             if (!_.isEmpty(res.chartData)) {
                                 this.trackData = {
                                     xAxis: {
-                                        data: _.map(
-                                            res.chartData,
-                                            item => format(item[0], "MMM d") 
+                                        data: _.map(res.chartData, item =>
+                                            format(item[0], "MMM d")
                                         )
                                     },
-                                    series: _.map(
-                                        res.chartData,
-                                        item => _.floor(item[1], 2)
+                                    series: _.map(res.chartData, item =>
+                                        _.floor(item[1], 2)
                                     )
                                 };
 
@@ -245,7 +244,7 @@ export default {
                             }
 
                             //表格数据
-                            this.trackTableData =  res.tableData ?? [];
+                            this.trackTableData = res.tableData ?? [];
 
                             this.debtData = res.debet;
                         })
@@ -264,12 +263,7 @@ export default {
         async getTrackData() {
             try {
                 const {
-                    lnrJS: {
-                        lUSD,
-                        lBTC,
-                        lETH,
-                        lHB10
-                    }
+                    lnrJS: { lUSD, lBTC, lETH, lHB10 }
                 } = lnrJSConnector;
 
                 let trackData = await fetchTrackDebt(this.walletAddress);
@@ -286,27 +280,59 @@ export default {
                 let lETHBalance = formatEtherToNumber(results[2]);
                 let lHB10Balance = formatEtherToNumber(results[3]);
 
-                const [
-                    lBTCPrice,
-                    lETHPrice,
-                    lHB10Price
-                ] = await Promise.all([
-                    exchangeData.exchange.pricesLast({source: "lBTC"}),
-                    exchangeData.exchange.pricesLast({source: "lETH"}),
-                    exchangeData.exchange.pricesLast({source: "lHB10"})
+                const [lBTCPrice, lETHPrice, lHB10Price] = await Promise.all([
+                    exchangeData.exchange.pricesLast({ source: "lBTC" }),
+                    exchangeData.exchange.pricesLast({ source: "lETH" }),
+                    exchangeData.exchange.pricesLast({ source: "lHB10" })
                 ]);
 
                 let tableData = [];
 
-                if (lUSDBalance > 0) tableData.push({name: "lUSD", balance: lUSDBalance, valueUSD: lUSDBalance});
-                if (lBTCBalance > 0) tableData.push({name: "lBTC", balance: lBTCBalance, valueUSD: _.floor(lBTCBalance * lBTCPrice[0].currentPrice, 2)});
-                if (lETHBalance > 0) tableData.push({name: "lETH", balance: lETHBalance, valueUSD: _.floor(lETHBalance * lETHPrice[0].currentPrice, 2)});
-                if (lHB10Balance > 0) tableData.push({name: "lHB10", balance: lHB10Balance, valueUSD: _.floor(lHB10Balance * lHB10Price[0].currentPrice, 2)});
+                if (lUSDBalance > 0)
+                    tableData.push({
+                        name: "lUSD",
+                        balance: lUSDBalance,
+                        valueUSD: lUSDBalance
+                    });
+                if (lBTCBalance > 0)
+                    tableData.push({
+                        name: "lBTC",
+                        balance: lBTCBalance,
+                        valueUSD: _.floor(
+                            lBTCBalance * lBTCPrice[0].currentPrice,
+                            2
+                        )
+                    });
+                if (lETHBalance > 0)
+                    tableData.push({
+                        name: "lETH",
+                        balance: lETHBalance,
+                        valueUSD: _.floor(
+                            lETHBalance * lETHPrice[0].currentPrice,
+                            2
+                        )
+                    });
+                if (lHB10Balance > 0)
+                    tableData.push({
+                        name: "lHB10",
+                        balance: lHB10Balance,
+                        valueUSD: _.floor(
+                            lHB10Balance * lHB10Price[0].currentPrice,
+                            2
+                        )
+                    });
+
+                const currentDebt = trackData.currentDebt.length
+                    ? trackData.currentDebt[trackData.currentDebt.length - 1][1]
+                    : [];
 
                 return {
-                    'chartData': trackData.currentDebt,
-                    'tableData': tableData,
-                    'debet': {'issuedDebt': trackData.issuedDebt, 'currentDebt': trackData.currentDebt[trackData.currentDebt.length - 1][1]}
+                    chartData: trackData.currentDebt,
+                    tableData: tableData,
+                    debet: {
+                        issuedDebt: trackData.issuedDebt,
+                        currentDebt: currentDebt
+                    }
                 };
             } catch (e) {
                 console.error(e, "getTrackData err");

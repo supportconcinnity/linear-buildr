@@ -52,44 +52,71 @@
             </g>
         </svg>
 
-        <div v-if="transactionHistoryData.length != 0 || gettingData" class="transactionBox">
+        <div
+            v-if="transactionHistoryData.length != 0 || gettingData"
+            class="transactionBox"
+        >
             <div class="title">Transaction History</div>
 
             <div class="filterMenu">
                 <div class="box">
-                    <Select class="chainSelect" :class="{'hasFilter': filters.chainType}" v-model="filters.chainType" placeholder="All Chains">
+                    <Select
+                        class="chainSelect"
+                        :class="{ hasFilter: filters.chainType }"
+                        v-model="filters.chainType"
+                        placeholder="All Chains"
+                    >
                         <Option value="1" label="Ethereum">
-                            <img src="@/static/ETH.svg" alt="">
+                            <img src="@/static/ETH.svg" alt="" />
                             <span>Ethereum</span>
                         </Option>
                         <Option value="2" label="Binance">
-                            <img src="@/static/bnb_yellow.svg" alt="">
+                            <img src="@/static/bnb.svg" alt="" />
                             <span> Binance</span>
                         </Option>
                     </Select>
 
-                    <DatePicker :value="dateValue"
-                                class="dateDropdown"
-                                :class="{'hasFilter': filters.dateRange.length != 0 && filters.dateRange[0] != '' && filters.dateRange[1] != ''}"
-                                @on-change="dateRangeChange"
-                                format="yyyy/MM/dd"
-                                type="daterange"
-                                placement="bottom-end"
-                                placeholder="All Dates"
-                                :options="options1"
-                                transfer
+                    <DatePicker
+                        :value="dateValue"
+                        class="dateDropdown"
+                        :class="{
+                            hasFilter:
+                                filters.dateRange.length != 0 &&
+                                filters.dateRange[0] != '' &&
+                                filters.dateRange[1] != ''
+                        }"
+                        @on-change="dateRangeChange"
+                        format="yyyy/MM/dd"
+                        type="daterange"
+                        placement="bottom-end"
+                        placeholder="All Dates"
+                        :options="options1"
+                        transfer
                     >
                     </DatePicker>
-                    
-                    <Dropdown trigger="click" class="typeDropdown" :class="{'hasFilter': filters.transactionType.length != 0}">
-                        <div class="typeBtn" v-if="filters.transactionType.length == 0">
-                            <span>All Types</span><Icon type="ios-arrow-down"></Icon>
+
+                    <Dropdown
+                        trigger="click"
+                        class="typeDropdown"
+                        :class="{
+                            hasFilter: filters.transactionType.length != 0
+                        }"
+                    >
+                        <div
+                            class="typeBtn"
+                            v-if="filters.transactionType.length == 0"
+                        >
+                            <span>All Types</span
+                            ><Icon type="ios-arrow-down"></Icon>
                         </div>
-                        <div class="typeBtnSelected" v-else-if="filters.transactionType.length == 1">
-                            {{filters.transactionType[0]}}
+                        <div
+                            class="typeBtnSelected"
+                            v-else-if="filters.transactionType.length == 1"
+                        >
+                            {{ filters.transactionType[0] }}
                         </div>
                         <div class="typeBtnSelected" v-else>
-                            {{filters.transactionType.length}} Selected
+                            {{ filters.transactionType.length }} Selected
                         </div>
                         <DropdownMenu slot="list">
                             <CheckboxGroup v-model="filters.transactionType">
@@ -117,30 +144,73 @@
                             </CheckboxGroup>
                         </DropdownMenu>
                     </Dropdown>
-                    
-                    <Dropdown trigger="click" class="amountDropdown" :class="{'hasFilter': filters.amountRange.from || filters.amountRange.to}">
-                        <div class="amountBtn" v-if="filters.amountRange.from || filters.amountRange.to">
-                            From {{filters.amountRange.from?filters.amountRange.from:0}} to {{filters.amountRange.to?filters.amountRange.to:0}}
+
+                    <Dropdown
+                        trigger="click"
+                        class="amountDropdown"
+                        :class="{
+                            hasFilter:
+                                filters.amountRange.from ||
+                                filters.amountRange.to
+                        }"
+                    >
+                        <div
+                            class="amountBtn"
+                            v-if="
+                                filters.amountRange.from ||
+                                    filters.amountRange.to
+                            "
+                        >
+                            From
+                            {{
+                                filters.amountRange.from
+                                    ? filters.amountRange.from
+                                    : 0
+                            }}
+                            to
+                            {{
+                                filters.amountRange.to
+                                    ? filters.amountRange.to
+                                    : 0
+                            }}
                         </div>
                         <div class="amountBtnSelected" v-else>
-                            <span>All Amount</span><Icon type="ios-arrow-down"></Icon>
+                            <span>All Amount</span
+                            ><Icon type="ios-arrow-down"></Icon>
                         </div>
                         <DropdownMenu slot="list">
                             <span>From:</span>
-                            <InputNumber :max="999999999999" :min="0" v-model="filters.amountRange.from"></InputNumber>
+                            <InputNumber
+                                :max="999999999999"
+                                :min="0"
+                                v-model="filters.amountRange.from"
+                            ></InputNumber>
                             <span>To:</span>
-                            <InputNumber :max="999999999999" :min="0" v-model="filters.amountRange.to"></InputNumber>
+                            <InputNumber
+                                :max="999999999999"
+                                :min="0"
+                                v-model="filters.amountRange.to"
+                            ></InputNumber>
                         </DropdownMenu>
                     </Dropdown>
                 </div>
-                
-                <div class="clearFiltersBtn"
-                    :class="{'hasFilter': filters.chainType || filters.dateRange.length != 0 || filters.transactionType.length != 0 || filters.amountRange.from || filters.amountRange.to}"
-                    @click="clearFilters">
-                    {{filterNum > 1 ? "CLEAR ALL" : "CLEAR"}}
+
+                <div
+                    class="clearFiltersBtn"
+                    :class="{
+                        hasFilter:
+                            filters.chainType ||
+                            filters.dateRange.length != 0 ||
+                            filters.transactionType.length != 0 ||
+                            filters.amountRange.from ||
+                            filters.amountRange.to
+                    }"
+                    @click="clearFilters"
+                >
+                    {{ filterNum > 1 ? "CLEAR ALL" : "CLEAR" }}
                 </div>
             </div>
-            
+
             <div class="customTable">
                 <div class="tabelHeader">
                     <div class="th sort chain">
@@ -155,16 +225,26 @@
                     <div class="th sort amount">
                         Amount
                     </div>
-                    <div class="th sort viewInBrowser">
-                        
-                    </div>
+                    <div class="th sort viewInBrowser"></div>
                 </div>
-        
+
                 <div v-if="tableData.length" class="hasData">
                     <div class="tableBody">
-                        <div class="tr" v-for="(row, index) in tableData" :key="index">
+                        <div
+                            class="tr"
+                            v-for="(row, index) in tableData"
+                            :key="index"
+                        >
                             <div class="td chain">
-                                <img src="@/static/ETH.svg"/> {{ row.chain }}
+                                <template
+                                    v-if="row.chain == GRAPH_API.ETHEREUM"
+                                >
+                                    <img src="@/static/ETH.svg" />
+                                </template>
+                                <template v-if="row.chain == GRAPH_API.BINANCE">
+                                    <img src="@/static/bnb_inactive.svg" />
+                                </template>
+                                {{ row.chain }}
                             </div>
                             <div class="td date">
                                 {{ row.date }}
@@ -173,7 +253,7 @@
                                 {{ row.type }}
                             </div>
                             <div class="td amount">
-                                <span>{{row.amount}}</span>
+                                <span>{{ row.amount }}</span>
                             </div>
                             <div class="td viewInBrowser">
                                 <a :href="row.hash" target="_blank">VIEW →</a>
@@ -184,30 +264,42 @@
                 <div v-else class="notData">
                     Not Data
                 </div>
-        
+
                 <Spin size="large" fix v-if="gettingData"></Spin>
             </div>
 
             <div class="pageBox">
-                <Page :total="totalData" @on-change="pageChange" :current="currentPage" :page-size="defaultPageSize" size="small"/>
+                <Page
+                    :total="totalData"
+                    @on-change="pageChange"
+                    :current="currentPage"
+                    :page-size="defaultPageSize"
+                    size="small"
+                />
                 <!-- <Page total="100" @on-change="pageChange" :current="currentPage" :page-size="defaultPageSize" size="small"/> -->
             </div>
         </div>
 
         <div v-else class="noTransactionBox">
-            <img src="@/static/no_transaction.svg" alt="">
+            <img src="@/static/no_transaction.svg" alt="" />
             <div class="title">No Transactions</div>
             <div class="context">You have not made any transactions yet</div>
-            <div class="buildBtn" @click="toBuild()">Build ℓUSD </div>
+            <div class="buildBtn" @click="toBuild()">Build ℓUSD</div>
         </div>
     </Modal>
 </template>
 
 <script>
-import { fetchTransactionHistory, TRANSACTION_EVENTS } from "@/assets/linearLibrary/linearTools/request/transactionHistory";
-import { format } from 'date-fns';
-import {getEthereumNetwork} from "@/assets/linearLibrary/linearTools/network";
-import {formatNumber} from "@/assets/linearLibrary/linearTools/format";
+import {
+    fetchTransactionHistory,
+    TRANSACTION_EVENTS
+} from "@/assets/linearLibrary/linearTools/request/transactionHistory";
+import { format } from "date-fns";
+import {
+    getEthereumNetwork,
+    GRAPH_API
+} from "@/assets/linearLibrary/linearTools/network";
+import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
 
 export default {
     name: "transactionModal",
@@ -216,20 +308,26 @@ export default {
             transactionModal: false,
             gettingData: true,
             dateValue: [], //时间区间数组
-            filters: { chainType: 0, dateRange: [], transactionType: [], amountRange: { from: 0, to: 0 } }, //筛选条件：当前选择的链0all 1eth 2bsc 交易类型 时间区间 金额区间
+            filters: {
+                chainType: 0,
+                dateRange: [],
+                transactionType: [],
+                amountRange: { from: 0, to: 0 }
+            }, //筛选条件：当前选择的链0all 1eth 2bsc 交易类型 时间区间 金额区间
             currentPage: 1, //当前所在页数
-            defaultPageSize: 10, //每页显示数据条数 
+            defaultPageSize: 10, //每页显示数据条数
             transactionHistoryData: [], //交易记录数据
             netWork: {},
             //显示表格日期,大于今天的日期禁用
             options1: {
-                disabledDate (date) {
+                disabledDate(date) {
                     return date && date.valueOf() > Date.now();
                 }
             },
-            
-            tableData: [
-            ]
+
+            tableData: [],
+
+            GRAPH_API
         };
     },
     created() {
@@ -245,50 +343,55 @@ export default {
     watch: {
         currentPageData() {
             var that = this;
-            var type = '', amount = '', date = '', hash = '', tempData = [];
-            
+            var type = "",
+                amount = "",
+                date = "",
+                hash = "",
+                tempData = [];
+
             if (this.currentPageData.length == 0) {
-                that.$nextTick(function(){
+                that.$nextTick(function() {
                     this.tableData = tempData;
                 });
                 return null;
             }
 
-            this.currentPageData.map(function (item, index, ary) { 
+            this.currentPageData.map(function(item, index, ary) {
                 type = item.type;
-                date =  format(item.timestamp, 'd MMM yyyy k:m');                
+                date = format(item.timestamp, "d MMM yyyy k:m");
 
-                if(that.netWork?.networkId == 1)
-                    hash = "https://etherscan.io/tx/"+item.hash;
-                else
-                    hash = "https://ropsten.etherscan.io/tx/"+item.hash;
+                if (that.netWork?.networkId == 1)
+                    hash = "https://etherscan.io/tx/" + item.hash;
+                else hash = "https://ropsten.etherscan.io/tx/" + item.hash;
 
-                if (item.type == 'Build' ||
-                    item.type == 'Burn' ||
-                    item.type == 'Transfer'||
-                    item.type == 'Stake' || 
-                    item.type == 'Unstake'||
-                    item.type == 'Referral'
-                    )
-                {
-                    if(item.source == 'lUSD')
+                if (
+                    item.type == "Build" ||
+                    item.type == "Burn" ||
+                    item.type == "Transfer" ||
+                    item.type == "Stake" ||
+                    item.type == "Unstake" ||
+                    item.type == "Referral"
+                ) {
+                    if (item.source == "lUSD")
                         amount = formatNumber(item.value) + " ℓUSD";
-                    else
-                        amount = formatNumber(item.value) + " " + item.source;
-                } else if (item.type == 'Claim') {
-                    let rewardslusd ="";
-                    let rewardsLina ="";
-                    if(item.rewardslusd!=undefined ||item.rewardslusd != 0){
+                    else amount = formatNumber(item.value) + " " + item.source;
+                } else if (item.type == "Claim") {
+                    let rewardslusd = "";
+                    let rewardsLina = "";
+                    if (
+                        item.rewardslusd != undefined ||
+                        item.rewardslusd != 0
+                    ) {
                         rewardslusd = formatNumber(item.rewardslusd) + " ℓUSD";
                     }
-                    if(!item.rewardsLina ||item.rewardsLina != 0){
+                    if (!item.rewardsLina || item.rewardsLina != 0) {
                         rewardsLina = formatNumber(item.rewardsLina) + " LINA";
                     }
-                    amount = rewardsLina  + "&\n" + rewardslusd;
-                }else {
+                    amount = rewardsLina + "&\n" + rewardslusd;
+                } else {
                     return null;
                 }
-                
+
                 tempData.push({
                     chain: item.chain,
                     type: type,
@@ -298,52 +401,84 @@ export default {
                 });
             });
 
-            that.$nextTick(function(){
+            that.$nextTick(function() {
                 this.tableData = tempData;
             });
         },
-        filterTransactionHistoryData() {
-
-        }
+        filterTransactionHistoryData() {}
     },
     computed: {
         //根据筛选条件计算交易数据
         filterTransactionHistoryData() {
             var that = this;
-            this.currentPage = 1;   //每次筛选数据都将当前分页改为1
+            this.currentPage = 1; //每次筛选数据都将当前分页改为1
 
             //筛选交易记录
-            var filterTransactionHistoryData = this.transactionHistoryData.filter(function(record) {
-                var { chainType, transactionType, dateRange, amountRange } = that.filters;
+            var filterTransactionHistoryData = this.transactionHistoryData.filter(
+                function(record) {
+                    var {
+                        chainType,
+                        transactionType,
+                        dateRange,
+                        amountRange
+                    } = that.filters;
 
-                //在不在筛选的链中
-                if (chainType == 2) {
-                    return false;
-                }
-
-                //在不在筛选的类型中 筛选数组为空则表示显示全部
-                if (transactionType.length != 0 && !transactionType.includes(record.type)) {
-                    return false;
-                }
-
-                //在不在筛选的金额范围内
-                if (amountRange.from || amountRange.to) {
-                    if (record.value < amountRange.from || record.value > amountRange.to) return false;
-                    if (record.amount < amountRange.from || record.amount > amountRange.to) return false;
-                    if (record.fromAmount < amountRange.from || record.fromAmount > amountRange.to) return false;
-                    if (record.rewardslusd < amountRange.from || record.rewardslusd > amountRange.to){
-                        if (record.rewardsLina < amountRange.from || record.rewardsLina > amountRange.to) return false;
+                    //在不在筛选的链中
+                    if (chainType == 2) {
+                        return false;
                     }
-                }
 
-                //在不在筛选的时间范围内,  iview日期区间是以两个日期的零点算，所以大的日期要加多一天的毫秒数 
-                if (dateRange.length != 0 && (record.timestamp < Date.parse(dateRange[0]) || record.timestamp > Date.parse(dateRange[1]) + 86400000 )) {
-                    return false;
-                }
+                    //在不在筛选的类型中 筛选数组为空则表示显示全部
+                    if (
+                        transactionType.length != 0 &&
+                        !transactionType.includes(record.type)
+                    ) {
+                        return false;
+                    }
 
-                //符合以上所有筛选条件则保留
-                return true;
-            });
+                    //在不在筛选的金额范围内
+                    if (amountRange.from || amountRange.to) {
+                        if (
+                            record.value < amountRange.from ||
+                            record.value > amountRange.to
+                        )
+                            return false;
+                        if (
+                            record.amount < amountRange.from ||
+                            record.amount > amountRange.to
+                        )
+                            return false;
+                        if (
+                            record.fromAmount < amountRange.from ||
+                            record.fromAmount > amountRange.to
+                        )
+                            return false;
+                        if (
+                            record.rewardslusd < amountRange.from ||
+                            record.rewardslusd > amountRange.to
+                        ) {
+                            if (
+                                record.rewardsLina < amountRange.from ||
+                                record.rewardsLina > amountRange.to
+                            )
+                                return false;
+                        }
+                    }
+
+                    //在不在筛选的时间范围内,  iview日期区间是以两个日期的零点算，所以大的日期要加多一天的毫秒数
+                    if (
+                        dateRange.length != 0 &&
+                        (record.timestamp < Date.parse(dateRange[0]) ||
+                            record.timestamp >
+                                Date.parse(dateRange[1]) + 86400000)
+                    ) {
+                        return false;
+                    }
+
+                    //符合以上所有筛选条件则保留
+                    return true;
+                }
+            );
             return filterTransactionHistoryData;
         },
         //筛选后的数据总数
@@ -352,31 +487,39 @@ export default {
         },
         //当前分页的数据
         currentPageData() {
-            return this.filterTransactionHistoryData.slice(((this.currentPage - 1) * this.defaultPageSize), this.currentPage * this.defaultPageSize, this.currentPage);
+            return this.filterTransactionHistoryData.slice(
+                (this.currentPage - 1) * this.defaultPageSize,
+                this.currentPage * this.defaultPageSize,
+                this.currentPage
+            );
         },
         //筛选条件数量
         filterNum() {
             var filterNum = 0;
-            for(let key in this.filters){
-                switch (key)  {
-                    case 'chainType':
+            for (let key in this.filters) {
+                switch (key) {
+                    case "chainType":
                         if (this.filters[key]) filterNum++;
-                    break;
-                    case 'dateRange':
-                        if (this.filters[key].length != 0 && this.filters[key][0] != "" && this.filters[key][0] != "") {
+                        break;
+                    case "dateRange":
+                        if (
+                            this.filters[key].length != 0 &&
+                            this.filters[key][0] != "" &&
+                            this.filters[key][0] != ""
+                        ) {
                             filterNum++;
                         }
-                    break;
-                    case 'transactionType':
+                        break;
+                    case "transactionType":
                         if (this.filters[key].length != 0) {
                             filterNum++;
                         }
-                    break;
-                    case 'amountRange':
+                        break;
+                    case "amountRange":
                         if (this.filters[key].from || this.filters[key].to) {
                             filterNum++;
                         }
-                    break;
+                        break;
                 }
             }
 
@@ -387,18 +530,20 @@ export default {
         transactionModalChange(status) {
             if (status) {
                 //获取交易记录
-                this.transactionHistoryData = []; 
+                this.transactionHistoryData = [];
             } else {
                 this.$pub.publish("transactionModalCloseEvent");
-                this.clearFilters()
+                this.clearFilters();
 
                 //to do list: 清理筛选条件
             }
         },
         //获取交易记录
-        async fetchTransactionHistoryClick() { 
+        async fetchTransactionHistoryClick() {
             this.netWork = await getEthereumNetwork();
-            this.transactionHistoryData = await fetchTransactionHistory(this.$store.state?.wallet?.address);
+            this.transactionHistoryData = await fetchTransactionHistory(
+                this.$store.state?.wallet?.address
+            );
             this.gettingData = false;
         },
         //日期范围改变
@@ -411,7 +556,12 @@ export default {
         },
         //清除筛选条件数据
         clearFilters() {
-            this.filters = { chainType: 0, transactionType: [], dateRange: [], amountRange: { from: 0, to: 0 } };
+            this.filters = {
+                chainType: 0,
+                transactionType: [],
+                dateRange: [],
+                amountRange: { from: 0, to: 0 }
+            };
             this.dateValue = [];
             this.currentPag = 1;
         },
@@ -539,7 +689,7 @@ body {
 
                         .chainSelect,
                         .dateDropdown,
-                        .typeDropdown{
+                        .typeDropdown {
                             margin-right: 8px;
                         }
 
@@ -547,9 +697,9 @@ body {
                             width: 100px;
 
                             .ivu-select-selection {
-                                border: 1px solid #CACACA;
+                                border: 1px solid #cacaca;
                                 box-shadow: none !important;
-                                
+
                                 span {
                                     font-family: Gilroy;
                                     font-size: 12px;
@@ -557,10 +707,10 @@ body {
                                     color: #c1c1c1;
                                 }
 
-                                .ivu-icon:before{
+                                .ivu-icon:before {
                                     line-height: 32px;
-                                    content: '\f116';
-                                    color: #CACACA;
+                                    content: "\f116";
+                                    color: #cacaca;
                                 }
                             }
 
@@ -573,7 +723,7 @@ body {
                                         font-size: 12px;
                                         color: #515a6e;
 
-                                        img{
+                                        img {
                                             width: 24px;
                                             margin-right: 8px;
                                         }
@@ -584,7 +734,7 @@ body {
                             &.hasFilter {
                                 .ivu-select-selection {
                                     border: 1px solid #1b05a1;
-                                    
+
                                     span {
                                         color: #5a575c;
                                     }
@@ -603,10 +753,10 @@ body {
                                 .ivu-input-suffix {
                                     cursor: pointer;
 
-                                    i:before{
+                                    i:before {
                                         line-height: 32px;
-                                        content: '\f116';
-                                        color: #CACACA;
+                                        content: "\f116";
+                                        color: #cacaca;
                                     }
                                 }
 
@@ -615,9 +765,9 @@ body {
                                     height: 32px;
                                     font-size: 12px;
                                     line-height: 32px;
-                                    border: 1px solid #CACACA;
+                                    border: 1px solid #cacaca;
                                     border-radius: 4px;
-                                    color: #CACACA;
+                                    color: #cacaca;
                                 }
                             }
 
@@ -633,18 +783,19 @@ body {
                             font-family: Gilroy;
 
                             .ivu-dropdown-rel {
-                                .typeBtn, .typeBtnSelected {
+                                .typeBtn,
+                                .typeBtnSelected {
                                     width: 103px;
                                     height: 32px;
                                     font-size: 12px;
                                     line-height: 32px;
-                                    border: 1px solid #CACACA;
+                                    border: 1px solid #cacaca;
                                     border-radius: 4px;
                                     display: flex;
                                     align-items: center;
                                     justify-content: space-between;
                                     padding: 0 8px;
-                                    color: #CACACA;
+                                    color: #cacaca;
                                     cursor: pointer;
 
                                     img {
@@ -681,12 +832,12 @@ body {
 
                             &.hasFilter {
                                 .ivu-dropdown-rel {
-                                    .typeBtn, .typeBtnSelected {
+                                    .typeBtn,
+                                    .typeBtnSelected {
                                         border: 1px solid #1b05a1;
                                         color: #5a575c;
                                     }
                                 }
-                                
                             }
                         }
 
@@ -694,18 +845,19 @@ body {
                             font-family: Gilroy;
 
                             .ivu-dropdown-rel {
-                                .amountBtn, .amountBtnSelected {
+                                .amountBtn,
+                                .amountBtnSelected {
                                     width: 144px;
                                     height: 32px;
                                     font-size: 12px;
                                     //line-height: 32px;
-                                    border: 1px solid #CACACA;
+                                    border: 1px solid #cacaca;
                                     border-radius: 4px;
                                     display: flex;
                                     align-items: center;
                                     justify-content: space-between;
                                     padding: 0 8px;
-                                    color: #CACACA;
+                                    color: #cacaca;
                                     cursor: pointer;
                                 }
                             }
@@ -726,7 +878,8 @@ body {
 
                             &.hasFilter {
                                 .ivu-dropdown-rel {
-                                    .amountBtn, .amountBtnSelected {
+                                    .amountBtn,
+                                    .amountBtnSelected {
                                         border: 1px solid #1b05a1;
                                         color: #5a575c;
                                     }
@@ -738,7 +891,7 @@ body {
                     .clearFiltersBtn {
                         width: 166px;
                         color: #1b05a1;
-                        opacity: .2;
+                        opacity: 0.2;
                         font-family: Gilroy;
                         font-size: 12px;
                         font-weight: 700;
@@ -764,7 +917,7 @@ body {
                         font-size: 12px;
                         font-weight: 700;
                         line-height: 16px;
-                        
+
                         th {
                             background: #fff;
                         }
@@ -786,7 +939,7 @@ body {
                                 font-weight: 700;
                                 text-transform: uppercase;
                                 letter-spacing: 1.5px;
-                                opacity: .2;
+                                opacity: 0.2;
                                 float: right;
                             }
 
@@ -868,25 +1021,27 @@ body {
                                         color: #1b05a1;
                                         font-weight: bold;
                                         padding-right: 16px;
-                                        opacity: .2!important;
+                                        opacity: 0.2 !important;
                                     }
 
                                     a:hover {
-                                        opacity: 1!important;
+                                        opacity: 1 !important;
                                     }
                                 }
                             }
 
-                            .chain{
+                            .chain {
                                 display: flex;
                                 align-items: center;
-                                img{
+                                text-transform: capitalize;
+                                img {
                                     width: 16px;
+                                    margin-right: 8px;
                                 }
                             }
 
-                            .amount{
-                                span{
+                            .amount {
+                                span {
                                     white-space: pre-wrap;
                                 }
                             }
@@ -908,18 +1063,18 @@ body {
                 width: 100%;
                 margin-top: 32px;
                 text-align: center;
-                
+
                 .ivu-page {
                     .ivu-page-item {
-                        border: 1px solid #CACACA;
+                        border: 1px solid #cacaca;
 
                         a {
-                            color: #CACACA;
+                            color: #cacaca;
                         }
                     }
 
                     .ivu-page-item:hover {
-                        &:not(.ivu-page-item-active){
+                        &:not(.ivu-page-item-active) {
                             border: 1px solid #1b05a1;
 
                             a {
@@ -933,19 +1088,21 @@ body {
                         background-color: #1b05a1;
 
                         a {
-                            color: #FFF;
+                            color: #fff;
                         }
                     }
 
-                    .ivu-page-item-jump-next, .ivu-page-item-jump-prev {
+                    .ivu-page-item-jump-next,
+                    .ivu-page-item-jump-prev {
                         a {
                             i {
-                                color: #CACACA;
+                                color: #cacaca;
                             }
                         }
                     }
 
-                    .ivu-page-item-jump-next:hover, .ivu-page-item-jump-prev:hover {
+                    .ivu-page-item-jump-next:hover,
+                    .ivu-page-item-jump-prev:hover {
                         a {
                             i {
                                 color: #1b05a1;
@@ -953,16 +1110,18 @@ body {
                         }
                     }
 
-                    .ivu-page-prev, .ivu-page-next {
+                    .ivu-page-prev,
+                    .ivu-page-next {
                         a {
                             i {
-                                color: #CACACA;
+                                color: #cacaca;
                             }
                         }
                     }
 
-                    .ivu-page-prev:hover, .ivu-page-next:hover {
-                        &:not(.ivu-page-disabled){
+                    .ivu-page-prev:hover,
+                    .ivu-page-next:hover {
+                        &:not(.ivu-page-disabled) {
                             a {
                                 i {
                                     color: #1b05a1;
