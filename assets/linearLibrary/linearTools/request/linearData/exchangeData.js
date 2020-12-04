@@ -7,7 +7,7 @@ const graphAPIEndpoints = {
         "https://api.thegraph.com/subgraphs/name/linear-tech/linear-exchange-ropsten",
 
     binance:
-        "http://graph-api.linear.finance/subgraphs/name/linear-tech/linear-exchange-bsc"
+        "https://graph-api.linear.finance/subgraphs/name/linear-tech/linear-exchange-bsc"
 };
 
 const maxRequest = 1000;

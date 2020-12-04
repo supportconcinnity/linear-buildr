@@ -6,7 +6,7 @@ const graphAPIEndpoints = {
     ethereum:
         "https://api.thegraph.com/subgraphs/name/linear-tech/linear-buildr-ropsten", //Ethereum chain
     binance:
-        "http://graph-api.linear.finance/subgraphs/name/linear-tech/linear-buildr-bsc" // Binance Smart chain
+        "https://graph-api.linear.finance/subgraphs/name/linear-tech/linear-buildr-bsc" // Binance Smart chain
 };
 
 const maxRequest = 100;

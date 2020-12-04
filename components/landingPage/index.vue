@@ -65,7 +65,7 @@
 
                         <div class="boxTitle">
                             Ethereum<br />
-                            Chainlink
+                            Network
                         </div>
 
                         <div class="boxDesc">
@@ -91,7 +91,7 @@
 
                         <div class="boxTitle">
                             Binance<br />
-                            Smart Chainx
+                            Smart Chain Network
                         </div>
 
                         <div class="boxDesc">
