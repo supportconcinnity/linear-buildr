@@ -19,7 +19,8 @@
                 <div class="content">
                     <div class="contentTitle">Earn LINA with friends</div>
                     <div class="contentDesc">
-                        Receive 10 USD worth LINA when a friend adds your code and completes 5 transactions
+                        Receive 10 USD worth LINA when a friend adds your code
+                        and completes 5 transactions
                     </div>
                     <div class="youCodeBox">
                         <div class="icon">
@@ -103,7 +104,9 @@
                     You are adding {{ referralCode.referral_code }}. Are you
                     sure?
                 </div>
-                <div class="desc">Referral code can only be submitted once.</div>
+                <div class="desc">
+                    Referral code can only be submitted once.
+                </div>
                 <div class="btns">
                     <div class="back" @click="referralTabs = 'm0'">
                         No, go back
@@ -359,67 +362,92 @@ export default {
 
                         .contentTitle {
                             color: #5a575c;
-                            font-family: Gilroy;
+                            font-family: Gilroy-Bold;
                             font-size: 32px;
-                            font-weight: 700;
-                            line-height: 40px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.25;
+                            letter-spacing: normal;
                             text-align: center;
+                            color: #5a575c;
                         }
 
                         .contentDesc {
                             margin-top: 8px;
-                            color: #c6c4c7;
-                            font-family: "Gilroy-Regular";
+                            font-family: Gilroy-Regular;
                             font-size: 14px;
-                            font-weight: 400;
-                            line-height: 18px;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.29;
+                            letter-spacing: normal;
                             text-align: center;
+                            color: #99999a;
                         }
 
                         .youCodeBox {
-                            margin-top: 33px;
+                            margin-top: 53px;
                             border-radius: 8px;
-                            background: rgba($color: #1b05a1, $alpha: 0.03);
+                            background: rgba($color: #7eb5ff, $alpha: 0.1);
                             width: 100%;
-                            padding: 47px 40px 40px;
+                            padding: 40px;
                             display: flex;
                             flex-direction: column;
                             align-items: center;
 
+                            .icon {
+                                width: 56px;
+                                height: 56px;
+                                img {
+                                    height: 100%;
+                                    width: 100%;
+                                }
+                            }
+
                             .title {
                                 color: #5a575c;
-                                font-family: Gilroy;
+                                font-family: Gilroy-Bold;
                                 font-size: 16px;
-                                font-weight: 700;
-                                line-height: 24px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.5;
+                                letter-spacing: normal;
                                 text-align: center;
-                                margin: 16px 0 8px;
+                                margin: 24px 0 8px;
                             }
 
                             .code {
-                                color: #5a575c;
-                                font-family: Gilroy;
+                                font-family: Gilroy-Bold;
                                 font-size: 32px;
-                                font-weight: 700;
-                                line-height: 40px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.25;
+                                letter-spacing: normal;
                                 text-align: center;
+                                color: #5a575c;
                             }
 
                             .copyBtn {
-                                margin-top: 44px;
+                                margin-top: 16px;
                                 padding: 8px 16px;
                                 border-radius: 16px;
-                                border: solid 1px #deddde;
+                                border: solid 1px #e5e5e5;
                                 display: flex;
                                 align-items: center;
-                                color: #1b05a1;
-                                font-family: Gilroy;
-                                font-size: 10px;
-                                font-weight: 700;
-                                line-height: 16px;
                                 text-transform: uppercase;
-                                letter-spacing: 1.25px;
                                 cursor: pointer;
+
+                                font-family: Gilroy-Bold;
+                                font-size: 10px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.6;
+                                letter-spacing: 1.25px;
+                                color: #1a38f8;
 
                                 transition: $animete-time linear;
 
@@ -500,7 +528,7 @@ export default {
                                 .tip {
                                     margin-left: 8px;
 
-                                    img{
+                                    img {
                                         margin-top: -3px;
                                     }
                                 }

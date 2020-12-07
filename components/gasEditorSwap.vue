@@ -657,10 +657,14 @@ export default {
         .infoLeft {
             display: flex;
             .editTitle {
-                color: #5a575c;
-                font-family: Gilroy;
+                font-family: Gilroy-Regular;
                 font-size: 16px;
-                line-height: 24px;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.5;
+                letter-spacing: normal;
+                color: #5a575c;
             }
 
             .editBtn {
@@ -673,13 +677,16 @@ export default {
                 justify-content: center;
                 align-items: center;
                 cursor: pointer;
-                color: #1b05a1;
-                font-family: Gilroy;
-                font-size: 10px;
-                font-weight: 700;
-                line-height: 16px;
+                color: #1a38f8;
                 text-transform: uppercase;
+                font-family: Gilroy-Bold;
+                font-size: 10px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.6;
                 letter-spacing: 1.25px;
+                color: #1a38f8;
 
                 &,
                 * {
@@ -687,8 +694,8 @@ export default {
                 }
 
                 &:hover {
-                    // color: #1b05a1;
-                    border-color: #1b05a1;
+                    // color: #1a38f8;
+                    border-color: #1a38f8;
 
                     // img {
                     //     filter: drop-shadow(red 80px 0);
@@ -696,8 +703,9 @@ export default {
                 }
 
                 svg {
+                        margin-right: 4px;
                     path {
-                        fill: #1b05a1;
+                        fill: #1a38f8;
                     }
                 }
             }
@@ -706,20 +714,18 @@ export default {
         .infoRight {
             display: flex;
             align-items: center;
-            .price {
-                color: #5a575c;
-                font-family: Gilroy;
-                font-size: 16px;
-                line-height: 32px;
-            }
 
-            .unit {
-                margin-left: 9px;
-                color: #5a575c;
-                font-family: "Gilroy-Regular";
-                font-size: 16px;
-                font-weight: 400;
-                line-height: 24px;
+            font-family: Gilroy-Regular;
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: normal;
+            color: #5a575c;
+
+            .price {
+                margin-right: 8px;
             }
         }
     }
@@ -747,21 +753,28 @@ export default {
                     padding: 64px 193px;
 
                     .contentTitle {
-                        color: #5a575c;
-                        font-family: Gilroy;
+                        font-family: Gilroy-Bold;
                         font-size: 32px;
-                        font-weight: 700;
-                        line-height: 40px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.25;
+                        letter-spacing: normal;
+                        text-align: center;
+                        color: #5a575c;
                     }
 
                     .contentDesc {
                         margin-top: 8px;
-                        color: #c6c4c7;
-                        font-family: "Gilroy-Regular";
+                        font-family: Gilroy-Regular;
                         font-size: 14px;
-                        font-weight: 400;
-                        line-height: 18px;
+                        font-weight: normal;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.29;
+                        letter-spacing: normal;
                         text-align: center;
+                        color: #99999a;
                     }
 
                     @mixin selectedBox {
@@ -780,8 +793,8 @@ export default {
                         }
 
                         &.active {
-                            border-color: #1b05a1;
-                            box-shadow: 0px 2px 12px #deddde;
+                            border-color: #1a38f8;
+                            box-shadow: 0px 2px 12px rgba(26, 56, 248, 0.25);
                         }
                     }
 
@@ -801,28 +814,39 @@ export default {
                             }
 
                             .itemSpeed {
-                                color: #1b05a1;
-                                font-family: Gilroy;
+                                font-family: Gilroy-Bold;
                                 font-size: 14px;
-                                font-weight: 700;
-                                line-height: 18px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.29;
+                                letter-spacing: normal;
+                                text-align: center;
+                                color: #1a38f8;
                             }
 
                             .itemNumBox {
                                 margin-top: 8px;
-                                color: #5a575c;
-                                font-family: Gilroy;
+                                font-family: Gilroy-Bold;
                                 font-size: 32px;
-                                font-weight: 700;
-                                line-height: 40px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.25;
+                                letter-spacing: normal;
+                                text-align: center;
+                                color: #5a575c;
                             }
-
                             .itemTime {
-                                color: #c6c4c7;
-                                font-family: "Gilroy-Regular";
+                                font-family: Gilroy-Regular;
                                 font-size: 14px;
-                                font-weight: 400;
-                                line-height: 18px;
+                                font-weight: normal;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.29;
+                                letter-spacing: normal;
+                                text-align: center;
+                                color: #99999a;
                             }
                         }
                     }
@@ -852,19 +876,25 @@ export default {
 
                             .desc {
                                 .descTop {
-                                    color: #5a575c;
-                                    font-family: Gilroy;
+                                    font-family: Gilroy-Bold;
                                     font-size: 16px;
-                                    font-weight: 700;
-                                    line-height: 24px;
+                                    font-weight: bold;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.5;
+                                    letter-spacing: normal;
+                                    color: #5a575c;
                                 }
 
                                 .unit {
-                                    color: #c6c4c7;
-                                    font-family: Gilroy;
+                                    font-family: Gilroy-Medium;
                                     font-size: 12px;
                                     font-weight: 500;
-                                    line-height: 16px;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.33;
+                                    letter-spacing: normal;
+                                    color: #99999a;
                                 }
                             }
                         }
@@ -879,17 +909,20 @@ export default {
                                 display: none;
                             }
 
-                            .ivu-input-number-input {
+                              .ivu-input-number-input {
                                 padding: 0;
                                 color: #5a575c;
-                                font-family: Gilroy;
-                                font-size: 32px;
-                                font-weight: 700;
-                                line-height: 40px;
                                 text-align: right;
+                                font-family: Gilroy-Bold;
+                                font-size: 32px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.25;
+                                letter-spacing: normal;
 
                                 &::placeholder {
-                                    color: #c6c4c7;
+                                    color: #99999a;
                                 }
                             }
                         }
@@ -903,7 +936,7 @@ export default {
                     cursor: pointer;
                     height: 80px;
                     line-height: 80px;
-                    background: #1b05a1;
+                    background: #1a38f8;
                     color: #ffffff;
                     font-family: Gilroy;
                     font-size: 24px;
@@ -915,12 +948,12 @@ export default {
 
                     &:hover {
                         &:not(.disabled) {
-                            background-color: #1f04c6;
+                            background-color: #7eb5ff;
                         }
                     }
 
                     &.disabled {
-                        opacity: 0.2;
+                        opacity: 0.1;
                         cursor: not-allowed;
                     }
                 }

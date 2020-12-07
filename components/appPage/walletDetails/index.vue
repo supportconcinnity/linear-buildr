@@ -388,13 +388,19 @@
 
                 <svg
                     class="refreshBtn"
-                    :class="{ refreshing: walletStatus == 0 }"
+                    :class="{
+                        selected: refreshSelected,
+                        refreshing: walletStatus == 0
+                    }"
                     @click="getdata"
                     xmlns="http://www.w3.org/2000/svg"
                     width="64"
                     height="64"
                     viewBox="0 0 64 64"
+                    @mousedown="refreshSelected = true"
+                    @mouseup="refreshSelected = false"
                 >
+                    <!-- :class="{ refreshing: walletStatus == 0 }" -->
                     <g fill="none" fill-rule="evenodd">
                         <g>
                             <g>
@@ -454,7 +460,9 @@ export default {
 
             chainChanging: false,
 
-            SUPPORTED_WALLETS_MAP
+            SUPPORTED_WALLETS_MAP,
+
+            refreshSelected: false
         };
     },
     components: {
@@ -548,7 +556,7 @@ export default {
     },
     mounted() {
         // 测试用,无用时删除
-        // _.delay(this.trackModalClick, 500)
+        // _.delay(this.referralModalClick, 500)
         // 测试用,无用时删除
     },
     methods: {
@@ -1050,31 +1058,42 @@ export default {
                 }
 
                 &:hover {
-                    &:not(.refreshing) {
+                    &:not(.selected) {
                         .border {
-                            stroke: #1A38F8;
+                            stroke: #1a38f8;
                         }
                         .shape {
-                            fill: #1A38F8;
+                            fill: #1a38f8;
                         }
+                    }
+                }
+
+                &.selected {
+                    .border {
+                        stroke: #1a38f8;
+                        fill: #1a38f8;
+                    }
+                    .shape {
+                        fill: #fff;
                     }
                 }
 
                 &.refreshing {
                     -webkit-animation: spin 1s linear 1s 5 alternate;
                     animation: spin 1s linear infinite;
+                    cursor: not-allowed;
 
-                    .border {
-                        stroke: #1A38F8;
-                        fill: #1A38F8;
-                    }
-                    .shape {
-                        fill: #fff;
-                    }
+                    //     .border {
+                    //         stroke: #1A38F8;
+                    //         fill: #1A38F8;
+                    //     }
+                    //     .shape {
+                    //         fill: #fff;
+                    //     }
 
-                    &:hover {
-                        cursor: not-allowed;
-                    }
+                    //     &:hover {
+                    //         cursor: not-allowed;
+                    //     }
                 }
             }
 

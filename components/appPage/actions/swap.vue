@@ -172,13 +172,6 @@
                     @close="setDefaultTab"
                 ></watingEnhance>
             </TabPane>
-            <!-- <TabPane name="m2">
-                <success
-                    class="successBox"
-                    @homepage="goHomePage"
-                    @close="setDefaultTab"
-                ></success>
-            </TabPane> -->
         </Tabs>
     </div>
 </template>
@@ -293,8 +286,8 @@ export default {
             if (tempData.length == 0) {
                 tempData = [
                     {
-                        name: "lUSD",
-                        img: require("@/static/lina_usd.svg"),
+                        name: "LINA",
+                        img: require("@/static/LINA_logo.svg"),
                         avaliable: 0
                     }
                 ];
@@ -792,58 +785,6 @@ export default {
 
 <style lang="scss">
 #swap {
-    // .comingSoon {
-    //     text-align: center;
-
-    //     .noticeImg {
-    //         width: 120px;
-    //         margin-top: 246px;
-    //     }
-    //     .title {
-    //         margin-top: 56px;
-    //         font-family: Gilroy;
-    //         font-size: 24px;
-    //         font-weight: bold;
-    //         color: #5a575c;
-    //     }
-    //     .context {
-    //         font-family: Gilroy;
-    //         font-size: 16px;
-    //         color: #5a575c;
-    //     }
-    //     .socialBox {
-    //         margin-top: 48px;
-    //         display: flex;
-    //         justify-content: center;
-
-    //         .box {
-    //             width: 40px;
-    //             height: 40px;
-    //             display: flex;
-    //             justify-content: center;
-    //             align-items: center;
-    //             border: solid 1px #deddde;
-    //             border-radius: 50%;
-    //             margin: 0 12px 0 12px;
-    //             cursor: pointer;
-
-    //             svg {
-    //                 width: 16px;
-    //             }
-
-    //             &:hover {
-    //                 border-color: #1b05a1;
-
-    //                 svg {
-    //                     path {
-    //                         fill: #1b05a1;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
     .actionTabs {
         .ivu-tabs-bar {
             display: none;
@@ -874,7 +815,10 @@ export default {
                             font-family: Gilroy-Bold;
                             font-size: 32px;
                             font-weight: bold;
-                            line-height: 40px;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.25;
+                            letter-spacing: normal;
                             text-align: center;
                             color: #5a575c;
                         }
@@ -883,14 +827,18 @@ export default {
                             margin: 8px 55px 100px;
                             font-family: Gilroy-Regular;
                             font-size: 14px;
-                            line-height: 18px;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.29;
+                            letter-spacing: normal;
                             text-align: center;
                             color: #99999a;
                         }
                     }
 
                     .fromToBox {
-                        // padding: 0 46px;
+                        padding: 0 46px;
                         display: flex;
                         align-items: center;
                         justify-content: space-around;
@@ -922,18 +870,16 @@ export default {
 
                     .swapInputBox {
                         width: 400px;
-                        height: 120px;
                         border-radius: 8px;
                         border: 1px solid #deddde;
                         transition: $animete-time linear;
                         box-shadow: 0 0 0 #deddde;
                         margin-top: 64px;
                         display: flex;
+                        align-items: center;
                         position: relative;
-
-                        .icon {
-                            border: solid 1px #deddde;
-                        }
+                        padding: 40px 24px;
+                        margin-bottom: 24px;
 
                         &:hover,
                         &.active {
@@ -951,7 +897,7 @@ export default {
                         }
 
                         .iconBox {
-                            width: 80px;
+                            margin-right: 16px;
                             .icon {
                                 text-align: center;
                                 width: 40px;
@@ -991,7 +937,7 @@ export default {
                                 font-weight: bold;
                                 line-height: 16px;
                                 letter-spacing: 1.5px;
-                                color: #1b05a1;
+                                color: #1a38f8;
 
                                 &:hover {
                                     opacity: 1;
@@ -1029,9 +975,8 @@ export default {
                             }
                         }
                         .value {
-                            width: 220px;
+                            flex: 1;
                             flex-direction: column;
-                            padding-right: 15px;
                             .price {
                                 width: 100%;
                                 display: flex;
@@ -1062,7 +1007,7 @@ export default {
                                                 font-size: 32px;
                                                 font-weight: bold;
                                                 line-height: 40px;
-
+                                                padding: 0;
                                                 &::placeholder {
                                                     color: #99999a;
                                                 }
@@ -1122,7 +1067,7 @@ export default {
                             background: rgba(27, 5, 161, 0.1);
                             .midle {
                                 .p_1 {
-                                    color: #1b05a1;
+                                    color: #1a38f8;
                                 }
                             }
                         }
@@ -1143,7 +1088,7 @@ export default {
                         .dropdownItem:hover {
                             .midle {
                                 .p_1 {
-                                    color: #1b05a1;
+                                    color: #1a38f8;
                                 }
                             }
                         }
@@ -1155,7 +1100,6 @@ export default {
                             cursor: pointer;
                         }
                         .iconBox {
-                            width: 74px;
                             .icon {
                                 text-align: center;
                                 width: 40px;
@@ -1187,7 +1131,7 @@ export default {
                     .swapBtn {
                         width: 100%;
                         height: 80px;
-                        background: #1b05a1;
+                        background: #1a38f8;
                         position: absolute;
                         bottom: 0px;
                         color: #ffffff;
@@ -1205,7 +1149,7 @@ export default {
 
                         &:hover {
                             &:not(.disabled) {
-                                background-color: #1f04c6;
+                                background-color: #7eb5ff;
                             }
                         }
 
