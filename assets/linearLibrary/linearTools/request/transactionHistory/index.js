@@ -11,10 +11,12 @@ export const TRANSACTION_EVENTS = [
     "Stake",
     "Unstake",
     "Transfer",
-    "Referral"
+    "Referral",
+    "Swap",
+    "Swap",
 ];
 
-export const fetchTransactionHistory = async walletAddress => {
+export const fetchTransactionHistory = async (walletAddress,graphApi = undefined) => {
     try {
         const [
             Build,
@@ -23,18 +25,30 @@ export const fetchTransactionHistory = async walletAddress => {
             collaterals,
             redeemCollaterals,
             transfers,
-            referrals
+            referrals,
+            freeZes,
+            unfreezes
         ] = await Promise.all([
-            linearData.lnr.minted({ account: walletAddress }),
-            linearData.lnr.burned({ account: walletAddress }),
-            linearData.lnr.feesClaimed({ account: walletAddress }),
-            linearData.lnr.collateral({ account: walletAddress }),
-            linearData.lnr.redeemCollateral({ account: walletAddress }),
-            linearData.lnr.transfer({ from: walletAddress }),
-            linearData.lnr.referral({ to: walletAddress })
+            linearData.lnr.minted({ account: walletAddress,graphApi: graphApi}),
+            linearData.lnr.burned({ account: walletAddress,graphApi: graphApi }),
+            linearData.lnr.feesClaimed({ account: walletAddress,graphApi: graphApi }),
+            linearData.lnr.collateral({ account: walletAddress,graphApi: graphApi }),
+            linearData.lnr.redeemCollateral({ account: walletAddress,graphApi: graphApi }),
+            linearData.lnr.transfer({ from: walletAddress,graphApi: graphApi }),
+            linearData.lnr.referral({ to: walletAddress,graphApi: graphApi }),
+            linearData.lnr.freeZe({ account: walletAddress,graphApi: graphApi }),
+            linearData.lnr.unfreeze({ account: walletAddress,graphApi: graphApi })
         ]);
 
-        const graphApi = $nuxt.$store.state?.currentGraphApi;
+        if (!graphApi) {
+            graphApi = $nuxt.$store.state?.currentGraphApi;
+        }
+
+        let netWork = "testNet";
+        let walletNetworkId = $nuxt.$store.state?.walletNetworkId;
+        if(walletNetworkId == 1 || walletNetworkId == 56){
+            netWork = "mainNet";
+        }
 
         const mergedArray = flatten(
             [
@@ -44,7 +58,9 @@ export const fetchTransactionHistory = async walletAddress => {
                 collaterals,
                 redeemCollaterals,
                 transfers,
-                referrals
+                referrals,
+                freeZes,
+                unfreezes
             ].map((eventType, i) => {
                 return eventType.map(event => {
                     event.value
@@ -60,9 +76,10 @@ export const fetchTransactionHistory = async walletAddress => {
                         ? (event.rewardsLina = _.floor(event.rewardsLina, 2))
                         : null;
                     return event.type
-                        ? { chain: graphApi, ...event }
+                        ? { chain: graphApi,net: netWork, ...event }
                         : {
                               chain: graphApi,
+                              net: netWork,
                               type: TRANSACTION_EVENTS[i],
                               ...event
                           };

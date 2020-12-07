@@ -1,5 +1,6 @@
 import { getDefaultProvider } from "ethers";
 import addresses from "./lib/addresses";
+import { GRAPH_API } from "@/assets/linearLibrary/linearTools/network";
 
 const SUPPORTED_NETWORKS = {
     1: "mainnet",
@@ -7,6 +8,29 @@ const SUPPORTED_NETWORKS = {
     56: "bscmainnet",
     97: "bsctestnet"
 };
+
+export const SELECT_NETWORKS_HASH_URLBASE = {
+    1: "https://etherscan.io/tx/",
+    3: "https://ropsten.etherscan.io/tx/",
+    56: "https://bscscan.com/tx/",
+    97: "https://testnet.bscscan.com/tx/"
+};
+
+export const getBrowserUrlBase = ({graphApi,netWork})=>{
+    if(graphApi == GRAPH_API.ETHEREUM){
+        if(netWork == "testNet"){
+            return SELECT_NETWORKS_HASH_URLBASE[3];
+        }else if(netWork == "mainNet"){
+            return SELECT_NETWORKS_HASH_URLBASE[1];
+        }
+    }else if(graphApi == GRAPH_API.BINANCE){
+        if(netWork == "testNet"){
+            return SELECT_NETWORKS_HASH_URLBASE[97];
+        }else if(netWork == "mainNet"){
+            return SELECT_NETWORKS_HASH_URLBASE[56];
+        }
+    }
+}
 
 const API_KEY = {
     infura: process.env.INFURA_PROJECT_ID,
