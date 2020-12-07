@@ -6,12 +6,15 @@
                     <div class="actionBody">
                         <div class="actionTitle">Claim</div>
                         <div class="actionDesc">
-                            Claim rewards from staking LINA and building ℓUSD
+                            If you have staked your LINA and builded ℓUSD, you
+                            are eligiable to collect two kinds of rewards
                         </div>
 
                         <div
                             class="rewardsBox"
-                            :class="{ rewardsBoxClosed: !feesAreClaimable }"
+                            :class="{
+                                rewardsBoxClosed: !feesAreClaimable
+                            }"
                         >
                             <div class="box">
                                 <img
@@ -203,7 +206,11 @@ export default {
                     } = lnrJSConnector;
 
                     let transaction = null;
-                    if (["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName)) {
+                    if (
+                        ["ROPSTEN", "BSCTESTNET"].includes(
+                            this.walletNetworkName
+                        )
+                    ) {
                         transaction = await LnFeeSystemTest.claimFees(
                             transactionSettings
                         );
@@ -281,7 +288,9 @@ export default {
                 this.processing = true;
 
                 let contract = null;
-                if (["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName)) {
+                if (
+                    ["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName)
+                ) {
                     //测试合约, 较短时间
                     contract = lnrJSConnector.lnrJS.LnFeeSystemTest;
                 } else {
@@ -318,9 +327,6 @@ export default {
                     feesAvailable && feesAvailable[1] && !this.hasClaim
                         ? formatNumber(feesAvailable[1] / 1e18)
                         : 0;
-
-
-                
             } catch (e) {
                 console.log(e);
             } finally {
@@ -407,22 +413,28 @@ export default {
                         padding: 64px 193px 0;
 
                         .actionTitle {
-                            color: #5a575c;
-                            font-family: Gilroy;
+                            font-family: Gilroy-Bold;
                             font-size: 32px;
-                            font-weight: 700;
-                            line-height: 40px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.25;
+                            letter-spacing: normal;
                             text-align: center;
+                            color: #5a575c;
                         }
 
                         .actionDesc {
                             margin: 8px 0 76px 0;
-                            color: #c6c4c7;
                             font-family: Gilroy-Regular;
-                            font-size: 16px;
-                            font-weight: 400;
-                            line-height: 18px;
+                            font-size: 14px;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.29;
+                            letter-spacing: normal;
                             text-align: center;
+                            color: #99999a;
                         }
 
                         .rewardsBox {
@@ -434,7 +446,7 @@ export default {
                                 width: 188px;
                                 height: 300px;
                                 border-radius: 8px;
-                                background: rgba(27, 5, 161, 0.03);
+                                background: rgba(#7eb5ff, 0.1);
                                 text-align: center;
 
                                 img {
@@ -444,24 +456,34 @@ export default {
 
                                 .title {
                                     color: #5a575c;
-                                    font-family: Gilroy;
+                                    font-family: Gilroy-Bold;
                                     font-size: 16px;
-                                    font-weight: 700;
+                                    font-weight: bold;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.5;
+                                    letter-spacing: normal;
+                                    text-align: center;
                                 }
 
                                 .amount {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
                                     color: #5a575c;
-                                    font-family: Gilroy;
+                                    font-family: Gilroy-Regular;
                                     font-size: 16px;
-                                    font-weight: 400;
-                                    text-align: center;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.25;
+                                    letter-spacing: normal;
 
                                     span {
                                         color: #5a575c;
-                                        font-family: Gilroy;
+                                        font-family: Gilroy-Bold;
                                         font-size: 32px;
-                                        font-weight: 700;
-                                        text-align: right;
+                                        font-weight: bold;
+                                        margin-right: 6px;
                                     }
                                 }
 
@@ -480,14 +502,14 @@ export default {
                                 background: #f6f5f6;
 
                                 .title {
-                                    color: #c6c4c7;
+                                    color: #99999a;
                                 }
 
                                 .amount {
-                                    color: #c6c4c7;
+                                    color: #99999a;
 
                                     span {
-                                        color: #c6c4c7;
+                                        color: #99999a;
                                     }
                                 }
                             }
@@ -502,40 +524,48 @@ export default {
                                 margin-bottom: 14px;
 
                                 .title {
-                                    color: #5a575c;
-                                    font-family: Gilroy;
+                                    font-family: Gilroy-Regular;
                                     font-size: 16px;
+                                    font-weight: normal;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.5;
+                                    letter-spacing: normal;
+                                    color: #5a575c;
                                 }
 
                                 .status {
-                                    width: 64px;
-                                    height: 24px;
-                                    color: #5a575c;
-                                    font-family: Gilroy;
-                                    font-size: 12px;
-                                    line-height: 24px;
-                                    font-weight: 400;
+                                    padding: 4px 16px;
                                     text-align: center;
                                     border-radius: 12px;
                                     background: #f6f5f6;
+                                    font-family: Gilroy-Medium;
+                                    font-size: 12px;
+                                    font-weight: 500;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.33;
+                                    letter-spacing: normal;
+                                    color: #5a575c;
                                 }
 
                                 .open {
-                                    color: #1b05a1;
-                                    background: rgba(27, 5, 161, 0.03);
+                                    color: #1a38f8;
+                                    background: rgba(
+                                        $color: #7eb5ff,
+                                        $alpha: 0.1
+                                    );
                                 }
 
                                 .days {
-                                    color: #5a575c;
                                     font-family: Gilroy-Regular;
                                     font-size: 16px;
-                                    font-weight: 400;
-
-                                    span {
-                                        color: #5a575c;
-                                        font-family: Gilroy;
-                                        font-size: 16px;
-                                    }
+                                    font-weight: normal;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.5;
+                                    letter-spacing: normal;
+                                    color: #5a575c;
                                 }
                             }
                         }
@@ -544,25 +574,28 @@ export default {
                     .claimBtn {
                         width: 100%;
                         height: 80px;
-                        background: #1b05a1;
+                        background: #1a38f8;
                         position: absolute;
                         bottom: 0px;
                         color: #ffffff;
-                        font-family: Gilroy;
-                        font-size: 24px;
-                        font-weight: 700;
-                        line-height: 32px;
                         display: flex;
                         align-items: center;
                         justify-content: center;
                         text-transform: uppercase;
-                        letter-spacing: 3px;
                         cursor: pointer;
                         transition: $animete-time linear;
+                        font-family: Gilroy-Bold;
+                        font-size: 24px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.33;
+                        letter-spacing: 3px;
+                        text-align: center;
 
                         &:hover {
                             &:not(.disabled) {
-                                background-color: #1f04c6;
+                                background-color: #7eb5ff;
                             }
                         }
 

@@ -4,8 +4,8 @@ export const BUILD_PROCESS_SETUP = {
     BUILD: "Confirm Building",
     BURN: "Confirm Burning",
     UNSTAKING: "Confirm Unstaking",
-    FREEZE: "Confirm Freeze",
-    UNFREEZE: "Confirm Unfreeze"
+    FREEZE: "Confirm swapping on Ethereum",
+    UNFREEZE: "Confirm swapping on BSC"
 };
 
 export const DECIMAL_PRECISION = 2; //小数保留位数

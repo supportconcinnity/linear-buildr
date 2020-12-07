@@ -7,14 +7,15 @@
                         <div class="text">
                             <div class="title">Transfer</div>
                             <div class="descript">
-                                Transfer different currencies to specified
-                                wallet address
+                                You can select the type of currency you want to
+                                transfer and enter the wallet address
                             </div>
                         </div>
                         <div
                             class="from actionInputItem"
                             :class="{
-                                error: errors.amountMsg
+                                error: errors.amountMsg,
+                                showDropdown
                             }"
                         >
                             <div class="iconBox">
@@ -24,24 +25,26 @@
                             </div>
                             <div class="midle">
                                 <div class="p_1">
-                                    Amount
+                                    {{ currentSelectCurrency.name }}
                                 </div>
-                                <div class="p_2" @click="clickMaxAmount">
+                                <span class="p_2" @click="clickMaxAmount">
                                     MAX
-                                </div>
+                                </span>
                             </div>
                             <div
                                 class="arrow"
                                 @click.stop="showDropdownFun"
-                                :class="{ perversion: showDropdown }"
+                                :class="{ showDropdown }"
+                                @mouseenter="dropdownHover = true"
+                                @mouseleave="dropdownHover = false"
                             >
                                 <img
-                                    class="blueArrow"
+                                    v-show="showDropdown || dropdownHover"
                                     src="@/static/arrow.svg"
                                     alt=""
                                 />
                                 <img
-                                    class="grayArrow"
+                                    v-show="!showDropdown && !dropdownHover"
                                     src="@/static/arrow_gray.svg"
                                     alt=""
                                 />
@@ -69,6 +72,33 @@
                                                         toNonExponential(value)
                                                 "
                                             />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dropdown" v-if="showDropdown">
+                                <div
+                                    class="dropdownItem"
+                                    v-for="(item, index) in currency"
+                                    @click="selectCurrencyFun(index)"
+                                    :key="index"
+                                    :class="{
+                                        activity: index == selected
+                                    }"
+                                >
+                                    <div class="iconBox">
+                                        <div class="icon">
+                                            <img :src="item.img" alt="" />
+                                        </div>
+                                    </div>
+                                    <div class="midle">
+                                        <div class="p_1">
+                                            {{
+                                                item.name == "lUSD"
+                                                    ? "ℓUSD"
+                                                    : item.name
+                                            }}
                                         </div>
                                     </div>
                                 </div>
@@ -111,7 +141,7 @@
                                     v-model="transferToAddress"
                                     @on-focus="inputFocus(1)"
                                     @on-blur="inputBlur(1)"
-                                    placeholder="Enter wallet address..."
+                                    placeholder="Please enter the wallet address …"
                                 />
                             </div>
                         </div>
@@ -123,33 +153,6 @@
                         </div>
 
                         <gasEditor></gasEditor>
-
-                        <div class="dropdown" v-if="showDropdown">
-                            <div
-                                class="dropdownItem"
-                                v-for="(item, index) in currency"
-                                @click="selectCurrencyFun(index)"
-                                :key="index"
-                                :class="{
-                                    activity: index == selected
-                                }"
-                            >
-                                <div class="iconBox">
-                                    <div class="icon">
-                                        <img :src="item.img" alt="" />
-                                    </div>
-                                </div>
-                                <div class="midle">
-                                    <div class="p_1">
-                                        {{
-                                            item.name == "lUSD"
-                                                ? "ℓUSD"
-                                                : item.name
-                                        }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <div
@@ -227,6 +230,8 @@ export default {
             transferToAddress: "",
             ethGasLimit: 0,
 
+            dropdownHover: false,
+
             confirmTransactionStatus: true,
             confirmTransactionHash: "",
 
@@ -290,8 +295,8 @@ export default {
             if (tempData.length == 0) {
                 tempData = [
                     {
-                        name: "lUSD",
-                        img: require("@/static/lina_usd.svg"),
+                        name: "LINA",
+                        img: require("@/static/LINA_logo.svg"),
                         avaliable: 0
                     }
                 ];
@@ -300,6 +305,11 @@ export default {
                 return tempData;
             }
         },
+
+        currentSelectCurrency() {
+            return this.currency[this.selected];
+        },
+
         canSendEthAmount() {
             return (
                 this.currency[this.selected].avaliable -
@@ -617,19 +627,27 @@ export default {
 
                         .text {
                             .title {
-                                font-family: Gilroy;
-                                color: $mainTextColor;
+                                font-family: Gilroy-Bold;
                                 font-size: 32px;
-                                line-height: 40px;
                                 font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.25;
+                                letter-spacing: normal;
+                                text-align: center;
+                                color: #5a575c;
                             }
                             .descript {
-                                color: $secondaryTextColor;
-                                font-family: Gilroy;
                                 margin-top: 8px;
-                                font-size: 16px;
-                                line-height: 18px;
+                                font-family: Gilroy-Regular;
+                                font-size: 14px;
                                 font-weight: normal;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.29;
+                                letter-spacing: normal;
+                                text-align: center;
+                                color: #99999a;
                             }
                             text-align: center;
                         }
@@ -649,20 +667,18 @@ export default {
                             }
                         }
                         .from {
-                            margin-top: 92px;
+                            margin-top: 116px;
                             display: flex;
                             position: relative;
+                            align-items: center;
+                            padding: 40px 24px;
+
                             &.error {
                                 border-color: #df434c;
                             }
-                            & > div {
-                                height: 100%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                            }
-                            .iconBox {
-                                width: 80px;
+
+                            > .iconBox {
+                                margin-right: 16px;
                                 .icon {
                                     text-align: center;
                                     width: 40px;
@@ -680,61 +696,58 @@ export default {
                                     }
                                 }
                             }
-                            .midle {
+                            > .midle {
                                 flex: 1;
                                 flex-direction: column;
                                 > div {
                                     width: 100%;
                                 }
                                 .p_1 {
-                                    color: #5a575c;
                                     font-family: Gilroy-Bold;
                                     font-size: 16px;
+                                    font-weight: bold;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.5;
+                                    letter-spacing: normal;
+                                    color: #5a575c;
                                 }
                                 .p_2 {
-                                    color: #1b05a1;
+                                    color: #1a38f8;
                                     opacity: 0.2;
-                                    font-family: Gilroy-Bold;
-                                    font-size: 12px;
                                     cursor: pointer;
                                     transition: $animete-time linear;
+                                    font-family: Gilroy-Bold;
+                                    font-size: 12px;
+                                    font-weight: bold;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.33;
+                                    letter-spacing: 1.5px;
+                                    color: #1a38f8;
+                                    align-self: flex-start;
 
                                     &:hover {
                                         opacity: 1;
                                     }
                                 }
                             }
-                            .arrow {
-                                width: 30px;
+                            > .arrow {
+                                width: 24px;
+                                height: 24px;
                                 cursor: pointer;
                                 transition: $animete-time linear;
 
-                                &.perversion {
-                                    transform: rotate(180deg);
-                                    .blueArrow {
-                                        display: inline !important;
-                                    }
-                                    .grayArrow {
-                                        display: none !important;
-                                    }
+                                img {
+                                    width: 100%;
+                                    height: 100%;
                                 }
-                                .grayArrow {
-                                    display: inline;
-                                }
-                                .blueArrow {
-                                    display: none;
+
+                                &.showDropdown {
                                     transform: rotate(180deg);
                                 }
                             }
-                            &:hover {
-                                .blueArrow {
-                                    display: inline;
-                                }
-                                .grayArrow {
-                                    display: none;
-                                }
-                            }
-                            .value {
+                            > .value {
                                 width: 220px;
                                 flex-direction: column;
                                 padding-right: 15px;
@@ -764,13 +777,16 @@ export default {
                                                 .ivu-input-number-input {
                                                     text-align: right;
                                                     color: #5a575c;
-                                                    font-family: Gilroy;
+                                                    font-family: Gilroy-Bold;
                                                     font-size: 32px;
-                                                    font-weight: 700;
-                                                    line-height: 40px;
+                                                    font-weight: bold;
+                                                    font-stretch: normal;
+                                                    font-style: normal;
+                                                    line-height: 1.25;
+                                                    letter-spacing: normal;
 
                                                     &::placeholder {
-                                                        color: #c6c4c7;
+                                                        color: #99999a;
                                                     }
                                                 }
                                             }
@@ -795,32 +811,96 @@ export default {
                                     text-align: right;
                                 }
                             }
+
+                            &.showDropdown {
+                                border: solid 1px #1a38f8;
+                                box-shadow: 0 2px 12px 0 rgba(26, 56, 248, 0.25);
+                            }
+
+                            .dropdown {
+                                position: absolute;
+                                left: 0;
+                                top: calc(100% + 4px);
+                                width: 400px;
+                                background: #fff;
+                                box-shadow: 0 2px 12px 0 #deddde;
+                                z-index: 1;
+                                border-radius: 8px;
+                                border: 1px solid #deddde;
+                                transition: box-shadow $animete-time linear;
+                                display: flex;
+                                flex-direction: column;
+                                padding: 8px 0;
+
+                                .dropdownItem {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    cursor: pointer;
+                                    padding: 16px 24px;
+
+                                    .iconBox {
+                                        .icon {
+                                            margin-right: 16px;
+                                            width: 40px;
+                                            height: 40px;
+                                            img {
+                                                width: 100%;
+                                                height: 100%;
+                                            }
+                                        }
+                                    }
+                                    .midle {
+                                        flex: 1;
+                                        font-family: Gilroy-Bold;
+                                        font-size: 16px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.5;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
+                                    }
+
+                                    &:hover {
+                                        .midle {
+                                            color: #1a38f8;
+                                        }
+                                    }
+
+                                    &.activity {
+                                        background: rgba(#7eb5ff, 0.1);
+
+                                        .midle {
+                                            color: #1a38f8;
+                                        }
+                                    }
+                                }
+                            }
                         }
                         .to {
                             margin-top: 24px;
-                            padding: 0 24px;
+                            padding: 24px;
                             display: flex;
                             flex-direction: column;
+                            justify-content: space-between;
+                            margin-bottom: 24px;
                             &.error {
                                 border-color: #df434c;
                             }
                             .li_1 {
-                                height: 88px;
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
                                 .iconBox {
-                                    width: 64px;
+                                    margin-right: 16px;
                                     .icon {
-                                        text-align: center;
                                         width: 40px;
                                         height: 40px;
                                         line-height: 40px;
                                         border-radius: 100%;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
                                         background-color: #fff;
+                                        vertical-align: middle;
                                         img {
                                             width: 100%;
                                             height: 100%;
@@ -834,39 +914,54 @@ export default {
                                         width: 100%;
                                     }
                                     .p_1 {
-                                        color: #5a575c;
                                         font-family: Gilroy-Bold;
                                         font-size: 16px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.5;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
                                         span {
-                                            width: 91px;
-                                            height: 24px;
-                                            background: #f6f5f6;
+                                            padding: 5px 16px;
                                             color: #c6c4c7;
-                                            font-family: Gilroy;
+                                            margin: 0 8px;
+                                            border-radius: 12px;
+                                            background-color: #f6f5f6;
+                                            font-family: Gilroy-Medium;
                                             font-size: 12px;
-                                            padding: 7px 16px;
-                                            border-radius: 24px;
-                                            margin: 0 5px;
+                                            font-weight: 500;
+                                            font-stretch: normal;
+                                            font-style: normal;
+                                            line-height: 1.33;
+                                            letter-spacing: normal;
+                                            color: #99999a;
                                         }
                                     }
                                 }
                             }
                             .li_2 {
-                                flex: 1;
-                                color: #5a575c;
-                                font-family: Gilroy;
-                                transform: translateY(-12px);
+                                line-height: 1;
                                 .ivu-input-wrapper {
                                     input {
-                                        font-size: 14px;
                                         border: none;
                                         box-shadow: none;
                                         outline: none;
+                                        color: #5a575c;
+                                        font-family: Gilroy-Bold;
+                                        font-size: 14px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        letter-spacing: normal;
+                                        padding: 0;
+                                        height: unset;
+                                        line-height: 1;
+
+                                        &::placeholder {
+                                            color: #99999a;
+                                        }
                                     }
-                                }
-                                &::placeholder {
-                                    font-family: Gilroy-Bold;
-                                    color: #c6c4c7;
                                 }
                             }
                         }
@@ -878,105 +973,15 @@ export default {
                             text-transform: uppercase;
                             letter-spacing: 1.25px;
                         }
-
-                        #gasEditor {
-                            width: 100%;
-                            margin-top: 172px;
-                        }
-
-                        .dropdown {
-                            position: absolute;
-                            top: 343px;
-                            width: 400px;
-                            height: 280px;
-                            background: #fff;
-                            box-shadow: 0 2px 12px #deddde;
-                            z-index: 1;
-                            border-radius: 8px;
-                            border: 1px solid #deddde;
-                            transition: box-shadow $animete-time linear;
-                            display: flex;
-                            flex-direction: column;
-                            & .activity {
-                                background: rgba(27, 5, 161, 0.1);
-                                .midle {
-                                    .p_1 {
-                                        color: #1b05a1;
-                                    }
-                                }
-                            }
-                            .dropdownItem > div {
-                                height: 100%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                            }
-                            .dropdownItem:first-child {
-                                border-top-left-radius: 8px;
-                                border-top-right-radius: 8px;
-                            }
-                            .dropdownItem:last-child {
-                                border-bottom-left-radius: 8px;
-                                border-bottom-right-radius: 8px;
-                            }
-                            .dropdownItem:hover {
-                                .midle {
-                                    .p_1 {
-                                        color: #1b05a1;
-                                    }
-                                }
-                            }
-                            & > div {
-                                height: 100%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                cursor: pointer;
-                            }
-                            .iconBox {
-                                width: 74px;
-                                .icon {
-                                    text-align: center;
-                                    width: 40px;
-                                    height: 40px;
-                                    line-height: 40px;
-                                    border-radius: 100%;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    background-color: #fff;
-                                    img {
-                                        width: 100%;
-                                        height: 100%;
-                                    }
-                                }
-                            }
-                            .midle {
-                                flex: 1;
-                                flex-direction: column;
-                                > div {
-                                    width: 100%;
-                                }
-                                .p_1 {
-                                    font-family: Gilroy-Bold;
-                                    color: #5a575c;
-                                    font-size: 16px;
-                                }
-                            }
-                        }
                     }
 
                     .transferBtn {
                         width: 100%;
                         height: 80px;
-                        background: #1b05a1;
+                        background: #1a38f8;
                         position: absolute;
                         bottom: 0px;
                         color: #ffffff;
-                        font-family: Gilroy;
-                        font-size: 24px;
-                        font-weight: 400;
-                        line-height: 32px;
                         display: flex;
                         align-items: center;
                         justify-content: center;
@@ -984,10 +989,16 @@ export default {
                         letter-spacing: 3px;
                         cursor: pointer;
                         transition: $animete-time linear;
+                        font-family: Gilroy-Bold;
+                        font-size: 24px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.33;
 
                         &:hover {
                             &:not(.disabled) {
-                                background-color: #1f04c6;
+                                background-color: #7eb5ff;
                             }
                         }
 
