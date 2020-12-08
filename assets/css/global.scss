@@ -7,9 +7,18 @@
 //Import scroll bar
 @import "./scrollbar";
 
- //全局动画时间
- //Animation for all global pages
- $animete-time: 0.2s;
+//全局动画时间
+//Animation for all global pages
+$animete-time: 0.2s;
+
+$max-phone-width: 414px; //phone最大宽度
+$min-ipad-width: 768px; //ipad最小宽度
+$max-ipad-width: 1024px; //ipad最大宽度
+$size1080p-width: 1920px; //1080p宽度
+$size1080p1-width: 1921px; //1080p宽度
+$size2k-width: 2560px; //2k宽度
+$size2kp1-width: 2561px; //2k宽度
+$size4k-width: 3840px; //4k宽度
 
 *,
 *:before,
@@ -23,7 +32,7 @@
 $mainColor: #1B05A1;
 $mainTextColor: #5A575C;
 $secondaryTextColor: #C6C4C7;
-
+$lightBlue: #f1f7ff;
 
 //全局poptip样式
 .globalInfoStyle.ivu-tooltip {

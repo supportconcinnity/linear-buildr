@@ -44,4 +44,14 @@ export default {
         width: 1440px;
     }
 }
+
+
+@media only screen and (max-width: $max-phone-width) {
+    #mainPage {
+        overflow: visible;
+        .container {
+            width: 100vw;
+        }
+    }
+}
 </style>

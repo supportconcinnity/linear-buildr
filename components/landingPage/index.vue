@@ -6,6 +6,16 @@
                 src="@/static/linear_buildr_logo.svg"
                 alt=""
             />
+
+
+            <div class="mBuyLINA mobileShow" @click="openBuy">
+                BUY LINA
+                <img
+                    src="@/static/icon-arrow-left-bold.svg"
+                    alt=""
+                />
+            </div>
+            
         </div>
         <div class="container">
             <div class="introductBox">
@@ -53,6 +63,17 @@
                 <div class="buyLINA" @click="openBuy">
                     Buy LINA
                     <Icon type="ios-arrow-round-forward" />
+                </div>
+
+                <div class="mRect mobileShow"
+                    @click="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
+                    >
+                    <img
+                        src="@/static/icon-wallet.svg"
+                        alt=""
+                    >
+                    Your wallet is not connected yet. 
+                    Please connect with your MetaMask
                 </div>
             </div>
             <div class="walletBox">
@@ -156,6 +177,11 @@ export default {
     overflow: hidden;
     padding-bottom: 64px;
 
+
+    .mobileShow {
+        display: none;
+    }
+    
     .headerBox {
         width: 1440px;
         height: 120px;
@@ -384,6 +410,183 @@ export default {
                         box-shadow: 0 2px 12px 0 #e5e5e5;
                     }
                 }
+            }
+        }
+    }
+}
+
+
+@media only screen and (max-width: $max-phone-width) {
+    #landingPage {
+        overflow: hidden;
+        padding-bottom: 0;
+
+        .mobileShow {
+            display: block;
+        }
+
+        .headerBox {
+            width: 100vw;
+            height: 64px;
+            padding: 16px 0 16px 16px;
+            display: flex;
+            align-items: center;
+            position: relative;
+
+            .linearBuildrlogo {
+                cursor: pointer;
+                width: 163px;
+                height: 32px;
+            }
+
+            .mBuyLINA {
+                width: 85px;
+                height: 16px;
+                font-family: Gilroy-Bold;
+                font-size: 12px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.5;
+                letter-spacing: 1.5px;
+                text-align: center;
+                color: #1a38f8;
+                margin: 0 0 0 94px;
+                img {
+                    width: 16px;
+                    height: 16px;
+                    float: right;
+                }
+            }
+        }
+
+        .container {
+            display: flex;
+            padding: 0 16px;
+
+            .introductBox {
+                width: 100%;
+                height: 88vh;
+                position: relative;
+                display: flex;
+                align-items: stretch;
+                background: #fff;
+                border-radius: 16px;
+                margin-right: 0;
+
+                .ivu-collapse {
+                    background: unset;
+                    border: unset;
+                    padding-top: 92px;
+                    padding-left: 32px;
+
+                    .ivu-collapse-item {
+                        margin-bottom: 16px;
+                        border: unset;
+
+                        .ivu-collapse-header {
+                            padding: 0;
+                            border: unset;
+                            display: flex;
+                            align-items: center;
+                            font-family: Gilroy-Bold;
+                            font-size: 14px;
+                            font-weight: bold;
+                            height: unset;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.33;
+                            letter-spacing: normal;
+                            color: #99999a;
+
+                            i {
+                                display: none;
+                            }
+
+                            .line {
+                                width: 3px;
+                                height: 17px;
+                                margin-right: 16px;
+                                border-radius: 4px;
+                                background: #bababa;
+                                transition: $animete-time linear;
+                            }
+                        }
+
+                        .ivu-collapse-content {
+                            width: 100%;
+                            padding: 0 10px 0 0;
+
+                            .ivu-collapse-content-box {
+                                font-family: Gilroy-Regular;
+                                font-size: 12px;
+                                font-weight: normal;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.5;
+                                letter-spacing: normal;
+                                color: #5a575c;
+                                padding-top: 8px;
+                                padding-bottom: 30px;
+                                padding-left: 20px;
+
+                                p {
+                                    width: 100%;
+                                }
+                            }
+                        }
+                    }
+
+                    .ivu-collapse-item-active {
+                        &.ivu-collapse-item {
+                            margin-bottom: 8px;
+                        }
+
+                        .ivu-collapse-header {
+                            color: #5a575c;
+                            font-size: 24px;
+                            height: 32px;
+                            line-height: 1.14;
+
+                            .line {
+                                height: 17px;
+                                background: #1a38f8;
+                            }
+                        }
+                    }
+                }
+
+                .buyLINA {
+                    display: none;
+                }
+                .mRect {
+                    position: absolute;
+                    width: 74.6666666648vw;
+                    height: 17.06666666624vw;
+                    bottom: 8.533vw;
+                    left: 8.533vw;
+                    padding: 4.26666666656vw 9px 16px 14.93333333296vw;
+                    border-radius: 8px;
+                    background-color: $lightBlue;
+                    font-size: 12px;
+                    font-weight: 500;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 17px;
+                    letter-spacing: normal;
+                    color: #1a38f8;
+                    img {
+                        position: absolute;
+                        width: 6.39999999984vw;
+                        height: 6.39999999984vw;
+                        top: 5.3333333332vw;
+                        left: 4.26666666656vw;
+                    }
+                }
+            }
+
+            .walletBox {
+                display: none;
             }
         }
     }
