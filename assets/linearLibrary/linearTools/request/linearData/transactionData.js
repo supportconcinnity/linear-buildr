@@ -9,7 +9,7 @@ const graphAPIEndpoints = {
         "https://graph-api.linear.finance/subgraphs/name/linear-tech/linear-buildr-bsc" // Binance Smart chain
 };
 
-const maxRequest = 100;
+const maxRequest = 1000;
 
 module.exports = {
     pageResults,
@@ -464,6 +464,102 @@ module.exports = {
                     )
                 )
                 .catch(err => console.error(err));
+        },
+        freeZe({
+            max = maxRequest,
+            account = undefined,
+            graphApi = undefined
+        } = {}) {
+            if (!graphApi) {
+                graphApi = $nuxt.$store.state?.currentGraphApi;
+            }
+            return pageResults({
+                api: graphAPIEndpoints[graphApi],
+                max,
+                query: {
+                    entity: "freeZes",
+                    selection: {
+                        orderBy: "timestamp",
+                        orderDirection: "desc",
+                        where: {
+                            account: account ? `\\"${account}\\"` : undefined
+                        }
+                    },
+                    properties: [
+                        "id",
+                        "account",
+                        "timestamp",
+                        "value",
+                        "currency"
+                    ]
+                }
+            })
+            .then(results =>
+                results.map(
+                    ({
+                        id,
+                        account,
+                        timestamp,
+                        value,
+                        currency
+                    }) => ({
+                        hash: id.split("-")[0],
+                        account,
+                        timestamp: Number(timestamp * 1000),
+                        value: value / 1e18,
+                        source: currency
+                    })
+                )
+            )
+            .catch(err => console.error(err));
+        },
+        unfreeze({
+            max = maxRequest,
+            account = undefined,
+            graphApi = undefined
+        } = {}) {
+            if (!graphApi) {
+                graphApi = $nuxt.$store.state?.currentGraphApi;
+            }
+            return pageResults({
+                api: graphAPIEndpoints[graphApi],
+                max,
+                query: {
+                    entity: "unfreezes",
+                    selection: {
+                        orderBy: "timestamp",
+                        orderDirection: "desc",
+                        where: {
+                            account: account ? `\\"${account}\\"` : undefined
+                        }
+                    },
+                    properties: [
+                        "id",
+                        "account",
+                        "timestamp",
+                        "value",
+                        "currency"
+                    ]
+                }
+            })
+            .then(results =>
+                results.map(
+                    ({
+                        id,
+                        account,
+                        timestamp,
+                        value,
+                        currency
+                    }) => ({
+                        hash: id.split("-")[0],
+                        account,
+                        timestamp: Number(timestamp * 1000),
+                        value: value / 1e18,
+                        source: currency
+                    })
+                )
+            )
+            .catch(err => console.error(err));
         }
     }
 };

@@ -222,7 +222,7 @@ export default {
         margin-bottom: 32px;
 
         .error {
-            color: #df434c;
+            color: #F22E45;
         }
     }
 
@@ -283,7 +283,7 @@ export default {
                     line-height: 16px;
                     letter-spacing: 1.25px;
                     text-align: center;
-                    color: #1b05a1;
+                    color: #1a38f8;
                     display: flex;
 
                     transition: opacity $animete-time linear;
@@ -317,12 +317,11 @@ export default {
 
                     &.has {
                         height: 5px;
-                        background-color: #deddde;
+                        background-color: #e5e5e5;
 
                         &.active {
-                            background-color: #1b05a1;
+                            background-color: #1a38f8;
                         }
-                        // display: inline-block;
                     }
                 }
             }

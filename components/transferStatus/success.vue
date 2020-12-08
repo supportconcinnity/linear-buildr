@@ -87,7 +87,7 @@ export default {
         width: 173px;
         height: 40px;
         border-radius: 20px;
-        background: #1b05a1;
+        background: #1a38f8;
         color: #ffffff;
         font-family: "Gilroy";
         font-size: 12px;
@@ -100,7 +100,7 @@ export default {
         transition: $animete-time linear;
 
         &:hover {
-            background-color: #1f04c6;
+            background-color: #1a38f8;
         }
     }
 }

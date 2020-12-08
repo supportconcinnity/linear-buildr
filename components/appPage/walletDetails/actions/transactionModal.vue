@@ -141,6 +141,9 @@
                                 <Checkbox label="Referral">
                                     Referral
                                 </Checkbox>
+                                <Checkbox label="Swap">
+                                    Swap
+                                </Checkbox>
                             </CheckboxGroup>
                         </DropdownMenu>
                     </Dropdown>
@@ -296,10 +299,10 @@ import {
 } from "@/assets/linearLibrary/linearTools/request/transactionHistory";
 import { format } from "date-fns";
 import {
-    getEthereumNetwork,
     GRAPH_API
 } from "@/assets/linearLibrary/linearTools/network";
 import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
+import { getBrowserUrlBase } from "@/assets/linearLibrary/linearJs/contractSettings";
 
 export default {
     name: "transactionModal",
@@ -317,7 +320,6 @@ export default {
             currentPage: 1, //当前所在页数
             defaultPageSize: 10, //每页显示数据条数
             transactionHistoryData: [], //交易记录数据
-            netWork: {},
             //显示表格日期,大于今天的日期禁用
             options1: {
                 disabledDate(date) {
@@ -360,9 +362,8 @@ export default {
                 type = item.type;
                 date = format(item.timestamp, "d MMM yyyy k:m");
 
-                if (that.netWork?.networkId == 1)
-                    hash = "https://etherscan.io/tx/" + item.hash;
-                else hash = "https://ropsten.etherscan.io/tx/" + item.hash;
+                let baseUrl = getBrowserUrlBase({graphApi: item.chain,netWork: item.net});
+                hash = baseUrl + item.hash;
 
                 if (
                     item.type == "Build" ||
@@ -370,7 +371,8 @@ export default {
                     item.type == "Transfer" ||
                     item.type == "Stake" ||
                     item.type == "Unstake" ||
-                    item.type == "Referral"
+                    item.type == "Referral" ||
+                    item.type == "Swap"
                 ) {
                     if (item.source == "lUSD")
                         amount = formatNumber(item.value) + " ℓUSD";
@@ -524,6 +526,10 @@ export default {
             }
 
             return filterNum;
+        },
+        //网络类型
+        walletNetworkId(){
+            return this.$store.state.walletNetworkId;
         }
     },
     methods: {
@@ -540,10 +546,20 @@ export default {
         },
         //获取交易记录
         async fetchTransactionHistoryClick() {
-            this.netWork = await getEthereumNetwork();
-            this.transactionHistoryData = await fetchTransactionHistory(
-                this.$store.state?.wallet?.address
+            let ethData = await fetchTransactionHistory(
+                this.$store.state?.wallet?.address,
+                GRAPH_API.ETHEREUM
             );
+            let bscData = await fetchTransactionHistory(
+                this.$store.state?.wallet?.address,
+                GRAPH_API.BINANCE
+            );
+
+            this.transactionHistoryData = [...ethData,...bscData];
+            this.transactionHistoryData = this.transactionHistoryData.sort(function(record1, record2) {
+                return record2.timestamp - record1.timestamp;
+             });
+
             this.gettingData = false;
         },
         //日期范围改变

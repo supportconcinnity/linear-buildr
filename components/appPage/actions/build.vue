@@ -6,7 +6,7 @@
                     <div class="actionBody">
                         <div class="actionTitle">Build</div>
                         <div class="actionDesc">
-                            Build ℓUSD and earn staking rewards by staking LINA
+                           Build ℓUSD and earn staking rewards by staking LINA
                         </div>
                         <div class="actionRate">
                             1 LINA =
@@ -85,7 +85,7 @@
                         >
                             <div class="itemLeft">
                                 <div class="itemIcon">
-                                    <img src="@/static/lina_usd.svg" alt="" />
+                                    <img src="@/static/currency/lUSD.svg" alt="" />
                                 </div>
                                 <div class="itemType">
                                     <div class="itemTypeTitle">
@@ -1425,38 +1425,48 @@ export default {
                         align-items: center;
 
                         .actionTitle {
-                            color: #5a575c;
-                            font-family: Gilroy;
+                            font-family: Gilroy-bold;
                             font-size: 32px;
-                            font-weight: 700;
-                            line-height: 40px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.25;
+                            letter-spacing: normal;
+                            text-align: center;
+                            color: #5a575c;
                         }
 
                         .actionDesc {
                             margin-top: 8px;
-                            color: #c6c4c7;
-                            font-family: Gilroy-Regular;
-                            font-size: 16px;
-                            font-weight: 400;
-                            line-height: 18px;
-                            text-align: center;
                             padding: 0 75px;
+                            font-family: Gilroy-Regular;
+                            font-size: 14px;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.29;
+                            letter-spacing: normal;
+                            text-align: center;
+                            color: #99999a;
                         }
 
                         .actionRate {
                             margin: 16px 0 40px;
-                            width: 132px;
-                            height: 24px;
+                            padding: 4px 16px;
                             border-radius: 12px;
                             background: #f6f5f6;
                             display: flex;
                             justify-content: center;
                             align-items: center;
-                            color: #c6c4c7;
-                            font-family: Gilroy;
+                            font-family: Gilroy-Medium;
                             font-size: 12px;
                             font-weight: 500;
-                            line-height: 16px;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.33;
+                            letter-spacing: normal;
+                            text-align: center;
+                            color: #99999a;
                         }
 
                         .actionInputItem {
@@ -1500,13 +1510,16 @@ export default {
 
                                 .itemType {
                                     .itemTypeTitle {
-                                        color: #5a575c;
-                                        font-family: Gilroy;
-                                        font-size: 16px;
-                                        font-weight: 700;
-                                        line-height: 24px;
                                         display: flex;
                                         align-items: center;
+                                        font-family: Gilroy-bold;
+                                        font-size: 16px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.5;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
 
                                         .tip {
                                             margin-left: 8px;
@@ -1521,13 +1534,16 @@ export default {
                                         cursor: pointer;
                                         display: flex;
                                         opacity: 0.2;
-                                        color: #1b05a1;
-                                        font-family: Gilroy;
-                                        font-size: 12px;
-                                        font-weight: 700;
-                                        line-height: 16px;
                                         text-transform: uppercase;
+                                        font-family: Gilroy-bold;
+                                        font-size: 12px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.33;
                                         letter-spacing: 1.5px;
+                                        text-align: center;
+                                        color: #1a38f8;
 
                                         img {
                                             vertical-align: middle;
@@ -1571,14 +1587,17 @@ export default {
 
                                         .ivu-input-number-input {
                                             text-align: right;
-                                            color: #5a575c;
-                                            font-family: Gilroy;
+                                            font-family: Gilroy-bold;
                                             font-size: 32px;
-                                            font-weight: 700;
-                                            line-height: 40px;
+                                            font-weight: bold;
+                                            font-stretch: normal;
+                                            font-style: normal;
+                                            line-height: 1.25;
+                                            letter-spacing: normal;
+                                            color: #5a575c;
 
                                             &::placeholder {
-                                                color: #c6c4c7;
+                                                color: #99999a;
                                             }
                                         }
                                     }
@@ -1630,19 +1649,23 @@ export default {
                         height: 80px;
                         line-height: 80px;
                         cursor: pointer;
-                        background: #1b05a1;
-                        color: #ffffff;
-                        font-family: Gilroy;
-                        font-size: 24px;
-                        font-weight: 700;
-                        text-align: center;
+                        background: #1a38f8;
                         text-transform: uppercase;
-                        letter-spacing: 3px;
                         transition: $animete-time linear;
+
+                        font-family: Gilroy-Bold;
+                        font-size: 24px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 80px;
+                        letter-spacing: 3px;
+                        text-align: center;
+                        color: #ffffff;
 
                         &:hover {
                             &:not(.disabled) {
-                                background-color: #1f04c6;
+                                background-color: #7eb5ff;
                             }
                         }
 

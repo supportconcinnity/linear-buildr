@@ -8,7 +8,7 @@
             :stroke-width="6"
             :percent="waitPercent"
             stroke-linecap="square"
-            stroke-color="#1b05a1"
+            stroke-color="#1a38f8"
         >
             <div>
                 <img v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK" src="@/static/metamask.svg" />
@@ -129,8 +129,8 @@ export default {
         width: 193px;
         height: 40px;
         border-radius: 20px;
-        border: solid 1px #1b05a1;
-        color: #1b05a1;
+        border: solid 1px #1a38f8;
+        color: #1a38f8;
         font-family: "Gilroy";
         font-size: 12px;
         font-weight: 400;
@@ -148,7 +148,7 @@ export default {
         width: 193px;
         height: 40px;
         border-radius: 20px;
-        background: #1b05a1;
+        background: #1a38f8;
         color: #ffffff;
         font-family: "Gilroy";
         font-size: 12px;
@@ -161,7 +161,7 @@ export default {
         transition: $animete-time linear;
 
         &:hover {
-            background-color: #1f04c6;
+            background-color: #1a38f8;
         }
     }
 }

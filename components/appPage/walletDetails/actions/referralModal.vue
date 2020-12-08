@@ -19,7 +19,8 @@
                 <div class="content">
                     <div class="contentTitle">Earn LINA with friends</div>
                     <div class="contentDesc">
-                        Receive 10 USD worth LINA when a friend adds your code and completes 5 transactions
+                        Receive 10 USD worth LINA when a friend adds your code
+                        and completes 5 transactions
                     </div>
                     <div class="youCodeBox">
                         <div class="icon">
@@ -50,7 +51,8 @@
                         @click="codeInputFocus"
                     >
                         <div class="info">
-                            Enter referral code
+                            <span v-if="addCodeFinish">Added</span>
+                            <span v-else>Enter</span>&nbsp;referral code
 
                             <Tooltip
                                 class="tip globalInfoStyle"
@@ -68,7 +70,7 @@
                             class="codeInput"
                             ref="codeInput"
                             v-model="referralCode.referral_code"
-                            placeholder="eg: 019fGa0"
+                            placeholder="eg: 019fGa01"
                             @input="codeInputChange"
                         />
 
@@ -103,7 +105,9 @@
                     You are adding {{ referralCode.referral_code }}. Are you
                     sure?
                 </div>
-                <div class="desc">Referral code can only be submitted once.</div>
+                <div class="desc">
+                    Referral code can only be submitted once.
+                </div>
                 <div class="btns">
                     <div class="back" @click="referralTabs = 'm0'">
                         No, go back
@@ -359,76 +363,99 @@ export default {
 
                         .contentTitle {
                             color: #5a575c;
-                            font-family: Gilroy;
+                            font-family: Gilroy-Bold;
                             font-size: 32px;
-                            font-weight: 700;
-                            line-height: 40px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.25;
+                            letter-spacing: normal;
                             text-align: center;
+                            color: #5a575c;
                         }
 
                         .contentDesc {
                             margin-top: 8px;
-                            color: #c6c4c7;
-                            font-family: "Gilroy-Regular";
+                            font-family: Gilroy-Regular;
                             font-size: 14px;
-                            font-weight: 400;
-                            line-height: 18px;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.29;
+                            letter-spacing: normal;
                             text-align: center;
+                            color: #99999a;
                         }
 
                         .youCodeBox {
-                            margin-top: 33px;
+                            margin-top: 53px;
                             border-radius: 8px;
-                            background: rgba($color: #1b05a1, $alpha: 0.03);
+                            background: rgba($color: #7eb5ff, $alpha: 0.1);
                             width: 100%;
-                            padding: 47px 40px 40px;
+                            padding: 40px;
                             display: flex;
                             flex-direction: column;
                             align-items: center;
 
+                            .icon {
+                                width: 56px;
+                                height: 56px;
+                                img {
+                                    height: 100%;
+                                    width: 100%;
+                                }
+                            }
+
                             .title {
                                 color: #5a575c;
-                                font-family: Gilroy;
+                                font-family: Gilroy-Bold;
                                 font-size: 16px;
-                                font-weight: 700;
-                                line-height: 24px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.5;
+                                letter-spacing: normal;
                                 text-align: center;
-                                margin: 16px 0 8px;
+                                margin: 24px 0 8px;
                             }
 
                             .code {
-                                color: #5a575c;
-                                font-family: Gilroy;
+                                font-family: Gilroy-Bold;
                                 font-size: 32px;
-                                font-weight: 700;
-                                line-height: 40px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.25;
+                                letter-spacing: normal;
                                 text-align: center;
+                                color: #5a575c;
                             }
 
                             .copyBtn {
-                                margin-top: 44px;
+                                margin-top: 16px;
                                 padding: 8px 16px;
-                                border-radius: 16px;
-                                border: solid 1px #deddde;
                                 display: flex;
                                 align-items: center;
-                                color: #1b05a1;
-                                font-family: Gilroy;
-                                font-size: 10px;
-                                font-weight: 700;
-                                line-height: 16px;
                                 text-transform: uppercase;
-                                letter-spacing: 1.25px;
                                 cursor: pointer;
-
+                                font-family: Gilroy-Bold;
+                                font-size: 10px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.6;
+                                letter-spacing: 1.25px;
+                                color: #1a38f8;
                                 transition: $animete-time linear;
+                                border-radius: 16px;
+                                border: solid 1px #e5e5e5;
 
                                 img {
                                     margin-right: 10px;
                                 }
 
                                 &:hover {
-                                    border-color: #1b05a1;
+                                    border-color: #1a38f8;
                                 }
 
                                 &.success {
@@ -469,7 +496,7 @@ export default {
                             position: relative;
 
                             &.hasCode {
-                                background: rgba($color: #1b05a1, $alpha: 0.03);
+                                background: rgba(126, 181, 255, 0.1);
                                 border: none;
                             }
 
@@ -488,19 +515,22 @@ export default {
                             }
 
                             .info {
-                                color: #5a575c;
-                                font-family: Gilroy;
-                                font-size: 16px;
-                                font-weight: 700;
-                                line-height: 24px;
-                                text-align: center;
                                 display: flex;
                                 align-items: center;
+                                font-family: Gilroy-Bold;
+                                font-size: 16px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.5;
+                                letter-spacing: normal;
+                                text-align: center;
+                                color: #5a575c;
 
                                 .tip {
                                     margin-left: 8px;
 
-                                    img{
+                                    img {
                                         margin-top: -3px;
                                     }
                                 }
@@ -509,18 +539,21 @@ export default {
                             .codeInput {
                                 margin-top: 8px;
                                 width: 100%;
-                                font-family: Gilroy;
-                                font-size: 32px;
-                                font-weight: 700;
-                                line-height: 40px;
                                 color: #5a575c;
                                 border: none;
                                 box-shadow: none;
                                 text-align: center;
                                 outline: none;
+                                font-family: Gilroy-Bold;
+                                font-size: 32px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.25;
+                                letter-spacing: normal;
 
                                 &::placeholder {
-                                    color: #c6c4c7;
+                                    color: #99999a;
                                 }
                             }
 
@@ -547,7 +580,7 @@ export default {
                         position: absolute;
                         bottom: 0;
                         height: 80px;
-                        background: #1b05a1;
+                        background: #1a38f8;
                         color: #ffffff;
                         font-family: Gilroy;
                         font-size: 24px;
@@ -560,7 +593,7 @@ export default {
 
                         &:hover {
                             &:not(.disabled) {
-                                background-color: #1f04c6;
+                                background-color: #7eb5ff;
                             }
                         }
 
@@ -578,18 +611,21 @@ export default {
                     align-items: center;
 
                     .title {
-                        color: #5a575c;
-                        font-family: Gilroy;
-                        font-size: 24px;
-                        font-weight: 700;
-                        line-height: 32px;
-                        text-align: center;
                         margin: 40px 0 8px;
+                        font-family: Gilroy-Bold;
+                        font-size: 24px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.33;
+                        letter-spacing: normal;
+                        text-align: center;
+                        color: #5a575c;
                     }
 
                     .desc {
                         color: #5a575c;
-                        font-family: "Gilroy-Regular";
+                        font-family: Gilroy-Regular;
                         font-size: 16px;
                         font-weight: 400;
                         line-height: 24px;
@@ -597,7 +633,7 @@ export default {
                     }
 
                     .btns {
-                        margin-top: 32px;
+                        margin-top: 48px;
                         display: flex;
                         .back,
                         .confirm {
@@ -615,17 +651,17 @@ export default {
                         }
 
                         .back {
-                            border: solid 1px #1b05a1;
-                            color: #1b05a1;
+                            border: solid 1px #1a38f8;
+                            color: #1a38f8;
                         }
 
                         .confirm {
                             color: white;
-                            background: #1b05a1;
+                            background: #1a38f8;
 
                             &:hover {
                                 &:not(.disabled) {
-                                    background-color: #1f04c6;
+                                    background-color: #7eb5ff;
                                 }
                             }
 

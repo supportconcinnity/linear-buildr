@@ -2,8 +2,9 @@
     <div id="homePage">
         <div class="title">Welcome to Buildr</div>
         <div class="context">
-            Our native Linear Token (LINA) serves the purpose of staking in our
-            collateral pool with infinite liquidity and no slippage
+            Our native token LINA is staked in our collateral pool to build
+            ℓUSD. The collateral pool enables infinite liquidity and no
+            slippage.
         </div>
         <div class="actionsBox">
             <div class="boxItem">
@@ -21,7 +22,7 @@
             </div>
             <div class="boxItem">
                 <div class="imgBox">
-                    <img src="@/static/lina_usd.svg" alt="" />
+                    <img src="@/static/currency/lUSD.svg" alt="" />
                 </div>
                 <div class="boxContext">
                     Stake LINA <br />
