@@ -573,7 +573,7 @@ export default {
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.FREEZE,
-                    value: `Freezing ${this.confirmTransactionStep + 1} / ${
+                    value: `Swapped on Ethereum ${this.confirmTransactionStep + 1}/${
                         this.waitProcessArray.length
                     }`
                 });
@@ -674,8 +674,8 @@ export default {
                     this.$pub.publish("notificationQueue", {
                         hash: this.confirmTransactionHash,
                         type: BUILD_PROCESS_SETUP.UNFREEZE,
-                        value: `UnFreezing ${this.confirmTransactionStep +
-                            1} / ${this.waitProcessArray.length}`
+                        value: `Swapped on BSC ${this.confirmTransactionStep +
+                            1}/${this.waitProcessArray.length}`
                     });
 
                     let status = await utils.waitForTransaction(

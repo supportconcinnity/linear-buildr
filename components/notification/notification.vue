@@ -17,12 +17,10 @@
                 <img
                     v-if="status == 1"
                     src="@/static/transferProgress/completed.svg"
-                    alt=""
                 />
                 <img
                     v-if="status == 2"
                     src="@/static/transferProgress/failed.svg"
-                    alt=""
                 />
             </div>
         </div>
@@ -33,8 +31,8 @@
                 ><template v-if="status == 2">Failed</template>
             </div>
             <div class="description">
-                {{ value }} &nbsp;
-                <span @click="openBlockchainScan(hash)">view</span>
+                <span class="info">{{ value }} &nbsp;</span>
+                <span class="view" @click="openBlockchainScan(hash)">view</span>
             </div>
         </div>
         <div class="btns">
@@ -43,23 +41,25 @@
 
         <div
             class="loadingBar"
-            :class="{ error: status == 2, loading: status == 0 }"
-        >
-            <div class="slider"></div>
-        </div>
+            :class="{ error: status == 2 }"
+            :style="{ width: sliderPercent + '%' }"
+        ></div>
     </div>
 </template>
 
 <script>
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { openBlockchainScan } from "@/common/utils";
+import { BUILD_PROCESS_SETUP } from '@/assets/linearLibrary/linearTools/constants/process';
 
 export default {
     name: "notification",
     data() {
         return {
-            status: 0,
+            status: 0, //0执行中,1执行完成,2执行失败
             openBlockchainScan,
+            stepRegex: /[\s]*[0-9]{1,}[\s]*\/[\s]*[0-9]{1,}[\s]*/i, //获取进度正则(允许数字前后有空格),例:1/5
+            sliderPercent: 100 //当前进度百分比
         };
     },
     props: {
@@ -67,7 +67,7 @@ export default {
         hash: "",
         type: "",
         value: "",
-        unit: "" //暂无用,无用时删除
+        unit: "" //测试用,无用时删除
     },
     watch: {
         handleTypeName() {}
@@ -76,7 +76,7 @@ export default {
         //处理操作名
         handleTypeName() {
             let typeName = this.type;
-            if(typeName == 'Claiming Rewards'){
+            if (typeName == BUILD_PROCESS_SETUP.CLAIM) {
                 return "Claim";
             }
 
@@ -93,7 +93,14 @@ export default {
     methods: {
         async onListen() {
             try {
-                // this.status = this.unit;  //测试用,无用时删除
+                //计算当前步骤进度条百分数
+                const step = this.value.match(this.stepRegex);
+                if (step && step.length == 1) {
+                    this.sliderPercent = eval(step[0]) * 100;
+                    this.sliderPercent < 0 && (this.sliderPercent = 100);
+                }
+
+                // this.status = this.unit; //测试用,无用时删除
                 const status = await lnrJSConnector.utils.waitForTransaction(
                     this.hash
                 );
@@ -107,8 +114,6 @@ export default {
                 }
             } catch (error) {
                 this.status = 2;
-            } finally {
-                clearInterval(this.waitPercentTimeId);
             }
         },
         async close() {
@@ -151,32 +156,46 @@ export default {
         flex: 1;
 
         .title {
-            font-family: Gilroy;
+            font-family: Gilroy-Bold;
             font-size: 12px;
             font-weight: bold;
-            line-height: 16px;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
+            letter-spacing: normal;
             color: #5a575c;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 280px;
         }
         .description {
-            font-family: Gilroy;
-            font-size: 12px;
-            font-weight: 500;
-            line-height: 16px;
-            color: #c1c1c1;
+            display: flex;
+            align-items: center;
+            .info {
+                font-family: Gilroy-Medium;
+                font-size: 12px;
+                font-weight: 500;
+                line-height: 16px;
+                color: #99999a;
+                max-width: 248px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
 
-            span {
-                opacity: 0.2;
-                font-family: Gilroy;
+            .view {
+                font-family: Gilroy-Bold;
                 font-size: 10px;
                 font-weight: bold;
                 line-height: 16px;
                 letter-spacing: 1.25px;
-                color: #1b05a1;
+                color: #1a38f8;
                 transition: $animete-time linear;
                 cursor: pointer;
 
                 &:hover {
-                    opacity: 1;
+                    color: #7eb5ff;
                 }
             }
         }
@@ -189,7 +208,7 @@ export default {
             cursor: pointer;
             transition: $animete-time linear;
             &:hover {
-                color: #1b05a1;
+                color: #1a38f8;
             }
         }
     }
@@ -199,37 +218,12 @@ export default {
         position: absolute;
         left: 0;
         bottom: 0;
-        width: 100%;
-        background-color: #1b05a1;
+        background-color: #1a38f8;
         overflow: hidden;
 
         &.error {
             background-color: #df434c;
         }
-
-        .slider {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            left: -100%;
-            background-color: #fff;
-        }
-
-        &.loading {
-            .slider {
-                animation: loop 4s linear infinite;
-            }
-        }
-    }
-}
-
-@keyframes loop {
-    /* 修改背景定位 */
-    0% {
-        left: -100%;
-    }
-    100% {
-        left: 100%;
     }
 }
 </style>
