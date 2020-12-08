@@ -86,7 +86,7 @@
                         >
                             <div class="itemLeft">
                                 <div class="itemIcon">
-                                    <img src="@/static/lina_usd.svg" alt="" />
+                                    <img src="@/static/currency/lUSD.svg" alt="" />
                                 </div>
                                 <div class="itemType">
                                     <div class="itemTypeTitle">Burn</div>

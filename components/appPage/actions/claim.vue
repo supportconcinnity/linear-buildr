@@ -6,8 +6,7 @@
                     <div class="actionBody">
                         <div class="actionTitle">Claim</div>
                         <div class="actionDesc">
-                            If you have staked your LINA and builded ℓUSD, you
-                            are eligiable to collect two kinds of rewards
+                            Claim rewards from staking LINA and building ℓUSD
                         </div>
 
                         <div
@@ -35,7 +34,7 @@
                             <div class="box">
                                 <img
                                     v-if="feesAreClaimable"
-                                    src="@/static/lina_usd.svg"
+                                    src="@/static/currency/lUSD.svg"
                                     alt=""
                                 />
                                 <img

@@ -172,7 +172,7 @@ export const selectedWallet = async (
     try {
         //连接钱包
         const walletStatus = await connectToWallet(walletType);
-        // $nuxt.$Spin.show();
+        $nuxt.$Spin.show();
         const store = $nuxt.$store;
 
         //连接成功

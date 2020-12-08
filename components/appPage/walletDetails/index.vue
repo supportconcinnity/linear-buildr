@@ -250,7 +250,7 @@
                     </div>
                 </div>
                 <div class=" tokenBox">
-                    <img class="tokenIcon" src="@/static/lina_usd.svg" />
+                    <img class="tokenIcon" src="@/static/currency/lUSD.svg" />
                     <div class="box">
                         <div class="tokenItems obtrusive">
                             <div class="left">ℓUSD</div>
@@ -322,7 +322,7 @@
                     </template>
                 </div>
                 <div class=" tokenBox">
-                    <img class="tokenIcon" src="@/static/lina_usd.svg" />
+                    <img class="tokenIcon" src="@/static/currency/lUSD.svg" />
                     <div class="box">
                         <div class="tokenItems obtrusive singer">
                             <div class="left">
@@ -349,7 +349,7 @@
                     </div>
                 </div>
                 <div class=" tokenBox">
-                    <img class="tokenIcon" src="@/static/lina_usd.svg" />
+                    <img class="tokenIcon" src="@/static/currency/lUSD.svg" />
                     <div class="box">
                         <div class="tokenItems obtrusive singer">
                             <div class="left">
@@ -556,7 +556,7 @@ export default {
     },
     mounted() {
         // 测试用,无用时删除
-        // _.delay(this.referralModalClick, 500)
+        // _.delay(this.trackModalClick, 500)
         // 测试用,无用时删除
     },
     methods: {

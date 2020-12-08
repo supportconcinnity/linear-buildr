@@ -7,8 +7,8 @@
                         <div class="text">
                             <div class="title">Transfer</div>
                             <div class="descript">
-                                You can select the type of currency you want to
-                                transfer and enter the wallet address
+                                 Transfer different currencies to specified
+                                wallet address
                             </div>
                         </div>
                         <div
@@ -281,7 +281,7 @@ export default {
                     if (key == "ETH") img = require("@/static/ETH_logo.svg");
                     if (key == "BNB")
                         img = require("@/static/currency/lBNB.svg");
-                    if (key == "lUSD") img = require("@/static/lina_usd.svg");
+                    if (key == "lUSD") img = require("@/static/currency/lUSD.svg");
                     if (key == "LINA") img = require("@/static/LINA_logo.svg");
                     tempData.push({
                         name: key,

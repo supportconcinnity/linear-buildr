@@ -51,7 +51,8 @@
                         @click="codeInputFocus"
                     >
                         <div class="info">
-                            Enter referral code
+                            <span v-if="addCodeFinish">Added</span>
+                            <span v-else>Enter</span>&nbsp;referral code
 
                             <Tooltip
                                 class="tip globalInfoStyle"
@@ -69,7 +70,7 @@
                             class="codeInput"
                             ref="codeInput"
                             v-model="referralCode.referral_code"
-                            placeholder="eg: 019fGa0"
+                            placeholder="eg: 019fGa01"
                             @input="codeInputChange"
                         />
 
@@ -433,13 +434,10 @@ export default {
                             .copyBtn {
                                 margin-top: 16px;
                                 padding: 8px 16px;
-                                border-radius: 16px;
-                                border: solid 1px #e5e5e5;
                                 display: flex;
                                 align-items: center;
                                 text-transform: uppercase;
                                 cursor: pointer;
-
                                 font-family: Gilroy-Bold;
                                 font-size: 10px;
                                 font-weight: bold;
@@ -448,15 +446,16 @@ export default {
                                 line-height: 1.6;
                                 letter-spacing: 1.25px;
                                 color: #1a38f8;
-
                                 transition: $animete-time linear;
+                                border-radius: 16px;
+                                border: solid 1px #e5e5e5;
 
                                 img {
                                     margin-right: 10px;
                                 }
 
                                 &:hover {
-                                    border-color: #1b05a1;
+                                    border-color: #1a38f8;
                                 }
 
                                 &.success {
@@ -497,7 +496,7 @@ export default {
                             position: relative;
 
                             &.hasCode {
-                                background: rgba($color: #1b05a1, $alpha: 0.03);
+                                background: rgba(126, 181, 255, 0.1);
                                 border: none;
                             }
 
@@ -516,14 +515,17 @@ export default {
                             }
 
                             .info {
-                                color: #5a575c;
-                                font-family: Gilroy;
-                                font-size: 16px;
-                                font-weight: 700;
-                                line-height: 24px;
-                                text-align: center;
                                 display: flex;
                                 align-items: center;
+                                font-family: Gilroy-Bold;
+                                font-size: 16px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.5;
+                                letter-spacing: normal;
+                                text-align: center;
+                                color: #5a575c;
 
                                 .tip {
                                     margin-left: 8px;
@@ -537,18 +539,21 @@ export default {
                             .codeInput {
                                 margin-top: 8px;
                                 width: 100%;
-                                font-family: Gilroy;
-                                font-size: 32px;
-                                font-weight: 700;
-                                line-height: 40px;
                                 color: #5a575c;
                                 border: none;
                                 box-shadow: none;
                                 text-align: center;
                                 outline: none;
+                                font-family: Gilroy-Bold;
+                                font-size: 32px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.25;
+                                letter-spacing: normal;
 
                                 &::placeholder {
-                                    color: #c6c4c7;
+                                    color: #99999a;
                                 }
                             }
 
@@ -575,7 +580,7 @@ export default {
                         position: absolute;
                         bottom: 0;
                         height: 80px;
-                        background: #1b05a1;
+                        background: #1a38f8;
                         color: #ffffff;
                         font-family: Gilroy;
                         font-size: 24px;
@@ -588,7 +593,7 @@ export default {
 
                         &:hover {
                             &:not(.disabled) {
-                                background-color: #1f04c6;
+                                background-color: #7eb5ff;
                             }
                         }
 
@@ -606,18 +611,21 @@ export default {
                     align-items: center;
 
                     .title {
-                        color: #5a575c;
-                        font-family: Gilroy;
-                        font-size: 24px;
-                        font-weight: 700;
-                        line-height: 32px;
-                        text-align: center;
                         margin: 40px 0 8px;
+                        font-family: Gilroy-Bold;
+                        font-size: 24px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.33;
+                        letter-spacing: normal;
+                        text-align: center;
+                        color: #5a575c;
                     }
 
                     .desc {
                         color: #5a575c;
-                        font-family: "Gilroy-Regular";
+                        font-family: Gilroy-Regular;
                         font-size: 16px;
                         font-weight: 400;
                         line-height: 24px;
@@ -625,7 +633,7 @@ export default {
                     }
 
                     .btns {
-                        margin-top: 32px;
+                        margin-top: 48px;
                         display: flex;
                         .back,
                         .confirm {
@@ -643,17 +651,17 @@ export default {
                         }
 
                         .back {
-                            border: solid 1px #1b05a1;
-                            color: #1b05a1;
+                            border: solid 1px #1a38f8;
+                            color: #1a38f8;
                         }
 
                         .confirm {
                             color: white;
-                            background: #1b05a1;
+                            background: #1a38f8;
 
                             &:hover {
                                 &:not(.disabled) {
-                                    background-color: #1f04c6;
+                                    background-color: #7eb5ff;
                                 }
                             }
 

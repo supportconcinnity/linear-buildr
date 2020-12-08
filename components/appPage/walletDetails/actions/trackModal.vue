@@ -57,8 +57,8 @@
                     tooltip
                     area
                     :color="{
-                        lineColor: '#1b05a1',
-                        areaColorTop: '#1b05a1'
+                        lineColor: '#1a38f8',
+                        areaColorTop: '#1a38f8'
                     }"
                     :formatter="`ℓUSD : {c0}`"
                     :title="'Total Current Debt\n(ℓUSD)'"
@@ -106,7 +106,6 @@ import trackchart from "@/components/echarts/trackchart";
 import closeSvg from "@/components/svg/close";
 import { format } from "date-fns";
 import { formatEtherToNumber } from "@/assets/linearLibrary/linearTools/format";
-import { tokenIcon } from "@/common/options";
 
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/exchangeData";
@@ -172,7 +171,6 @@ export default {
             trackTableData: [],
 
             formatNumber,
-            tokenIcon,
 
             loading: false
         };
@@ -368,25 +366,33 @@ export default {
                 flex-direction: column;
                 align-items: center;
 
-                .title {
+                > .title {
                     letter-spacing: normal;
-                    color: #5a575c;
                     margin: 0 0 8px;
-                    font-family: Gilroy;
+                    font-family: Gilroy-Bold;
                     font-size: 32px;
                     font-weight: bold;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.25;
+                    letter-spacing: normal;
+                    text-align: center;
+                    color: #5a575c;
                 }
 
-                .context {
-                    font-family: Gilroy;
+                > .context {
+                    margin-bottom: 32px;
+                    font-family: Gilroy-Regular;
                     font-size: 14px;
                     font-weight: normal;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.29;
                     letter-spacing: normal;
-                    color: #5a575c;
-                    margin-bottom: 32px;
-                    color: #c6c4c7;
+                    color: #99999a;
+
                     a {
-                        color: #1b05a1;
+                        color: #1a38f8;
                     }
                 }
 
@@ -399,14 +405,26 @@ export default {
                         flex: 1;
                         text-align: center;
                         .p_1 {
-                            font-family: Gilroy;
+                            font-family: Gilroy-Bold;
                             font-size: 32px;
                             font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.25;
+                            letter-spacing: normal;
+                            text-align: center;
+                            color: #5a575c;
                         }
                         .p_2 {
-                            font-family: Gilroy;
+                            font-family: Gilroy-Regular;
                             font-size: 14px;
                             font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.29;
+                            letter-spacing: normal;
+                            text-align: center;
+                            color: #5a575c;
                         }
                     }
                     .line {
@@ -428,13 +446,24 @@ export default {
                     .ivu-table {
                         .ivu-table-header {
                             [class^="ivu-table-column-"] {
-                                background-color: #fafafa;
-                                font-family: Gilroy;
-                                font-size: 12px;
-                                font-weight: bold;
-                                line-height: 16px;
-                                color: #5a575c;
+                                background-color: #fff;
                                 border-color: #f6f5f6;
+                                font-family: Gilroy-Medium;
+                                font-size: 12px;
+                                font-weight: 500;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.33;
+                                letter-spacing: normal;
+                                color: #99999a;
+                            }
+
+                            tr {
+                                th {
+                                    &:last-of-type {
+                                        visibility: hidden;
+                                    }
+                                }
                             }
                         }
 
@@ -445,23 +474,31 @@ export default {
                                     border-color: #f6f5f6;
                                 }
                                 .ivu-table-cell-slot {
-                                    font-family: Gilroy;
+                                    font-family: Gilroy-Medium;
                                     font-size: 12px;
                                     font-weight: 500;
-                                    line-height: 16px;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.33;
+                                    letter-spacing: normal;
                                     color: #5a575c;
                                 }
                                 .cellAsset {
                                     .ivu-table-cell-slot {
                                         display: flex;
                                         align-items: center;
+                                        font-family: Gilroy-Bold;
                                         font-size: 16px;
                                         font-weight: bold;
-                                        line-height: 24px;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.5;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
 
                                         img {
                                             width: 32px;
-                                            height: auto;
+                                            height: 32px;
                                             vertical-align: middle;
                                             margin-right: 8px;
                                         }
@@ -489,18 +526,19 @@ export default {
                             vertical-align: middle;
                         }
                         .text {
+                            color: #5a575c;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.5;
+                            letter-spacing: normal;
+                            font-size: 16px;
+
                             .title {
-                                font-family: Gilroy;
-                                font-size: 16px;
-                                font-weight: bold;
-                                line-height: 24px;
-                                color: #5a575c;
+                                font-family: Gilroy-Bold;
                             }
                             .subject {
-                                font-family: Gilroy;
-                                font-size: 16px;
-                                line-height: 24px;
-                                color: #5a575c;
+                                font-family: Gilroy-Regular;
                             }
                         }
                     }

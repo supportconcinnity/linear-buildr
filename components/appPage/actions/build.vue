@@ -6,8 +6,7 @@
                     <div class="actionBody">
                         <div class="actionTitle">Build</div>
                         <div class="actionDesc">
-                            You can earn staking rewards by staking LINA and
-                            building ℓUSD
+                           Build ℓUSD and earn staking rewards by staking LINA
                         </div>
                         <div class="actionRate">
                             1 LINA =
@@ -86,7 +85,7 @@
                         >
                             <div class="itemLeft">
                                 <div class="itemIcon">
-                                    <img src="@/static/lina_usd.svg" alt="" />
+                                    <img src="@/static/currency/lUSD.svg" alt="" />
                                 </div>
                                 <div class="itemType">
                                     <div class="itemTypeTitle">

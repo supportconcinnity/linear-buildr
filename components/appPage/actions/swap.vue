@@ -272,7 +272,7 @@ export default {
                     var img = "";
                     if (key == "ETH") img = require("@/static/ETH.svg");
                     if (key == "BNB") img = require("@/static/bnb.svg");
-                    if (key == "lUSD") img = require("@/static/lina_usd.svg");
+                    if (key == "lUSD") img = require("@/static/currency/lUSD.svg");
                     if (key == "LINA") img = require("@/static/LINA_logo.svg");
                     tempData.push({
                         name: key,
