@@ -880,7 +880,10 @@ export default {
     .walletDetailsBox {
         width: 100%;
         height: 840px;
-
+        
+        .mWalletHead {
+            display: none;
+        }
         .actionsBox {
             display: flex;
             justify-content: space-around;
