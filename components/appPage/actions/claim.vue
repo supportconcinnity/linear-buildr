@@ -140,6 +140,7 @@ import {
     DEFAULT_GAS_LIMIT
 } from "@/assets/linearLibrary/linearTools/network";
 import { utils } from "ethers";
+import { BUILD_PROCESS_SETUP } from '@/assets/linearLibrary/linearTools/constants/process';
 
 export default {
     name: "claim",
@@ -225,9 +226,8 @@ export default {
                         // 发起右下角通知
                         this.$pub.publish("notificationQueue", {
                             hash: this.confirmTransactionHash,
-                            type: "Claiming Rewards",
+                            type: BUILD_PROCESS_SETUP.CLAIM,
                             value: "",
-                            unit: ""
                         });
 
                         //等待结果返回

@@ -63,7 +63,10 @@
                         >
                             <div class="iconBox">
                                 <div class="icon">
-                                    <img :src="currency[selected].img" alt="" />
+                                    <img
+                                        :src="currentSelectCurrency.img"
+                                        alt=""
+                                    />
                                 </div>
                             </div>
                             <div class="midle">
@@ -74,22 +77,6 @@
                                     MAX
                                 </span>
                             </div>
-                            <!-- <div
-                                class="arrow"
-                                @click.stop="showDropdownFun"
-                                :class="{ perversion: showDropdown }"
-                            >
-                                <img
-                                    class="blueArrow"
-                                    src="@/static/arrow.svg"
-                                    alt=""
-                                />
-                                <img
-                                    class="grayArrow"
-                                    src="@/static/arrow_gray.svg"
-                                    alt=""
-                                />
-                            </div> -->
                             <div class="value">
                                 <div class="price">
                                     <div class="number">
@@ -100,7 +87,7 @@
                                                 element-id="transfer_number_input"
                                                 :min="0"
                                                 :max="
-                                                    currency[selected].avaliable
+                                                    currentSelectCurrency.avaliable
                                                 "
                                                 type="text"
                                                 v-model="swapNumber"
@@ -121,30 +108,6 @@
                         <div class="someWrong" v-show="errors.amountMsg">
                             {{ errors.amountMsg }}
                         </div>
-
-                        <!-- <div class="dropdown" v-if="showDropdown">
-                            <div
-                                class="dropdownItem"
-                                v-for="(item, index) in currency"
-                                @click="selectCurrencyFun(index)"
-                                :key="index"
-                                :class="{
-                                    activity: index == selected
-                                }"
-                            >
-                                <div class="iconBox">
-                                    <div class="icon">
-                                        <img :src="item.img" alt="" />
-                                    </div>
-                                </div>
-                                <div class="midle">
-                                    <div class="p_1">
-                                        {{ item.name }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-
                         <gasEditorSwap></gasEditorSwap>
                     </div>
 
@@ -212,8 +175,6 @@ export default {
             toNonExponential,
             setCursorRange,
             actionTabs: "m0", //子页(m0默认,m1等待)
-            showDropdown: false,
-            selected: 0,
             swapNumber: null,
 
             confirmTransactionStep: 0, //当前交易进度
@@ -233,11 +194,6 @@ export default {
     },
     async created() {
         await this.getFrozenBalance();
-    },
-    mounted() {
-        document.documentElement.addEventListener("click", () => {
-            this.showDropdown = false;
-        });
     },
     watch: {
         walletAddress() {},
@@ -262,43 +218,18 @@ export default {
             return this.$store.state?.wallet?.address;
         },
 
-        //所有资产余额
-        currency() {
-            var tempData = [];
-
-            if (this.$store.state?.walletDetails?.transferableAssets) {
-                for (let key in this.$store.state.walletDetails
-                    .transferableAssets) {
-                    var img = "";
-                    if (key == "ETH") img = require("@/static/ETH.svg");
-                    if (key == "BNB") img = require("@/static/bnb.svg");
-                    if (key == "lUSD") img = require("@/static/currency/lUSD.svg");
-                    if (key == "LINA") img = require("@/static/LINA_logo.svg");
-                    tempData.push({
-                        name: key,
-                        img: img,
-                        avaliable: this.$store.state.walletDetails
-                            .transferableAssets[key]
-                    });
-                }
-            }
-
-            if (tempData.length == 0) {
-                tempData = [
-                    {
-                        name: "LINA",
-                        img: require("@/static/LINA_logo.svg"),
-                        avaliable: 0
-                    }
-                ];
-                return tempData;
-            } else {
-                return tempData;
-            }
+        transferableAssets() {
+            return this.$store.state?.walletDetails?.transferableAssets;
         },
 
         currentSelectCurrency() {
-            return this.currency[this.selected] || {};
+            return {
+                name: "LINA",
+                img: require("@/static/LINA_logo.svg"),
+                avaliable: this.transferableAssets
+                    ? this.transferableAssets["LINA"]
+                    : 0
+            };
         },
 
         swapDisabled() {
@@ -335,14 +266,23 @@ export default {
                     //清空之前数据
                     this.waitProcessArray = [];
                     this.confirmTransactionStep = 0;
+                    this.waitProcessFlow = null;
 
                     let LnProxy, LnBridge;
                     if (this.isEthereumNetwork) {
                         LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
                         LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+                        BUILD_PROCESS_SETUP.FREEZE =
+                            BUILD_PROCESS_SETUP.SWAP + " Ethereum";
+                        BUILD_PROCESS_SETUP.UNFREEZE =
+                            BUILD_PROCESS_SETUP.SWAP + " BSC";
                     } else if (this.isBinanceNetwork) {
                         LnProxy = lnrJSConnector.lnrJS.LinearFinance;
                         LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+                        BUILD_PROCESS_SETUP.FREEZE =
+                            BUILD_PROCESS_SETUP.SWAP + " BSC";
+                        BUILD_PROCESS_SETUP.UNFREEZE =
+                            BUILD_PROCESS_SETUP.SWAP + " Ethereum";
                     }
 
                     //取合约地址
@@ -407,27 +347,25 @@ export default {
                         );
                     }
 
-                    let swapNumber = this.swapNumber;
-
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.FREEZE
                     ) {
-                        await this.startFreezeContract(n2bn(swapNumber));
+                        await this.startFreezeContract(n2bn(this.swapNumber));
                     }
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.UNFREEZE
                     ) {
-                        await this.startUnFreezeContract(n2bn(swapNumber));
+                        await this.startUnFreezeContract(n2bn(this.swapNumber));
                     }
                 } catch (error) {
                     console.log(error, "error");
                     //自定义错误
                     if (
                         _.has(error, "code") &&
-                        [6100001, 6100002, 6100003, 6100004].includes(
+                        [6100001, 6100002, 6100003, 6100004, 6100005].includes(
                             error.code
                         )
                     ) {
@@ -438,6 +376,7 @@ export default {
                             "Something went wrong, please try again.";
                     }
                 } finally {
+                    //切换回原始网络
                     await selectedWallet(sourceType, false, false);
                 }
             };
@@ -537,13 +476,15 @@ export default {
         async startFreezeContract(swapNumber) {
             this.confirmTransactionStatus = false;
 
-            let LnBridge, gasPrice;
+            let LnBridge, gasPrice, SETUP;
             if (this.isEthereumNetwork) {
                 LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
                 gasPrice = this.$store.state?.gasDetailsETH?.price;
+                SETUP = " Ethereum";
             } else if (this.isBinanceNetwork) {
                 LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
                 gasPrice = this.$store.state?.gasDetailsBSC?.price;
+                SETUP = " BSC";
             }
 
             const { utils } = lnrJSConnector;
@@ -573,9 +514,8 @@ export default {
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.FREEZE,
-                    value: `Freezing ${this.confirmTransactionStep + 1} / ${
-                        this.waitProcessArray.length
-                    }`
+                    value: `Swapped on ${SETUP} ${this.confirmTransactionStep +
+                        1}/${this.waitProcessArray.length}`
                 });
 
                 let status = await utils.waitForTransaction(transaction.hash);
@@ -617,34 +557,36 @@ export default {
         async startUnFreezeContract(swapNumber) {
             this.confirmTransactionStatus = false;
 
-            let walletType;
-            // sourceWallet = this.walletAddress;
+            let walletType,
+                sourceWallet = this.walletAddress.toLocaleLowerCase();
             if (this.isEthereumNetwork) {
                 walletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
             } else if (this.isBinanceNetwork) {
                 walletType = SUPPORTED_WALLETS_MAP.METAMASK;
             }
 
+            //切换钱包
             const walletStatus = await selectedWallet(walletType, false, false);
 
-            // console.log(sourceWallet, this.walletAddress);
-
-            // if (this.walletAddress != sourceWallet) {
-            //     throw {
-            //         code: 6100004,
-            //         message:
-            //             "The wallet address is inconsistent, please confirm and try again"
-            //     };
-            // }
+            //验证钱包是否相同
+            if (this.walletAddress.toLocaleLowerCase() != sourceWallet) {
+                throw {
+                    code: 6100005,
+                    message:
+                        "The wallet address is inconsistent, please confirm and try again"
+                };
+            }
 
             if (walletStatus) {
-                let LnBridge, gasPrice;
+                let LnBridge, gasPrice, SETUP;
                 if (this.isEthereumNetwork) {
                     LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
                     gasPrice = this.$store.state?.gasDetailsETH?.price;
+                    SETUP = " Ethereum";
                 } else if (this.isBinanceNetwork) {
                     LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
                     gasPrice = this.$store.state?.gasDetailsBSC?.price;
+                    SETUP = " BSC";
                 }
 
                 const { utils } = lnrJSConnector;
@@ -674,8 +616,10 @@ export default {
                     this.$pub.publish("notificationQueue", {
                         hash: this.confirmTransactionHash,
                         type: BUILD_PROCESS_SETUP.UNFREEZE,
-                        value: `UnFreezing ${this.confirmTransactionStep +
-                            1} / ${this.waitProcessArray.length}`
+                        value: `Swapped on ${SETUP} ${this
+                            .confirmTransactionStep + 1}/${
+                            this.waitProcessArray.length
+                        }`
                     });
 
                     let status = await utils.waitForTransaction(
@@ -723,30 +667,18 @@ export default {
             }
         },
 
-        async selectCurrencyFun(index) {
-            this.errors.amountMsg = "";
-            this.selected = index;
-            this.swapNumber = 0;
-        },
-
         //回到默认状态
         setDefaultTab() {
             this.actionTabs = "m0";
             this.waitProcessArray = [];
             this.confirmTransactionStep = 0;
-            this.swapNumber = 0;
+            this.swapNumber = null;
             this.getFrozenBalance();
-        },
-
-        showDropdownFun() {
-            setTimeout(() => {
-                this.showDropdown = !this.showDropdown;
-            }, 1);
         },
 
         //点击最大
         clickMaxAmount() {
-            this.swapNumber = this.currency[this.selected].avaliable;
+            this.swapNumber = this.currentSelectCurrency.avaliable;
 
             var el = document.getElementById("transfer_number_input");
             this.setCursorRange(el, 0, 0);
@@ -768,11 +700,6 @@ export default {
                 let parentElement = findParents(currentElement, "swapInputBox");
                 removeClass(parentElement, "active");
             });
-        },
-
-        //交易状态页面回调方法 回到主页
-        goHomePage() {
-            this.$store.commit("setCurrentAction", 0);
         },
 
         //重试
@@ -1046,86 +973,6 @@ export default {
 
                     #gasEditor {
                         margin-top: 24px;
-                    }
-
-                    .dropdown {
-                        position: absolute;
-                        top: 521px;
-                        width: 400px;
-                        height: 232px;
-                        padding: 8px 0;
-                        background: #fff;
-                        box-shadow: 0 2px 12px #deddde;
-                        z-index: 1;
-                        border-radius: 8px;
-                        border: 1px solid #deddde;
-                        transition: box-shadow $animete-time linear;
-                        display: flex;
-                        flex-direction: column;
-
-                        & .activity {
-                            background: rgba(27, 5, 161, 0.1);
-                            .midle {
-                                .p_1 {
-                                    color: #1a38f8;
-                                }
-                            }
-                        }
-                        .dropdownItem > div {
-                            height: 72px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                        }
-                        // .dropdownItem:first-child {
-                        //     border-top-left-radius: 8px;
-                        //     border-top-right-radius: 8px;
-                        // }
-                        // .dropdownItem:last-child {
-                        //     border-bottom-left-radius: 8px;
-                        //     border-bottom-right-radius: 8px;
-                        // }
-                        .dropdownItem:hover {
-                            .midle {
-                                .p_1 {
-                                    color: #1a38f8;
-                                }
-                            }
-                        }
-                        & > div {
-                            height: 100%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            cursor: pointer;
-                        }
-                        .iconBox {
-                            .icon {
-                                text-align: center;
-                                width: 40px;
-                                height: 40px;
-                                line-height: 40px;
-                                border-radius: 100%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                background-color: #fff;
-                            }
-                        }
-                        .midle {
-                            flex: 1;
-                            flex-direction: column;
-                            > div {
-                                width: 100%;
-                            }
-                            .p_1 {
-                                font-family: Gilroy-Bold;
-                                font-size: 16px;
-                                font-weight: bold;
-                                line-height: 24px;
-                                color: #5a575c;
-                            }
-                        }
                     }
 
                     .swapBtn {

@@ -7,7 +7,7 @@
                         <div class="text">
                             <div class="title">Transfer</div>
                             <div class="descript">
-                                 Transfer different currencies to specified
+                                Transfer different currencies to specified
                                 wallet address
                             </div>
                         </div>
@@ -281,7 +281,8 @@ export default {
                     if (key == "ETH") img = require("@/static/ETH_logo.svg");
                     if (key == "BNB")
                         img = require("@/static/currency/lBNB.svg");
-                    if (key == "lUSD") img = require("@/static/currency/lUSD.svg");
+                    if (key == "lUSD")
+                        img = require("@/static/currency/lUSD.svg");
                     if (key == "LINA") img = require("@/static/LINA_logo.svg");
                     tempData.push({
                         name: key,
@@ -312,7 +313,7 @@ export default {
 
         canSendEthAmount() {
             return (
-                this.currency[this.selected].avaliable -
+                this.currentSelectCurrency.avaliable -
                 lnrJSConnector.utils.formatEther(
                     this.$store.state?.gasDetails?.price.toString()
                 ) *
@@ -367,9 +368,9 @@ export default {
             this.processing = true;
             this.confirmTransactionStatus = false;
 
-            let selectedAssetKind = this.currency[this.selected].name,
+            let selectedAssetKind = this.currentSelectCurrency.name,
                 sendAmount = this.transferNumber,
-                selectedAssetMaxValue = this.currency[this.selected].avaliable,
+                selectedAssetMaxValue = this.currentSelectCurrency.avaliable,
                 recieveAddress = this.transferToAddress;
 
             if (
@@ -410,10 +411,9 @@ export default {
                         this.$pub.publish("notificationQueue", {
                             hash: this.confirmTransactionHash,
                             type: "Transfer",
-                            value: formatNumber(
+                            value: `${formatNumber(
                                 lnrJSConnector.utils.formatEther(sendAmount)
-                            ),
-                            unit: this.selectedAssetKind
+                            )} ${this.currentSelectCurrency.name}`,
                         });
 
                         //等待结果返回
@@ -520,31 +520,27 @@ export default {
         },
         //点击最大
         async clickMaxAmount() {
-            if (["ETH", "BNB"].includes(this.currency[this.selected].name)) {
+            if (["ETH", "BNB"].includes(this.currentSelectCurrency.name)) {
                 if (this.canSendEthAmount <= 0) {
                     this.transferNumber = this.currency[
                         this.selected
                     ].avaliable;
-                    this.errors.amountMsg = `You don\`t have enought balance of ${
-                        this.currency[this.selected].name
-                    }.`;
+                    this.errors.amountMsg = `You don\`t have enought balance of ${this.currentSelectCurrency.name}.`;
                     return;
                 }
 
                 this.errors.amountMsg = "";
                 this.transferNumber = this.canSendEthAmount;
             } else {
-                this.transferNumber = this.currency[this.selected].avaliable;
+                this.transferNumber = this.currentSelectCurrency.avaliable;
             }
         },
         changeAmount(amount) {
             if (
-                ["ETH", "BNB"].includes(this.currency[this.selected].name) &&
+                ["ETH", "BNB"].includes(this.currentSelectCurrency.name) &&
                 amount > this.canSendEthAmount
             ) {
-                this.errors.amountMsg = `You don\`t have enought balance of ${
-                    this.currency[this.selected].name
-                }.`;
+                this.errors.amountMsg = `You don\`t have enought balance of ${this.currentSelectCurrency.name}.`;
             } else {
                 this.errors.amountMsg = "";
             }

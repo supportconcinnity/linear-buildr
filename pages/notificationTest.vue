@@ -2,13 +2,13 @@
     <div>
         <notificationQueue> </notificationQueue>
 
-        <watingEnhance
+        <!-- <watingEnhance
             :currentStep="confirmTransactionStep"
             :currentHash="confirmTransactionHash"
             :currentConfirm="confirmTransactionStatus"
             :currentErrMsg="transactionErrMsg"
             :setupArray="waitProcessArray"
-        ></watingEnhance>
+        ></watingEnhance> -->
     </div>
 </template>
 
@@ -31,32 +31,32 @@ export default {
         };
     },
     mounted() {
-        // this.$pub.publish("notificationQueue", {
-        //     hash: "0x11111111111",
-        //     type: BUILD_PROCESS_SETUP.APPROVE,
-        //     value: "Building 1/4",
-        //     unit: 0
-        // });
-        // this.$pub.publish("notificationQueue", {
-        //     hash: "0x11111111111",
-        //     type: BUILD_PROCESS_SETUP.STAKING,
-        //     value: "Building 2/4",
-        //     unit: 1
-        // });
-        // this.$pub.publish("notificationQueue", {
-        //     hash: "0x11111111111",
-        //     type: BUILD_PROCESS_SETUP.UNSTAKING,
-        //     value: "Building 3/4",
-        //     unit: 2
-        // });
-        // setTimeout(() => {
-        //     this.$pub.publish("notificationQueue", {
-        //         hash: "0x11111111111",
-        //         type: BUILD_PROCESS_SETUP.BURN,
-        //         value: "Building 4/4",
-        //         unit: 0
-        //     });
-        // }, 1500);
+        this.$pub.publish("notificationQueue", {
+            hash: "0x11111111111",
+            type: BUILD_PROCESS_SETUP.FREEZE,
+            value: "Building 1/4",
+            unit: 1
+        });
+        this.$pub.publish("notificationQueue", {
+            hash: "0x11111111111",
+            type: BUILD_PROCESS_SETUP.UNFREEZE,
+            value: "Building 2/4",
+            unit: 1
+        });
+        this.$pub.publish("notificationQueue", {
+            hash: "0x11111111111",
+            type: BUILD_PROCESS_SETUP.UNSTAKING,
+            value: "Building 3/4",
+            unit: 2
+        });
+        /* setTimeout(() => {
+            this.$pub.publish("notificationQueue", {
+                hash: "0x11111111111",
+                type: BUILD_PROCESS_SETUP.BURN,
+                value: "Building 4/4",
+                unit: 0
+            });
+        }, 1500); */
     }
 };
 </script>
