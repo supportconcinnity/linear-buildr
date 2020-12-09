@@ -164,4 +164,117 @@ export default {
         }
     }
 }
+
+
+
+@media only screen and (max-width: $max-phone-width) {
+    #homePage {
+        width: 100%;
+        height: 88vh !important;
+        background: #fff;
+        text-align: center;
+        padding: 163px 0 0 0;
+
+        .title {
+            font-family: Gilroy;
+            font-size: 24px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
+            letter-spacing: normal;
+            text-align: center;
+            color: #5a575c;
+        }
+
+        .context {
+            font-family: Gilroy;
+            font-size: 12px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
+            letter-spacing: normal;
+            text-align: center;
+            color: #99999a;
+
+            margin: 9px 60px;
+        }
+
+        .actionsBox {
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            left: 0;
+            bottom: 6.39999999984vw;
+            padding: 0 6.39999999984vw;
+            width: 100%;
+
+            .boxItem {
+                position: relative;
+                width: 35.9999999991vw;
+                height: 35.9999999991vw;
+                transition: $animete-time linear;
+                padding: 0 0 0 0;
+                border-radius: 4px;
+                border: solid 1px #deddde;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                .imgBox {
+                    width: 10.6666666664vw;
+                    height: 10.6666666664vw;
+                    margin: 27px 50px 0 50px;
+                    img {
+                        width: 10.6666666664vw;
+                        height: 10.6666666664vw;
+                    }
+                }
+
+                .boxContext {
+                    display: none;
+                }
+
+                &:hover {
+                    box-shadow: 0 2px 12px 0 #e5e5e5;
+                }
+            }
+
+            .btn {
+                width: 100%;
+                height: 48px;
+                position: absolute;
+                bottom: 14px;
+                border-bottom-left-radius: 4px;
+                border-bottom-right-radius: 4px;
+                background: #fff;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: $animete-time linear;
+                font-family: Gilroy;
+                font-size: 12px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.33;
+                letter-spacing: 1.5px;
+                text-align: center;
+                color: #1a38f8;
+                &:nth-child(1) {
+                    padding-left: 10px;
+                }
+                .ivu-icon {
+                    font-size: 27px;
+                    margin-left: 0px;
+                    font-weight: bold;
+                }
+
+                &:hover {
+                    background-color: #7eb5ff;
+                }
+            }
+        }
+    }
+}
 </style>

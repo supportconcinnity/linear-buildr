@@ -14,7 +14,8 @@ export const state = () => ({
     walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS_MAP
     walletNetworkId: "1", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
     walletNetworkName: SUPPORTED_NETWORKS["1"], //当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
-    currentGraphApi: GRAPH_API.ETHEREUM //当前钱包网络子图接口地址
+    currentGraphApi: GRAPH_API.ETHEREUM, //当前钱包网络子图接口地址
+    mMenuState: false //移动端 显示菜单
 });
 
 export const mutations = {
@@ -80,6 +81,10 @@ export const mutations = {
 
     setLoopRefreshStatus(state, status) {
         state.walletDetailsLoopRefreshStatus = status;
+    },
+
+    setmMenuState(state, status) {
+        state.mMenuState = status;
     }
 };
 

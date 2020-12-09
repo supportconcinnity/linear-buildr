@@ -1,6 +1,8 @@
 <template>
     <div id="landingPage">
         <div class="headerBox">
+
+            
             <img
                 class="linearBuildrlogo"
                 src="@/static/linear_buildr_logo.svg"
@@ -428,7 +430,7 @@ export default {
         .headerBox {
             width: 100vw;
             height: 64px;
-            padding: 16px 0 16px 16px;
+            padding: 16px 16px 16px 16px;
             display: flex;
             align-items: center;
             position: relative;
@@ -440,18 +442,17 @@ export default {
             }
 
             .mBuyLINA {
-                width: 85px;
+                flex: 1;
                 height: 16px;
                 font-family: Gilroy-Bold;
                 font-size: 12px;
                 font-weight: bold;
                 font-stretch: normal;
                 font-style: normal;
-                line-height: 1.5;
+                line-height: 1.4;
                 letter-spacing: 1.5px;
-                text-align: center;
+                text-align: right;
                 color: #1a38f8;
-                margin: 0 0 0 94px;
                 img {
                     width: 16px;
                     height: 16px;

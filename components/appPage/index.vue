@@ -27,4 +27,11 @@ export default {
     display: flex;
     padding: 0 120px 64px;
 }
+
+@media only screen and (max-width: $max-phone-width) {
+    #appPage {
+        display: flex;
+        padding: 0 16px 16px 16px;
+    }
+}
 </style>

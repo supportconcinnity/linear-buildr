@@ -24,6 +24,42 @@
             >
                 {{ item }}
             </div>
+
+            <div class="mNavigate" v-if="mMenuState">
+                <div class="mHead">
+                    <div class="mLogo">
+                        <img
+                            src="@/static/logo-crypto-linear-colour.svg"
+                        />
+                        Menu
+                    </div>
+                    <img
+                        @click="mHideMenuFun"
+                        class="mClose"
+                        src="@/static/icon-cancel.svg"
+                    />
+                </div>
+                <div
+                    class="mNavigateItem"
+                    @click="actionChange(0)"
+                    :class="{
+                        activited: currentAction == 0
+                    }"
+                >
+                    Home
+                </div>
+                <div
+                    v-for="(item, index) in actions"
+                    :key="index"
+                    class="mNavigateItem"
+                    :class="{
+                        activited: currentAction == index + 1
+                    }"
+                    @click="actionChange(index + 1)"
+                >
+                    {{ item }}
+                </div>
+            </div>
         </div>
 
         <div class="actionsBox">
@@ -85,6 +121,9 @@ export default {
     computed: {
         currentActionComputed() {
             return this.$store.state.currentAction;
+        },
+        mMenuState() {
+            return this.$store.state.mMenuState
         }
     },
     methods: {
@@ -102,6 +141,7 @@ export default {
             this.$pub.publish("referralModalChange", false);
             this.$pub.publish("transactionModalChange", false);
             this.$pub.publish("trackModalChange", false);
+            this.$store.commit('setmMenuState', false)
         },
 
         //鼠标进入离开用于设置hover和activeted时,改变其他元素color
@@ -110,6 +150,9 @@ export default {
         },
         mouseleave(index) {
             this.currentHover = 0;
+        },
+        mHideMenuFun() {
+            this.$store.commit('setmMenuState', false)
         }
     }
 };
@@ -176,6 +219,99 @@ export default {
         overflow: hidden;
         box-shadow: 0px 2px 6px #deddde;
         border-radius: 16px;
+    }
+}
+
+
+
+@media only screen and (max-width: $max-phone-width) {
+        
+    #actions {
+        width: 100%;
+        margin-right: 0;
+
+        .headerBox {
+            height: 32px;
+            display: flex;
+            align-items: center;
+            margin: 16px 0;
+
+            .linearBuildrlogo {
+                vertical-align: middle;
+                width: 163px;
+                height: 32px;
+                cursor: pointer;
+                margin-right: 28px;
+            }
+
+            .action {
+                display: none;
+            }
+            
+            .mNavigate {
+                width: 100vw;
+                height: 100vh;
+                position: fixed;
+                left: 0;
+                top: 0;
+                z-index: 2;
+                background-color: #ffffff;
+                .mHead {
+                    width: 100%;
+                    height: 64px;
+                    padding: 16px 24px;
+                    display: flex;
+                    margin-bottom: 44px;
+                    .mLogo {
+                        font-family: Gilroy-Bold;
+                        font-size: 24px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.33;
+                        letter-spacing: normal;
+                        color: #3c3a3e;
+                        img {
+                            float: left;
+                            margin-right: 10px;
+                        }
+                    }
+                    .mClose {
+                        position: fixed;
+                        right: 19px;
+                        top: 19px;
+                    }
+                }
+                .mNavigateItem {
+                    width: 100%;
+                    height: 40px;
+                    font-family: Gilroy;
+                    font-size: 32px;
+                    font-weight: bold;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.25;
+                    letter-spacing: normal;
+                    color: #99999a;
+                    padding-left: 56px;
+                    margin-bottom: 32px;
+                    &.activited {
+                        font-size: 56px;
+                        color: #1a38f8;
+                        height: 64px;
+                    }
+                }
+            }
+        }
+
+        .actionsBox {
+            width: 100%;
+            height: 88vh;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0px 2px 6px #deddde;
+            border-radius: 16px;
+        }
     }
 }
 </style>
