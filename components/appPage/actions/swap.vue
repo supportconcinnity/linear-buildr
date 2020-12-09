@@ -87,7 +87,10 @@
                                                 element-id="transfer_number_input"
                                                 :min="0"
                                                 :max="
-                                                    currentSelectCurrency.avaliable
+                                                    floor(
+                                                        currentSelectCurrency.avaliable,
+                                                        2
+                                                    )
                                                 "
                                                 type="text"
                                                 v-model="swapNumber"
@@ -96,7 +99,12 @@
                                                 @on-blur="inputBlur(0)"
                                                 :formatter="
                                                     value =>
-                                                        toNonExponential(value)
+                                                        floor(
+                                                            toNonExponential(
+                                                                value
+                                                            ),
+                                                            2
+                                                        )
                                                 "
                                             />
                                         </div>
@@ -185,7 +193,13 @@ export default {
             waitProcessArray: [], //等待交易进度组
             waitProcessFlow: Function, //flow闭包函数
 
+            freezeSuccessHash: "", //冻结hash
+            waitPendingProces: false, //等待查询
+            sourceWalletType: "",
+
             frozenBalance: 0,
+
+            floor: _.floor,
 
             errors: {
                 amountMsg: ""
@@ -193,7 +207,7 @@ export default {
         };
     },
     async created() {
-        await this.getFrozenBalance();
+        // await this.getFrozenBalance();
     },
     watch: {
         walletAddress() {},
@@ -327,11 +341,10 @@ export default {
         },
 
         startFlow() {
-            let sourceType, sourceWallet;
             if (this.isEthereumNetwork) {
-                sourceType = SUPPORTED_WALLETS_MAP.METAMASK;
+                this.sourceWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
             } else if (this.isBinanceNetwork) {
-                sourceType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+                this.sourceWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
             }
 
             return async () => {
@@ -358,16 +371,21 @@ export default {
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.UNFREEZE
                     ) {
-                        await this.startUnFreezeContract(n2bn(this.swapNumber));
+                        await this.startUnFreezeContract();
                     }
                 } catch (error) {
                     console.log(error, "error");
                     //自定义错误
                     if (
                         _.has(error, "code") &&
-                        [6100001, 6100002, 6100003, 6100004, 6100005].includes(
-                            error.code
-                        )
+                        [
+                            6100001,
+                            6100002,
+                            6100003,
+                            6100004,
+                            6100005,
+                            6100006
+                        ].includes(error.code)
                     ) {
                         this.transactionErrMsg = error.message;
                     } else {
@@ -377,7 +395,8 @@ export default {
                     }
                 } finally {
                     //切换回原始网络
-                    await selectedWallet(sourceType, false, false);
+                    await selectedWallet(this.sourceWalletType, false, false);
+                    this.sourceWalletType = "";
                 }
             };
         },
@@ -508,7 +527,8 @@ export default {
 
             if (transaction) {
                 this.confirmTransactionStatus = true;
-                this.confirmTransactionHash = transaction.hash;
+                this.freezeSuccessHash = this.confirmTransactionHash =
+                    transaction.hash;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
@@ -554,7 +574,7 @@ export default {
             }
         },
 
-        async startUnFreezeContract(swapNumber) {
+        async startUnFreezeContract() {
             this.confirmTransactionStatus = false;
 
             let walletType,
@@ -589,6 +609,11 @@ export default {
                     SETUP = " BSC";
                 }
 
+                this.waitPendingProces = true;
+                const processArray = await this.getPendingProcess(LnBridge);
+
+                // console.log(processArray, "startUnFreezeContract");
+
                 const { utils } = lnrJSConnector;
 
                 const transactionSettings = {
@@ -596,46 +621,53 @@ export default {
                     gasLimit: DEFAULT_GAS_LIMIT.freeze
                 };
 
-                transactionSettings.gasLimit = await this.getGasEstimateFromUnFreeze(
-                    LnBridge,
-                    swapNumber
-                );
+                for (const index in processArray) {
+                    const txId = processArray[index];
 
-                let transaction;
-
-                transaction = await LnBridge.unfreeze(
-                    swapNumber,
-                    transactionSettings
-                );
-
-                if (transaction) {
-                    this.confirmTransactionStatus = true;
-                    this.confirmTransactionHash = transaction.hash;
-
-                    // 发起右下角通知
-                    this.$pub.publish("notificationQueue", {
-                        hash: this.confirmTransactionHash,
-                        type: BUILD_PROCESS_SETUP.UNFREEZE,
-                        value: `Swapped on ${SETUP} ${this
-                            .confirmTransactionStep + 1}/${
-                            this.waitProcessArray.length
-                        }`
-                    });
-
-                    let status = await utils.waitForTransaction(
-                        transaction.hash
-                    );
-
-                    if (!status) {
-                        throw {
-                            code: 6100003,
-                            message:
-                                "Something went wrong while Freezing your LINA, please try again."
-                        };
+                    if (!txId) {
+                        continue;
                     }
 
-                    this.confirmTransactionStep += 1;
+                    transactionSettings.gasLimit = await this.getGasEstimateFromUnFreeze(
+                        LnBridge,
+                        txId
+                    );
+
+                    let transaction = await LnBridge.unfreeze(
+                        txId,
+                        transactionSettings
+                    );
+
+                    if (transaction) {
+                        this.confirmTransactionStatus = true;
+                        this.confirmTransactionHash = transaction.hash;
+
+                        // 发起右下角通知
+                        this.$pub.publish("notificationQueue", {
+                            hash: this.confirmTransactionHash,
+                            type: BUILD_PROCESS_SETUP.UNFREEZE,
+                            value: `Swapped on ${SETUP} ${this
+                                .confirmTransactionStep + 1}/${
+                                this.waitProcessArray.length
+                            }`
+                        });
+
+                        let status = await utils.waitForTransaction(
+                            transaction.hash
+                        );
+
+                        if (!status) {
+                            throw {
+                                code: 6100003,
+                                message:
+                                    "Something went wrong while Freezing your LINA, please try again."
+                            };
+                            break;
+                        }
+                    }
                 }
+
+                this.confirmTransactionStep += 1;
             } else {
                 throw {
                     code: 6100004,
@@ -645,40 +677,84 @@ export default {
             }
         },
 
-        async getGasEstimateFromUnFreeze(LnBridge, swapNumber) {
+        async getGasEstimateFromUnFreeze(LnBridge, txId) {
             try {
                 const { utils } = lnrJSConnector;
 
-                if (
-                    swapNumber.lte(n2bn("0")) //小于等于0
-                ) {
-                    throw new Error("invalid freezeAmount");
+                if (!txId) {
+                    throw new Error("invalid hash");
                 }
 
-                let gasEstimate;
-
-                gasEstimate = await LnBridge.contract.estimateGas.unfreeze(
-                    swapNumber
+                let gasEstimate = await LnBridge.contract.estimateGas.unfreeze(
+                    txId
                 );
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.freeze);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.unfreez);
             }
         },
 
+        async getPendingProcess(LnBridge) {
+            let count = 0;
+
+            return new Promise((resolve, reject) => {
+                const wait = async () => {
+                    //超时退出
+                    // if (count > 60) {
+                    //     reject({
+                    //         code: 6100006,
+                    //         message: "No valid LINA was found"
+                    //     });
+                    // }
+
+                    const processArray = await LnBridge.getPendingProcess(
+                        this.walletAddress
+                    );
+                    count++;
+
+                    // console.log(processArray, count, "getPendingProcess");
+
+                    if (this.waitProcessArray.length > 1) {
+                        if (!processArray.includes(this.freezeSuccessHash)) {
+                            this.waitPendingProces && setTimeout(wait, 3000);
+                            return;
+                        }
+                        resolve(processArray);
+                    } else {
+                        //没有之前的锁定记录
+                        if (!processArray || processArray.length < 1) {
+                            reject({
+                                code: 6100006,
+                                message: "No valid LINA was found"
+                            });
+                        }
+                        resolve(processArray);
+                    }
+                };
+
+                wait();
+            });
+        },
+
         //回到默认状态
-        setDefaultTab() {
+        async setDefaultTab() {
             this.actionTabs = "m0";
             this.waitProcessArray = [];
             this.confirmTransactionStep = 0;
             this.swapNumber = null;
-            this.getFrozenBalance();
+            this.waitPendingProces = false;
+            this.freezeSuccessHash = "";
+            this.processing = false;
+            //切换回原始网络
+            this.sourceWalletType &&
+                (await selectedWallet(this.sourceWalletType, false, false));
+            // this.getFrozenBalance();
         },
 
         //点击最大
         clickMaxAmount() {
-            this.swapNumber = this.currentSelectCurrency.avaliable;
+            this.swapNumber = _.floor(this.currentSelectCurrency.avaliable, 2);
 
             var el = document.getElementById("transfer_number_input");
             this.setCursorRange(el, 0, 0);
@@ -842,9 +918,9 @@ export default {
                         }
 
                         .midle {
-                            flex: 1;
                             flex-direction: column;
                             align-items: flex-start;
+                            margin-right: 20px;
                             > div {
                                 width: 100%;
                             }
