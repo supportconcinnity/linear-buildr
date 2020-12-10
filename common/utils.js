@@ -184,7 +184,7 @@ export const addClass = ($el, $className) => {
  * 根据HASH打开网站
  * @param {String} hash  交易hash
  */
-export const openBlockchainScan = $hash => {
+export const openBlockchainScan = ($hash,blockChain) => {
     try {
         let href;
         let walletNetworkId = $nuxt.$store.state?.walletNetworkId;

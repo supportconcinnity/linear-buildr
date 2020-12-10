@@ -19,13 +19,13 @@ module.exports = {
         pricesLast({
             max = maxRequest,
             source = undefined,
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "pricesLasts",

@@ -1,5 +1,8 @@
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
-import { SUPPORTED_NETWORKS,GRAPH_API } from "@/assets/linearLibrary/linearTools/network";
+import {
+    SUPPORTED_NETWORKS,
+    BLOCKCHAIN
+} from "@/assets/linearLibrary/linearTools/network";
 
 export const state = () => ({
     locale: "en", //默认语言
@@ -10,12 +13,14 @@ export const state = () => ({
     gasDetailsBSC: { price: 0, type: NETWORK_SPEEDS_TO_KEY.MEDIUM, status: -1 }, //gas设置详情,-1未初始化,1已初始化
     wallet: { address: "", status: -1 }, //钱包 address=钱包地址,status:-1=未初始化数据,0:更新中,1更新完成,2更新失败,
     walletDetails: {}, //钱包详情
-    walletDetailsLoopRefreshStatus: true,
+    walletDetailsLoopRefreshStatus: false,
     walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS_MAP
     walletNetworkId: "1", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
     walletNetworkName: SUPPORTED_NETWORKS["1"], //当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
-    currentGraphApi: GRAPH_API.ETHEREUM, //当前钱包网络子图接口地址
-    mMenuState: false //移动端 显示菜单
+    currentGraphApi: BLOCKCHAIN.ETHEREUM, //当前钱包网络子图接口地址
+    mMenuState: false, //移动端 显示菜单
+    registeredMetamaskWalletEvents: false, //是否已经注册metamask钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
+    registeredBinanceWalletEvents: false //是否已经注册binance钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
 });
 
 export const mutations = {
@@ -43,8 +48,8 @@ export const mutations = {
         state.gasDetailsBSC = gasDetails;
     },
 
-    setCurrentGraphApi(state, graphApi) {
-        state.currentGraphApi = graphApi;
+    setCurrentBlockChain(state, blockChain) {
+        state.currentGraphApi = blockChain;
     },
 
     mergeGasDetails(state, gasDetails) {
@@ -85,6 +90,14 @@ export const mutations = {
 
     setmMenuState(state, status) {
         state.mMenuState = status;
+    },
+
+    setRegisteredMetamaskWalletEvents(state, status) {
+        state.registeredMetamaskWalletEvents = status;
+    },
+
+    setRegisteredBinanceWalletEvents(state, status) {
+        state.registeredBinanceWalletEvents = status;
     }
 };
 

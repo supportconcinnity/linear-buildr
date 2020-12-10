@@ -240,11 +240,11 @@
                         >
                             <div class="td chain">
                                 <template
-                                    v-if="row.chain == GRAPH_API.ETHEREUM"
+                                    v-if="row.chain == BLOCKCHAIN.ETHEREUM"
                                 >
                                     <img src="@/static/ETH.svg" />
                                 </template>
-                                <template v-if="row.chain == GRAPH_API.BINANCE">
+                                <template v-if="row.chain == BLOCKCHAIN.BINANCE">
                                     <img src="@/static/bnb_inactive.svg" />
                                 </template>
                                 {{ row.chain }}
@@ -299,7 +299,7 @@ import {
 } from "@/assets/linearLibrary/linearTools/request/transactionHistory";
 import { format } from "date-fns";
 import {
-    GRAPH_API
+    BLOCKCHAIN
 } from "@/assets/linearLibrary/linearTools/network";
 import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
 import { getBrowserUrlBase } from "@/assets/linearLibrary/linearJs/contractSettings";
@@ -329,7 +329,7 @@ export default {
 
             tableData: [],
 
-            GRAPH_API
+            BLOCKCHAIN
         };
     },
     created() {
@@ -362,7 +362,7 @@ export default {
                 type = item.type;
                 date = format(item.timestamp, "d MMM yyyy k:m");
 
-                let baseUrl = getBrowserUrlBase({graphApi: item.chain,netWork: item.net});
+                let baseUrl = getBrowserUrlBase({blockChain: item.chain,netWork: item.net});
                 hash = baseUrl + item.hash;
 
                 if (
@@ -548,11 +548,11 @@ export default {
         async fetchTransactionHistoryClick() {
             let ethData = await fetchTransactionHistory(
                 this.$store.state?.wallet?.address,
-                GRAPH_API.ETHEREUM
+                BLOCKCHAIN.ETHEREUM
             );
             let bscData = await fetchTransactionHistory(
                 this.$store.state?.wallet?.address,
-                GRAPH_API.BINANCE
+                BLOCKCHAIN.BINANCE
             );
 
             this.transactionHistoryData = [...ethData,...bscData];

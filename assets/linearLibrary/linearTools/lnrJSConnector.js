@@ -7,7 +7,7 @@ import {
     onBinanceAccountChange,
     onBinanceChainChange,
     onMetamaskChainChange,
-    GRAPH_API,
+    BLOCKCHAIN,
     isEthereumNetwork,
     isBinanceNetwork
 } from "./network";
@@ -64,7 +64,7 @@ const connectToMetamask = async (networkId, networkName) => {
     };
     try {
         if (window.ethereum) {
-            window.ethereum.autoRefreshOnNetworkChange = true;
+            // window.ethereum.autoRefreshOnNetworkChange = true;
             await window.ethereum.enable();
         }
         const accounts = await lnrJSConnector.signer.getNextAddresses();
@@ -95,7 +95,7 @@ const connectToBinance = async (networkId, networkName) => {
     };
     try {
         if (window.BinanceChain) {
-            window.BinanceChain.autoRefreshOnNetworkChange = true;
+            // window.BinanceChain.autoRefreshOnNetworkChange = true;
             await window.BinanceChain.enable();
         }
         const accounts = await lnrJSConnector.signer.getNextAddresses();
@@ -164,6 +164,13 @@ const getSignerConfig = ({ type, networkId }) => {
     return {};
 };
 
+/**
+ * 选择钱包
+ * @param walletType 钱包类型
+ * @param chainChange  是否为切换链状态
+ * @param waitStore  是否等待数据获取完成
+ * @param regisEvent 是否注册事件
+ */
 export const selectedWallet = async (
     walletType,
     chainChange = false,
@@ -194,31 +201,43 @@ export const selectedWallet = async (
             });
 
             //子图接口api
-            let graphApi;
+            let blockChain;
             if (isEthereumNetwork(walletStatus.networkId)) {
-                graphApi = GRAPH_API.ETHEREUM;
+                blockChain = BLOCKCHAIN.ETHEREUM;
             } else if (isBinanceNetwork(walletStatus.networkId)) {
-                graphApi = GRAPH_API.BINANCE;
+                blockChain = BLOCKCHAIN.BINANCE;
             }
-            store.commit("setCurrentGraphApi", graphApi);
+            store.commit("setCurrentBlockChain", blockChain);
+
+            store.commit("setWalletType", walletType);
+
+            //不重复注册事件,防止事件叠加
+            let registeredMetamaskWalletEvents =
+                store.state?.registeredMetamaskWalletEvents;
+            let registeredBinanceWalletEvents =
+                store.state?.registeredBinanceWalletEvents;
 
             //绑定事件
-            if (walletType == SUPPORTED_WALLETS_MAP.METAMASK) {
-                store.commit("setWalletType", SUPPORTED_WALLETS_MAP.METAMASK);
-
-                //当前链的钱包切换时才执行更新
+            if (
+                walletType == SUPPORTED_WALLETS_MAP.METAMASK &&
+                !registeredMetamaskWalletEvents
+            ) {
                 onMetamaskAccountChange(async accounts => {
+                    //当前链的钱包切换时才执行更新
                     if (
                         store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
                     ) {
                         $nuxt.$Spin.show();
                         $pub.publish("onWalletStatusChange");
+                        let { networkId } = await getEthereumNetwork();
+
                         const address = await lnrJSConnector.signer.getNextAddresses();
                         const signer = new lnrJSConnector.signers[
                             SUPPORTED_WALLETS_MAP.METAMASK
                         ]({});
+
                         lnrJSConnector.setContractSettings({
-                            networkId: walletStatus.networkId,
+                            networkId,
                             signer
                         });
 
@@ -232,19 +251,20 @@ export const selectedWallet = async (
                 });
 
                 //切换网络刷新页面
-                onMetamaskChainChange(chainId => {
+                onMetamaskChainChange(async chainId => {
                     if (
                         store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
                     ) {
-                        location.reload();
+                        selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK);
+                        $pub.publish('onMetamaskChainChange')
                     }
                 });
-            } else if (walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN) {
-                store.commit(
-                    "setWalletType",
-                    SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
-                );
 
+                store.commit("setRegisteredMetamaskWalletEvents", true);
+            } else if (
+                walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN &&
+                !registeredBinanceWalletEvents
+            ) {
                 onBinanceAccountChange(async accounts => {
                     //当前链的钱包切换时才执行更新
                     if (
@@ -282,6 +302,8 @@ export const selectedWallet = async (
                         location.reload();
                     }
                 });
+
+                store.commit("setRegisteredBinanceWalletEvents", true);
             } else if (walletType == SUPPORTED_WALLETS_MAP.WALLET_CONNECT) {
             }
 

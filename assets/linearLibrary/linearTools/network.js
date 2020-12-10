@@ -69,7 +69,7 @@ export const INFURA_JSON_RPC_URLS = {
     3: `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`
 };
 
-export const GRAPH_API = {
+export const BLOCKCHAIN = {
     ETHEREUM: "ethereum",
     BINANCE: "binance"
 };

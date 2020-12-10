@@ -19,13 +19,13 @@ module.exports = {
             max = maxRequest,
             account = undefined,
             minBlock = undefined,
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "minteds",
@@ -65,13 +65,13 @@ module.exports = {
             max = maxRequest,
             account = undefined,
             minBlock = undefined,
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "burneds",
@@ -111,13 +111,13 @@ module.exports = {
             max = maxRequest,
             account = undefined,
             minBlock = undefined,
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "debtSnapshots",
@@ -155,13 +155,13 @@ module.exports = {
             max = maxRequest,
             minBlock = undefined,
             maxBlock = undefined,
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "transfers",
@@ -213,13 +213,13 @@ module.exports = {
         feesClaimed({
             max = maxRequest,
             account = undefined,
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "feesClaimeds",
@@ -264,13 +264,13 @@ module.exports = {
         collateral({
             max = maxRequest,
             account = undefined,
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "collaterals",
@@ -315,13 +315,13 @@ module.exports = {
         redeemCollateral({
             max = maxRequest,
             account = undefined,
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "redeemCollaterals",
@@ -368,13 +368,13 @@ module.exports = {
             max = maxRequest,
             minBlock = undefined,
             maxBlock = undefined,
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "referrals",
@@ -425,13 +425,13 @@ module.exports = {
         updateUserDebt({
             max = maxRequest,
             filter = {},
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "updateUserDebts",
@@ -468,13 +468,13 @@ module.exports = {
         freeZe({
             max = maxRequest,
             account = undefined,
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "freeZes",
@@ -516,13 +516,13 @@ module.exports = {
         unfreeze({
             max = maxRequest,
             account = undefined,
-            graphApi = undefined
+            blockChain = undefined
         } = {}) {
-            if (!graphApi) {
-                graphApi = $nuxt.$store.state?.currentGraphApi;
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
             }
             return pageResults({
-                api: graphAPIEndpoints[graphApi],
+                api: graphAPIEndpoints[blockChain],
                 max,
                 query: {
                     entity: "unfreezes",

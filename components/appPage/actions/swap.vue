@@ -195,7 +195,10 @@ export default {
 
             freezeSuccessHash: "", //冻结hash
             waitPendingProces: false, //等待查询
-            sourceWalletType: "",
+            sourceWalletType: "", //原始钱包类型
+            waitChainChangeStatus: false, //等待metamask切换链状态,false为切换,true已切换
+            chainChangeToken: "", //等待事件监听id
+            autoChainChange: true, //是否自动切换链
 
             frozenBalance: 0,
 
@@ -394,9 +397,11 @@ export default {
                             "Something went wrong, please try again.";
                     }
                 } finally {
-                    //切换回原始网络
-                    await selectedWallet(this.sourceWalletType, false, false);
-                    this.sourceWalletType = "";
+                    if (this.autoChainChange) {
+                        //切换回原始网络
+                        await selectedWallet(this.sourceWalletType);
+                        this.sourceWalletType = "";
+                    }
                 }
             };
         },
@@ -577,16 +582,33 @@ export default {
         async startUnFreezeContract() {
             this.confirmTransactionStatus = false;
 
-            let walletType,
+            let swapWalletType,
                 sourceWallet = this.walletAddress.toLocaleLowerCase();
             if (this.isEthereumNetwork) {
-                walletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+                swapWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
             } else if (this.isBinanceNetwork) {
-                walletType = SUPPORTED_WALLETS_MAP.METAMASK;
+                swapWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
             }
 
-            //切换钱包
-            const walletStatus = await selectedWallet(walletType, false, false);
+            let walletStatus;
+            if (this.autoChainChange) {
+                //切换钱包
+                console.log("开始自动切换钱包");
+                walletStatus = await selectedWallet(swapWalletType);
+                console.log("自动切换钱包完成");
+            } else {
+                //监听手动切换事件
+                this.chainChangeToken = this.$pub.subscribe(
+                    "onMetamaskChainChange",
+                    () => {
+                        this.waitChainChangeStatus = true;
+                    }
+                );
+
+                console.log("开始手动切换metamask链");
+                walletStatus = await this.waitChainChange();
+                console.log("手动切换metamask链完成");
+            }
 
             //验证钱包是否相同
             if (this.walletAddress.toLocaleLowerCase() != sourceWallet) {
@@ -609,10 +631,12 @@ export default {
                     SETUP = " BSC";
                 }
 
+                console.log(LnBridge, gasPrice, SETUP);
+
+                console.log("开始获取锁定hash");
                 this.waitPendingProces = true;
                 const processArray = await this.getPendingProcess(LnBridge);
-
-                // console.log(processArray, "startUnFreezeContract");
+                console.log("获取锁定hash完成", processArray);
 
                 const { utils } = lnrJSConnector;
 
@@ -677,6 +701,23 @@ export default {
             }
         },
 
+        waitChainChange() {
+            return new Promise(resolve => {
+                const wait = () => {
+                    if (this.waitChainChangeStatus) {
+                        this.$pub.unsubscribe(this.chainChangeToken);
+                        this.chainChangeToken = "";
+                        this.waitChainChangeStatus = false;
+                        resolve(true);
+                    } else {
+                        setTimeout(wait, 1000);
+                    }
+                };
+
+                wait();
+            });
+        },
+
         async getGasEstimateFromUnFreeze(LnBridge, txId) {
             try {
                 const { utils } = lnrJSConnector;
@@ -708,12 +749,15 @@ export default {
                     //     });
                     // }
 
-                    const processArray = await LnBridge.getPendingProcess(
+                    let processArray = await LnBridge.getPendingProcess(
                         this.walletAddress
                     );
                     count++;
 
-                    // console.log(processArray, count, "getPendingProcess");
+                    console.log(processArray, count, "getPendingProcess");
+
+                    //过滤空
+                    processArray = processArray.filter(item => item != "");
 
                     if (this.waitProcessArray.length > 1) {
                         if (!processArray.includes(this.freezeSuccessHash)) {
@@ -746,10 +790,13 @@ export default {
             this.waitPendingProces = false;
             this.freezeSuccessHash = "";
             this.processing = false;
-            //切换回原始网络
-            this.sourceWalletType &&
-                (await selectedWallet(this.sourceWalletType, false, false));
-            // this.getFrozenBalance();
+
+            if (this.autoChainChange) {
+                //切换回原始网络
+                this.sourceWalletType &&
+                    (await selectedWallet(this.sourceWalletType));
+                // this.getFrozenBalance();
+            }
         },
 
         //点击最大

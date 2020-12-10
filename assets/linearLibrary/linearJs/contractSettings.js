@@ -1,6 +1,6 @@
 import { getDefaultProvider } from "ethers";
 import addresses from "./lib/addresses";
-import { GRAPH_API } from "@/assets/linearLibrary/linearTools/network";
+import { BLOCKCHAIN } from "@/assets/linearLibrary/linearTools/network";
 
 const SUPPORTED_NETWORKS = {
     1: "mainnet",
@@ -16,14 +16,14 @@ export const SELECT_NETWORKS_HASH_URLBASE = {
     97: "https://testnet.bscscan.com/tx/"
 };
 
-export const getBrowserUrlBase = ({graphApi,netWork})=>{
-    if(graphApi == GRAPH_API.ETHEREUM){
+export const getBrowserUrlBase = ({blockChain,netWork})=>{
+    if(blockChain == BLOCKCHAIN.ETHEREUM){
         if(netWork == "testNet"){
             return SELECT_NETWORKS_HASH_URLBASE[3];
         }else if(netWork == "mainNet"){
             return SELECT_NETWORKS_HASH_URLBASE[1];
         }
-    }else if(graphApi == GRAPH_API.BINANCE){
+    }else if(blockChain == BLOCKCHAIN.BINANCE){
         if(netWork == "testNet"){
             return SELECT_NETWORKS_HASH_URLBASE[97];
         }else if(netWork == "mainNet"){
