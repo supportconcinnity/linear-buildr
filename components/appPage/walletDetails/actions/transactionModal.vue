@@ -66,11 +66,11 @@
                         v-model="filters.chainType"
                         placeholder="All Chains"
                     >
-                        <Option value="1" label="Ethereum">
+                        <Option value="ethereum" label="Ethereum">
                             <img src="@/static/ETH.svg" alt="" />
                             <span>Ethereum</span>
                         </Option>
-                        <Option value="2" label="Binance">
+                        <Option value="binance" label="Binance">
                             <img src="@/static/bnb.svg" alt="" />
                             <span> Binance</span>
                         </Option>
@@ -312,7 +312,7 @@ export default {
             gettingData: true,
             dateValue: [], //时间区间数组
             filters: {
-                chainType: 0,
+                chainType: null,
                 dateRange: [],
                 transactionType: [],
                 amountRange: { from: 0, to: 0 }
@@ -426,7 +426,7 @@ export default {
                     } = that.filters;
 
                     //在不在筛选的链中
-                    if (chainType == 2) {
+                    if (chainType != null && chainType != record.chain) {
                         return false;
                     }
 
