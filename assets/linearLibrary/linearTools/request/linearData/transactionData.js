@@ -581,8 +581,8 @@ module.exports = {
                     },
                     properties: [
                         "id",
-                        "freeZeStatis",
-                        "UnFreeZeStatis"
+                        "freeZeTokens",
+                        "UnFreeZeTokens"
                     ]
                 }
             })
@@ -590,12 +590,12 @@ module.exports = {
                 results.map(
                     ({
                         id,
-                        freeZeStatis,
-                        UnFreeZeStatis
+                        freeZeTokens,
+                        UnFreeZeTokens
                     }) => ({
                         account: id,
-                        freeZeStatis: freeZeStatis / 1e18,
-                        UnFreeZeStatis: UnFreeZeStatis / 1e18,
+                        freeZeTokens: freeZeTokens / 1e18,
+                        UnFreeZeTokens: UnFreeZeTokens / 1e18,
                     })
                 )
             )
