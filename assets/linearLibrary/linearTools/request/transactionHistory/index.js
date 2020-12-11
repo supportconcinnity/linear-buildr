@@ -13,7 +13,7 @@ export const TRANSACTION_EVENTS = [
     "Transfer",
     "Referral",
     "Swap",
-    "Swap"
+    "unSwap"
 ];
 
 export const fetchTransactionHistory = async (

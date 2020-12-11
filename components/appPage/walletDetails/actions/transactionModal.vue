@@ -371,13 +371,20 @@ export default {
                     item.type == "Transfer" ||
                     item.type == "Stake" ||
                     item.type == "Unstake" ||
-                    item.type == "Referral" ||
-                    item.type == "Swap"
+                    item.type == "Referral"
                 ) {
                     if (item.source == "lUSD")
                         amount = formatNumber(item.value) + " ℓUSD";
                     else amount = formatNumber(item.value) + " " + item.source;
-                } else if (item.type == "Claim") {
+                } else if(item.type == "Swap"||item.type == "unSwap"){
+                    type = "Swap";
+                    if(item.type == "Swap"){
+                        amount = "-" + formatNumber(item.value) + " " + item.source;
+                    }else{
+                        amount = "+" + formatNumber(item.value) + " " + item.source;
+                    }
+                }
+                else if (item.type == "Claim") {
                     let rewardslusd = "";
                     let rewardsLina = "";
                     if (
@@ -647,7 +654,7 @@ body {
                 }
 
                 .title {
-                    font-family: Gilroy;
+                    font-family: Gilroy-Bold;
                     font-size: 24px;
                     font-weight: bold;
                     letter-spacing: normal;
@@ -687,7 +694,7 @@ body {
             .transactionBox {
                 .title {
                     color: #5a575c;
-                    font-family: Gilroy;
+                    font-family: Gilroy-Bold;
                     font-size: 32px;
                     font-weight: 700;
                     line-height: 40px;
@@ -713,14 +720,14 @@ body {
                             width: 100px;
 
                             .ivu-select-selection {
-                                border: 1px solid #cacaca;
+                                border: 1px solid #e5e5e5;
                                 box-shadow: none !important;
 
                                 span {
-                                    font-family: Gilroy;
+                                    font-family: Gilroy-Medium;
                                     font-size: 12px;
                                     font-weight: 500;
-                                    color: #c1c1c1;
+                                    color: #99999a;
                                 }
 
                                 .ivu-icon:before {
@@ -759,7 +766,7 @@ body {
                         }
 
                         .dateDropdown {
-                            font-family: Gilroy;
+                            font-family: Gilroy-Medium;
 
                             * {
                                 box-shadow: none !important;
@@ -781,9 +788,22 @@ body {
                                     height: 32px;
                                     font-size: 12px;
                                     line-height: 32px;
-                                    border: 1px solid #cacaca;
+                                    border: 1px solid #e5e5e5;
                                     border-radius: 4px;
-                                    color: #cacaca;
+                                    color: #99999a;
+                                }
+
+                                input::-webkit-input-placeholder {
+                                    color: #99999a;
+                                }
+                                input:-ms-input-placeholder {
+                                    color: #99999a;
+                                }
+                                input:-moz-placeholder {
+                                    color: #99999a;
+                                }
+                                input::-moz-placeholder {
+                                    color: #99999a;
                                 }
                             }
 
@@ -796,7 +816,7 @@ body {
                         }
 
                         .typeDropdown {
-                            font-family: Gilroy;
+                            font-family: Gilroy-Medium;
 
                             .ivu-dropdown-rel {
                                 .typeBtn,
@@ -805,13 +825,13 @@ body {
                                     height: 32px;
                                     font-size: 12px;
                                     line-height: 32px;
-                                    border: 1px solid #cacaca;
+                                    border: 1px solid #e5e5e5;
                                     border-radius: 4px;
                                     display: flex;
                                     align-items: center;
                                     justify-content: space-between;
                                     padding: 0 8px;
-                                    color: #cacaca;
+                                    color: #99999a;
                                     cursor: pointer;
 
                                     img {
@@ -858,7 +878,7 @@ body {
                         }
 
                         .amountDropdown {
-                            font-family: Gilroy;
+                            font-family: Gilroy-Medium;
 
                             .ivu-dropdown-rel {
                                 .amountBtn,
@@ -867,13 +887,13 @@ body {
                                     height: 32px;
                                     font-size: 12px;
                                     //line-height: 32px;
-                                    border: 1px solid #cacaca;
+                                    border: 1px solid #e5e5e5;
                                     border-radius: 4px;
                                     display: flex;
                                     align-items: center;
                                     justify-content: space-between;
                                     padding: 0 8px;
-                                    color: #cacaca;
+                                    color: #99999a;
                                     cursor: pointer;
                                 }
                             }
@@ -975,11 +995,11 @@ body {
 
                     .th {
                         flex: 1;
-                        font-family: Gilroy;
+                        font-family: Gilroy-Medium;
                         font-size: 12px;
-                        font-weight: bold;
+                        font-weight: 500;
                         line-height: 16px;
-                        color: #5a575c;
+                        color: #99999a;
                         display: flex;
                         align-items: center;
                         padding: 5px;
@@ -1017,7 +1037,7 @@ body {
 
                             .td {
                                 flex: 1;
-                                font-family: Gilroy;
+                                font-family: Gilroy-Medium;
                                 font-size: 12px;
                                 font-weight: 500;
                                 line-height: 16px;
@@ -1035,6 +1055,7 @@ body {
 
                                     a {
                                         color: #1b05a1;
+                                        font-family: Gilroy-Bold;
                                         font-weight: bold;
                                         padding-right: 16px;
                                         opacity: 0.2 !important;
