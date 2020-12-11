@@ -560,6 +560,46 @@ module.exports = {
                 )
             )
             .catch(err => console.error(err));
+        },
+        userSwapAssetsCount({
+            max = maxRequest,
+            account = undefined,
+            blockChain = undefined
+        } = {}) {
+            if (!blockChain) {
+                blockChain = $nuxt.$store.state?.currentGraphApi;
+            }
+            return pageResults({
+                api: graphAPIEndpoints[blockChain],
+                max,
+                query: {
+                    entity: "userSwapAssetsCounts",
+                    selection: {
+                        where: {
+                            id: account ? `\\"${account}\\"` : undefined
+                        }
+                    },
+                    properties: [
+                        "id",
+                        "freeZeStatis",
+                        "UnFreeZeStatis"
+                    ]
+                }
+            })
+            .then(results =>
+                results.map(
+                    ({
+                        id,
+                        freeZeStatis,
+                        UnFreeZeStatis
+                    }) => ({
+                        account: id,
+                        freeZeStatis: freeZeStatis / 1e18,
+                        UnFreeZeStatis: UnFreeZeStatis / 1e18,
+                    })
+                )
+            )
+            .catch(err => console.error(err));
         }
     }
 };
