@@ -580,7 +580,7 @@ export default {
         //清除筛选条件数据
         clearFilters() {
             this.filters = {
-                chainType: 0,
+                chainType: null,
                 transactionType: [],
                 dateRange: [],
                 amountRange: { from: 0, to: 0 }
