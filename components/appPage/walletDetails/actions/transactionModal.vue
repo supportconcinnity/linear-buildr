@@ -245,7 +245,7 @@
                                     <img src="@/static/ETH.svg" />
                                 </template>
                                 <template v-if="row.chain == BLOCKCHAIN.BINANCE">
-                                    <img src="@/static/bnb_inactive.svg" />
+                                    <img src="@/static/logo-wallet-bsc.svg" />
                                 </template>
                                 {{ row.chain }}
                             </div>
@@ -360,29 +360,21 @@ export default {
 
             this.currentPageData.map(function(item, index, ary) {
                 type = item.type;
-                date = format(item.timestamp, "d MMM yyyy k:m");
+                date = format(item.timestamp, "d MMM yyyy kk:mm");
 
                 let baseUrl = getBrowserUrlBase({blockChain: item.chain,netWork: item.net});
                 hash = baseUrl + item.hash;
 
                 if (
                     item.type == "Build" ||
-                    item.type == "Burn" ||
-                    item.type == "Transfer" ||
-                    item.type == "Stake" ||
                     item.type == "Unstake" ||
-                    item.type == "Referral"
+                    item.type == "Burn" ||
+                    item.type == "Stake" ||
+                    item.type == "Swap"||
+                    item.type == "Referral"||
+                    item.type == "Transfer"
                 ) {
-                    if (item.source == "lUSD")
-                        amount = formatNumber(item.value) + " ℓUSD";
-                    else amount = formatNumber(item.value) + " " + item.source;
-                } else if(item.type == "Swap"||item.type == "unSwap"){
-                    type = "Swap";
-                    if(item.type == "Swap"){
-                        amount = "-" + formatNumber(item.value) + " " + item.source;
-                    }else{
-                        amount = "+" + formatNumber(item.value) + " " + item.source;
-                    }
+                    amount = item.symbol + formatNumber(item.value) + " " + item.source;
                 }
                 else if (item.type == "Claim") {
                     let rewardslusd = "";
@@ -396,7 +388,7 @@ export default {
                     if (!item.rewardsLina || item.rewardsLina != 0) {
                         rewardsLina = formatNumber(item.rewardsLina) + " LINA";
                     }
-                    amount = rewardsLina + "&\n" + rewardslusd;
+                    amount = "+" + rewardsLina + "&\n" + "+" + rewardslusd;
                 } else {
                     return null;
                 }

@@ -55,7 +55,8 @@ module.exports = {
                             timestamp: Number(timestamp * 1000),
                             block: Number(block),
                             value: value / 1e18,
-                            source: source
+                            source: source,
+                            symbol: "+"
                         })
                     )
                 )
@@ -101,7 +102,8 @@ module.exports = {
                             timestamp: Number(timestamp * 1000),
                             block: Number(block),
                             value: value / 1e18,
-                            source: source
+                            source: source,
+                            symbol: "-"
                         })
                     )
                 )
@@ -150,8 +152,7 @@ module.exports = {
                 .catch(err => console.error(err, "debtSnapshot err"));
         },
         transfer({
-            from = undefined,
-            to = undefined,
+            account = undefined,
             max = maxRequest,
             minBlock = undefined,
             maxBlock = undefined,
@@ -169,8 +170,7 @@ module.exports = {
                         orderBy: "timestamp",
                         orderDirection: "desc",
                         where: {
-                            from: from ? `\\"${from}\\"` : undefined,
-                            to: to ? `\\"${to}\\"` : undefined,
+                            addressStr_contains: account ? `\\"${account}\\"` : undefined,
                             block_gte: minBlock || undefined,
                             block_lte: maxBlock || undefined
                         }
@@ -204,7 +204,8 @@ module.exports = {
                             from,
                             to,
                             value: value / 1e18,
-                            source: source
+                            source: source,
+                            symbol: account.toUpperCase() == from.toUpperCase() ? "-" : "+"
                         })
                     )
                 )
@@ -306,7 +307,8 @@ module.exports = {
                             timestamp: Number(timestamp * 1000),
                             block: Number(block),
                             value: value / 1e18,
-                            source: currency
+                            source: currency,
+                            symbol: "-"
                         })
                     )
                 )
@@ -357,7 +359,8 @@ module.exports = {
                             timestamp: Number(timestamp * 1000),
                             block: Number(block),
                             value: value / 1e18,
-                            source: currency
+                            source: currency,
+                            symbol: "+"
                         })
                     )
                 )
@@ -416,7 +419,8 @@ module.exports = {
                             from,
                             to,
                             value: value / 1e18,
-                            source: source
+                            source: source,
+                            symbol: "+"
                         })
                     )
                 )
@@ -507,7 +511,8 @@ module.exports = {
                         account,
                         timestamp: Number(timestamp * 1000),
                         value: value / 1e18,
-                        source: currency
+                        source: currency,
+                        symbol: "-"
                     })
                 )
             )
@@ -555,7 +560,8 @@ module.exports = {
                         account,
                         timestamp: Number(timestamp * 1000),
                         value: value / 1e18,
-                        source: currency
+                        source: currency,
+                        symbol: "+"
                     })
                 )
             )
