@@ -698,9 +698,11 @@ body {
                     justify-content: space-between;
                     margin: 32px 0;
 
+
                     .box {
                         display: flex;
                         justify-content: space-between;
+                        padding-left: 16px;
 
                         .chainSelect,
                         .dateDropdown,
