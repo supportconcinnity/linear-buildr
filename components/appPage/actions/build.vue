@@ -285,6 +285,7 @@ import {
     BUILD_PROCESS_SETUP,
     DECIMAL_PRECISION
 } from "@/assets/linearLibrary/linearTools/constants/process";
+import { log } from "util";
 
 export default {
     name: "build",
@@ -303,7 +304,7 @@ export default {
 
             activeItemBtn: -1, //当前激活按钮 0,1,2 Start with -1
 
-            confirmTransactionStep: 0, //当前交易进度
+            confirmTransactionStep: -1, //当前交易进度
             confirmTransactionStatus: false, //当前交易确认状态
             confirmTransactionHash: "", //当前交易hash
             transactionErrMsg: "", //交易错误信息
@@ -311,6 +312,8 @@ export default {
 
             waitProcessArray: [], //等待交易进度组
             waitProcessFlow: Function, //flow闭包函数
+
+            toleranceDifference: 0.01, //build容错差值
 
             //输入框展示数据
             inputData: {
@@ -447,7 +450,7 @@ export default {
                 if (results[6].gt("0") && results[4][0].gt("0")) {
                     currentRatioPercent = bnMul(
                         bnDiv(results[6], results[4][0]),
-                        utils.parseEther("100")
+                        n2bn("100")
                     );
                 }
 
@@ -458,21 +461,21 @@ export default {
                 const LINAPrice = priceRates.LINA / priceRates.lUSD;
                 const LINAPriceBN = bnDiv(priceRates.LINA, priceRates.lUSD);
 
-                this.buildData.LINA = _.floor(avaliableLINA, 2);
+                this.buildData.LINA = _.floor(avaliableLINA, DECIMAL_PRECISION);
                 this.buildData.LINABN = results[0];
 
-                this.buildData.LINA2USD = _.floor(LINAPrice, 2);
+                this.buildData.LINA2USD = _.floor(LINAPrice, DECIMAL_PRECISION);
                 this.buildData.LINA2USDBN = LINAPriceBN;
 
-                this.buildData.staked = _.floor(stakedLina, 2);
+                this.buildData.staked = _.floor(stakedLina, DECIMAL_PRECISION);
                 this.buildData.stakedBN = results[1];
 
-                this.buildData.lock = _.floor(lockLina, 2);
+                this.buildData.lock = _.floor(lockLina, DECIMAL_PRECISION);
                 this.buildData.lockBN = results[2];
 
                 this.buildData.approvedBN = results[3];
 
-                this.buildData.debt = _.floor(amountDebt[0], 2);
+                this.buildData.debt = _.floor(amountDebt[0], DECIMAL_PRECISION);
                 this.buildData.debtBN = results[4][0];
 
                 this.buildData.targetRatio = targetRatioPercent;
@@ -510,7 +513,7 @@ export default {
                         ),
                         this.buildData.LINA2USDBN
                     ),
-                    utils.parseEther(
+                    n2bn(
                         (this.buildData.targetRatio / 100).toString()
                     )
                 );
@@ -562,7 +565,7 @@ export default {
 
                 if (
                     this.buildData.currentRatioBN.gt(
-                        utils.parseEther(this.buildData.targetRatio.toString())
+                        n2bn(this.buildData.targetRatio.toString())
                     )
                 ) {
                     //抵押率大于目标抵押率，只build，不计算stake
@@ -574,26 +577,32 @@ export default {
                             ),
                             this.buildData.LINA2USDBN
                         ),
-                        utils.parseEther(
+                        n2bn(
                             (this.buildData.targetRatio / 100).toString()
                         )
                     );
 
                     this.inputData.stake = 0;
-                    this.inputData.amount = formatEtherToNumber(
-                        bnSub(stakeAndLockToLUSD, this.buildData.debtBN)
-                    );
+                    this.inputData.amount =
+                        _.floor(
+                            formatEtherToNumber(
+                                bnSub(stakeAndLockToLUSD, this.buildData.debtBN)
+                            ),
+                            DECIMAL_PRECISION
+                        ) - this.toleranceDifference; //增加容错
                     this.inputData.ratio = 500;
 
                     this.actionData.stake = BigNumber.from("0");
                     this.actionData.amount = bnSub(
-                        stakeAndLockToLUSD,
-                        this.buildData.debtBN
-                    );
+                        bnSub(stakeAndLockToLUSD, this.buildData.debtBN),
+                        n2bn(this.toleranceDifference.toString())
+                    ); //增加容错
+
+                    // console.log(this.actionData.amount,'this.actionData.amount ');
                     this.actionData.ratio = BigNumber.from("500");
                 } else if (
                     this.buildData.currentRatioBN.lt(
-                        utils.parseEther(this.buildData.targetRatio.toString())
+                        n2bn(this.buildData.targetRatio.toString())
                     )
                 ) {
                     //抵押率小于目标抵押率，只stake，不计算build
@@ -601,7 +610,7 @@ export default {
                     let needStakeWhenTargetRatio = bnSub(
                         bnDiv(
                             bnMul(
-                                utils.parseEther(
+                                n2bn(
                                     (
                                         this.buildData.targetRatio / 100
                                     ).toString()
@@ -658,14 +667,15 @@ export default {
                 }
 
                 if (
-                    utils
-                        .parseEther(stakeAmount.toString())
+                    n2bn(stakeAmount.toString())
                         .gt(this.buildData.LINABN)
                 ) {
                     this.errors.stakeMsg =
                         "You don't have enough amount of LINA.";
                     return;
                 }
+
+                this.inputData.ratio = this.buildData.targetRatio;
 
                 //抵押输入的lina时能生成的最大lusd
                 let canBuildMaxAfterStake = bnDiv(
@@ -675,11 +685,11 @@ export default {
                                 this.buildData.stakedBN,
                                 this.buildData.lockBN
                             ),
-                            utils.parseEther(stakeAmount.toString())
+                            n2bn(stakeAmount.toString())
                         ),
                         this.buildData.LINA2USDBN
                     ),
-                    utils.parseEther(
+                    n2bn(
                         (this.buildData.targetRatio / 100).toString()
                     )
                 );
@@ -701,34 +711,33 @@ export default {
 
                 //需要approve
                 if (
-                    utils
-                        .parseEther(stakeAmount.toString())
+                    n2bn(stakeAmount.toString())
                         .gt(this.buildData.approvedBN)
                 ) {
                     this.actionData.needApprove = n2bn("10000000000");
                 }
 
                 this.inputData.stake = stakeAmount;
-                this.actionData.stake = utils.parseEther(
+                this.actionData.stake = n2bn(
                     stakeAmount.toString()
                 );
 
-                this.actionData.ratio = bnMul(
-                    bnDiv(
-                        bnMul(
-                            canBuildMaxAfterStake,
-                            utils.parseEther(
-                                (this.buildData.targetRatio / 100).toString()
-                            )
-                        ),
-                        bnAdd(this.actionData.amount, this.buildData.debtBN)
-                    ),
-                    utils.parseEther("100".toString())
-                );
+                // this.actionData.ratio = bnMul(
+                //     bnDiv(
+                //         bnMul(
+                //             canBuildMaxAfterStake,
+                //             n2bn(
+                //                 (this.buildData.targetRatio / 100).toString()
+                //             )
+                //         ),
+                //         bnAdd(this.actionData.amount, this.buildData.debtBN)
+                //     ),
+                //     n2bn("100".toString())
+                // );
 
-                this.inputData.ratio = formatEtherToNumber(
-                    this.actionData.ratio
-                );
+                // this.inputData.ratio = formatEtherToNumber(
+                //     this.buildData.targetRatio
+                // );
             } catch (error) {
                 console.log(error, "stake change error");
             }
@@ -745,6 +754,8 @@ export default {
                     return;
                 }
 
+                this.inputData.ratio = this.buildData.targetRatio;
+
                 //抵押所有lina后能build最大lusd
                 let canBuildMaxAfterStakeAll = bnDiv(
                     bnMul(
@@ -757,7 +768,7 @@ export default {
                         ),
                         this.buildData.LINA2USDBN
                     ),
-                    utils.parseEther(
+                    n2bn(
                         (this.buildData.targetRatio / 100).toString()
                     )
                 );
@@ -775,8 +786,7 @@ export default {
 
                 //输入lusd超过最大可build数量
                 if (
-                    utils
-                        .parseEther(buildAmount.toString())
+                    n2bn(buildAmount.toString())
                         .gt(canBuildAfterStakeAll)
                 ) {
                     this.errors.amountMsg =
@@ -789,7 +799,7 @@ export default {
                         bnAdd(this.buildData.stakedBN, this.buildData.lockBN),
                         this.buildData.LINA2USDBN
                     ),
-                    utils.parseEther(
+                    n2bn(
                         (this.buildData.targetRatio / 100).toString()
                     )
                 );
@@ -797,14 +807,14 @@ export default {
                 let nowCanBuild = bnSub(nowCanBuildMax, this.buildData.debtBN);
 
                 //输入lusd大于现在直接可以build的数量
-                if (utils.parseEther(buildAmount.toString()).gt(nowCanBuild)) {
+                if (n2bn(buildAmount.toString()).gt(nowCanBuild)) {
                     let needStakeAmount = bnDiv(
                         bnMul(
                             bnSub(
-                                utils.parseEther(buildAmount.toString()),
+                                n2bn(buildAmount.toString()),
                                 nowCanBuild
                             ),
-                            utils.parseEther(
+                            n2bn(
                                 (this.buildData.targetRatio / 100).toString()
                             )
                         ),
@@ -822,50 +832,50 @@ export default {
                         this.actionData.needApprove = n2bn("10000000000");
                     }
 
-                    this.actionData.ratio = bnMul(
-                        bnDiv(
-                            bnMul(
-                                bnAdd(
-                                    bnAdd(
-                                        this.buildData.stakedBN,
-                                        this.buildData.lockBN
-                                    ),
-                                    needStakeAmount
-                                ),
-                                this.buildData.LINA2USDBN
-                            ),
-                            bnAdd(
-                                this.buildData.debtBN,
-                                utils.parseEther(buildAmount.toString())
-                            )
-                        ),
-                        utils.parseEther("100".toString())
-                    );
+                    // this.actionData.ratio = bnMul(
+                    //     bnDiv(
+                    //         bnMul(
+                    //             bnAdd(
+                    //                 bnAdd(
+                    //                     this.buildData.stakedBN,
+                    //                     this.buildData.lockBN
+                    //                 ),
+                    //                 needStakeAmount
+                    //             ),
+                    //             this.buildData.LINA2USDBN
+                    //         ),
+                    //         bnAdd(
+                    //             this.buildData.debtBN,
+                    //             n2bn(buildAmount.toString())
+                    //         )
+                    //     ),
+                    //     n2bn("100".toString())
+                    // );
                 } else {
-                    this.actionData.ratio = bnMul(
-                        bnDiv(
-                            bnMul(
-                                bnAdd(
-                                    this.buildData.stakedBN,
-                                    this.buildData.lockBN
-                                ),
-                                this.buildData.LINA2USDBN
-                            ),
-                            bnAdd(
-                                this.buildData.debtBN,
-                                utils.parseEther(buildAmount.toString())
-                            )
-                        ),
-                        utils.parseEther("100".toString())
-                    );
+                    // this.actionData.ratio = bnMul(
+                    //     bnDiv(
+                    //         bnMul(
+                    //             bnAdd(
+                    //                 this.buildData.stakedBN,
+                    //                 this.buildData.lockBN
+                    //             ),
+                    //             this.buildData.LINA2USDBN
+                    //         ),
+                    //         bnAdd(
+                    //             this.buildData.debtBN,
+                    //             n2bn(buildAmount.toString())
+                    //         )
+                    //     ),
+                    //     n2bn("100".toString())
+                    // );
                 }
 
-                this.inputData.ratio = formatEtherToNumber(
-                    this.actionData.ratio
-                );
+                // this.inputData.ratio = formatEtherToNumber(
+                //     this.actionData.ratio
+                // );
 
                 this.inputData.amount = buildAmount;
-                this.actionData.amount = utils.parseEther(
+                this.actionData.amount = n2bn(
                     buildAmount.toString()
                 );
             } catch (error) {
@@ -929,14 +939,13 @@ export default {
                         ),
                         this.buildData.debtBN
                     ),
-                    utils.parseEther("100")
+                    n2bn("100")
                 );
 
                 //大于最大可上调的pratio
                 if (
                     !maxRatioAfterStakeMax.eq("0") &&
-                    utils
-                        .parseEther(ratioAmount.toString())
+                    n2bn(ratioAmount.toString())
                         .gt(maxRatioAfterStakeMax)
                 ) {
                     this.errors.ratioMsg =
@@ -950,7 +959,7 @@ export default {
                     let stakeWhenRaisePratio = bnSub(
                         bnDiv(
                             bnMul(
-                                utils.parseEther(
+                                n2bn(
                                     (ratioAmount / 100).toString()
                                 ),
                                 this.buildData.debtBN
@@ -997,7 +1006,7 @@ export default {
                             ),
                             this.buildData.LINA2USDBN
                         ),
-                        utils.parseEther((ratioAmount / 100).toString())
+                        n2bn((ratioAmount / 100).toString())
                     );
 
                     //下调抵押率至ratioAmount需要build多少lusd
@@ -1040,12 +1049,27 @@ export default {
                         this.waitProcessArray.push(BUILD_PROCESS_SETUP.APPROVE);
                     }
 
-                    if (this.actionData.stake.gt("0")) {
-                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.STAKING);
-                    }
+                    if (
+                        this.actionData.stake.gt("0") &&
+                        this.actionData.amount.gt("0")
+                    ) {
+                        //一步调用
+                        this.waitProcessArray.push(
+                            BUILD_PROCESS_SETUP.STAKING_BUILD
+                        );
+                    } else {
+                        //单独调用
+                        if (this.actionData.stake.gt("0")) {
+                            this.waitProcessArray.push(
+                                BUILD_PROCESS_SETUP.STAKING
+                            );
+                        }
 
-                    if (this.actionData.amount.gt("0")) {
-                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.BUILD);
+                        if (this.actionData.amount.gt("0")) {
+                            this.waitProcessArray.push(
+                                BUILD_PROCESS_SETUP.BUILD
+                            );
+                        }
                     }
 
                     this.actionTabs = "m1"; //进入等待页
@@ -1053,7 +1077,7 @@ export default {
                     this.waitProcessFlow = this.startFlow();
 
                     //开始逻辑流处理函数
-                    await this.waitProcessFlow(this.confirmTransactionStep);
+                    await this.waitProcessFlow();
                 }
             } catch (error) {
                 this.transactionErrMsg =
@@ -1065,34 +1089,50 @@ export default {
 
         //开始逻辑流(闭包,可复用)
         startFlow() {
-            return async currentStep => {
+            return async () => {
                 try {
                     this.transactionErrMsg = "";
 
                     if (
-                        this.waitProcessArray[currentStep] ==
+                        this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.APPROVE
                     ) {
                         await this.startApproveContract(
                             this.actionData.needApprove
                         );
-                        currentStep++;
                     }
 
                     if (
-                        this.waitProcessArray[currentStep] ==
-                        BUILD_PROCESS_SETUP.STAKING
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.STAKING_BUILD
                     ) {
-                        await this.startStakingContract(this.actionData.stake);
-                        currentStep++;
-                    }
-
-                    if (
-                        this.waitProcessArray[currentStep] ==
-                        BUILD_PROCESS_SETUP.BUILD
-                    ) {
-                        await this.startBuildContract(this.actionData.amount);
-                        currentStep++;
+                        console.log("同时stake和buid");
+                        //一步调用
+                        await this.startStakingAndBuildContract(
+                            this.actionData.stake
+                        );
+                    } else {
+                        //单独调用
+                        if (
+                            this.waitProcessArray[
+                                this.confirmTransactionStep
+                            ] == BUILD_PROCESS_SETUP.STAKING
+                        ) {
+                            console.log("单独stake");
+                            await this.startStakingContract(
+                                this.actionData.stake
+                            );
+                        }
+                        if (
+                            this.waitProcessArray[
+                                this.confirmTransactionStep
+                            ] == BUILD_PROCESS_SETUP.BUILD
+                        ) {
+                            console.log("单独build");
+                            await this.startBuildContract(
+                                this.actionData.amount
+                            );
+                        }
                     }
                 } catch (error) {
                     //自定义错误
@@ -1174,6 +1214,56 @@ export default {
             }
         },
 
+        //开始抵押和build合约调用
+        async startStakingAndBuildContract(stakeAmountLINA) {
+            this.confirmTransactionStatus = false;
+
+            const {
+                lnrJS: { LnColateralBuildBurnAPI },
+                utils
+            } = lnrJSConnector;
+
+            const transactionSettings = {
+                gasPrice: this.$store.state?.gasDetails?.price,
+                gasLimit: this.gasLimit
+            };
+
+            transactionSettings.gasLimit = await this.getGasEstimateFromStakingAndBuild(
+                stakeAmountLINA
+            );
+
+            let transaction = await LnColateralBuildBurnAPI.collateralAndBuild(
+                utils.formatBytes32String("LINA"),
+                stakeAmountLINA,
+                transactionSettings
+            );
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: BUILD_PROCESS_SETUP.BUILD,
+                    value: `Building ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
+                });
+
+                let status = await utils.waitForTransaction(transaction.hash);
+
+                if (!status) {
+                    throw {
+                        code: 6100003,
+                        message:
+                            "Something went wrong while building your ℓUSD, please try again."
+                    };
+                }
+
+                this.confirmTransactionStep += 1;
+            }
+        },
+
         //开始抵押合约调用
         async startStakingContract(stakeAmountLINA) {
             this.confirmTransactionStatus = false;
@@ -1193,6 +1283,7 @@ export default {
             );
 
             let transaction = await LnCollateralSystem.Collateral(
+                this.walletAddress,
                 utils.formatBytes32String("LINA"),
                 stakeAmountLINA,
                 transactionSettings
@@ -1248,6 +1339,7 @@ export default {
             let transaction;
 
             transaction = await LnBuildBurnSystem.BuildAsset(
+                this.walletAddress,
                 buildAmountlUSD,
                 transactionSettings
             );
@@ -1309,6 +1401,33 @@ export default {
             }
         },
 
+        //评估StakingAndBuild的gas
+        async getGasEstimateFromStakingAndBuild(stakeAmountLINA) {
+            try {
+                const {
+                    lnrJS: { LnColateralBuildBurnAPI },
+                    utils
+                } = lnrJSConnector;
+
+                if (
+                    stakeAmountLINA.isZero() ||
+                    stakeAmountLINA.lt("0") //小于等于0
+                ) {
+                    throw new Error("invalid stakeAmountLINA");
+                }
+
+                let gasEstimate = await LnColateralBuildBurnAPI.contract.estimateGas.collateralAndBuild(
+                    utils.formatBytes32String("LINA"),
+                    stakeAmountLINA
+                );
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                console.log(e, "getGasEstimateFromStakingAndBuild");
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
+            }
+        },
+
         //评估Staking的gas
         async getGasEstimateFromStaking(stakeAmountLINA) {
             try {
@@ -1325,6 +1444,7 @@ export default {
                 }
 
                 let gasEstimate = await LnCollateralSystem.contract.estimateGas.Collateral(
+                    this.walletAddress,
                     utils.formatBytes32String("LINA"),
                     stakeAmountLINA
                 );
@@ -1349,9 +1469,8 @@ export default {
                     throw new Error("invalid buildAmountlUSD");
                 }
 
-                let gasEstimate;
-
-                gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BuildAsset(
+                let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BuildAsset(
+                    this.walletAddress,
                     buildAmountlUSD
                 );
 

@@ -86,7 +86,10 @@
                         >
                             <div class="itemLeft">
                                 <div class="itemIcon">
-                                    <img src="@/static/currency/lUSD.svg" alt="" />
+                                    <img
+                                        src="@/static/currency/lUSD.svg"
+                                        alt=""
+                                    />
                                 </div>
                                 <div class="itemType">
                                     <div class="itemTypeTitle">Burn</div>
@@ -408,7 +411,7 @@ export default {
                 if (results[3].gt("0") && results[6][0].gt("0")) {
                     currentRatioPercent = bnMul(
                         bnDiv(results[3], results[6][0]),
-                        utils.parseEther("100")
+                        n2bn("100")
                     );
                 }
 
@@ -462,15 +465,26 @@ export default {
                     this.waitProcessArray = [];
                     this.confirmTransactionStep = 0;
 
-                    if (this.actionDatas.amount.gt("0")) {
-                        //需要先burn
-                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.BURN);
-                    }
-
-                    if (this.actionDatas.unStake.gt("0")) {
+                    if (
+                        this.actionDatas.amount.gt("0") &&
+                        this.actionDatas.unStake.gt("0")
+                    ) {
                         this.waitProcessArray.push(
-                            BUILD_PROCESS_SETUP.UNSTAKING
+                            BUILD_PROCESS_SETUP.BURN_UNSTAKING
                         );
+                    } else {
+                        if (this.actionDatas.amount.gt("0")) {
+                            //需要先burn
+                            this.waitProcessArray.push(
+                                BUILD_PROCESS_SETUP.BURN
+                            );
+                        }
+
+                        if (this.actionDatas.unStake.gt("0")) {
+                            this.waitProcessArray.push(
+                                BUILD_PROCESS_SETUP.UNSTAKING
+                            );
+                        }
                     }
 
                     this.actionTabs = "m1"; //进入等待页
@@ -478,7 +492,7 @@ export default {
                     this.waitProcessFlow = this.startFlow();
 
                     //开始逻辑流处理函数
-                    await this.waitProcessFlow(this.confirmTransactionStep);
+                    await this.waitProcessFlow();
                 } catch (e) {
                     console.log(e);
                     this.actionTabs = "m3"; //进入错误页
@@ -491,51 +505,68 @@ export default {
 
         //开始逻辑流
         startFlow() {
-            return async currentStep => {
+            return async () => {
                 try {
                     this.transactionErrMsg = "";
 
                     if (
-                        this.waitProcessArray[currentStep] ==
-                        BUILD_PROCESS_SETUP.BURN
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.BURN_UNSTAKING
                     ) {
-                        await this.burn(this.actionDatas.amount);
-                        currentStep++;
-                    }
-
-                    if (
-                        this.waitProcessArray[currentStep] ==
-                        BUILD_PROCESS_SETUP.UNSTAKING
-                    ) {
-                        if (currentStep != 0) {
-                            const priceRates = await getPriceRates([
-                                "LINA",
-                                "lUSD"
-                            ]);
-
-                            const currentLINAPrice = bnDiv(
-                                priceRates.LINA,
-                                priceRates.lUSD
-                            ); //最新LINA汇率
-
-                            if (currentLINAPrice.lt(this.burnData.LINA2USDBN)) {
-                                let fallRate = bnDiv(
-                                    bnSub(
-                                        this.burnData.LINA2USDBN,
-                                        currentLINAPrice
-                                    ),
-                                    this.burnData.LINA2USDBN
-                                );
-
-                                this.actionDatas.unStake = bnSub(
-                                    this.actionDatas.unStake,
-                                    bnMul(this.actionDatas.unStake, fallRate)
-                                );
-                            }
+                       console.log("同时burn和unstake");
+                        await this.burnAndUnstake(this.actionDatas.amount);
+                    } else {
+                        if (
+                            this.waitProcessArray[
+                                this.confirmTransactionStep
+                            ] == BUILD_PROCESS_SETUP.BURN
+                        ) {
+                            console.log("单独burn");
+                            await this.burn(this.actionDatas.amount);
                         }
 
-                        await this.unstake(this.actionDatas.unStake);
-                        currentStep++;
+                        if (
+                            this.waitProcessArray[
+                                this.confirmTransactionStep
+                            ] == BUILD_PROCESS_SETUP.UNSTAKING
+                        ) {
+                            // if (this.confirmTransactionStep != 0) {
+                            //     const priceRates = await getPriceRates([
+                            //         "LINA",
+                            //         "lUSD"
+                            //     ]);
+
+                            //     const currentLINAPrice = bnDiv(
+                            //         priceRates.LINA,
+                            //         priceRates.lUSD
+                            //     ); //最新LINA汇率
+
+                            //     if (
+                            //         currentLINAPrice.lt(
+                            //             this.burnData.LINA2USDBN
+                            //         )
+                            //     ) {
+                            //         let fallRate = bnDiv(
+                            //             bnSub(
+                            //                 this.burnData.LINA2USDBN,
+                            //                 currentLINAPrice
+                            //             ),
+                            //             this.burnData.LINA2USDBN
+                            //         );
+
+                            //         this.actionDatas.unStake = bnSub(
+                            //             this.actionDatas.unStake,
+                            //             bnMul(
+                            //                 this.actionDatas.unStake,
+                            //                 fallRate
+                            //             )
+                            //         );
+                            //     }
+                            // }
+
+                            console.log("单独unstake");
+                            await this.unstake(this.actionDatas.unStake);
+                        }
                     }
 
                     //全部执行完毕显示成功
@@ -558,6 +589,56 @@ export default {
         },
 
         //burn
+        async burnAndUnstake(burnAmount) {
+            const {
+                lnrJS: { LnColateralBuildBurnAPI },
+                utils
+            } = lnrJSConnector;
+
+            this.confirmTransactionStatus = false;
+
+            const burnGasLimit = await this.getBurnAndUnstakeGasEstimate(
+                burnAmount
+            );
+
+            let transaction = await LnColateralBuildBurnAPI.burnAndRedeem(
+                utils.formatBytes32String("LINA"),
+                burnAmount,
+                {
+                    gasPrice: this.$store.state?.gasDetails?.price,
+                    gasLimit: burnGasLimit
+                }
+            );
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: BUILD_PROCESS_SETUP.BURN,
+                    value: `Burn ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
+                });
+
+                let status = await utils.waitForTransaction(transaction.hash);
+
+                if (!status) {
+                    throw {
+                        code: 6100004,
+                        message:
+                            "Something went wrong while burn ℓUSD, please try again."
+                    };
+                }
+
+                //成功后累加当前进度
+                this.confirmTransactionStep += 1;
+            }
+        },
+
+        //burn
         async burn(burnAmount) {
             const {
                 lnrJS: { LnBuildBurnSystem },
@@ -568,10 +649,14 @@ export default {
 
             const burnGasLimit = await this.getBurnGasEstimate(burnAmount);
 
-            let transaction = await LnBuildBurnSystem.BurnAsset(burnAmount, {
-                gasPrice: this.$store.state?.gasDetails?.price,
-                gasLimit: burnGasLimit
-            });
+            let transaction = await LnBuildBurnSystem.BurnAsset(
+                this.walletAddress,
+                burnAmount,
+                {
+                    gasPrice: this.$store.state?.gasDetails?.price,
+                    gasLimit: burnGasLimit
+                }
+            );
 
             if (transaction) {
                 this.confirmTransactionStatus = true;
@@ -615,6 +700,7 @@ export default {
             );
 
             let transaction = await LnCollateralSystem.Redeem(
+                this.walletAddress,
                 utils.formatBytes32String("LINA"),
                 unstakeAmount,
                 {
@@ -653,6 +739,26 @@ export default {
         },
 
         //评估 burn gas
+        async getBurnAndUnstakeGasEstimate(burnAmount) {
+            try {
+                const {
+                    lnrJS: { LnColateralBuildBurnAPI },
+                    utils
+                } = lnrJSConnector;
+
+                let gasEstimate = await LnColateralBuildBurnAPI.contract.estimateGas.burnAndRedeem(
+                    utils.formatBytes32String("LINA"),
+                    burnAmount
+                );
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                // console.log(e);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.burn);
+            }
+        },
+
+        //评估 burn gas
         async getBurnGasEstimate(burnAmount) {
             try {
                 const {
@@ -661,12 +767,13 @@ export default {
                 } = lnrJSConnector;
 
                 let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BurnAsset(
+                    this.walletAddress,
                     burnAmount
                 );
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
-                console.log(e);
+                // console.log(e);
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.burn);
             }
         },
@@ -680,6 +787,7 @@ export default {
                 } = lnrJSConnector;
 
                 let gasEstimate = await LnCollateralSystem.contract.estimateGas.Redeem(
+                    this.walletAddress,
                     utils.formatBytes32String("LINA"),
                     unstakeAmount
                 );
@@ -692,7 +800,7 @@ export default {
         },
 
         async waitTryAgain() {
-            await this.waitProcessFlow(this.confirmTransactionStep);
+            await this.waitProcessFlow();
         },
 
         //重置错误信息
@@ -762,7 +870,7 @@ export default {
                 bnDiv(
                     bnSub(
                         this.burnData.currentRatioBN,
-                        utils.parseEther(this.burnData.targetRatio.toString())
+                        n2bn(this.burnData.targetRatio.toString())
                     ),
                     this.burnData.currentRatioBN
                 )
@@ -820,11 +928,7 @@ export default {
                 );
                 let lockLINAToBuildLUSDBN = this.burnData.lockBN
                     .mul(this.burnData.LINA2USDBN)
-                    .div(
-                        utils.parseEther(
-                            (this.burnData.targetRatio / 100).toString()
-                        )
-                    );
+                    .div(n2bn((this.burnData.targetRatio / 100).toString()));
 
                 if (this.burnData.debtBN.lte(lockLINAToBuildLUSDBN)) {
                     //债务 <= lockLINAToLUSDBN 时，则可以直接解锁所有stake lina
@@ -925,12 +1029,12 @@ export default {
                         ),
                         bnSub(this.burnData.debtBN, this.burnData.lUSDBN)
                     ),
-                    utils.parseEther("100")
+                    n2bn("100")
                 );
 
                 if (
                     ratioAfterBurn.gt(
-                        utils.parseEther(this.burnData.targetRatio.toString())
+                        n2bn(this.burnData.targetRatio.toString())
                     )
                 ) {
                     //销毁后大于 target ratio
@@ -939,9 +1043,7 @@ export default {
                         bnDiv(
                             bnSub(
                                 ratioAfterBurn,
-                                utils.parseEther(
-                                    this.burnData.targetRatio.toString()
-                                )
+                                n2bn(this.burnData.targetRatio.toString())
                             ),
                             ratioAfterBurn
                         )
@@ -982,14 +1084,14 @@ export default {
                 //                                         this.burnData.lUSDBN
                 //                                     )
                 //                                 ),
-                //                                 utils.parseEther('100')
+                //                                 n2bn('100')
                 //                             );
 
                 // this.inputData.ratio = formatEtherToNumber(pratioAfterBurnAndStake);
                 // this.actionDatas.ratio = pratioAfterBurnAndStake;
 
                 this.inputData.ratio = this.burnData.targetRatio;
-                this.actionDatas.ratio = utils.parseEther(
+                this.actionDatas.ratio = n2bn(
                     this.burnData.targetRatio.toString()
                 );
             }
@@ -1009,7 +1111,7 @@ export default {
 
             if (
                 this.burnData.currentRatioBN.gt(
-                    utils.parseEther(this.burnData.targetRatio.toString())
+                    n2bn(this.burnData.targetRatio.toString())
                 )
             ) {
                 //下调抵押率，当前抵押率大于目标抵押率，销毁LINA到抵押率刚好
@@ -1018,9 +1120,7 @@ export default {
                     bnDiv(
                         bnSub(
                             this.burnData.currentRatioBN,
-                            utils.parseEther(
-                                this.burnData.targetRatio.toString()
-                            )
+                            n2bn(this.burnData.targetRatio.toString())
                         ),
                         this.burnData.currentRatioBN
                     )
@@ -1035,7 +1135,7 @@ export default {
                 this.actionDatas.ratio = this.burnData.targetRatio;
             } else if (
                 this.burnData.currentRatioBN.lt(
-                    utils.parseEther(this.burnData.targetRatio.toString())
+                    n2bn(this.burnData.targetRatio.toString())
                 )
             ) {
                 //上调抵押率，看当前抵押率上调到目标抵押率需要还多少债务，如果lUSD余额大于等于要还的则销毁，低于则报错
@@ -1047,9 +1147,7 @@ export default {
                         bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
                         this.burnData.LINA2USDBN
                     ),
-                    utils.parseEther(
-                        (this.burnData.targetRatio / 100).toString()
-                    )
+                    n2bn((this.burnData.targetRatio / 100).toString())
                 );
 
                 burnlUSD = bnSub(this.burnData.debtBN, retainlUSD);
@@ -1065,7 +1163,7 @@ export default {
 
                 this.actionDatas.unStake = BigNumber.from("0");
                 this.actionDatas.amount = burnlUSD;
-                this.actionDatas.ratio = utils.parseEther(
+                this.actionDatas.ratio = n2bn(
                     this.burnData.targetRatio.toString()
                 );
             } else {
@@ -1096,11 +1194,7 @@ export default {
             }
 
             //一个LINA都解锁不了
-            if (
-                utils
-                    .parseEther(unstakedAmount.toString())
-                    .gt(this.burnData.stakedBN)
-            ) {
+            if (n2bn(unstakedAmount.toString()).gt(this.burnData.stakedBN)) {
                 this.inputData.unStake = unstakedAmount;
                 this.errors.unStakeMsg =
                     "You can't unstake the amount of LINA above.";
@@ -1111,7 +1205,7 @@ export default {
             if (
                 this.burnData.lUSDBN.eq("0") &&
                 this.burnData.currentRatioBN.lte(
-                    utils.parseEther(this.burnData.targetRatio.toString())
+                    n2bn(this.burnData.targetRatio.toString())
                 )
             ) {
                 this.inputData.unStake = unstakedAmount;
@@ -1123,9 +1217,7 @@ export default {
             //没有债务直接解锁
             if (this.burnData.debtBN.eq("0")) {
                 this.inputData.unStake = unstakedAmount;
-                this.actionDatas.unStake = utils.parseEther(
-                    unstakedAmount.toString()
-                );
+                this.actionDatas.unStake = n2bn(unstakedAmount.toString());
 
                 return;
             }
@@ -1133,7 +1225,7 @@ export default {
             //当前价格的lock lina能生成多少lusd
             let lockLINAToBuildLUSDBN = bnDiv(
                 bnMul(this.burnData.lockBN, this.burnData.LINA2USDBN),
-                utils.parseEther((this.burnData.targetRatio / 100).toString())
+                n2bn((this.burnData.targetRatio / 100).toString())
             );
             //取回所有stake所需还的债务
             let stakeDebt = bnSub(this.burnData.debtBN, lockLINAToBuildLUSDBN);
@@ -1154,13 +1246,13 @@ export default {
                         ),
                         bnSub(this.burnData.debtBN, this.burnData.lUSDBN)
                     ),
-                    utils.parseEther("100")
+                    n2bn("100")
                 );
 
                 //销毁所有lUSD后抵押率不超过目标抵押率，则不能解锁LINA
                 if (
                     ratioAfterBurn.lte(
-                        utils.parseEther(this.burnData.targetRatio.toString())
+                        n2bn(this.burnData.targetRatio.toString())
                     )
                 ) {
                     this.inputData.unStake = unstakedAmount;
@@ -1175,20 +1267,14 @@ export default {
                     bnDiv(
                         bnSub(
                             ratioAfterBurn,
-                            utils.parseEther(
-                                this.burnData.targetRatio.toString()
-                            )
+                            n2bn(this.burnData.targetRatio.toString())
                         ),
                         ratioAfterBurn
                     )
                 );
             }
 
-            if (
-                utils
-                    .parseEther(unstakedAmount.toString())
-                    .gt(allCanUnstakeAfterBurn)
-            ) {
+            if (n2bn(unstakedAmount.toString()).gt(allCanUnstakeAfterBurn)) {
                 this.inputData.unStake = unstakedAmount;
                 this.errors.unStakeMsg =
                     "You don't have enough amount of ℓUSD.";
@@ -1200,7 +1286,7 @@ export default {
                 bnDiv(
                     bnSub(
                         this.burnData.currentRatioBN,
-                        utils.parseEther(this.burnData.targetRatio.toString())
+                        n2bn(this.burnData.targetRatio.toString())
                     ),
                     this.burnData.currentRatioBN
                 )
@@ -1214,7 +1300,7 @@ export default {
             //需要先修复抵押率
             if (
                 this.burnData.currentRatioBN.lt(
-                    utils.parseEther(this.burnData.targetRatio.toString())
+                    n2bn(this.burnData.targetRatio.toString())
                 )
             ) {
                 let retainlUSD = bnDiv(
@@ -1222,9 +1308,7 @@ export default {
                         bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
                         this.burnData.LINA2USDBN
                     ),
-                    utils.parseEther(
-                        (this.burnData.targetRatio / 100).toString()
-                    )
+                    n2bn((this.burnData.targetRatio / 100).toString())
                 );
 
                 needFixRatio = bnSub(this.burnData.debtBN, retainlUSD);
@@ -1232,36 +1316,25 @@ export default {
 
             let needBurnAmount = BigNumber.from("0");
 
-            if (utils.parseEther(unstakedAmount.toString()).gt(overStaked)) {
+            if (n2bn(unstakedAmount.toString()).gt(overStaked)) {
                 needBurnAmount = bnDiv(
                     bnMul(
-                        bnSub(
-                            utils.parseEther(unstakedAmount.toString()),
-                            overStaked
-                        ),
+                        bnSub(n2bn(unstakedAmount.toString()), overStaked),
                         this.burnData.LINA2USDBN
                     ),
-                    utils.parseEther(
-                        (this.burnData.targetRatio / 100).toString()
-                    )
+                    n2bn((this.burnData.targetRatio / 100).toString())
                 );
             }
 
             this.inputData.unStake = unstakedAmount;
-            this.actionDatas.unStake = utils.parseEther(
-                unstakedAmount.toString()
-            );
+            this.actionDatas.unStake = n2bn(unstakedAmount.toString());
 
             this.inputData.amount = formatEtherToNumber(
                 bnAdd(needBurnAmount, needFixRatio)
             );
             this.actionDatas.amount = bnAdd(needBurnAmount, needFixRatio);
 
-            if (
-                utils
-                    .parseEther(unstakedAmount.toString())
-                    .eq(this.burnData.stakedBN)
-            ) {
+            if (n2bn(unstakedAmount.toString()).eq(this.burnData.stakedBN)) {
                 this.inputData.ratio = null;
                 this.actionDatas.ratio = BigNumber.from("0");
             } else {
@@ -1279,14 +1352,19 @@ export default {
                         ),
                         bnSub(this.burnData.debtBN, this.actionDatas.amount)
                     ),
-                    utils.parseEther("100")
+                    n2bn("100")
                 );
+
+                //修复除不尽的显示错误
+                if (ratioAfterAction.lt(n2bn("500"))) {
+                    ratioAfterAction = n2bn("500");
+                }
 
                 this.inputData.ratio = formatEtherToNumber(ratioAfterAction);
                 this.actionDatas.ratio = ratioAfterAction;
 
                 //this.inputData.ratio = this.burnData.targetRatio;
-                //this.actionDatas.ratio = utils.parseEther(this.burnData.targetRatio.toString());
+                //this.actionDatas.ratio = n2bn(this.burnData.targetRatio.toString());
             }
         },
 
@@ -1305,9 +1383,7 @@ export default {
                 return;
             }
 
-            if (
-                utils.parseEther(burnAmount.toString()).gt(this.burnData.debtBN)
-            ) {
+            if (n2bn(burnAmount.toString()).gt(this.burnData.debtBN)) {
                 this.inputData.amount = burnAmount;
                 this.errors.amountMsg =
                     "The amount of ℓUSD is larger than your debt.";
@@ -1315,9 +1391,7 @@ export default {
                 return;
             }
 
-            if (
-                utils.parseEther(burnAmount.toString()).gt(this.burnData.lUSDBN)
-            ) {
+            if (n2bn(burnAmount.toString()).gt(this.burnData.lUSDBN)) {
                 this.inputData.amount = burnAmount;
                 this.errors.amountMsg = "You don't have enough amount of ℓUSD.";
                 this.inputData.ratio = null;
@@ -1330,18 +1404,15 @@ export default {
                         bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
                         this.burnData.LINA2USDBN
                     ),
-                    bnSub(
-                        this.burnData.debtBN,
-                        utils.parseEther(burnAmount.toString())
-                    )
+                    bnSub(this.burnData.debtBN, n2bn(burnAmount.toString()))
                 ),
-                utils.parseEther("100")
+                n2bn("100")
             );
 
             ////用输入的lUSD销毁后超额的抵押率算，不超过目标抵押率，则不能解锁LINA
             if (
                 ratioAfterBurnInputAmount.lte(
-                    utils.parseEther(this.burnData.targetRatio.toString())
+                    n2bn(this.burnData.targetRatio.toString())
                 )
             ) {
                 this.inputData.unStake = 0;
@@ -1363,7 +1434,7 @@ export default {
                 bnDiv(
                     bnSub(
                         ratioAfterBurnInputAmount,
-                        utils.parseEther(this.burnData.targetRatio.toString())
+                        n2bn(this.burnData.targetRatio.toString())
                     ),
                     ratioAfterBurnInputAmount
                 )
@@ -1374,24 +1445,18 @@ export default {
             }
 
             // let pratioAfterBurnAndStake = bnMul(
-            //                                 bnDiv(
-            //                                     bnMul(
-            //                                         bnSub(
-            //                                             bnAdd(
-            //                                                 this.burnData.stakedBN,
-            //                                                 this.burnData.lockBN
-            //                                             ),
-            //                                             allCanUnstakedLINAAfterBurn
-            //                                         ),
-            //                                         this.burnData.LINA2USDBN
-            //                                     ),
-            //                                     bnSub(
-            //                                         this.burnData.debtBN,
-            //                                         utils.parseEther(burnAmount.toString())
-            //                                     )
-            //                                 ),
-            //                                 utils.parseEther('100')
-            //                             );
+            //     bnDiv(
+            //         bnMul(
+            //             bnSub(
+            //                 bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+            //                 allCanUnstakedLINAAfterBurn
+            //             ),
+            //             this.burnData.LINA2USDBN
+            //         ),
+            //         bnSub(this.burnData.debtBN, n2bn(burnAmount.toString()))
+            //     ),
+            //     n2bn("100")
+            // );
 
             this.inputData.unStake = formatEtherToNumber(
                 allCanUnstakedLINAAfterBurn
@@ -1399,14 +1464,12 @@ export default {
             this.actionDatas.unStake = allCanUnstakedLINAAfterBurn;
 
             this.inputData.amount = burnAmount;
-            this.actionDatas.amount = utils.parseEther(burnAmount.toString());
+            this.actionDatas.amount = n2bn(burnAmount.toString());
 
             //this.inputData.ratio = formatEtherToNumber(pratioAfterBurnAndStake);
             //this.actionDatas.ratio = pratioAfterBurnAndStake;
             this.inputData.ratio = this.burnData.targetRatio;
-            this.actionDatas.ratio = utils.parseEther(
-                this.burnData.targetRatio.toString()
-            );
+            this.actionDatas.ratio = n2bn(this.burnData.targetRatio.toString());
         },
 
         //输入想调成的抵押率
@@ -1457,15 +1520,13 @@ export default {
                         ),
                         bnSub(this.burnData.debtBN, this.burnData.lUSDBN)
                     ),
-                    utils.parseEther("100")
+                    n2bn("100")
                 );
             }
 
             if (
                 !maxRatioAfterBurnMax.eq("0") &&
-                utils
-                    .parseEther(ratioAmount.toString())
-                    .gt(maxRatioAfterBurnMax)
+                n2bn(ratioAmount.toString()).gt(maxRatioAfterBurnMax)
             ) {
                 this.errors.ratioMsg =
                     "The P-Ratio can't be larger than your staking amount of LINA.";
@@ -1480,7 +1541,7 @@ export default {
                         bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
                         this.burnData.LINA2USDBN
                     ),
-                    utils.parseEther((ratioAmount / 100).toString())
+                    n2bn((ratioAmount / 100).toString())
                 );
                 let burnlUSD = bnSub(this.burnData.debtBN, retainlUSD); //债务 - 抵押的LINA价值多少lUSD = 需要销毁的lUSD
 
@@ -1515,9 +1576,7 @@ export default {
                         bnDiv(
                             bnSub(
                                 this.burnData.currentRatioBN,
-                                utils.parseEther(
-                                    this.burnData.targetRatio.toString()
-                                )
+                                n2bn(this.burnData.targetRatio.toString())
                             ),
                             this.burnData.currentRatioBN
                         )
@@ -1558,7 +1617,7 @@ export default {
                 //计算达成 ratioAmount 时，需要抵押多少LINA
                 let retainStake = bnDiv(
                     bnMul(
-                        utils.parseEther((ratioAmount / 100).toString()),
+                        n2bn((ratioAmount / 100).toString()),
                         this.burnData.debtBN
                     ),
                     this.burnData.LINA2USDBN

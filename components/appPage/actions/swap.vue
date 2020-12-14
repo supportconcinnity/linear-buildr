@@ -194,11 +194,11 @@ export default {
             waitProcessFlow: Function, //flow闭包函数
 
             freezeSuccessHash: "", //冻结hash
-            waitPendingProces: false, //等待查询
+            waitPendingProcess: false, //等待查询
             sourceWalletType: "", //原始钱包类型
             waitChainChangeStatus: false, //等待metamask切换链状态,false为切换,true已切换
             chainChangeToken: "", //等待事件监听id
-            autoChainChange: true, //是否自动切换链
+            autoChainChange: false, //是否自动切换链
 
             frozenBalance: 0,
 
@@ -633,10 +633,10 @@ export default {
 
                 console.log(LnBridge, gasPrice, SETUP);
 
-                console.log("开始获取锁定hash");
-                this.waitPendingProces = true;
+                console.log(`等待 [${swapWalletType}] 获取锁定hash`);
+                this.waitPendingProcess = true;
                 const processArray = await this.getPendingProcess(LnBridge);
-                console.log("获取锁定hash完成", processArray);
+                console.log(`[${swapWalletType}] 获取锁定hash完成`, processArray);
 
                 const { utils } = lnrJSConnector;
 
@@ -761,7 +761,7 @@ export default {
 
                     if (this.waitProcessArray.length > 1) {
                         if (!processArray.includes(this.freezeSuccessHash)) {
-                            this.waitPendingProces && setTimeout(wait, 3000);
+                            this.waitPendingProcess && setTimeout(wait, 3000);
                             return;
                         }
                         resolve(processArray);
@@ -787,7 +787,7 @@ export default {
             this.waitProcessArray = [];
             this.confirmTransactionStep = 0;
             this.swapNumber = null;
-            this.waitPendingProces = false;
+            this.waitPendingProcess = false;
             this.freezeSuccessHash = "";
             this.processing = false;
 

@@ -182,22 +182,6 @@ export default [
   },
   {
     inputs: [],
-    name: 'Currency_ETH',
-    outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [],
-    name: 'Currency_LINA',
-    outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [],
     name: 'admin',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
@@ -235,56 +219,8 @@ export default [
   },
   {
     inputs: [],
-    name: 'debtSystem',
-    outputs: [
-      {
-        internalType: 'contract LnDebtSystem',
-        name: '',
-        type: 'address'
-      }
-    ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [],
-    name: 'mConfig',
-    outputs: [
-      { internalType: 'contract LnConfig', name: '', type: 'address' }
-    ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [],
-    name: 'mRewardLocker',
-    outputs: [
-      {
-        internalType: 'contract LnRewardLocker',
-        name: '',
-        type: 'address'
-      }
-    ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [],
     name: 'paused',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [],
-    name: 'priceGetter',
-    outputs: [
-      { internalType: 'contract LnPrices', name: '', type: 'address' }
-    ],
     stateMutability: 'view',
     type: 'function',
     constant: true
@@ -297,56 +233,6 @@ export default [
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
-    name: 'tokenInfos',
-    outputs: [
-      { internalType: 'address', name: 'tokenAddr', type: 'address' },
-      {
-        internalType: 'uint256',
-        name: 'minCollateral',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'totalCollateral',
-        type: 'uint256'
-      },
-      { internalType: 'bool', name: 'bClose', type: 'bool' }
-    ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    name: 'tokenSymbol',
-    outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [],
-    name: 'uniqueId',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '', type: 'address' },
-      { internalType: 'bytes32', name: '', type: 'bytes32' }
-    ],
-    name: 'userCollateralData',
-    outputs: [
-      { internalType: 'uint256', name: 'collateral', type: 'uint256' }
-    ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
   },
   { stateMutability: 'payable', type: 'receive', payable: true },
   {
@@ -370,57 +256,17 @@ export default [
     type: 'function'
   },
   {
-    inputs: [
-      { internalType: 'bytes32', name: '_currency', type: 'bytes32' },
-      { internalType: 'address', name: '_tokenAddr', type: 'address' },
-      {
-        internalType: 'uint256',
-        name: '_minCollateral',
-        type: 'uint256'
-      },
-      { internalType: 'bool', name: '_close', type: 'bool' }
-    ],
-    name: 'UpdateTokenInfo',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32[]',
-        name: '_symbols',
-        type: 'bytes32[]'
-      },
-      {
-        internalType: 'address[]',
-        name: '_tokenAddrs',
-        type: 'address[]'
-      },
-      {
-        internalType: 'uint256[]',
-        name: '_minCollateral',
-        type: 'uint256[]'
-      },
-      { internalType: 'bool[]', name: '_closes', type: 'bool[]' }
-    ],
-    name: 'UpdateTokenInfos',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
     inputs: [],
-    name: 'GetSystemTotalCollateralInUsd',
-    outputs: [ { internalType: 'uint256', name: 'rTotal', type: 'uint256' } ],
+    name: 'getSystemTotalCollateralInUsd',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
     type: 'function',
     constant: true
   },
   {
     inputs: [ { internalType: 'address', name: '_user', type: 'address' } ],
-    name: 'GetUserTotalCollateralInUsd',
-    outputs: [ { internalType: 'uint256', name: 'rTotal', type: 'uint256' } ],
+    name: 'getUserTotalCollateralInUsd',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
     type: 'function',
     constant: true
@@ -430,7 +276,7 @@ export default [
       { internalType: 'address', name: '_user', type: 'address' },
       { internalType: 'bytes32', name: '_currency', type: 'bytes32' }
     ],
-    name: 'GetUserCollateral',
+    name: 'getUserCollateral',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
     type: 'function',
@@ -438,7 +284,7 @@ export default [
   },
   {
     inputs: [ { internalType: 'address', name: '_user', type: 'address' } ],
-    name: 'GetUserCollaterals',
+    name: 'getUserCollaterals',
     outputs: [
       { internalType: 'bytes32[]', name: '', type: 'bytes32[]' },
       { internalType: 'uint256[]', name: '', type: 'uint256[]' }
@@ -448,85 +294,85 @@ export default [
     constant: true
   },
   {
+    inputs: [ { internalType: 'address', name: '_user', type: 'address' } ],
+    name: 'isSatisfyTargetRatio',
+    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    stateMutability: 'view',
+    type: 'function',
+    constant: true
+  },
+  {
+    inputs: [ { internalType: 'address', name: '_user', type: 'address' } ],
+    name: 'maxRedeemableInUsd',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
+    stateMutability: 'view',
+    type: 'function',
+    constant: true
+  },
+  {
     inputs: [
       { internalType: 'address', name: 'user', type: 'address' },
+      { internalType: 'bytes32', name: '_currency', type: 'bytes32' }
+    ],
+    name: 'maxRedeemable',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
+    stateMutability: 'view',
+    type: 'function',
+    constant: true
+  },
+  {
+    inputs: [ { internalType: 'address', name: 'user', type: 'address' } ],
+    name: 'maxCanBuildAsset',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
+    stateMutability: 'view',
+    type: 'function',
+    constant: true
+  },
+  {
+    inputs: [
       { internalType: 'bytes32', name: '_currency', type: 'bytes32' },
       { internalType: 'uint256', name: '_amount', type: 'uint256' }
     ],
-    name: 'Collateral',
+    name: 'collateralAndBuild',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [ { internalType: 'address', name: '_user', type: 'address' } ],
-    name: 'IsSatisfyTargetRatio',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [ { internalType: 'address', name: '_user', type: 'address' } ],
-    name: 'MaxRedeemableInUsd',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: 'user', type: 'address' },
-      { internalType: 'bytes32', name: '_currency', type: 'bytes32' }
-    ],
-    name: 'MaxRedeemable',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: 'user', type: 'address' },
-      { internalType: 'bytes32', name: '_currency', type: 'bytes32' }
-    ],
-    name: 'RedeemMax',
+    inputs: [ { internalType: 'bytes32', name: '_currency', type: 'bytes32' } ],
+    name: 'burnAndRedeemMax',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
     inputs: [
-      { internalType: 'address', name: 'user', type: 'address' },
       { internalType: 'bytes32', name: '_currency', type: 'bytes32' },
       { internalType: 'uint256', name: '_amount', type: 'uint256' }
     ],
-    name: 'Redeem',
+    name: 'burnAndRedeem',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [
-      { internalType: 'address', name: 'user', type: 'address' },
-      { internalType: 'uint256', name: 'ethAmount', type: 'uint256' }
-    ],
-    name: 'CollateralEth',
+    inputs: [],
+    name: 'collateralEthAndBuild',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'payable',
     type: 'function',
     payable: true
   },
   {
-    inputs: [
-      {
-        internalType: 'address payable',
-        name: 'user',
-        type: 'address'
-      },
-      { internalType: 'uint256', name: '_amount', type: 'uint256' }
-    ],
-    name: 'RedeemETH',
+    inputs: [ { internalType: 'uint256', name: '_amount', type: 'uint256' } ],
+    name: 'burnAndRedeemETH',
+    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'burnAssetToTarget',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'nonpayable',
     type: 'function'
