@@ -27,7 +27,11 @@
                                 <div class="p_1">
                                     {{ currentSelectCurrency.name }}
                                 </div>
-                                <span class="p_2" @click="clickMaxAmount">
+                                <span
+                                    class="p_2"
+                                    :class="{ active: activeItemBtn == 0 }"
+                                    @click="clickMaxAmount"
+                                >
                                     MAX
                                 </span>
                             </div>
@@ -67,10 +71,7 @@
                                                 @on-change="changeAmount"
                                                 @on-focus="inputFocus(0)"
                                                 @on-blur="inputBlur(0)"
-                                                :formatter="
-                                                    value =>
-                                                        toNonExponential(value)
-                                                "
+                                                :formatter="formatterInput"
                                             />
                                         </div>
                                     </div>
@@ -194,11 +195,11 @@
 
 <script>
 import {
-    toNonExponential,
     openBlockchainScan,
     findParents,
     removeClass,
-    addClass
+    addClass,
+    formatterInput
 } from "@/common/utils";
 
 import _ from "lodash";
@@ -216,12 +217,13 @@ import {
     formatEtherToNumber,
     formatNumber
 } from "@/assets/linearLibrary/linearTools/format";
+import { n2bn } from "@/common/bnCalc";
 
 export default {
     name: "transfer",
     data() {
         return {
-            toNonExponential,
+            formatterInput,
             actionTabs: "m0", //子页(m0默认,m1等待,m2成功,m3错误)
             showDropdown: false,
             selected: 0,
@@ -229,6 +231,8 @@ export default {
             transferNumber: null,
             transferToAddress: "",
             ethGasLimit: 0,
+
+            activeItemBtn: -1, //当前激活按钮 0transfer
 
             dropdownHover: false,
 
@@ -361,6 +365,7 @@ export default {
             this.errors.amountMsg = "";
             this.selected = index;
             this.transferNumber = 0;
+            this.activeItemBtn = -1;
         },
         async onSend() {
             if (this.transferDisabled) return;
@@ -413,7 +418,7 @@ export default {
                             type: "Transfer",
                             value: `${formatNumber(
                                 lnrJSConnector.utils.formatEther(sendAmount)
-                            )} ${this.currentSelectCurrency.name}`,
+                            )} ${this.currentSelectCurrency.name}`
                         });
 
                         //等待结果返回
@@ -477,9 +482,7 @@ export default {
 
                 let gasEstimate;
 
-                const amountBN = lnrJSConnector.utils.parseEther(
-                    amount.toString()
-                );
+                const amountBN = n2bn(amount);
 
                 if (currency === "LINA") {
                     let LnProxy;
@@ -497,8 +500,8 @@ export default {
                         //不能转全部eth,需要留手续费
                         throw new Error("input.error.balanceTooLow");
                     }
-                    gasEstimate = await lnrJSConnector.provider.estimateGas({
-                        value: amountBN,
+                    gasEstimate = await lnrJSConnector.signer.estimateGas({
+                        data: amountBN,
                         to: destination
                     });
                 } else {
@@ -513,13 +516,16 @@ export default {
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.exchange);
             }
         },
+
         showDropdownFun() {
             setTimeout(() => {
                 this.showDropdown = !this.showDropdown;
             }, 1);
         },
+
         //点击最大
         async clickMaxAmount() {
+            this.activeItemBtn = 0;
             if (["ETH", "BNB"].includes(this.currentSelectCurrency.name)) {
                 if (this.canSendEthAmount <= 0) {
                     this.transferNumber = this.currency[
@@ -535,6 +541,7 @@ export default {
                 this.transferNumber = this.currentSelectCurrency.avaliable;
             }
         },
+
         changeAmount(amount) {
             if (
                 ["ETH", "BNB"].includes(this.currentSelectCurrency.name) &&
@@ -724,6 +731,10 @@ export default {
                                     align-self: flex-start;
 
                                     &:hover {
+                                        opacity: 1;
+                                    }
+
+                                    &.active {
                                         opacity: 1;
                                     }
                                 }

@@ -8,10 +8,7 @@
             />
             <div class="mBuyLINA mobileShow" @click="openBuy">
                 BUY LINA
-                <img
-                    src="@/static/icon-arrow-left-bold.svg"
-                    alt=""
-                />
+                <img src="@/static/icon-arrow-left-bold.svg" alt="" />
             </div>
         </div>
         <div class="container">
@@ -62,7 +59,8 @@
                     <Icon type="ios-arrow-round-forward" />
                 </div>
 
-                <div class="mRect mobileShow"
+                <div
+                    class="mRect mobileShow"
                     @click="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
                     >
                     <img
@@ -157,7 +155,7 @@ export default {
             this.introduct = "1";
         }, 100);
         //调试用,进入指定页,不用时屏蔽
-        // this.$store.commit("setCurrentAction", 5); 
+        // this.$store.commit("setCurrentAction", 4);
         // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
         // setTimeout(
         //     () => selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
@@ -181,11 +179,10 @@ export default {
     overflow: hidden;
     padding-bottom: 64px;
 
-
     .mobileShow {
         display: none;
     }
-    
+
     .headerBox {
         width: 1440px;
         height: 120px;
@@ -418,7 +415,6 @@ export default {
         }
     }
 }
-
 
 @media only screen and (max-width: $max-phone-width) {
     #landingPage {

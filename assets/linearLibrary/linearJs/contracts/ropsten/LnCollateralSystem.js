@@ -103,11 +103,6 @@
         return await this.contract.updateAddressCache(_addressStorage, txParams);
       };
     
-      this.SetPause = async (pause, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.SetPause(pause, txParams);
-      };
-    
       this.UpdateTokenInfo = async (_currency, _tokenAddr, _minCollateral, _close, txParams) => {
         txParams = txParams || {};
         return await this.contract.UpdateTokenInfo(_currency, _tokenAddr, _minCollateral, _close, txParams);
@@ -138,9 +133,9 @@
         return await this.contract.GetUserCollaterals(_user);
       };
     
-      this.Collateral = async (_currency, _amount, txParams) => {
+      this.Collateral = async (user, _currency, _amount, txParams) => {
         txParams = txParams || {};
-        return await this.contract.Collateral(_currency, _amount, txParams);
+        return await this.contract.Collateral(user, _currency, _amount, txParams);
       };
     
       this.IsSatisfyTargetRatio = async (_user) => {
@@ -158,24 +153,24 @@
         return await this.contract.MaxRedeemable(user, _currency);
       };
     
-      this.RedeemMax = async (_currency, txParams) => {
+      this.RedeemMax = async (user, _currency, txParams) => {
         txParams = txParams || {};
-        return await this.contract.RedeemMax(_currency, txParams);
+        return await this.contract.RedeemMax(user, _currency, txParams);
       };
     
-      this.Redeem = async (_currency, _amount, txParams) => {
+      this.Redeem = async (user, _currency, _amount, txParams) => {
         txParams = txParams || {};
-        return await this.contract.Redeem(_currency, _amount, txParams);
+        return await this.contract.Redeem(user, _currency, _amount, txParams);
       };
     
-      this.CollateralEth = async (txParams) => {
+      this.CollateralEth = async (user, ethAmount, txParams) => {
         txParams = txParams || {};
-        return await this.contract.CollateralEth(txParams);
+        return await this.contract.CollateralEth(user, ethAmount, txParams);
       };
     
-      this.RedeemETH = async (_amount, txParams) => {
+      this.RedeemETH = async (user, _amount, txParams) => {
         txParams = txParams || {};
-        return await this.contract.RedeemETH(_amount, txParams);
+        return await this.contract.RedeemETH(user, _amount, txParams);
       };
     
       }

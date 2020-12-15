@@ -71,7 +71,7 @@
                             <span>Ethereum</span>
                         </Option>
                         <Option value="binance" label="Binance">
-                            <img src="@/static/bnb.svg" alt="" />
+                            <img src="@/static/logo-wallet-bsc.svg" alt="" />
                             <span> Binance</span>
                         </Option>
                     </Select>
@@ -210,7 +210,7 @@
                     }"
                     @click="clearFilters"
                 >
-                    {{ filterNum > 1 ? "CLEAR ALL" : "CLEAR" }}
+                    {{ "CLEAR" }}
                 </div>
             </div>
 
@@ -245,7 +245,7 @@
                                     <img src="@/static/ETH.svg" />
                                 </template>
                                 <template v-if="row.chain == BLOCKCHAIN.BINANCE">
-                                    <img src="@/static/bnb_inactive.svg" />
+                                    <img src="@/static/logo-wallet-bsc.svg" />
                                 </template>
                                 {{ row.chain }}
                             </div>
@@ -265,7 +265,7 @@
                     </div>
                 </div>
                 <div v-else class="notData">
-                    Not Data
+                    No Data
                 </div>
 
                 <Spin size="large" fix v-if="gettingData"></Spin>
@@ -360,29 +360,21 @@ export default {
 
             this.currentPageData.map(function(item, index, ary) {
                 type = item.type;
-                date = format(item.timestamp, "d MMM yyyy k:m");
+                date = format(item.timestamp, "d MMM yyyy kk:mm");
 
                 let baseUrl = getBrowserUrlBase({blockChain: item.chain,netWork: item.net});
                 hash = baseUrl + item.hash;
 
                 if (
                     item.type == "Build" ||
-                    item.type == "Burn" ||
-                    item.type == "Transfer" ||
-                    item.type == "Stake" ||
                     item.type == "Unstake" ||
-                    item.type == "Referral"
+                    item.type == "Burn" ||
+                    item.type == "Stake" ||
+                    item.type == "Swap"||
+                    item.type == "Referral"||
+                    item.type == "Transfer"
                 ) {
-                    if (item.source == "lUSD")
-                        amount = formatNumber(item.value) + " ℓUSD";
-                    else amount = formatNumber(item.value) + " " + item.source;
-                } else if(item.type == "Swap"||item.type == "unSwap"){
-                    type = "Swap";
-                    if(item.type == "Swap"){
-                        amount = "-" + formatNumber(item.value) + " " + item.source;
-                    }else{
-                        amount = "+" + formatNumber(item.value) + " " + item.source;
-                    }
+                    amount = item.symbol + formatNumber(item.value) + " " + item.source;
                 }
                 else if (item.type == "Claim") {
                     let rewardslusd = "";
@@ -396,7 +388,7 @@ export default {
                     if (!item.rewardsLina || item.rewardsLina != 0) {
                         rewardsLina = formatNumber(item.rewardsLina) + " LINA";
                     }
-                    amount = rewardsLina + "&\n" + rewardslusd;
+                    amount = "+" + rewardsLina + "&\n" + "+" + rewardslusd;
                 } else {
                     return null;
                 }
@@ -706,9 +698,11 @@ body {
                     justify-content: space-between;
                     margin: 32px 0;
 
+
                     .box {
                         display: flex;
                         justify-content: space-between;
+                        padding-left: 16px;
 
                         .chainSelect,
                         .dateDropdown,
@@ -756,7 +750,7 @@ body {
 
                             &.hasFilter {
                                 .ivu-select-selection {
-                                    border: 1px solid #1b05a1;
+                                    border: 1px solid #1a38f8;
 
                                     span {
                                         color: #5a575c;
@@ -809,7 +803,7 @@ body {
 
                             &.hasFilter {
                                 input {
-                                    border: 1px solid #1b05a1;
+                                    border: 1px solid #1a38f8;
                                     color: #5a575c;
                                 }
                             }
@@ -870,7 +864,7 @@ body {
                                 .ivu-dropdown-rel {
                                     .typeBtn,
                                     .typeBtnSelected {
-                                        border: 1px solid #1b05a1;
+                                        border: 1px solid #1a38f8;
                                         color: #5a575c;
                                     }
                                 }
@@ -916,7 +910,7 @@ body {
                                 .ivu-dropdown-rel {
                                     .amountBtn,
                                     .amountBtnSelected {
-                                        border: 1px solid #1b05a1;
+                                        border: 1px solid #1a38f8;
                                         color: #5a575c;
                                     }
                                 }
@@ -926,9 +920,9 @@ body {
 
                     .clearFiltersBtn {
                         width: 166px;
-                        color: #1b05a1;
+                        color: #1a38f8;
                         opacity: 0.2;
-                        font-family: Gilroy;
+                        font-family: Gilroy-Bold;
                         font-size: 12px;
                         font-weight: 700;
                         line-height: 32px;
@@ -969,7 +963,7 @@ body {
                             font-weight: 400;
 
                             .viewInBrowser {
-                                color: #1b05a1;
+                                color: #1a38f8;
                                 font-family: Gilroy;
                                 font-size: 12px;
                                 font-weight: 700;
@@ -1054,7 +1048,7 @@ body {
                                     text-align: center;
 
                                     a {
-                                        color: #1b05a1;
+                                        color: #1a38f8;
                                         font-family: Gilroy-Bold;
                                         font-weight: bold;
                                         padding-right: 16px;

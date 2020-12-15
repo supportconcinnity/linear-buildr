@@ -189,28 +189,34 @@ export default [
     constant: true
   },
   {
-    inputs: [ { internalType: 'uint256', name: 'amount', type: 'uint256' } ],
+    inputs: [
+      { internalType: 'address', name: 'user', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' }
+    ],
     name: 'BuildAsset',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [],
+    inputs: [ { internalType: 'address', name: 'user', type: 'address' } ],
     name: 'BuildMaxAsset',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [ { internalType: 'uint256', name: 'amount', type: 'uint256' } ],
+    inputs: [
+      { internalType: 'address', name: 'user', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' }
+    ],
     name: 'BurnAsset',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [],
+    inputs: [ { internalType: 'address', name: 'user', type: 'address' } ],
     name: 'BurnAssetToTarget',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'nonpayable',

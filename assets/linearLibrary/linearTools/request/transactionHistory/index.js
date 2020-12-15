@@ -13,7 +13,7 @@ export const TRANSACTION_EVENTS = [
     "Transfer",
     "Referral",
     "Swap",
-    "unSwap"
+    "Swap"
 ];
 
 export const fetchTransactionHistory = async (
@@ -40,12 +40,12 @@ export const fetchTransactionHistory = async (
                 account: walletAddress,
                 blockChain
             }),
-            linearData.lnr.transfer({ from: walletAddress, blockChain }),
+            linearData.lnr.transfer({ account: walletAddress, blockChain }),
             linearData.lnr.referral({ to: walletAddress, blockChain }),
             linearData.lnr.freeZe({ account: walletAddress, blockChain }),
             linearData.lnr.unfreeze({ account: walletAddress, blockChain })
         ]);
-
+        
         if (!blockChain) {
             blockChain = $nuxt.$store.state?.currentGraphApi;
         }
@@ -80,6 +80,9 @@ export const fetchTransactionHistory = async (
                         : null;
                     event.rewardsLina
                         ? (event.rewardsLina = _.floor(event.rewardsLina, 2))
+                        : null;
+                    event.source
+                        ? (event.source = event.source.replace(/l/,"ℓ"))
                         : null;
                     return event.type
                         ? { chain: blockChain, net: netWork, ...event }

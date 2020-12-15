@@ -241,6 +241,11 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
 				"name": "amount",
 				"type": "uint256"
@@ -258,7 +263,13 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
 		"name": "BuildMaxAsset",
 		"outputs": [],
 		"stateMutability": "nonpayable",
@@ -266,6 +277,11 @@
 	},
 	{
 		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
 			{
 				"internalType": "uint256",
 				"name": "amount",
@@ -284,7 +300,13 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
 		"name": "BurnAssetToTarget",
 		"outputs": [
 			{

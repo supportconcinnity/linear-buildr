@@ -58,24 +58,24 @@
         return await this.contract.MaxCanBuildAsset(user);
       };
     
-      this.BuildAsset = async (amount, txParams) => {
+      this.BuildAsset = async (user, amount, txParams) => {
         txParams = txParams || {};
-        return await this.contract.BuildAsset(amount, txParams);
+        return await this.contract.BuildAsset(user, amount, txParams);
       };
     
-      this.BuildMaxAsset = async (txParams) => {
+      this.BuildMaxAsset = async (user, txParams) => {
         txParams = txParams || {};
-        return await this.contract.BuildMaxAsset(txParams);
+        return await this.contract.BuildMaxAsset(user, txParams);
       };
     
-      this.BurnAsset = async (amount, txParams) => {
+      this.BurnAsset = async (user, amount, txParams) => {
         txParams = txParams || {};
-        return await this.contract.BurnAsset(amount, txParams);
+        return await this.contract.BurnAsset(user, amount, txParams);
       };
     
-      this.BurnAssetToTarget = async (txParams) => {
+      this.BurnAssetToTarget = async (user, txParams) => {
         txParams = txParams || {};
-        return await this.contract.BurnAssetToTarget(txParams);
+        return await this.contract.BurnAssetToTarget(user, txParams);
       };
     
       }

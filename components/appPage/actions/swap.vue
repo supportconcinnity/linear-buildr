@@ -73,7 +73,11 @@
                                 <div class="p_1">
                                     {{ currentSelectCurrency.name }}
                                 </div>
-                                <span class="p_2" @click="clickMaxAmount">
+                                <span
+                                    class="p_2"
+                                    :class="{ active: activeItemBtn == 0 }"
+                                    @click="clickMaxAmount"
+                                >
                                     MAX
                                 </span>
                             </div>
@@ -97,15 +101,7 @@
                                                 placeholder="0"
                                                 @on-focus="inputFocus(0)"
                                                 @on-blur="inputBlur(0)"
-                                                :formatter="
-                                                    value =>
-                                                        floor(
-                                                            toNonExponential(
-                                                                value
-                                                            ),
-                                                            2
-                                                        )
-                                                "
+                                                :formatter="formatterInput"
                                             />
                                         </div>
                                     </div>
@@ -151,7 +147,7 @@
 import _ from "lodash";
 import gasEditorSwap from "@/components/gasEditorSwap";
 import {
-    toNonExponential,
+    formatterInput,
     openBlockchainScan,
     setCursorRange,
     findParents,
@@ -180,10 +176,12 @@ export default {
     },
     data() {
         return {
-            toNonExponential,
+            formatterInput,
             setCursorRange,
             actionTabs: "m0", //子页(m0默认,m1等待)
             swapNumber: null,
+
+            activeItemBtn: -1,
 
             confirmTransactionStep: 0, //当前交易进度
             confirmTransactionStatus: false, //当前交易确认状态
@@ -194,11 +192,11 @@ export default {
             waitProcessFlow: Function, //flow闭包函数
 
             freezeSuccessHash: "", //冻结hash
-            waitPendingProces: false, //等待查询
+            waitPendingProcess: false, //等待查询
             sourceWalletType: "", //原始钱包类型
             waitChainChangeStatus: false, //等待metamask切换链状态,false为切换,true已切换
             chainChangeToken: "", //等待事件监听id
-            autoChainChange: true, //是否自动切换链
+            autoChainChange: false, //是否自动切换链
 
             frozenBalance: 0,
 
@@ -633,10 +631,13 @@ export default {
 
                 console.log(LnBridge, gasPrice, SETUP);
 
-                console.log("开始获取锁定hash");
-                this.waitPendingProces = true;
+                console.log(`等待 [${swapWalletType}] 获取锁定hash`);
+                this.waitPendingProcess = true;
                 const processArray = await this.getPendingProcess(LnBridge);
-                console.log("获取锁定hash完成", processArray);
+                console.log(
+                    `[${swapWalletType}] 获取锁定hash完成`,
+                    processArray
+                );
 
                 const { utils } = lnrJSConnector;
 
@@ -761,7 +762,7 @@ export default {
 
                     if (this.waitProcessArray.length > 1) {
                         if (!processArray.includes(this.freezeSuccessHash)) {
-                            this.waitPendingProces && setTimeout(wait, 3000);
+                            this.waitPendingProcess && setTimeout(wait, 3000);
                             return;
                         }
                         resolve(processArray);
@@ -787,7 +788,7 @@ export default {
             this.waitProcessArray = [];
             this.confirmTransactionStep = 0;
             this.swapNumber = null;
-            this.waitPendingProces = false;
+            this.waitPendingProcess = false;
             this.freezeSuccessHash = "";
             this.processing = false;
 
@@ -801,6 +802,7 @@ export default {
 
         //点击最大
         clickMaxAmount() {
+            this.activeItemBtn = 0;
             this.swapNumber = _.floor(this.currentSelectCurrency.avaliable, 2);
 
             var el = document.getElementById("transfer_number_input");
@@ -990,6 +992,10 @@ export default {
                                 color: #1a38f8;
 
                                 &:hover {
+                                    opacity: 1;
+                                }
+
+                                &.active {
                                     opacity: 1;
                                 }
                             }
