@@ -1,13 +1,70 @@
 <template>
     <div id="actions">
         <div class="headerBox">
-            <a href="/">
+            <a href="/" class="webLogo">
                 <img
                     class="linearBuildrlogo"
                     src="@/static/linear_buildr_logo.svg"
                     alt=""
                 />
             </a>
+
+            <a href="/" class="mobileLogo">
+                <img
+                    class="linearBuildrlogo"
+                    src="@/static/linear_buildr_logo.svg"
+                    alt=""
+                    v-if="currentAction == 0"
+                />
+                <img
+                    class="logoWhenAction"
+                    src="@/static/logo-crypto-linear-colour.svg"
+                    alt=""
+                    v-else
+                />
+            </a>
+
+            <div class="introductActionBox" v-if="currentAction != 0">
+                <div class="title" v-if="currentAction == 1">Build</div>
+                <div class="title" v-if="currentAction == 2">Burn</div>
+                <div class="title" v-if="currentAction == 3">Claim</div>
+                <div class="title" v-if="currentAction == 4">Transfer</div>
+                <div class="title" v-if="currentAction == 5">Swap</div>
+
+                <img src="@/static/info.svg" @click="showIntroductActionModal"/>
+            </div>
+
+            <Modal
+                v-model="introductActionModal"
+                :footer-hide="true"
+                :closable="true"
+                :transfer="false"
+                :mask="true"
+                class="introductActionModal"
+            >
+                <div class="title" v-if="currentAction == 1">Build</div>
+                <div class="title" v-if="currentAction == 2">Burn</div>
+                <div class="title" v-if="currentAction == 3">Claim</div>
+                <div class="title" v-if="currentAction == 4">Transfer</div>
+                <div class="title" v-if="currentAction == 5">Swap</div>
+
+                <div class="context" v-if="currentAction == 1">
+                    Build ℓUSD and earn staking rewards by staking LINA
+                </div>
+                <div class="context" v-if="currentAction == 2">
+                    Burn ℓUSD to unlock staked LINA
+                </div>
+                <div class="context" v-if="currentAction == 3">
+                    Claim rewards from staking LINA and building ℓUSD
+                </div>
+                <div class="context" v-if="currentAction == 4">
+                    Transfer different currencies to specified wallet address
+                </div>
+                <div class="context" v-if="currentAction == 5">
+                    You can select the type of currency and enter the
+                    amount you want to swap
+                </div>
+            </Modal>
 
             <div
                 v-for="(item, index) in actions"
@@ -108,9 +165,10 @@ export default {
     },
     data() {
         return {
-            currentAction: this.$store.state.currentAction, //显示不同功能 0homePage 1build 2burn 3claim 4transfer
+            introductActionModal: false,
+            currentAction: this.$store.state.currentAction, //显示不同功能 0homePage 1build 2burn 3claim 4transfer 5swap
             currentHover: 0,
-            actions: ["build", "burn", "claim", "transfer", "swap"]
+            actions: ["Build", "Burn", "Claim", "Transfer", "Swap"]
         };
     },
     watch: {
@@ -144,6 +202,10 @@ export default {
             this.$store.commit('setmMenuState', false)
         },
 
+        showIntroductActionModal() {
+            this.introductActionModal = true;
+        },
+
         //鼠标进入离开用于设置hover和activeted时,改变其他元素color
         mouseenter(index) {
             this.currentHover = index;
@@ -168,12 +230,22 @@ export default {
         display: flex;
         align-items: center;
 
-        .linearBuildrlogo {
-            vertical-align: middle;
-            width: 163px;
-            height: 32px;
-            cursor: pointer;
-            margin-right: 28px;
+        .mobileLogo {
+            display: none;
+        }
+
+        .webLogo {
+            .linearBuildrlogo {
+                vertical-align: middle;
+                width: 163px;
+                height: 32px;
+                cursor: pointer;
+                margin-right: 28px;
+            }
+        }
+
+        .introductActionBox {
+            display: none;
         }
 
         .action {
@@ -222,10 +294,7 @@ export default {
     }
 }
 
-
-
 @media only screen and (max-width: $max-phone-width) {
-        
     #actions {
         width: 100%;
         margin-right: 0;
@@ -236,12 +305,70 @@ export default {
             align-items: center;
             margin: 16px 0;
 
-            .linearBuildrlogo {
-                vertical-align: middle;
-                width: 163px;
-                height: 32px;
-                cursor: pointer;
-                margin-right: 28px;
+            .webLogo {
+                display: none;
+            }
+
+            .mobileLogo {
+                display: block;
+
+                .linearBuildrlogo {
+                    vertical-align: middle;
+                    width: 163px;
+                    height: 32px;
+                    cursor: pointer;
+                    margin-right: 28px;
+                }
+
+                .logoWhenAction {
+                    vertical-align: middle;
+                    cursor: pointer;
+                    margin-right: 8px;
+                }
+            }
+
+            .introductActionBox {
+                display: flex;
+
+                .title {
+                    font-family: Gilroy-Bold;
+                    font-size: 20px;
+                    margin-right: 4px;
+                }
+            }
+
+            /deep/.introductActionModal {
+                .ivu-modal-wrap {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .ivu-modal {
+                        width: 74.66vw!important;
+                        height: 36.8vw;
+                        top: 0!important;
+
+                        .ivu-modal-content {
+                            height: 100%;
+
+                            .ivu-modal-body {
+                                height: 100%;
+                                padding: 24px;
+
+                                .title {
+                                    font-family: Gilroy-Bold;
+                                    font-size: 16px;
+                                    margin-bottom: 16px;
+                                }
+
+                                .context {
+                                    font-family: Gilroy;
+                                    font-size: 14px;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             .action {

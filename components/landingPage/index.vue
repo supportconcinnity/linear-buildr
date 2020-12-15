@@ -1,15 +1,11 @@
 <template>
     <div id="landingPage">
         <div class="headerBox">
-
-            
             <img
                 class="linearBuildrlogo"
                 src="@/static/linear_buildr_logo.svg"
                 alt=""
             />
-
-
             <div class="mBuyLINA mobileShow" @click="openBuy">
                 BUY LINA
                 <img
@@ -17,7 +13,6 @@
                     alt=""
                 />
             </div>
-            
         </div>
         <div class="container">
             <div class="introductBox">
@@ -71,11 +66,18 @@
                     @click="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
                     >
                     <img
-                        src="@/static/icon-wallet.svg"
+                        class="boxLogo"
+                        src="@/static/metamask.svg"
                         alt=""
-                    >
-                    Your wallet is not connected yet. 
-                    Please connect with your MetaMask
+                    />
+                    <div class="box">
+                        <div class="context">
+                            Connect MetaMask Wallet
+                        </div>
+                        <div class="chain">
+                            Etherium Chain
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="walletBox">
@@ -560,28 +562,38 @@ export default {
                 .buyLINA {
                     display: none;
                 }
+
                 .mRect {
+                    display: flex;
                     position: absolute;
-                    width: 74.6666666648vw;
-                    height: 17.06666666624vw;
+                    justify-content: space-around;
+                    align-items: center;
+                    width: 74.66vw;
+                    height: 28.57vw;
                     bottom: 8.533vw;
                     left: 8.533vw;
-                    padding: 4.26666666656vw 9px 16px 14.93333333296vw;
                     border-radius: 8px;
-                    background-color: $lightBlue;
-                    font-size: 12px;
-                    font-weight: 500;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 17px;
-                    letter-spacing: normal;
-                    color: #1a38f8;
+                    border: solid 1px #deddde;
+                    padding: 0 4vw;
+
                     img {
-                        position: absolute;
-                        width: 6.39999999984vw;
-                        height: 6.39999999984vw;
-                        top: 5.3333333332vw;
-                        left: 4.26666666656vw;
+                        width: 10.66vw;
+                        height: 10.66vw;
+                    }
+
+                    .box {
+                        .context {
+                            font-family: Gilroy-Bold;
+                            font-size: 14px;
+                            font-weight: bold;
+                            color: #1a38f8;
+                        }
+
+                        .chain {
+                            font-family: Gilroy;
+                            font-size: 14px;
+                            color: #99999a;
+                        }
                     }
                 }
             }

@@ -3,7 +3,7 @@
         <Tabs v-model="actionTabs" class="actionTabs">
             <TabPane name="m0">
                 <div class="burnBox">
-                    <div class="actionBody">
+                    <div class="actionBodyWeb">
                         <div class="actionTitle">Burn</div>
                         <div class="actionDesc">
                             Burn ℓUSD to unlock staked LINA
@@ -181,6 +181,166 @@
                         <gasEditor></gasEditor>
                     </div>
 
+                    <div class="actionBodyMobile">
+                        <div class="actionRate">
+                            1 LINA = {{ floor(burnData.LINA2USD, 4) }} ℓUSD
+                        </div>
+
+                        <div class="inputGroupBox">
+                            <div
+                                class="actionInputItem"
+                                :class="{
+                                    error: errors.unStakeMsg
+                                }"
+                                @click="changeFocusItem(0)"
+                            >
+                                <div class="inputBox">
+                                    <img
+                                        class="showInfo"
+                                        src="@/static/info_white.svg"
+                                        alt=""
+                                        @click="showIntroductActionModal"
+                                    />
+
+                                    <img class="logo" src="@/static/LINA_logo.svg" alt="" />
+
+                                    <div class="itemTypeTitle">
+                                        Unstake LINA
+                                    </div>
+
+                                    <InputNumber
+                                        class="input"
+                                        ref="itemInput3"
+                                        :min="0"
+                                        :max="100000000000"
+                                        type="text"
+                                        v-model="inputData.unStake"
+                                        placeholder="0"
+                                        @on-change="changeUnStake"
+                                        @on-focus="inputFocus(3)"
+                                        @on-blur="inputBlur(3)"
+                                        :formatter="
+                                            value =>
+                                                floor(value, DECIMAL_PRECISION)
+                                        "
+                                    />
+
+                                    <div
+                                        class="itemTypeBtn"
+                                        :class="{ active: activeItemBtn == 3 }"
+                                        @click="clickUnstakeMax"
+                                    >
+                                        Max
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="itemErrMsg"
+                                    :style="{
+                                        opacity: errors.unStakeMsg ? '1' : '0'
+                                    }"
+                                >
+                                    {{ errors.unStakeMsg }}
+                                </div>
+                            </div>
+
+                            <div
+                                class="actionInputItem"
+                                :class="{
+                                    error: errors.amountMsg
+                                }"
+                                @click="changeFocusItem(1)"
+                            >
+                                <div class="inputBox">
+                                    <img class="logo" src="@/static/currency/lUSD.svg" alt="" />
+
+                                    <div class="itemTypeTitle">Burn ℓUSD</div>
+        
+                                    <InputNumber
+                                        class="input"
+                                        ref="itemInput4"
+                                        :min="0"
+                                        :max="100000000000"
+                                        type="text"
+                                        v-model="inputData.amount"
+                                        @on-change="changeAmount"
+                                        @on-focus="inputFocus(4)"
+                                        @on-blur="inputBlur(4)"
+                                        placeholder="0"
+                                        :formatter="
+                                            value =>
+                                                floor(value, DECIMAL_PRECISION)
+                                        "
+                                    />
+        
+                                    <div
+                                        class="itemTypeBtn"
+                                        :class="{ active: activeItemBtn == 4 }"
+                                        @click="clickBurnMax"
+                                    >
+                                        Max
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="itemErrMsg"
+                                    :style="{
+                                        opacity: errors.amountMsg ? '1' : '0'
+                                    }"
+                                >
+                                    {{ errors.amountMsg }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="actionInputItem"
+                            :class="{
+                                error: errors.ratioMsg
+                            }"
+                        >
+                            <div class="ratioInputBox">
+                                <div class="box">
+                                    <div class="itemTypeTitle">P Ratio</div>
+                                    <InputNumber
+                                        class="input"
+                                        ref="itemInput5"
+                                        :min="0"
+                                        :max="100000000000"
+                                        type="text"
+                                        v-model="inputData.ratio"
+                                        @on-change="changeRatio"
+                                        @on-focus="inputFocus(5)"
+                                        @on-blur="inputBlur(5)"
+                                        :placeholder="
+                                            inputData.ratio == 0 ? '0' : 'N/A'
+                                        "
+                                        :formatter="value => floor(value, 0)"
+                                    />
+                                </div>
+    
+                                <div
+                                    class="itemTypeBtn"
+                                    :class="{ active: activeItemBtn == 5 }"
+                                    @click="clickTargetRatio"
+                                >
+                                    Target ratio
+                                </div>
+                            </div>
+
+                            <div
+                                class="itemErrMsg"
+                                :style="{
+                                    opacity: errors.ratioMsg ? '1' : '0'
+                                }"
+                            >
+                                {{ errors.ratioMsg }}
+                            </div>
+                        </div>
+
+                        <gasEditor></gasEditor>
+                    </div>
+
                     <div
                         class="burnBtn"
                         :class="{ disabled: burnDisabled }"
@@ -206,6 +366,20 @@
                 ></watingEnhance>
             </TabPane>
         </Tabs>
+
+        <Modal
+            v-model="introductActionModal"
+            :footer-hide="true"
+            :closable="true"
+            :transfer="false"
+            :mask="true"
+            class="introductActionModal"
+        >
+            <div class="title">Unstake LINA</div>
+            <div class="context">
+                Amount of LINA unstaked may vary due to block times and price fluctuations in pledge tokens.
+            </div>
+        </Modal>
     </div>
 </template>
 
@@ -278,6 +452,8 @@ export default {
             transactionErrMsg: "", //交易错误信息
             waitProcessArray: [], //等待交易进度组
             waitProcessFlow: Function, //flow闭包函数
+
+            introductActionModal: false,
 
             //输入框展示数据
             inputData: {
@@ -1581,6 +1757,10 @@ export default {
             }
         },
 
+        showIntroductActionModal() {
+            this.introductActionModal = true;
+        },
+
         etherscan() {
             //模拟跳到错误页
             this.actionTabs = "m3";
@@ -1637,7 +1817,7 @@ export default {
                 .burnBox {
                     position: relative;
 
-                    .actionBody {
+                    .actionBodyWeb {
                         padding: 64px 193px 0;
                         display: flex;
                         flex-direction: column;
@@ -1860,6 +2040,10 @@ export default {
                         }
                     }
 
+                    .actionBodyMobile {
+                        display: none;
+                    }
+
                     .burnBtn {
                         width: 100%;
                         position: absolute;
@@ -1890,6 +2074,311 @@ export default {
                         &.disabled {
                             cursor: not-allowed;
                             opacity: 0.1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #burn {
+        border-radius: 16px;
+        box-shadow: 0px 2px 6px #deddde;
+
+        .actionTabs {
+            border-radius: 16px;
+            box-shadow: 0px 2px 6px #deddde;
+
+            .ivu-tabs-bar {
+                display: none;
+            }
+
+            /deep/.ivu-tabs-content {
+                background: #fff;
+
+                .ivu-tabs-tabpane {
+                    width: 100%;
+                    height: 88vh!important;
+
+                    .burnBox,
+                    .waitingBox,
+                    .successBox,
+                    .wrongBox {
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                    .burnBox {
+                        position: relative;
+
+                        .actionBodyWeb {
+                            display: none;
+                        }
+
+                        .actionBodyMobile {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+
+                            .actionRate {
+                                width: 74.4vw;
+                                margin: 32px 0 28px;
+                                border-radius: 12px;
+                                background: #f6f5f6;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                padding: 4px 16px;
+                                font-family: Gilroy-Medium;
+                                font-size: 12px;
+                                font-weight: 500;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.33;
+                                letter-spacing: normal;
+                                text-align: center;
+                                color: #99999a;
+                            }
+                            
+                            .inputGroupBox {
+                                width: 74.4vw;
+                                display: flex;
+                                justify-content: space-between;
+
+                                .actionInputItem {
+                                    position: relative;
+                                    margin-bottom: 24px;
+                                    border-radius: 8px;
+                                    border: solid 1px #deddde;
+                                    transition: $animete-time linear;
+
+                                    .inputBox {
+                                        height: 50.1vw;
+                                        width: 35.2vw;
+                                        position: relative;
+                                        display: flex;
+                                        flex-direction: column;
+                                        align-items: center;
+
+                                        .showInfo {
+                                            position: absolute;
+                                            top: 8px;
+                                            right: 8px;
+                                        }
+
+                                        .logo {
+                                            width: 40px;
+                                            margin: 40px 0 16px;
+                                        }
+
+                                        .itemTypeTitle {
+                                            margin: 0 0 4px;
+                                            font-family: Gilroy;
+                                            font-size: 12px;
+                                            font-weight: 500;
+                                            text-align: center;
+                                            color: #99999a;
+                                        }
+
+                                        .input {
+                                            width: 100%;
+                                            height: 24px;
+                                            border: none;
+                                            box-shadow: none;
+
+                                            .ivu-input-number-handler-wrap {
+                                                display: none;
+                                            }
+
+                                            .ivu-input-number-input {
+                                                text-align: center;
+                                                font-family: Gilroy-Bold;
+                                                font-size: 16px;
+                                                font-weight: bold;
+                                                font-stretch: normal;
+                                                font-style: normal;
+                                                line-height: 1.25;
+                                                letter-spacing: normal;
+
+                                                &::placeholder {
+                                                    color: #99999a;
+                                                }
+                                            }
+                                        }
+
+                                        .itemTypeBtn {
+                                            height: 32px;
+                                            width: 100%;
+                                            position: absolute;
+                                            bottom: 0;
+                                            border-top: solid 1px #e5e5e5;
+                                            font-family: Gilroy;
+                                            text-align: center;
+                                            font-size: 10px;
+                                            line-height: 32px;
+                                            font-weight: bold;
+                                            color: #1a38f8;
+                                        }
+                                    }
+
+                                    .itemErrMsg {
+                                        transition: opacity $animete-time linear;
+                                        position: absolute;
+                                        left: 0;
+                                        bottom: 0px;
+                                        height: unset;
+                                        color: #df434c;
+                                        font-family: Gilroy;
+                                        font-size: 10px;
+                                        font-weight: unset;
+                                        line-height: 16px;
+                                        text-transform: uppercase;
+                                        letter-spacing: 1.25px;
+                                    }
+
+                                    &.error {
+                                        border-color: #df434c;
+                                    }
+                                }
+                            }
+
+                            .actionInputItem {
+                                margin-bottom: 24px;
+                                border-radius: 8px;
+                                border: solid 1px #deddde;
+                                transition: $animete-time linear;
+
+                                .ratioInputBox {
+                                    width: 74.4vw;
+                                    position: relative;
+
+                                    .box {
+                                        display: flex;
+                                        justify-content: space-between;
+                                        align-items: center;
+                                        padding: 0 16px;
+                                        height: 21.6vw;
+
+                                        .itemTypeTitle {
+                                            font-family: Gilroy;
+                                            font-size: 12px;
+                                            font-weight: 500;
+                                            text-align: center;
+                                            color: #99999a;
+                                        }
+
+                                        .input {
+                                            width: 53.33vw;
+                                            height: 32px;
+                                            border: none;
+                                            box-shadow: none;
+                                            padding: 0;
+
+                                            .ivu-input-number-handler-wrap {
+                                                display: none;
+                                            }
+
+                                            .ivu-input-number-input {
+                                                text-align: right;
+                                                font-family: Gilroy-Bold;
+                                                font-size: 16px;
+                                                font-weight: bold;
+                                                font-stretch: normal;
+                                                font-style: normal;
+                                                line-height: 1.25;
+                                                letter-spacing: normal;
+
+                                                &::placeholder {
+                                                    color: #99999a;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    .itemTypeBtn {
+                                        height: 32px;
+                                        width: 100%;
+                                        position: relative;
+                                        bottom: 0;
+                                        border-top: solid 1px #e5e5e5;
+                                        font-family: Gilroy;
+                                        text-align: center;
+                                        font-size: 10px;
+                                        line-height: 32px;
+                                        font-weight: bold;
+                                        color: #1a38f8;
+                                    }
+                                }
+                            }
+                        }
+
+                        .burnBtn {
+                            width: 100%;
+                            position: absolute;
+                            bottom: 0px;
+                            height: 12.8vw!important;
+                            cursor: pointer;
+                            background: #1a38f8;
+                            color: #ffffff;
+                            text-transform: uppercase;
+                            transition: $animete-time linear;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-family: Gilroy-Bold;
+                            font-size: 16px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            letter-spacing: 3px;
+                            text-align: center;
+
+                            &:hover {
+                                &:not(.disabled) {
+                                    background-color: #7eb5ff;
+                                }
+                            }
+
+                            &.disabled {
+                                cursor: not-allowed;
+                                opacity: 0.1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /deep/.introductActionModal {
+            .ivu-modal-wrap {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .ivu-modal {
+                    width: 74.66vw!important;
+                    height: 36.8vw;
+                    top: 0!important;
+
+                    .ivu-modal-content {
+                        height: 100%;
+
+                        .ivu-modal-body {
+                            height: 100%;
+                            padding: 24px;
+
+                            .title {
+                                font-family: Gilroy-Bold;
+                                font-size: 16px;
+                                margin-bottom: 9px;
+                            }
+
+                            .context {
+                                font-family: Gilroy;
+                                font-size: 14px;
+                            }
                         }
                     }
                 }

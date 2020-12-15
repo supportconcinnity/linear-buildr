@@ -165,8 +165,6 @@ export default {
     }
 }
 
-
-
 @media only screen and (max-width: $max-phone-width) {
     #homePage {
         width: 100%;
@@ -176,7 +174,7 @@ export default {
         padding: 163px 0 0 0;
 
         .title {
-            font-family: Gilroy;
+            font-family: Gilroy-Bold;
             font-size: 24px;
             font-weight: bold;
             font-stretch: normal;
@@ -252,7 +250,7 @@ export default {
                 text-transform: uppercase;
                 cursor: pointer;
                 transition: $animete-time linear;
-                font-family: Gilroy;
+                font-family: Gilroy-Bold;
                 font-size: 12px;
                 font-weight: bold;
                 font-stretch: normal;

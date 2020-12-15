@@ -23,6 +23,20 @@
                         </g></svg
                     >EDIT</span
                 >
+
+                <span class="editBtnMobile" @click="gasEditorModal = true"
+                    ><svg width="16px" height="16px" viewBox="0 0 16 16">
+                        <g>
+                            <path
+                                d="M1.3334 0L2.6668 0C3.40322 0 4.0002 0.596984 4.0002 1.3334L4.0002 9.82349C4.0002 10.0555 3.93967 10.2835 3.82459 10.4849L2.579 12.6653C2.32307 13.1133 1.67713 13.1133 1.4212 12.6653L0.175608 10.4849C0.0605293 10.2835 0 10.0555 0 9.82349L0 1.3334C0 0.596984 0.596984 0 1.3334 0ZM3.3335 1.3334C3.3335 0.965192 3.03501 0.6667 2.6668 0.6667L1.3334 0.6667C0.965192 0.6667 0.6667 0.965192 0.6667 1.3334L0.6667 9.82349C0.6667 9.93949 0.696965 10.0535 0.754504 10.1542L2.0001 12.3346L3.2457 10.1542C3.30324 10.0535 3.3335 9.93949 3.3335 9.82349L3.3335 1.3334Z"
+                                transform="matrix(0.70710677 0.70710677 -0.70710677 0.70710677 11.182764 1.8231096)"
+                                fill="#deddde"
+                                fill-rule="evenodd"
+                                stroke="none"
+                            />
+                        </g></svg
+                    ></span
+                >
             </div>
             <div class="infoRight">
                 <span class="price">{{ price }}</span>
@@ -50,6 +64,7 @@
 
             <div class="content">
                 <div class="contentTitle">Edit</div>
+                <div class="contentTitleMobile">Edit Gas Fee</div>
                 <div class="contentDesc">
                     Adjust the gas price (GWEI) below to set the transaction
                     speed by recommended ones or entering manually
@@ -145,7 +160,19 @@
                                     Binance Smart Chain fee
                                 </template>
                             </div>
+                            <div class="descTopMobile">
+                                Customize
+                            </div>
+
                             <div class="unit">GWEI</div>
+                            <div class="unitMobile">
+                                <template v-if="isEthereumNetwork">
+                                    Ethereum Network Fee(GWEI)
+                                </template>
+                                <template v-else-if="isBinanceNetwork">
+                                    Binance Smart Chain fee(GWEI)
+                                </template>
+                            </div>
                         </div>
                     </div>
 
@@ -422,6 +449,10 @@ export default {
                     }
                 }
             }
+
+            .editBtnMobile {
+                display: none;
+            }
         }
 
         .infoRight {
@@ -475,6 +506,10 @@ export default {
                         letter-spacing: normal;
                         text-align: center;
                         color: #5a575c;
+                    }
+
+                    .contentTitleMobile {
+                        display: none;
                     }
 
                     .contentDesc {
@@ -600,6 +635,10 @@ export default {
                                     color: #5a575c;
                                 }
 
+                                .descTopMobile {
+                                    display: none;
+                                }
+
                                 .unit {
                                     font-family: Gilroy-Medium;
                                     font-size: 12px;
@@ -609,6 +648,10 @@ export default {
                                     line-height: 1.33;
                                     letter-spacing: normal;
                                     color: #99999a;
+                                }
+
+                                .unitMobile {
+                                    display: none;
                                 }
                             }
                         }
@@ -669,6 +712,148 @@ export default {
                     &.disabled {
                         opacity: 0.1;
                         cursor: not-allowed;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #gasEditor {
+        width: 74.4vw;
+
+        .editInfo {
+            .infoLeft {
+                .editTitle {
+                    font-size: 12px;
+                }
+
+                .editBtn {
+                    display: none;
+                }
+
+                .editBtnMobile {
+                    display: block;
+                    margin-left: 6px;
+                }
+            }
+
+            .infoRight {
+                font-size: 12px;
+            }
+        }
+
+        .gasEditorModal {
+            .ivu-modal {
+                .ivu-modal-body {
+                    padding: 24px 32px 0;
+    
+                    .header {
+                        img {
+                            width: 26px;
+                            left: 7px;
+                            top: -10px;
+                        }
+                    }
+    
+                    .content {
+                        padding: unset;
+
+                        .contentTitle {
+                            display: none;
+                        }
+    
+                        .contentTitleMobile {
+                            display: block;
+                            width: 100%;
+                            font-family: Gilroy-Bold;
+                            font-size: 16px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.25;
+                            letter-spacing: normal;
+                            text-align: left;
+                            color: #5a575c;
+                        }
+    
+                        .contentDesc {
+                            width: 100%;
+                            font-size: 12px;
+                            text-align: left;
+                        }
+    
+                        .selections {
+                            .selectionItem {
+                                padding: 37px 0;
+    
+                                .itemNumBox {
+                                    font-size: 24px;
+                                }
+                            }
+                        }
+
+                        .custom {
+                            padding: 39px 16px;
+
+                            .leftRect {
+                                .icon {
+                                    display: none;
+                                }
+    
+                                .desc {
+                                    .descTop {
+                                        display: none;
+                                    }
+    
+                                    .descTopMobile {
+                                        display: block;
+                                        font-family: Gilroy-Bold;
+                                        font-size: 14px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.5;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
+                                    }
+    
+                                    .unit {
+                                        display: none;
+                                    }
+    
+                                    .unitMobile {
+                                        display: block;
+                                        font-family: Gilroy-Medium;
+                                        font-size: 12px;
+                                        font-weight: 500;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.33;
+                                        letter-spacing: normal;
+                                        color: #99999a;
+                                    }
+                                }
+                            }
+    
+                            .rightNum {
+                                width: 80px;
+
+                                .ivu-input-number-input {
+                                    font-size: 24px;
+                                }
+                            }
+                        }
+                    }
+    
+                    .confirm {
+                        bottom: 32px;
+                        width: 74.6vw;
+                        height: 40px;
+                        line-height: 40px;
+                        font-size: 12px;
+                        border-radius: 20px;
                     }
                 }
             }

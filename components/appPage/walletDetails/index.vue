@@ -1200,15 +1200,13 @@ export default {
 #walletDetails {
     width: 100vw;
     position: fixed;
-    height: 100%;
-    position: fixed;
     left: 0;
     top: 0;
     z-index: 1;
-    // display: none;
 
     &.mScroll {
         overflow-y: scroll;
+        height: 100%;
     }
 
     @-webkit-keyframes spin {
