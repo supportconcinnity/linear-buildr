@@ -50,17 +50,19 @@
                                         type="text"
                                         v-model="inputData.stake"
                                         placeholder="0"
+                                        :max="100000000000"
                                         @on-change="changeStakeAmount"
                                         @on-focus="inputFocus(0)"
                                         @on-blur="inputBlur(0)"
-                                        :formatter="
+                                        :formatter="formatterInput"
+                                    />
+                                    <!-- :formatter="
                                             value =>
                                                 floor(
                                                     toNonExponential(value),
                                                     DECIMAL_PRECISION
                                                 )
-                                        "
-                                    />
+                                        " -->
                                     <!-- :max="formatEtherToNumber(buildData.maxAvaliableLINA)" -->
                                     <!-- <div class="unit">lina</div> -->
                                 </div>
@@ -121,20 +123,18 @@
                                         class="input"
                                         ref="itemInput1"
                                         type="text"
+                                        :max="100000000000"
                                         v-model="inputData.amount"
                                         @on-change="changeBuildAmount"
                                         @on-focus="inputFocus(1)"
                                         @on-blur="inputBlur(1)"
                                         placeholder="0"
-                                        :formatter="
-                                            value =>
-                                                floor(
-                                                    toNonExponential(value),
-                                                    DECIMAL_PRECISION
-                                                )
-                                        "
+                                        :formatter="formatterInput"
                                     />
 
+                                    <!-- :formatter=" value => floor(
+                                        toNonExponential(value), DECIMAL_PRECISION )
+                                    " -->
                                     <!-- :max="formatEtherToNumber(buildData.maxAvaliablelUSD)" -->
                                     <!-- <div class="unit">ℓUSD</div> -->
                                 </div>
@@ -177,14 +177,14 @@
                                         class="input"
                                         ref="itemInput2"
                                         type="text"
+                                        :max="100000000000"
                                         v-model="inputData.ratio"
                                         @on-change="changeRatio"
                                         @on-focus="inputFocus(2)"
                                         @on-blur="inputBlur(2)"
                                         placeholder="0"
                                         :formatter="
-                                            value =>
-                                                floor(toNonExponential(value))
+                                            value => formatterInput(value, 0)
                                         "
                                     />
                                     <!-- :max="buildData.maxPRatio" -->
@@ -250,7 +250,8 @@ import {
     findParents,
     removeClass,
     addClass,
-    openBlockchainScan
+    openBlockchainScan,
+    formatterInput
 } from "@/common/utils";
 
 import {
@@ -285,7 +286,6 @@ import {
     BUILD_PROCESS_SETUP,
     DECIMAL_PRECISION
 } from "@/assets/linearLibrary/linearTools/constants/process";
-import { log } from "util";
 
 export default {
     name: "build",
@@ -344,7 +344,9 @@ export default {
                 debt: 0,
                 targetRatio: 500,
                 currentRatio: 0
-            }
+            },
+
+            formatterInput
         };
     },
     components: {
@@ -364,7 +366,7 @@ export default {
             return (
                 (_.lte(this.inputData.stake, 0) &&
                     _.lte(this.inputData.amount, 0)) ||
-                this.errors.unStakeMsg ||
+                this.errors.stakeMsg ||
                 this.errors.amountMsg ||
                 this.errors.ratioMsg ||
                 this.processing
@@ -499,6 +501,8 @@ export default {
                 this.resetErrorsMsg();
                 this.resetInputData();
 
+                this.activeItemBtn = 1;
+
                 let allCanBuildLUSDAfterStakeAll = BigNumber.from("0");
 
                 //抵押所有lina后能生成多少lUSD
@@ -513,9 +517,7 @@ export default {
                         ),
                         this.buildData.LINA2USDBN
                     ),
-                    n2bn(
-                        (this.buildData.targetRatio / 100).toString()
-                    )
+                    n2bn((this.buildData.targetRatio / 100).toString())
                 );
 
                 //可以生成的lUSD小于等于债务
@@ -558,6 +560,8 @@ export default {
                 this.resetErrorsMsg();
                 this.resetInputData();
 
+                this.activeItemBtn = 2;
+
                 if (this.buildData.debtBN.eq(BigNumber.from("0"))) {
                     this.errors.ratioMsg = "You don't have build ℓUSD.";
                     return;
@@ -577,9 +581,7 @@ export default {
                             ),
                             this.buildData.LINA2USDBN
                         ),
-                        n2bn(
-                            (this.buildData.targetRatio / 100).toString()
-                        )
+                        n2bn((this.buildData.targetRatio / 100).toString())
                     );
 
                     this.inputData.stake = 0;
@@ -658,7 +660,7 @@ export default {
         changeStakeAmount(stakeAmount) {
             try {
                 this.resetErrorsMsg();
-                this.resetInputData();
+                // this.resetInputData();
 
                 if (!stakeAmount) {
                     this.errors.stakeMsg =
@@ -666,10 +668,7 @@ export default {
                     return;
                 }
 
-                if (
-                    n2bn(stakeAmount.toString())
-                        .gt(this.buildData.LINABN)
-                ) {
+                if (n2bn(stakeAmount.toString()).gt(this.buildData.LINABN)) {
                     this.errors.stakeMsg =
                         "You don't have enough amount of LINA.";
                     return;
@@ -689,9 +688,7 @@ export default {
                         ),
                         this.buildData.LINA2USDBN
                     ),
-                    n2bn(
-                        (this.buildData.targetRatio / 100).toString()
-                    )
+                    n2bn((this.buildData.targetRatio / 100).toString())
                 );
 
                 let canBuildAfterStake = bnSub(
@@ -711,16 +708,13 @@ export default {
 
                 //需要approve
                 if (
-                    n2bn(stakeAmount.toString())
-                        .gt(this.buildData.approvedBN)
+                    n2bn(stakeAmount.toString()).gt(this.buildData.approvedBN)
                 ) {
                     this.actionData.needApprove = n2bn("10000000000");
                 }
 
                 this.inputData.stake = stakeAmount;
-                this.actionData.stake = n2bn(
-                    stakeAmount.toString()
-                );
+                this.actionData.stake = n2bn(stakeAmount.toString());
 
                 // this.actionData.ratio = bnMul(
                 //     bnDiv(
@@ -740,13 +734,14 @@ export default {
                 // );
             } catch (error) {
                 console.log(error, "stake change error");
+                this.errors.stakeMsg = "Invalid number";
             }
         },
 
         changeBuildAmount(buildAmount) {
             try {
                 this.resetErrorsMsg();
-                this.resetInputData();
+                // this.resetInputData();
 
                 if (!buildAmount) {
                     this.errors.amountMsg =
@@ -768,9 +763,7 @@ export default {
                         ),
                         this.buildData.LINA2USDBN
                     ),
-                    n2bn(
-                        (this.buildData.targetRatio / 100).toString()
-                    )
+                    n2bn((this.buildData.targetRatio / 100).toString())
                 );
 
                 //抵押所有lina后能build最大lusd - debt = 还能build多少
@@ -785,10 +778,7 @@ export default {
                 }
 
                 //输入lusd超过最大可build数量
-                if (
-                    n2bn(buildAmount.toString())
-                        .gt(canBuildAfterStakeAll)
-                ) {
+                if (n2bn(buildAmount.toString()).gt(canBuildAfterStakeAll)) {
                     this.errors.amountMsg =
                         "You don't have enough amount of LINA.";
                     return;
@@ -799,9 +789,7 @@ export default {
                         bnAdd(this.buildData.stakedBN, this.buildData.lockBN),
                         this.buildData.LINA2USDBN
                     ),
-                    n2bn(
-                        (this.buildData.targetRatio / 100).toString()
-                    )
+                    n2bn((this.buildData.targetRatio / 100).toString())
                 );
 
                 let nowCanBuild = bnSub(nowCanBuildMax, this.buildData.debtBN);
@@ -810,13 +798,8 @@ export default {
                 if (n2bn(buildAmount.toString()).gt(nowCanBuild)) {
                     let needStakeAmount = bnDiv(
                         bnMul(
-                            bnSub(
-                                n2bn(buildAmount.toString()),
-                                nowCanBuild
-                            ),
-                            n2bn(
-                                (this.buildData.targetRatio / 100).toString()
-                            )
+                            bnSub(n2bn(buildAmount.toString()), nowCanBuild),
+                            n2bn((this.buildData.targetRatio / 100).toString())
                         ),
                         this.buildData.LINA2USDBN
                     );
@@ -875,11 +858,10 @@ export default {
                 // );
 
                 this.inputData.amount = buildAmount;
-                this.actionData.amount = n2bn(
-                    buildAmount.toString()
-                );
+                this.actionData.amount = n2bn(buildAmount.toString());
             } catch (error) {
                 console.log(error, "build change error");
+                this.errors.amountMsg = "Invalid number";
             }
         },
 
@@ -887,7 +869,7 @@ export default {
         changeRatio(ratioAmount) {
             try {
                 this.resetErrorsMsg();
-                this.resetInputData();
+                // this.resetInputData();
 
                 if (!ratioAmount) return;
 
@@ -945,8 +927,7 @@ export default {
                 //大于最大可上调的pratio
                 if (
                     !maxRatioAfterStakeMax.eq("0") &&
-                    n2bn(ratioAmount.toString())
-                        .gt(maxRatioAfterStakeMax)
+                    n2bn(ratioAmount.toString()).gt(maxRatioAfterStakeMax)
                 ) {
                     this.errors.ratioMsg =
                         "The P-Ratio can't be larger than your staking amount of LINA.";
@@ -959,9 +940,7 @@ export default {
                     let stakeWhenRaisePratio = bnSub(
                         bnDiv(
                             bnMul(
-                                n2bn(
-                                    (ratioAmount / 100).toString()
-                                ),
+                                n2bn((ratioAmount / 100).toString()),
                                 this.buildData.debtBN
                             ),
                             this.buildData.LINA2USDBN
@@ -1030,6 +1009,7 @@ export default {
                 }
             } catch (error) {
                 console.log(error, "ratio change error");
+                this.errors.ratioMsg = "Invalid number";
             }
         },
 

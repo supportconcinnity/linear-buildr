@@ -73,7 +73,11 @@
                                 <div class="p_1">
                                     {{ currentSelectCurrency.name }}
                                 </div>
-                                <span class="p_2" @click="clickMaxAmount">
+                                <span
+                                    class="p_2"
+                                    :class="{ active: activeItemBtn == 0 }"
+                                    @click="clickMaxAmount"
+                                >
                                     MAX
                                 </span>
                             </div>
@@ -97,15 +101,7 @@
                                                 placeholder="0"
                                                 @on-focus="inputFocus(0)"
                                                 @on-blur="inputBlur(0)"
-                                                :formatter="
-                                                    value =>
-                                                        floor(
-                                                            toNonExponential(
-                                                                value
-                                                            ),
-                                                            2
-                                                        )
-                                                "
+                                                :formatter="formatterInput"
                                             />
                                         </div>
                                     </div>
@@ -151,7 +147,7 @@
 import _ from "lodash";
 import gasEditorSwap from "@/components/gasEditorSwap";
 import {
-    toNonExponential,
+    formatterInput,
     openBlockchainScan,
     setCursorRange,
     findParents,
@@ -180,10 +176,12 @@ export default {
     },
     data() {
         return {
-            toNonExponential,
+            formatterInput,
             setCursorRange,
             actionTabs: "m0", //子页(m0默认,m1等待)
             swapNumber: null,
+
+            activeItemBtn: -1,
 
             confirmTransactionStep: 0, //当前交易进度
             confirmTransactionStatus: false, //当前交易确认状态
@@ -636,7 +634,10 @@ export default {
                 console.log(`等待 [${swapWalletType}] 获取锁定hash`);
                 this.waitPendingProcess = true;
                 const processArray = await this.getPendingProcess(LnBridge);
-                console.log(`[${swapWalletType}] 获取锁定hash完成`, processArray);
+                console.log(
+                    `[${swapWalletType}] 获取锁定hash完成`,
+                    processArray
+                );
 
                 const { utils } = lnrJSConnector;
 
@@ -801,6 +802,7 @@ export default {
 
         //点击最大
         clickMaxAmount() {
+            this.activeItemBtn = 0;
             this.swapNumber = _.floor(this.currentSelectCurrency.avaliable, 2);
 
             var el = document.getElementById("transfer_number_input");
@@ -990,6 +992,10 @@ export default {
                                 color: #1a38f8;
 
                                 &:hover {
+                                    opacity: 1;
+                                }
+
+                                &.active {
                                     opacity: 1;
                                 }
                             }

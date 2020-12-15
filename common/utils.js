@@ -4,6 +4,7 @@ import {
     isEthereumNetwork,
     SUPPORTED_NETWORKS_MAP
 } from "@/assets/linearLibrary/linearTools/network";
+import { DECIMAL_PRECISION } from "@/assets/linearLibrary/linearTools/constants/process";
 
 /**
  * 时间格式化函数, 按照指定格式化字符串格式化传入时间
@@ -69,8 +70,33 @@ export const timeFormat = (time, fmStr) => {
     return fmStr;
 };
 
+//时间格式化
 Date.prototype.format = function(fmStr) {
     return timeFormat(this, fmStr);
+};
+
+//取小数位长度
+Number.prototype.countDecimals = function() {
+    if (Math.floor(this.valueOf()) === this.valueOf()) return 0;
+    return this.toString().split(".")[1].length || 0;
+};
+
+/**
+ * 输入内容格式化
+ * @param value 值
+ * @param decimal  保留小数位
+ */
+export const formatterInput = (value, decimal = DECIMAL_PRECISION) => {
+    //小数位大于2位才四舍五入,防止小数后第一位0无法输入的情况
+    if (value.countDecimals() > decimal) {
+        value = _.floor(value, decimal);
+    }
+
+    //大于最大安全整数
+    if (value > Number.MAX_SAFE_INTEGER) {
+        value = toNonExponential(value);
+    }
+    return value;
 };
 
 /**
@@ -184,7 +210,7 @@ export const addClass = ($el, $className) => {
  * 根据HASH打开网站
  * @param {String} hash  交易hash
  */
-export const openBlockchainScan = ($hash,blockChain) => {
+export const openBlockchainScan = ($hash, blockChain) => {
     try {
         let href;
         let walletNetworkId = $nuxt.$store.state?.walletNetworkId;

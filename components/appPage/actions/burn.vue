@@ -60,10 +60,7 @@
                                         @on-change="changeUnStake"
                                         @on-focus="inputFocus(0)"
                                         @on-blur="inputBlur(0)"
-                                        :formatter="
-                                            value =>
-                                                floor(value, DECIMAL_PRECISION)
-                                        "
+                                        :formatter="formatterInput"
                                     />
                                 </div>
                             </div>
@@ -115,10 +112,7 @@
                                         @on-focus="inputFocus(1)"
                                         @on-blur="inputBlur(1)"
                                         placeholder="0"
-                                        :formatter="
-                                            value =>
-                                                floor(value, DECIMAL_PRECISION)
-                                        "
+                                        :formatter="formatterInput"
                                     />
                                 </div>
                             </div>
@@ -167,7 +161,9 @@
                                         :placeholder="
                                             inputData.ratio == 0 ? '0' : 'N/A'
                                         "
-                                        :formatter="value => floor(value, 0)"
+                                        :formatter="
+                                            value => formatterInput(value, 0)
+                                        "
                                     />
                                 </div>
                             </div>
@@ -221,7 +217,7 @@ import {
     findParents,
     removeClass,
     addClass,
-    toNonExponential
+    formatterInput
 } from "@/common/utils";
 
 import {
@@ -267,7 +263,6 @@ export default {
     data() {
         return {
             DECIMAL_PRECISION,
-            toNonExponential, //科学计数法转正常显示 Conversion of scientific counting method to digital text
             formatEtherToNumber,
             floor: _.floor, //向下取整
             actionTabs: "m0", //子页(m0默认,m1等待,m2成功,m3错误) Subpages(m0 default, m1 waiting)
@@ -311,7 +306,9 @@ export default {
                 debt: 0,
                 targetRatio: 500,
                 currentRatio: 0
-            }
+            },
+
+            formatterInput
         };
     },
     components: {
@@ -513,7 +510,7 @@ export default {
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.BURN_UNSTAKING
                     ) {
-                       console.log("同时burn和unstake");
+                        console.log("同时burn和unstake");
                         await this.burnAndUnstake(this.actionDatas.amount);
                     } else {
                         if (
@@ -1176,82 +1173,38 @@ export default {
 
         //输入要解锁LINA数量
         changeUnStake(unstakedAmount) {
-            this.resetErrorsMsg();
-            this.resetInputData();
+            try {
+                this.resetErrorsMsg();
+                // this.resetInputData();
 
-            if (this.burnData.stakedBN.eq("0")) {
-                this.errors.unStakeMsg =
-                    "There is no LINA staked on the contract.";
-                return;
-            }
+                if (this.burnData.stakedBN.eq("0")) {
+                    this.errors.unStakeMsg =
+                        "There is no LINA staked on the contract.";
+                    return;
+                }
 
-            if (!unstakedAmount) {
-                this.errors.unStakeMsg =
-                    "You can't unstake the amount of LINA above.";
-                return;
-            } else {
-                this.errors.unStakeMsg = "";
-            }
+                if (!unstakedAmount) {
+                    this.errors.unStakeMsg =
+                        "You can't unstake the amount of LINA above.";
+                    return;
+                } else {
+                    this.errors.unStakeMsg = "";
+                }
 
-            //一个LINA都解锁不了
-            if (n2bn(unstakedAmount.toString()).gt(this.burnData.stakedBN)) {
-                this.inputData.unStake = unstakedAmount;
-                this.errors.unStakeMsg =
-                    "You can't unstake the amount of LINA above.";
-                return;
-            }
-
-            //一个LINA都解锁不了
-            if (
-                this.burnData.lUSDBN.eq("0") &&
-                this.burnData.currentRatioBN.lte(
-                    n2bn(this.burnData.targetRatio.toString())
-                )
-            ) {
-                this.inputData.unStake = unstakedAmount;
-                this.errors.unStakeMsg =
-                    "You don't have enough amount of ℓUSD.";
-                return;
-            }
-
-            //没有债务直接解锁
-            if (this.burnData.debtBN.eq("0")) {
-                this.inputData.unStake = unstakedAmount;
-                this.actionDatas.unStake = n2bn(unstakedAmount.toString());
-
-                return;
-            }
-
-            //当前价格的lock lina能生成多少lusd
-            let lockLINAToBuildLUSDBN = bnDiv(
-                bnMul(this.burnData.lockBN, this.burnData.LINA2USDBN),
-                n2bn((this.burnData.targetRatio / 100).toString())
-            );
-            //取回所有stake所需还的债务
-            let stakeDebt = bnSub(this.burnData.debtBN, lockLINAToBuildLUSDBN);
-
-            let allCanUnstakeAfterBurn = BigNumber.from("0");
-
-            //判断输入的值是否超过能解锁的最大LINA
-            //够lUSD还债，则可以解锁所有LINA
-            if (this.burnData.lUSDBN.gte(stakeDebt)) {
-                allCanUnstakeAfterBurn = this.burnData.stakedBN;
-            } else {
-                //lUSD不足还清所有债务，则计算销毁所有lUSD后的抵押率，大于目标则解锁大于部分，小于等于则不解锁LINA
-                let ratioAfterBurn = bnMul(
-                    bnDiv(
-                        bnMul(
-                            bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                            this.burnData.LINA2USDBN
-                        ),
-                        bnSub(this.burnData.debtBN, this.burnData.lUSDBN)
-                    ),
-                    n2bn("100")
-                );
-
-                //销毁所有lUSD后抵押率不超过目标抵押率，则不能解锁LINA
+                //一个LINA都解锁不了
                 if (
-                    ratioAfterBurn.lte(
+                    n2bn(unstakedAmount.toString()).gt(this.burnData.stakedBN)
+                ) {
+                    this.inputData.unStake = unstakedAmount;
+                    this.errors.unStakeMsg =
+                        "You can't unstake the amount of LINA above.";
+                    return;
+                }
+
+                //一个LINA都解锁不了
+                if (
+                    this.burnData.lUSDBN.eq("0") &&
+                    this.burnData.currentRatioBN.lte(
                         n2bn(this.burnData.targetRatio.toString())
                     )
                 ) {
@@ -1261,382 +1214,470 @@ export default {
                     return;
                 }
 
-                //用销毁所有lUSD后超额的抵押率算
-                allCanUnstakeAfterBurn = bnMul(
-                    bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                    bnDiv(
-                        bnSub(
-                            ratioAfterBurn,
-                            n2bn(this.burnData.targetRatio.toString())
-                        ),
-                        ratioAfterBurn
-                    )
-                );
-            }
+                //没有债务直接解锁
+                if (this.burnData.debtBN.eq("0")) {
+                    this.inputData.unStake = unstakedAmount;
+                    this.actionDatas.unStake = n2bn(unstakedAmount.toString());
 
-            if (n2bn(unstakedAmount.toString()).gt(allCanUnstakeAfterBurn)) {
-                this.inputData.unStake = unstakedAmount;
-                this.errors.unStakeMsg =
-                    "You don't have enough amount of ℓUSD.";
-                return;
-            }
+                    return;
+                }
 
-            let overStaked = bnMul(
-                bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                bnDiv(
-                    bnSub(
-                        this.burnData.currentRatioBN,
-                        n2bn(this.burnData.targetRatio.toString())
-                    ),
-                    this.burnData.currentRatioBN
-                )
-            );
-            if (overStaked.lt("0")) {
-                overStaked = BigNumber.from("0");
-            }
-
-            let needFixRatio = BigNumber.from("0");
-
-            //需要先修复抵押率
-            if (
-                this.burnData.currentRatioBN.lt(
-                    n2bn(this.burnData.targetRatio.toString())
-                )
-            ) {
-                let retainlUSD = bnDiv(
-                    bnMul(
-                        bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                        this.burnData.LINA2USDBN
-                    ),
+                //当前价格的lock lina能生成多少lusd
+                let lockLINAToBuildLUSDBN = bnDiv(
+                    bnMul(this.burnData.lockBN, this.burnData.LINA2USDBN),
                     n2bn((this.burnData.targetRatio / 100).toString())
                 );
-
-                needFixRatio = bnSub(this.burnData.debtBN, retainlUSD);
-            }
-
-            let needBurnAmount = BigNumber.from("0");
-
-            if (n2bn(unstakedAmount.toString()).gt(overStaked)) {
-                needBurnAmount = bnDiv(
-                    bnMul(
-                        bnSub(n2bn(unstakedAmount.toString()), overStaked),
-                        this.burnData.LINA2USDBN
-                    ),
-                    n2bn((this.burnData.targetRatio / 100).toString())
+                //取回所有stake所需还的债务
+                let stakeDebt = bnSub(
+                    this.burnData.debtBN,
+                    lockLINAToBuildLUSDBN
                 );
-            }
 
-            this.inputData.unStake = unstakedAmount;
-            this.actionDatas.unStake = n2bn(unstakedAmount.toString());
+                let allCanUnstakeAfterBurn = BigNumber.from("0");
 
-            this.inputData.amount = formatEtherToNumber(
-                bnAdd(needBurnAmount, needFixRatio)
-            );
-            this.actionDatas.amount = bnAdd(needBurnAmount, needFixRatio);
-
-            if (n2bn(unstakedAmount.toString()).eq(this.burnData.stakedBN)) {
-                this.inputData.ratio = null;
-                this.actionDatas.ratio = BigNumber.from("0");
-            } else {
-                let ratioAfterAction = bnMul(
-                    bnDiv(
-                        bnMul(
-                            bnSub(
+                //判断输入的值是否超过能解锁的最大LINA
+                //够lUSD还债，则可以解锁所有LINA
+                if (this.burnData.lUSDBN.gte(stakeDebt)) {
+                    allCanUnstakeAfterBurn = this.burnData.stakedBN;
+                } else {
+                    //lUSD不足还清所有债务，则计算销毁所有lUSD后的抵押率，大于目标则解锁大于部分，小于等于则不解锁LINA
+                    let ratioAfterBurn = bnMul(
+                        bnDiv(
+                            bnMul(
                                 bnAdd(
                                     this.burnData.stakedBN,
                                     this.burnData.lockBN
                                 ),
-                                this.actionDatas.unStake
+                                this.burnData.LINA2USDBN
                             ),
-                            this.burnData.LINA2USDBN
+                            bnSub(this.burnData.debtBN, this.burnData.lUSDBN)
                         ),
-                        bnSub(this.burnData.debtBN, this.actionDatas.amount)
-                    ),
-                    n2bn("100")
-                );
+                        n2bn("100")
+                    );
 
-                //修复除不尽的显示错误
-                if (ratioAfterAction.lt(n2bn("500"))) {
-                    ratioAfterAction = n2bn("500");
+                    //销毁所有lUSD后抵押率不超过目标抵押率，则不能解锁LINA
+                    if (
+                        ratioAfterBurn.lte(
+                            n2bn(this.burnData.targetRatio.toString())
+                        )
+                    ) {
+                        this.inputData.unStake = unstakedAmount;
+                        this.errors.unStakeMsg =
+                            "You don't have enough amount of ℓUSD.";
+                        return;
+                    }
+
+                    //用销毁所有lUSD后超额的抵押率算
+                    allCanUnstakeAfterBurn = bnMul(
+                        bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                        bnDiv(
+                            bnSub(
+                                ratioAfterBurn,
+                                n2bn(this.burnData.targetRatio.toString())
+                            ),
+                            ratioAfterBurn
+                        )
+                    );
                 }
 
-                this.inputData.ratio = formatEtherToNumber(ratioAfterAction);
-                this.actionDatas.ratio = ratioAfterAction;
+                if (
+                    n2bn(unstakedAmount.toString()).gt(allCanUnstakeAfterBurn)
+                ) {
+                    this.inputData.unStake = unstakedAmount;
+                    this.errors.unStakeMsg =
+                        "You don't have enough amount of ℓUSD.";
+                    return;
+                }
 
-                //this.inputData.ratio = this.burnData.targetRatio;
-                //this.actionDatas.ratio = n2bn(this.burnData.targetRatio.toString());
+                let overStaked = bnMul(
+                    bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                    bnDiv(
+                        bnSub(
+                            this.burnData.currentRatioBN,
+                            n2bn(this.burnData.targetRatio.toString())
+                        ),
+                        this.burnData.currentRatioBN
+                    )
+                );
+                if (overStaked.lt("0")) {
+                    overStaked = BigNumber.from("0");
+                }
+
+                let needFixRatio = BigNumber.from("0");
+
+                //需要先修复抵押率
+                if (
+                    this.burnData.currentRatioBN.lt(
+                        n2bn(this.burnData.targetRatio.toString())
+                    )
+                ) {
+                    let retainlUSD = bnDiv(
+                        bnMul(
+                            bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                            this.burnData.LINA2USDBN
+                        ),
+                        n2bn((this.burnData.targetRatio / 100).toString())
+                    );
+
+                    needFixRatio = bnSub(this.burnData.debtBN, retainlUSD);
+                }
+
+                let needBurnAmount = BigNumber.from("0");
+
+                if (n2bn(unstakedAmount.toString()).gt(overStaked)) {
+                    needBurnAmount = bnDiv(
+                        bnMul(
+                            bnSub(n2bn(unstakedAmount.toString()), overStaked),
+                            this.burnData.LINA2USDBN
+                        ),
+                        n2bn((this.burnData.targetRatio / 100).toString())
+                    );
+                }
+
+                this.inputData.unStake = unstakedAmount;
+                this.actionDatas.unStake = n2bn(unstakedAmount.toString());
+
+                this.inputData.amount = formatEtherToNumber(
+                    bnAdd(needBurnAmount, needFixRatio)
+                );
+                this.actionDatas.amount = bnAdd(needBurnAmount, needFixRatio);
+
+                if (
+                    n2bn(unstakedAmount.toString()).eq(this.burnData.stakedBN)
+                ) {
+                    this.inputData.ratio = null;
+                    this.actionDatas.ratio = BigNumber.from("0");
+                } else {
+                    let ratioAfterAction = bnMul(
+                        bnDiv(
+                            bnMul(
+                                bnSub(
+                                    bnAdd(
+                                        this.burnData.stakedBN,
+                                        this.burnData.lockBN
+                                    ),
+                                    this.actionDatas.unStake
+                                ),
+                                this.burnData.LINA2USDBN
+                            ),
+                            bnSub(this.burnData.debtBN, this.actionDatas.amount)
+                        ),
+                        n2bn("100")
+                    );
+
+                    //修复除不尽的显示错误
+                    if (ratioAfterAction.lt(n2bn("500"))) {
+                        ratioAfterAction = n2bn("500");
+                    }
+
+                    this.inputData.ratio = formatEtherToNumber(
+                        ratioAfterAction
+                    );
+                    this.actionDatas.ratio = ratioAfterAction;
+
+                    //this.inputData.ratio = this.burnData.targetRatio;
+                    //this.actionDatas.ratio = n2bn(this.burnData.targetRatio.toString());
+                }
+            } catch (error) {
+                this.errors.unStakeMsg = "Invalid number";
             }
         },
 
         //输入要销毁lUSD数量
         changeAmount(burnAmount) {
-            this.resetErrorsMsg();
-            this.resetInputData();
+            try {
+                this.resetErrorsMsg();
+                // this.resetInputData();
 
-            if (!burnAmount || this.burnData.lUSDBN.eq("0")) {
-                this.errors.amountMsg = "You can't burn the amount of ℓUSD.";
-                return;
-            }
+                if (!burnAmount || this.burnData.lUSDBN.eq("0")) {
+                    this.errors.amountMsg =
+                        "You can't burn the amount of ℓUSD.";
+                    return;
+                }
 
-            if (this.burnData.debtBN.eq("0")) {
-                this.errors.amountMsg = "There is no debt.";
-                return;
-            }
+                if (this.burnData.debtBN.eq("0")) {
+                    this.errors.amountMsg = "There is no debt.";
+                    return;
+                }
 
-            if (n2bn(burnAmount.toString()).gt(this.burnData.debtBN)) {
-                this.inputData.amount = burnAmount;
-                this.errors.amountMsg =
-                    "The amount of ℓUSD is larger than your debt.";
-                this.inputData.ratio = null;
-                return;
-            }
+                if (n2bn(burnAmount.toString()).gt(this.burnData.debtBN)) {
+                    this.inputData.amount = burnAmount;
+                    this.errors.amountMsg =
+                        "The amount of ℓUSD is larger than your debt.";
+                    // this.inputData.ratio = null;
+                    return;
+                }
 
-            if (n2bn(burnAmount.toString()).gt(this.burnData.lUSDBN)) {
-                this.inputData.amount = burnAmount;
-                this.errors.amountMsg = "You don't have enough amount of ℓUSD.";
-                this.inputData.ratio = null;
-                return;
-            }
+                if (n2bn(burnAmount.toString()).gt(this.burnData.lUSDBN)) {
+                    this.inputData.amount = burnAmount;
+                    this.errors.amountMsg =
+                        "You don't have enough amount of ℓUSD.";
+                    this.inputData.ratio = null;
+                    return;
+                }
 
-            let ratioAfterBurnInputAmount = bnMul(
-                bnDiv(
-                    bnMul(
-                        bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                        this.burnData.LINA2USDBN
-                    ),
-                    bnSub(this.burnData.debtBN, n2bn(burnAmount.toString()))
-                ),
-                n2bn("100")
-            );
-
-            ////用输入的lUSD销毁后超额的抵押率算，不超过目标抵押率，则不能解锁LINA
-            if (
-                ratioAfterBurnInputAmount.lte(
-                    n2bn(this.burnData.targetRatio.toString())
-                )
-            ) {
-                this.inputData.unStake = 0;
-                this.inputData.amount = burnAmount;
-                this.inputData.ratio = formatEtherToNumber(
-                    ratioAfterBurnInputAmount
-                );
-
-                this.actionDatas.unStake = BigNumber.from("0");
-                this.actionDatas.amount = BigNumber.from(burnAmount.toString());
-                this.actionDatas.ratio = ratioAfterBurnInputAmount;
-
-                return;
-            }
-
-            //用输入的lUSD销毁后超额的抵押率算
-            let allCanUnstakedLINAAfterBurn = bnMul(
-                bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                bnDiv(
-                    bnSub(
-                        ratioAfterBurnInputAmount,
-                        n2bn(this.burnData.targetRatio.toString())
-                    ),
-                    ratioAfterBurnInputAmount
-                )
-            );
-
-            if (allCanUnstakedLINAAfterBurn.gt(this.burnData.stakedBN)) {
-                allCanUnstakedLINAAfterBurn = this.burnData.stakedBN;
-            }
-
-            // let pratioAfterBurnAndStake = bnMul(
-            //     bnDiv(
-            //         bnMul(
-            //             bnSub(
-            //                 bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-            //                 allCanUnstakedLINAAfterBurn
-            //             ),
-            //             this.burnData.LINA2USDBN
-            //         ),
-            //         bnSub(this.burnData.debtBN, n2bn(burnAmount.toString()))
-            //     ),
-            //     n2bn("100")
-            // );
-
-            this.inputData.unStake = formatEtherToNumber(
-                allCanUnstakedLINAAfterBurn
-            );
-            this.actionDatas.unStake = allCanUnstakedLINAAfterBurn;
-
-            this.inputData.amount = burnAmount;
-            this.actionDatas.amount = n2bn(burnAmount.toString());
-
-            //this.inputData.ratio = formatEtherToNumber(pratioAfterBurnAndStake);
-            //this.actionDatas.ratio = pratioAfterBurnAndStake;
-            this.inputData.ratio = this.burnData.targetRatio;
-            this.actionDatas.ratio = n2bn(this.burnData.targetRatio.toString());
-        },
-
-        //输入想调成的抵押率
-        changeRatio(ratioAmount) {
-            this.resetErrorsMsg();
-            this.resetInputData();
-
-            if (this.burnData.debtBN.eq("0")) {
-                this.errors.ratioMsg = "There is no debt.";
-                return;
-            }
-
-            if (ratioAmount == 0) {
-                this.inputData.unStake = 0;
-                this.inputData.amount = 0;
-                this.inputData.ratio = ratioAmount;
-                this.errors.ratioMsg =
-                    "The P-Ratio cant be below target ratio.";
-                return;
-            } else if (ratioAmount == this.burnData.currentRatio) {
-                //ratioAmount 等于 targetRatio，不需要操作
-                this.inputData.unStake = 0;
-                this.inputData.amount = 0;
-                this.inputData.ratio = ratioAmount;
-                return;
-            } else if (
-                (this.burnData.targetRatio > this.burnData.currentRatio &&
-                    ratioAmount < this.burnData.currentRatio) ||
-                (this.burnData.targetRatio < this.burnData.currentRatio &&
-                    ratioAmount < this.burnData.targetRatio)
-            ) {
-                //ratioAmount 不允许小于 targetRatio 与 currentRatio 之间较小那个
-                this.inputData.unStake = 0;
-                this.inputData.amount = 0;
-                this.inputData.ratio = ratioAmount;
-                this.errors.ratioMsg = "The P-Ratio is too low.";
-                return;
-            }
-
-            let maxRatioAfterBurnMax = BigNumber.from("0");
-
-            if (this.burnData.lUSDBN.lt(this.burnData.debtBN)) {
-                maxRatioAfterBurnMax = bnMul(
+                let ratioAfterBurnInputAmount = bnMul(
                     bnDiv(
                         bnMul(
                             bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
                             this.burnData.LINA2USDBN
                         ),
-                        bnSub(this.burnData.debtBN, this.burnData.lUSDBN)
+                        bnSub(this.burnData.debtBN, n2bn(burnAmount.toString()))
                     ),
                     n2bn("100")
                 );
-            }
 
-            if (
-                !maxRatioAfterBurnMax.eq("0") &&
-                n2bn(ratioAmount.toString()).gt(maxRatioAfterBurnMax)
-            ) {
-                this.errors.ratioMsg =
-                    "The P-Ratio can't be larger than your staking amount of LINA.";
-                return;
-            }
-
-            if (ratioAmount > this.burnData.currentRatio) {
-                //上调抵押率，计算lUSD，LINA为0，调整抵押率最大为无限大，也就是销毁所有lUSD
-                //计算达成 ratioAmount 时，抵押的LINA价值多少lUSD
-                let retainlUSD = bnDiv(
-                    bnMul(
-                        bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                        this.burnData.LINA2USDBN
-                    ),
-                    n2bn((ratioAmount / 100).toString())
-                );
-                let burnlUSD = bnSub(this.burnData.debtBN, retainlUSD); //债务 - 抵押的LINA价值多少lUSD = 需要销毁的lUSD
-
-                this.inputData.unStake = 0;
-                this.actionDatas.unStake = BigNumber.from("0");
-
-                this.inputData.amount = formatEtherToNumber(burnlUSD);
-                this.actionDatas.amount = burnlUSD;
-
-                this.inputData.ratio = ratioAmount;
-                this.actionDatas.ratio = BigNumber.from(ratioAmount.toString());
-            } else if (
-                ratioAmount < this.burnData.currentRatio &&
-                ratioAmount >= this.burnData.targetRatio
-            ) {
+                ////用输入的lUSD销毁后超额的抵押率算，不超过目标抵押率，则不能解锁LINA
                 if (
-                    this.burnData.lockBN.gt("0") &&
-                    this.burnData.stakedBN.eq("0")
+                    ratioAfterBurnInputAmount.lte(
+                        n2bn(this.burnData.targetRatio.toString())
+                    )
                 ) {
-                    this.errors.ratioMsg =
-                        "Please reduce the P-Ratio through build.";
+                    this.inputData.unStake = 0;
+                    this.inputData.amount = burnAmount;
+                    this.inputData.ratio = formatEtherToNumber(
+                        ratioAfterBurnInputAmount
+                    );
+
+                    this.actionDatas.unStake = BigNumber.from("0");
+                    this.actionDatas.amount = BigNumber.from(
+                        burnAmount.toString()
+                    );
+                    this.actionDatas.ratio = ratioAfterBurnInputAmount;
+
                     return;
                 }
 
-                //有lock lina时，在burn页面，抵押率最低只能调整到取回超额的stake lina
-                if (
-                    this.burnData.lockBN.gt("0") &&
-                    this.burnData.stakedBN.gt("0")
+                //用输入的lUSD销毁后超额的抵押率算
+                let allCanUnstakedLINAAfterBurn = bnMul(
+                    bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                    bnDiv(
+                        bnSub(
+                            ratioAfterBurnInputAmount,
+                            n2bn(this.burnData.targetRatio.toString())
+                        ),
+                        ratioAfterBurnInputAmount
+                    )
+                );
+
+                if (allCanUnstakedLINAAfterBurn.gt(this.burnData.stakedBN)) {
+                    allCanUnstakedLINAAfterBurn = this.burnData.stakedBN;
+                }
+
+                // let pratioAfterBurnAndStake = bnMul(
+                //     bnDiv(
+                //         bnMul(
+                //             bnSub(
+                //                 bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                //                 allCanUnstakedLINAAfterBurn
+                //             ),
+                //             this.burnData.LINA2USDBN
+                //         ),
+                //         bnSub(this.burnData.debtBN, n2bn(burnAmount.toString()))
+                //     ),
+                //     n2bn("100")
+                // );
+
+                this.inputData.unStake = formatEtherToNumber(
+                    allCanUnstakedLINAAfterBurn
+                );
+                this.actionDatas.unStake = allCanUnstakedLINAAfterBurn;
+
+                this.inputData.amount = burnAmount;
+                this.actionDatas.amount = n2bn(burnAmount.toString());
+
+                //this.inputData.ratio = formatEtherToNumber(pratioAfterBurnAndStake);
+                //this.actionDatas.ratio = pratioAfterBurnAndStake;
+                this.inputData.ratio = this.burnData.targetRatio;
+                this.actionDatas.ratio = n2bn(
+                    this.burnData.targetRatio.toString()
+                );
+            } catch (error) {
+                this.errors.amountMsg = "Invalid number";
+            }
+        },
+
+        //输入想调成的抵押率
+        changeRatio(ratioAmount) {
+            try {
+                //防止输入小数位引起的报错
+                if (!ratioAmount || ratioAmount.countDecimals() > 0) {
+                    return;
+                }
+
+                this.resetErrorsMsg();
+                // this.resetInputData();
+
+                if (this.burnData.debtBN.eq("0")) {
+                    this.errors.ratioMsg = "There is no debt.";
+                    return;
+                }
+
+                if (ratioAmount == 0) {
+                    // this.inputData.unStake = 0;
+                    // this.inputData.amount = 0;
+                    this.inputData.ratio = ratioAmount;
+                    this.errors.ratioMsg =
+                        "The P-Ratio cant be below target ratio.";
+                    return;
+                } else if (ratioAmount == this.burnData.currentRatio) {
+                    //ratioAmount 等于 targetRatio，不需要操作
+                    // this.inputData.unStake = 0;
+                    // this.inputData.amount = 0;
+                    this.inputData.ratio = ratioAmount;
+                    return;
+                } else if (
+                    (this.burnData.targetRatio > this.burnData.currentRatio &&
+                        ratioAmount < this.burnData.currentRatio) ||
+                    (this.burnData.targetRatio < this.burnData.currentRatio &&
+                        ratioAmount < this.burnData.targetRatio)
                 ) {
-                    let overStaked = bnMul(
-                        bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                    //ratioAmount 不允许小于 targetRatio 与 currentRatio 之间较小那个
+                    this.inputData.unStake = 0;
+                    this.inputData.amount = 0;
+                    this.inputData.ratio = ratioAmount;
+                    this.errors.ratioMsg = "The P-Ratio is too low.";
+                    return;
+                }
+
+                let maxRatioAfterBurnMax = BigNumber.from("0");
+
+                if (this.burnData.lUSDBN.lt(this.burnData.debtBN)) {
+                    maxRatioAfterBurnMax = bnMul(
                         bnDiv(
-                            bnSub(
-                                this.burnData.currentRatioBN,
-                                n2bn(this.burnData.targetRatio.toString())
-                            ),
-                            this.burnData.currentRatioBN
-                        )
-                    );
-
-                    if (overStaked.gt(this.burnData.stakedBN)) {
-                        overStaked = this.burnData.stakedBN;
-                    }
-
-                    let pratioMinAfterUnstake = bnDiv(
-                        bnMul(
-                            bnSub(
+                            bnMul(
                                 bnAdd(
                                     this.burnData.stakedBN,
                                     this.burnData.lockBN
                                 ),
-                                overStaked
+                                this.burnData.LINA2USDBN
                             ),
-                            this.burnData.LINA2USDBN
+                            bnSub(this.burnData.debtBN, this.burnData.lUSDBN)
                         ),
-                        this.burnData.currentRatioBN
+                        n2bn("100")
                     );
-
-                    if (
-                        utils
-                            .parseEther(ratioAmount.toString())
-                            .lt(pratioMinAfterUnstake)
-                    ) {
-                        this.inputData.unStake = 0;
-                        this.inputData.amount = 0;
-                        this.inputData.ratio = ratioAmount;
-                        this.errors.ratioMsg = "Can not set this P-Ratio.";
-                        return;
-                    }
                 }
 
-                //下调抵押率，lUSD为0，计算LINA
-                //计算达成 ratioAmount 时，需要抵押多少LINA
-                let retainStake = bnDiv(
-                    bnMul(
-                        n2bn((ratioAmount / 100).toString()),
-                        this.burnData.debtBN
-                    ),
-                    this.burnData.LINA2USDBN
-                );
+                if (
+                    !maxRatioAfterBurnMax.eq("0") &&
+                    n2bn(ratioAmount.toString()).gt(maxRatioAfterBurnMax)
+                ) {
+                    this.errors.ratioMsg =
+                        "The P-Ratio can't be larger than your staking amount of LINA.";
+                    return;
+                }
 
-                //已抵押的LINA - 需要抵押多少LINA = 达成 ratioAmount 需要解锁的LINA
-                let unStake = bnSub(
-                    bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
-                    retainStake
-                );
+                if (ratioAmount > this.burnData.currentRatio) {
+                    //上调抵押率，计算lUSD，LINA为0，调整抵押率最大为无限大，也就是销毁所有lUSD
+                    //计算达成 ratioAmount 时，抵押的LINA价值多少lUSD
+                    let retainlUSD = bnDiv(
+                        bnMul(
+                            bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                            this.burnData.LINA2USDBN
+                        ),
+                        n2bn((ratioAmount / 100).toString())
+                    );
+                    let burnlUSD = bnSub(this.burnData.debtBN, retainlUSD); //债务 - 抵押的LINA价值多少lUSD = 需要销毁的lUSD
 
-                this.inputData.unStake = formatEtherToNumber(unStake);
-                this.actionDatas.unStake = unStake;
+                    this.inputData.unStake = 0;
+                    this.actionDatas.unStake = BigNumber.from("0");
 
-                this.inputData.amount = 0;
-                this.actionDatas.amount = BigNumber.from("0");
+                    this.inputData.amount = formatEtherToNumber(burnlUSD);
+                    this.actionDatas.amount = burnlUSD;
 
-                this.inputData.ratio = ratioAmount;
-                this.actionDatas.ratio = BigNumber.from(ratioAmount.toString());
+                    this.inputData.ratio = ratioAmount;
+                    this.actionDatas.ratio = BigNumber.from(
+                        ratioAmount.toString()
+                    );
+                } else if (
+                    ratioAmount < this.burnData.currentRatio &&
+                    ratioAmount >= this.burnData.targetRatio
+                ) {
+                    if (
+                        this.burnData.lockBN.gt("0") &&
+                        this.burnData.stakedBN.eq("0")
+                    ) {
+                        this.errors.ratioMsg =
+                            "Please reduce the P-Ratio through build.";
+                        return;
+                    }
+
+                    //有lock lina时，在burn页面，抵押率最低只能调整到取回超额的stake lina
+                    if (
+                        this.burnData.lockBN.gt("0") &&
+                        this.burnData.stakedBN.gt("0")
+                    ) {
+                        let overStaked = bnMul(
+                            bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                            bnDiv(
+                                bnSub(
+                                    this.burnData.currentRatioBN,
+                                    n2bn(this.burnData.targetRatio.toString())
+                                ),
+                                this.burnData.currentRatioBN
+                            )
+                        );
+
+                        if (overStaked.gt(this.burnData.stakedBN)) {
+                            overStaked = this.burnData.stakedBN;
+                        }
+
+                        let pratioMinAfterUnstake = bnDiv(
+                            bnMul(
+                                bnSub(
+                                    bnAdd(
+                                        this.burnData.stakedBN,
+                                        this.burnData.lockBN
+                                    ),
+                                    overStaked
+                                ),
+                                this.burnData.LINA2USDBN
+                            ),
+                            this.burnData.currentRatioBN
+                        );
+
+                        if (
+                            utils
+                                .parseEther(ratioAmount.toString())
+                                .lt(pratioMinAfterUnstake)
+                        ) {
+                            this.inputData.unStake = 0;
+                            this.inputData.amount = 0;
+                            this.inputData.ratio = ratioAmount;
+                            this.errors.ratioMsg = "Can not set this P-Ratio.";
+                            return;
+                        }
+                    }
+
+                    //下调抵押率，lUSD为0，计算LINA
+                    //计算达成 ratioAmount 时，需要抵押多少LINA
+                    let retainStake = bnDiv(
+                        bnMul(
+                            n2bn((ratioAmount / 100).toString()),
+                            this.burnData.debtBN
+                        ),
+                        this.burnData.LINA2USDBN
+                    );
+
+                    //已抵押的LINA - 需要抵押多少LINA = 达成 ratioAmount 需要解锁的LINA
+                    let unStake = bnSub(
+                        bnAdd(this.burnData.stakedBN, this.burnData.lockBN),
+                        retainStake
+                    );
+
+                    this.inputData.unStake = formatEtherToNumber(unStake);
+                    this.actionDatas.unStake = unStake;
+
+                    this.inputData.amount = 0;
+                    this.actionDatas.amount = BigNumber.from("0");
+
+                    this.inputData.ratio = ratioAmount;
+                    this.actionDatas.ratio = BigNumber.from(
+                        ratioAmount.toString()
+                    );
+                }
+            } catch (error) {
+                this.errors.ratioMsg = "Invalid number";
             }
         },
 
