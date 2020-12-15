@@ -162,7 +162,7 @@ export default {
                     slot: "balance"
                 },
                 {
-                    title: "Current Debt",
+                    title: "Value",
                     key: "valueUSD",
                     slot: "valueUSD"
                 }
@@ -461,7 +461,7 @@ export default {
                             tr {
                                 th {
                                     &:last-of-type {
-                                        visibility: hidden;
+                                        //visibility: hidden;
                                     }
                                 }
                             }
