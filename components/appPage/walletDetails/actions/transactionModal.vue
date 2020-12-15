@@ -210,7 +210,7 @@
                     }"
                     @click="clearFilters"
                 >
-                    {{ filterNum > 1 ? "CLEAR ALL" : "CLEAR" }}
+                    {{ "CLEAR" }}
                 </div>
             </div>
 
@@ -750,7 +750,7 @@ body {
 
                             &.hasFilter {
                                 .ivu-select-selection {
-                                    border: 1px solid #1b05a1;
+                                    border: 1px solid #1a38f8;
 
                                     span {
                                         color: #5a575c;
@@ -803,7 +803,7 @@ body {
 
                             &.hasFilter {
                                 input {
-                                    border: 1px solid #1b05a1;
+                                    border: 1px solid #1a38f8;
                                     color: #5a575c;
                                 }
                             }
@@ -864,7 +864,7 @@ body {
                                 .ivu-dropdown-rel {
                                     .typeBtn,
                                     .typeBtnSelected {
-                                        border: 1px solid #1b05a1;
+                                        border: 1px solid #1a38f8;
                                         color: #5a575c;
                                     }
                                 }
@@ -910,7 +910,7 @@ body {
                                 .ivu-dropdown-rel {
                                     .amountBtn,
                                     .amountBtnSelected {
-                                        border: 1px solid #1b05a1;
+                                        border: 1px solid #1a38f8;
                                         color: #5a575c;
                                     }
                                 }
@@ -920,9 +920,9 @@ body {
 
                     .clearFiltersBtn {
                         width: 166px;
-                        color: #1b05a1;
+                        color: #1a38f8;
                         opacity: 0.2;
-                        font-family: Gilroy;
+                        font-family: Gilroy-Bold;
                         font-size: 12px;
                         font-weight: 700;
                         line-height: 32px;
@@ -963,7 +963,7 @@ body {
                             font-weight: 400;
 
                             .viewInBrowser {
-                                color: #1b05a1;
+                                color: #1a38f8;
                                 font-family: Gilroy;
                                 font-size: 12px;
                                 font-weight: 700;
@@ -1048,7 +1048,7 @@ body {
                                     text-align: center;
 
                                     a {
-                                        color: #1b05a1;
+                                        color: #1a38f8;
                                         font-family: Gilroy-Bold;
                                         font-weight: bold;
                                         padding-right: 16px;
