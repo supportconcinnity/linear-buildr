@@ -150,6 +150,9 @@ export default {
     data() {
         return {
             actionTabs: "m0", //子页(m0默认,m1等待,m2成功,m3错误)
+            confirmTransactionStep: -1, //当前交易进度
+            waitProcessArray: [], //等待交易进度组
+
             closeIn: "", //多少天后可领取奖励
             feesAreClaimable: false, //是否可以领取奖励
             tradingRewards: 0, //交易所手续费奖励
@@ -190,8 +193,13 @@ export default {
             if (!this.claimDisabled) {
                 this.processing = true;
 
+                this.waitProcessArray = [];
+                this.confirmTransactionStep = 0;
+
                 //获取gas评估
                 const gasLimit = await this.getGasEstimate();
+
+                this.waitProcessArray.push(BUILD_PROCESS_SETUP.CLAIM);
 
                 const transactionSettings = {
                     gasPrice: this.$store.state?.gasDetails?.price,
@@ -227,7 +235,9 @@ export default {
                         this.$pub.publish("notificationQueue", {
                             hash: this.confirmTransactionHash,
                             type: BUILD_PROCESS_SETUP.CLAIM,
-                            value: "",
+                            value: `Claiming ${this.confirmTransactionStep + 1} / ${
+                                this.waitProcessArray.length
+                            }`
                         });
 
                         //等待结果返回
@@ -241,6 +251,8 @@ export default {
                         //成功则更新数据
                         status &&
                             _.delay(async () => await storeDetailsData(), 5000);
+
+                        this.confirmTransactionStep += 1;
                     }
                 } catch (e) {
                     console.log(e);
@@ -371,6 +383,8 @@ export default {
         setDefaultTab() {
             this.processing = false;
             this.actionTabs = "m0";
+            this.confirmTransactionStep = 0;
+            this.waitProcessArray = [];
 
             setTimeout(this.useGetFeeData(this.walletAddress), 5000);
         },

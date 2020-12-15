@@ -71,7 +71,7 @@
                             <span>Ethereum</span>
                         </Option>
                         <Option value="binance" label="Binance">
-                            <img src="@/static/bnb.svg" alt="" />
+                            <img src="@/static/logo-wallet-bsc.svg" alt="" />
                             <span> Binance</span>
                         </Option>
                     </Select>
@@ -265,7 +265,7 @@
                     </div>
                 </div>
                 <div v-else class="notData">
-                    Not Data
+                    No Data
                 </div>
 
                 <Spin size="large" fix v-if="gettingData"></Spin>
