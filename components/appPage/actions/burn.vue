@@ -181,6 +181,17 @@
                     </div>
 
                     <div class="actionBodyMobile">
+                        <div
+                            class="errMsg"
+                            :style="{
+                                display: errors.unStakeMsg || errors.ratioMsg || errors.amountMsg ? 'flex' : 'none'
+                            }"
+                        >
+                            <img src="@/static/error.svg" alt="">
+                            {{ errors.unStakeMsg }}
+                            {{ errors.ratioMsg }}
+                            {{ errors.amountMsg }}
+                        </div>
                         <div class="actionRate">
                             1 LINA = {{ floor(burnData.LINA2USD, 4) }} ℓUSD
                         </div>
@@ -232,15 +243,6 @@
                                         Max
                                     </div>
                                 </div>
-
-                                <div
-                                    class="itemErrMsg"
-                                    :style="{
-                                        opacity: errors.unStakeMsg ? '1' : '0'
-                                    }"
-                                >
-                                    {{ errors.unStakeMsg }}
-                                </div>
                             </div>
 
                             <div
@@ -280,15 +282,6 @@
                                         Max
                                     </div>
                                 </div>
-
-                                <div
-                                    class="itemErrMsg"
-                                    :style="{
-                                        opacity: errors.amountMsg ? '1' : '0'
-                                    }"
-                                >
-                                    {{ errors.amountMsg }}
-                                </div>
                             </div>
                         </div>
 
@@ -325,15 +318,6 @@
                                 >
                                     Target ratio
                                 </div>
-                            </div>
-
-                            <div
-                                class="itemErrMsg"
-                                :style="{
-                                    opacity: errors.ratioMsg ? '1' : '0'
-                                }"
-                            >
-                                {{ errors.ratioMsg }}
                             </div>
                         </div>
 
@@ -2222,6 +2206,22 @@ export default {
                             flex-direction: column;
                             align-items: center;
 
+                            .errMsg {
+                                align-items: center;
+                                height: 14.6vw;
+                                width: 74.4vw;
+                                padding: 12px 16px;
+                                margin-top: 24px;
+                                border-radius: 8px;
+                                background-color: rgba(223,67,76,.05);
+                                font-size: 12px;
+                                color: #df434c;
+
+                                img {
+                                    margin-right: 16px;
+                                }
+                            }
+
                             .actionRate {
                                 width: 74.4vw;
                                 margin: 32px 0 28px;
@@ -2253,6 +2253,11 @@ export default {
                                     border-radius: 8px;
                                     border: solid 1px #deddde;
                                     transition: $animete-time linear;
+
+                                    &.active {
+                                        border-color: white;
+                                        box-shadow: 0px 2px 12px #deddde;
+                                    }
 
                                     .inputBox {
                                         height: 50.1vw;
@@ -2323,21 +2328,6 @@ export default {
                                         }
                                     }
 
-                                    .itemErrMsg {
-                                        transition: opacity $animete-time linear;
-                                        position: absolute;
-                                        left: 0;
-                                        bottom: 0px;
-                                        height: unset;
-                                        color: #df434c;
-                                        font-family: Gilroy;
-                                        font-size: 10px;
-                                        font-weight: unset;
-                                        line-height: 16px;
-                                        text-transform: uppercase;
-                                        letter-spacing: 1.25px;
-                                    }
-
                                     &.error {
                                         border-color: #df434c;
                                     }
@@ -2349,6 +2339,11 @@ export default {
                                 border-radius: 8px;
                                 border: solid 1px #deddde;
                                 transition: $animete-time linear;
+
+                                &.active {
+                                    border-color: white;
+                                    box-shadow: 0px 2px 12px #deddde;
+                                }
 
                                 .ratioInputBox {
                                     width: 74.4vw;
@@ -2410,6 +2405,10 @@ export default {
                                         font-weight: bold;
                                         color: #1a38f8;
                                     }
+                                }
+
+                                &.error {
+                                    border-color: #df434c;
                                 }
                             }
                         }

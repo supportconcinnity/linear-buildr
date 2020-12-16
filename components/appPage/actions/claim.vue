@@ -626,4 +626,47 @@ export default {
         }
     }
 }
+
+@media only screen and (max-width: $max-phone-width) {
+    #claim {
+        .actionTabs {
+            .ivu-tabs-bar {
+                display: none;
+            }
+
+            .ivu-tabs-content {
+                background: #fff;
+
+                .ivu-tabs-tabpane {
+                    width: 786px;
+                    height: 840px !important;
+
+                    .claimBox,
+                    .waitingBox,
+                    .successBox,
+                    .failBox {
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                    .claimBox {
+                        position: relative;
+
+                        .actionBody {
+                            padding: 64px 193px 0;
+
+                            .actionTitle {
+                                display: none;
+                            }
+
+                            .actionDesc {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 </style>
