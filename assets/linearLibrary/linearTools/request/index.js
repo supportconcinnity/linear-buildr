@@ -2,10 +2,15 @@ import _ from "lodash";
 import lnrJSConnector from "../lnrJSConnector";
 import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/exchangeData";
 
-import { CRYPTO_CURRENCIES } from "../constants/currency";
+import {
+    CRYPTO_CURRENCIES,
+    CRYPTO_CURRENCIES_API
+} from "../constants/currency";
 import { formatNumber, formatEtherToNumber } from "../format";
 import { isBinanceNetwork, isEthereumNetwork, WALLET_STATUS } from "../network";
 import config from "@/config/common";
+import api from "@/api";
+import { n2bn, bn2n } from "@/common/bnCalc";
 
 let loopId = 0;
 
@@ -32,14 +37,11 @@ export const getLiquids = async wallet => {
             if (addressList[key] == assetAddress[i]) {
                 let asset = lnrJSConnector.lnrJS[key];
 
+                //上exchange时使用合约内价格
                 let [balance, price] = await Promise.all([
                     asset.balanceOf(wallet),
                     exchangeData.exchange.pricesLast({ source: key })
                 ]);
-
-                //let balance = await asset.balanceOf(wallet);
-                //let price = await exchangeData.exchange.pricesLast({source: key});
-
                 liquids += formatEtherToNumber(balance) * price[0].currentPrice;
             }
         }
@@ -83,6 +85,46 @@ export const getPriceRates = async currency => {
         }
     }
 
+    return rates;
+};
+
+/**
+ * 从coingecko获取兑换率
+ * @param {String} currency 货币名称, 参考CRYPTO_CURRENCIES_API
+ */
+export const getPriceRatesFromApi = async currency => {
+    const rates = {};
+    if (_.isString(currency)) {
+        if (currency == "lUSD") {
+            rates["lUSD"] = n2bn("1");
+        } else {
+            const id = CRYPTO_CURRENCIES_API[currency]?.id;
+            const results = await api.getTokenPrice({
+                tokenid: [id]
+            });
+            rates[currency] = n2bn(results[id]?.usd);
+        }
+    } else if (_.isArray(currency)) {
+        let ids = [];
+
+        for (const index in currency) {
+            const c = currency[index];
+            if (c != "lUSD") {
+                ids.push(CRYPTO_CURRENCIES_API[c]?.id);
+            }
+        }
+        const results = await api.getTokenPrice({ tokenid: ids });
+
+        for (const index in currency) {
+            const c = currency[index];
+            if (c == "lUSD") {
+                rates["lUSD"] = n2bn("1");
+            } else {
+                const id = CRYPTO_CURRENCIES_API[c]?.id;
+                rates[c] = n2bn(results[id]?.usd);
+            }
+        }
+    }
     return rates;
 };
 
@@ -155,7 +197,8 @@ export const storeDetailsData = async () => {
                 amountDebt
             ] = result.map(formatEtherToNumber);
             //获取货币->USD 兑换率
-            const priceRates = await getPriceRates(CRYPTO_CURRENCIES);
+            // const priceRates = await getPriceRates(CRYPTO_CURRENCIES);
+            const priceRates = await getPriceRatesFromApi(CRYPTO_CURRENCIES);
             const LINA2USDRate = priceRates.LINA / 1e18 || 1;
             const lUSD2USDRate = priceRates.lUSD / 1e18 || 1;
             const ETH2USDRate =

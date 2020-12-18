@@ -16,26 +16,25 @@ export const SELECT_NETWORKS_HASH_URLBASE = {
     97: "https://testnet.bscscan.com/tx/"
 };
 
-export const getBrowserUrlBase = ({blockChain,netWork})=>{
-    if(blockChain == BLOCKCHAIN.ETHEREUM){
-        if(netWork == "testNet"){
+export const getBrowserUrlBase = ({ blockChain, netWork }) => {
+    if (blockChain == BLOCKCHAIN.ETHEREUM) {
+        if (netWork == "testNet") {
             return SELECT_NETWORKS_HASH_URLBASE[3];
-        }else if(netWork == "mainNet"){
+        } else if (netWork == "mainNet") {
             return SELECT_NETWORKS_HASH_URLBASE[1];
         }
-    }else if(blockChain == BLOCKCHAIN.BINANCE){
-        if(netWork == "testNet"){
+    } else if (blockChain == BLOCKCHAIN.BINANCE) {
+        if (netWork == "testNet") {
             return SELECT_NETWORKS_HASH_URLBASE[97];
-        }else if(netWork == "mainNet"){
+        } else if (netWork == "mainNet") {
             return SELECT_NETWORKS_HASH_URLBASE[56];
         }
     }
-}
+};
 
 const API_KEY = {
     infura: process.env.INFURA_PROJECT_ID,
-    alchemy: process.env.ALCHEMY_KEY,
-    etherscan: process.env.ETHERSCAN_KEY
+    alchemy: process.env.ALCHEMY_KEY
 };
 
 class ContractSettings {

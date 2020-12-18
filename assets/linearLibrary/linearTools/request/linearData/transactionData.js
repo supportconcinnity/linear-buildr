@@ -2,14 +2,12 @@
 
 const pageResults = require("graph-results-pager");
 
-const graphAPIEndpoints = {
-    ethereum:
-        "https://api.thegraph.com/subgraphs/name/linear-tech/linear-buildr-ropsten", //Ethereum chain
-    binance:
-        "https://graph-api.linear.finance/subgraphs/name/linear-tech/linear-buildr-bsc" // Binance Smart chain
-};
-
 const maxRequest = 1000;
+
+const graphAPIEndpoints = {
+    ethereum: process.env.GRAPH_BUILD_ETHEREUM,
+    binance: process.env.GRAPH_BUILD_BINANCE
+};
 
 module.exports = {
     pageResults,
@@ -170,7 +168,9 @@ module.exports = {
                         orderBy: "timestamp",
                         orderDirection: "desc",
                         where: {
-                            addressStr_contains: account ? `\\"${account}\\"` : undefined,
+                            addressStr_contains: account
+                                ? `\\"${account}\\"`
+                                : undefined,
                             block_gte: minBlock || undefined,
                             block_lte: maxBlock || undefined
                         }
@@ -205,7 +205,10 @@ module.exports = {
                             to,
                             value: value / 1e18,
                             source: source,
-                            symbol: account.toUpperCase() == from.toUpperCase() ? "-" : "+"
+                            symbol:
+                                account.toUpperCase() == from.toUpperCase()
+                                    ? "-"
+                                    : "+"
                         })
                     )
                 )
@@ -498,25 +501,19 @@ module.exports = {
                     ]
                 }
             })
-            .then(results =>
-                results.map(
-                    ({
-                        id,
-                        account,
-                        timestamp,
-                        value,
-                        currency
-                    }) => ({
-                        hash: id.split("-")[0],
-                        account,
-                        timestamp: Number(timestamp * 1000),
-                        value: value / 1e18,
-                        source: currency,
-                        symbol: "-"
-                    })
+                .then(results =>
+                    results.map(
+                        ({ id, account, timestamp, value, currency }) => ({
+                            hash: id.split("-")[0],
+                            account,
+                            timestamp: Number(timestamp * 1000),
+                            value: value / 1e18,
+                            source: currency,
+                            symbol: "-"
+                        })
+                    )
                 )
-            )
-            .catch(err => console.error(err));
+                .catch(err => console.error(err));
         },
         unfreeze({
             max = maxRequest,
@@ -547,25 +544,19 @@ module.exports = {
                     ]
                 }
             })
-            .then(results =>
-                results.map(
-                    ({
-                        id,
-                        account,
-                        timestamp,
-                        value,
-                        currency
-                    }) => ({
-                        hash: id.split("-")[0],
-                        account,
-                        timestamp: Number(timestamp * 1000),
-                        value: value / 1e18,
-                        source: currency,
-                        symbol: "+"
-                    })
+                .then(results =>
+                    results.map(
+                        ({ id, account, timestamp, value, currency }) => ({
+                            hash: id.split("-")[0],
+                            account,
+                            timestamp: Number(timestamp * 1000),
+                            value: value / 1e18,
+                            source: currency,
+                            symbol: "+"
+                        })
+                    )
                 )
-            )
-            .catch(err => console.error(err));
+                .catch(err => console.error(err));
         },
         userSwapAssetsCount({
             max = maxRequest,
@@ -585,27 +576,17 @@ module.exports = {
                             id: account ? `\\"${account}\\"` : undefined
                         }
                     },
-                    properties: [
-                        "id",
-                        "freeZeTokens",
-                        "UnFreeZeTokens"
-                    ]
+                    properties: ["id", "freeZeTokens", "UnFreeZeTokens"]
                 }
             })
-            .then(results =>
-                results.map(
-                    ({
-                        id,
-                        freeZeTokens,
-                        UnFreeZeTokens
-                    }) => ({
+                .then(results =>
+                    results.map(({ id, freeZeTokens, UnFreeZeTokens }) => ({
                         account: id,
                         freeZeTokens: freeZeTokens / 1e18,
-                        UnFreeZeTokens: UnFreeZeTokens / 1e18,
-                    })
+                        UnFreeZeTokens: UnFreeZeTokens / 1e18
+                    }))
                 )
-            )
-            .catch(err => console.error(err));
+                .catch(err => console.error(err));
         }
     }
 };

@@ -2,15 +2,12 @@
 
 const pageResults = require("graph-results-pager");
 
-const graphAPIEndpoints = {
-    ethereum:
-        "https://api.thegraph.com/subgraphs/name/linear-tech/linear-exchange-ropsten",
-
-    binance:
-        "https://graph-api.linear.finance/subgraphs/name/linear-tech/linear-exchange-bsc"
-};
-
 const maxRequest = 1000;
+
+const graphAPIEndpoints = {
+    ethereum: process.env.GRAPH_EXCHANGE_ETHEREUM,
+    binance: process.env.GRAPH_EXCHANGE_BINANCE
+};
 
 module.exports = {
     pageResults,

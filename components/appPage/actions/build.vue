@@ -35,8 +35,8 @@
                                     <div
                                         class="itemTypeBtn"
                                         :class="{ active: activeItemBtn == 0 }"
+                                        @click.stop="clickBuy"
                                     >
-                                        <!-- @click.stop="clickBuy" -->
                                         buy lina
                                         <img src="@/static/arrow_right.svg" />
                                     </div>
@@ -375,12 +375,13 @@
 <script>
 import _ from "lodash";
 import gasEditor from "@/components/gasEditor";
-import { toNonExponential } from "@/common/utils";
+import { openBuyLINA, toNonExponential } from "@/common/utils";
 
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import {
     storeDetailsData,
     getPriceRates,
+    getPriceRatesFromApi,
     getBuildRatio
 } from "@/assets/linearLibrary/linearTools/request";
 import { DECIMAL_LENGTH } from "@/assets/linearLibrary/linearTools/constants/flow";
@@ -599,7 +600,8 @@ export default {
 
                 const targetRatioPercent = 100 / buildRatio; //目标抵押率
 
-                const priceRates = await getPriceRates(["LINA", "lUSD"]);
+                // const priceRates = await getPriceRates(["LINA", "lUSD"]);
+                 const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
 
                 const LINAPrice = priceRates.LINA / priceRates.lUSD;
                 const LINAPriceBN = bnDiv(priceRates.LINA, priceRates.lUSD);
@@ -1667,9 +1669,7 @@ export default {
 
         //点击购买
         clickBuy() {
-            window.open(
-                "https://app.uniswap.org/#/swap?inputCurrency=0x3e9bc21c9b189c09df3ef1b824798658d5011937&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7"
-            );
+            // openBuyLINA()
             this.activeItemBtn = 0;
         },
 
