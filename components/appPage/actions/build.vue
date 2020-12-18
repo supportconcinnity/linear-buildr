@@ -3,7 +3,7 @@
         <Tabs v-model="actionTabs" class="actionTabs">
             <TabPane name="m0">
                 <div class="buildBox">
-                    <div class="actionBody">
+                    <div class="actionBodyWeb">
                         <div class="actionTitle">Build</div>
                         <div class="actionDesc">
                             Build ℓUSD and earn staking rewards by staking LINA
@@ -205,6 +205,131 @@
                         <gasEditor></gasEditor>
                     </div>
 
+                    <div class="actionBodyMobile">
+                        <div
+                            class="errMsg"
+                            :style="{
+                                display: errors.stakeMsg || errors.ratioMsg || errors.amountMsg ? 'flex' : 'none'
+                            }"
+                        >
+                            <img src="@/static/error.svg" alt="">
+                            {{ errors.stakeMsg }}
+                            {{ errors.ratioMsg }}
+                            {{ errors.amountMsg }}
+                        </div>
+
+                        <div class="actionRate">
+                            1 LINA =
+                            {{
+                                formatNumberFromBigNumber(
+                                    buildData.LINA2USDBN,
+                                    4
+                                )
+                            }}
+                            ℓUSD
+                        </div>
+
+                        <div class="inputGroupBox">
+                            <div
+                                class="actionInputItem"
+                                :class="{
+                                    error: errors.stakeMsg || errors.amountMsg
+                                }"
+                            >
+                                <img
+                                    class="showInfo"
+                                    src="@/static/info_white.svg"
+                                    alt=""
+                                    @click="showIntroductActionModal"
+                                />
+
+                                <div class="box">
+                                    <div class="itemType">
+                                        <img src="@/static/LINA_logo.svg" alt="" />
+                                        <div class="itemTypeTitle">Stake LINA</div>
+                                        <InputNumber
+                                            class="input"
+                                            ref="itemInput3"
+                                            type="text"
+                                            v-model="inputData.stake"
+                                            placeholder="0"
+                                            :max="100000000000"
+                                            @on-change="changeStakeAmount"
+                                            @on-focus="inputFocus(3)"
+                                            @on-blur="inputBlur(3)"
+                                            :formatter="formatterInput"
+                                        />
+                                    </div>
+    
+                                    <div class="itemType">
+                                        <img src="@/static/currency/lUSD.svg" alt=""/>
+                                        <div class="itemTypeTitle">
+                                            Build ℓUSD
+                                        </div>
+                                        <InputNumber
+                                            class="input"
+                                            ref="itemInput4"
+                                            type="text"
+                                            :max="100000000000"
+                                            v-model="inputData.amount"
+                                            @on-change="changeBuildAmount"
+                                            @on-focus="inputFocus(4)"
+                                            @on-blur="inputBlur(4)"
+                                            placeholder="0"
+                                            :formatter="formatterInput"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="itemTypeBtn"
+                                    :class="{ active: activeItemBtn == 1 }"
+                                    @click.stop="clickMaxBuildAmount"
+                                >
+                                    Max
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div
+                            class="actionInputItem"
+                            :class="{
+                                error: errors.ratioMsg
+                            }"
+                            @click="changeFocusItem(5)"
+                        >
+                            <div class="ratioInputBox">
+                                <div class="box">
+                                    <div class="itemTypeTitle">P Ratio</div>
+                                    <InputNumber
+                                        class="input"
+                                        ref="itemInput5"
+                                        type="text"
+                                        :max="100000000000"
+                                        v-model="inputData.ratio"
+                                        @on-change="changeRatio"
+                                        @on-focus="inputFocus(5)"
+                                        @on-blur="inputBlur(5)"
+                                        placeholder="0"
+                                        :formatter="
+                                            value => formatterInput(value, 0)
+                                        "
+                                    />
+                                </div>
+
+                                <div
+                                    class="itemTypeBtn"
+                                    :class="{ active: activeItemBtn == 2 }"
+                                    @click.stop="clickTargetRatio"
+                                >
+                                    Target ratio
+                                </div>
+                            </div>
+                        </div>
+
+                        <gasEditor></gasEditor>
+                    </div>
+
                     <div
                         class="buildBtn"
                         :class="{ disabled: buildDisabled }"
@@ -230,6 +355,20 @@
                 ></watingEnhance>
             </TabPane>
         </Tabs>
+
+        <Modal
+            v-model="introductActionModal"
+            :footer-hide="true"
+            :closable="true"
+            :transfer="false"
+            :mask="true"
+            class="introductActionModal"
+        >
+            <div class="title">Build ℓUSD</div>
+            <div class="context">
+                Amount of ℓUSD built may vary due to block times and price fluctuations in pledge tokens.
+            </div>
+        </Modal>
     </div>
 </template>
 
@@ -314,6 +453,8 @@ export default {
             waitProcessFlow: Function, //flow闭包函数
 
             toleranceDifference: 0.01, //build容错差值
+
+            introductActionModal: false,
 
             //输入框展示数据
             inputData: {
@@ -1532,6 +1673,10 @@ export default {
             this.activeItemBtn = 0;
         },
 
+        showIntroductActionModal() {
+            this.introductActionModal = true;
+        },
+
         //查询hash
         etherscan() {
             openBlockchainScan(this.confirmTransactionHash);
@@ -1592,7 +1737,7 @@ export default {
                 .buildBox {
                     position: relative;
 
-                    .actionBody {
+                    .actionBodyWeb {
                         padding: 64px 193px 0;
                         display: flex;
                         flex-direction: column;
@@ -1816,6 +1961,10 @@ export default {
                         }
                     }
 
+                    .actionBodyMobile {
+                        display: none;
+                    }
+
                     .buildBtn {
                         width: 100%;
                         position: absolute;
@@ -1846,6 +1995,315 @@ export default {
                         &.disabled {
                             cursor: not-allowed;
                             opacity: 0.1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #build {
+        border-radius: 16px;
+        box-shadow: 0px 2px 6px #deddde;
+
+        .actionTabs {
+            border-radius: 16px;
+            box-shadow: 0px 2px 6px #deddde;
+
+            .ivu-tabs-bar {
+                display: none;
+            }
+
+            /deep/.ivu-tabs-content {
+                background: #fff;
+
+                .ivu-tabs-tabpane {
+                    width: 100%;
+                    height: 88vh!important;
+
+                    .buildBox,
+                    .waitingBox,
+                    .successBox,
+                    .wrongBox {
+                        width: 100%;
+                        height: 88vh!important;
+                    }
+
+                    .buildBox {
+                        position: relative;
+
+                        .actionBodyWeb {
+                            display: none;
+                        }
+
+                        .actionBodyMobile {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+
+                            .errMsg {
+                                align-items: center;
+                                height: 14.6vw;
+                                width: 74.4vw;
+                                padding: 12px 16px;
+                                margin-top: 24px;
+                                border-radius: 8px;
+                                background-color: rgba(223,67,76,.05);
+                                font-size: 12px;
+                                color: #df434c;
+
+                                img {
+                                    margin-right: 16px;
+                                }
+                            }
+
+                            .actionRate {
+                                width: 74.4vw;
+                                margin: 32px 0 28px;
+                                border-radius: 12px;
+                                background: #f6f5f6;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                padding: 4px 16px;
+                                font-family: Gilroy-Medium;
+                                font-size: 12px;
+                                font-weight: 500;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.33;
+                                letter-spacing: normal;
+                                text-align: center;
+                                color: #99999a;
+                            }
+
+                            .inputGroupBox {
+                                width: 74.4vw;
+
+                                .actionInputItem {
+                                    position: relative;
+                                    display: flex;
+                                    flex-direction: column;
+                                    border-radius: 8px;
+                                    border: solid 1px #e5e5e5;
+
+                                    .showInfo {
+                                        position: absolute;
+                                        top: 8px;
+                                        right: 8px;
+                                    }
+
+                                    .box {
+                                        display: flex;
+
+                                        .itemType {
+                                            height: 50.1vw;
+                                            display: flex;
+                                            justify-content: center;
+                                            flex-direction: column;
+                                            align-items: center;height: 50.1vw;
+
+                                            img {
+                                                width: 40px;
+                                            }
+
+                                            .itemTypeTitle {
+                                                margin: 16px 0 0;
+                                                font-family: Gilroy;
+                                                font-size: 12px;
+                                                font-weight: 500;
+                                                text-align: center;
+                                                color: #99999a;
+                                            }
+
+                                            .input {
+                                                width: 100%;
+                                                height: 24px;
+                                                border: none;
+                                                box-shadow: none;
+
+                                                .ivu-input-number-handler-wrap {
+                                                    display: none;
+                                                }
+
+                                                .ivu-input-number-input {
+                                                    text-align: center;
+                                                    font-family: Gilroy-Bold;
+                                                    font-size: 16px;
+                                                    font-weight: bold;
+                                                    font-stretch: normal;
+                                                    font-style: normal;
+                                                    line-height: 1.25;
+                                                    letter-spacing: normal;
+
+                                                    &::placeholder {
+                                                        color: #99999a;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    .itemTypeBtn {
+                                        height: 32px;
+                                        width: 100%;
+                                        border-top: solid 1px #e5e5e5;
+                                        font-family: Gilroy;
+                                        text-align: center;
+                                        font-size: 10px;
+                                        line-height: 32px;
+                                        font-weight: bold;
+                                        color: #1a38f8;
+                                    }
+                                }
+                            }
+
+                            .actionInputItem {
+                                margin-bottom: 24px;
+                                border-radius: 8px;
+                                border: solid 1px #deddde;
+                                transition: $animete-time linear;
+
+                                &.active {
+                                    border-color: white;
+                                    box-shadow: 0px 2px 12px #deddde;
+                                }
+
+                                .ratioInputBox {
+                                    width: 74.4vw;
+                                    position: relative;
+
+                                    .box {
+                                        display: flex;
+                                        justify-content: space-between;
+                                        align-items: center;
+                                        padding: 0 16px;
+                                        height: 21.6vw;
+
+                                        .itemTypeTitle {
+                                            font-family: Gilroy;
+                                            font-size: 12px;
+                                            font-weight: 500;
+                                            text-align: center;
+                                            color: #99999a;
+                                        }
+
+                                        .input {
+                                            width: 53.33vw;
+                                            height: 32px;
+                                            border: none;
+                                            box-shadow: none;
+                                            padding: 0;
+
+                                            .ivu-input-number-handler-wrap {
+                                                display: none;
+                                            }
+
+                                            .ivu-input-number-input {
+                                                text-align: right;
+                                                font-family: Gilroy-Bold;
+                                                font-size: 16px;
+                                                font-weight: bold;
+                                                font-stretch: normal;
+                                                font-style: normal;
+                                                line-height: 1.25;
+                                                letter-spacing: normal;
+
+                                                &::placeholder {
+                                                    color: #99999a;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    .itemTypeBtn {
+                                        height: 32px;
+                                        width: 100%;
+                                        position: relative;
+                                        bottom: 0;
+                                        border-top: solid 1px #e5e5e5;
+                                        font-family: Gilroy;
+                                        text-align: center;
+                                        font-size: 10px;
+                                        line-height: 32px;
+                                        font-weight: bold;
+                                        color: #1a38f8;
+                                    }
+                                }
+
+                                &.error {
+                                    border-color: #df434c;
+                                }
+                            }
+                        }
+
+                        .buildBtn {
+                            width: 100%;
+                            position: absolute;
+                            bottom: 0px;
+                            height: 12.8vw!important;
+                            cursor: pointer;
+                            background: #1a38f8;
+                            color: #ffffff;
+                            text-transform: uppercase;
+                            transition: $animete-time linear;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-family: Gilroy-Bold;
+                            font-size: 16px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            letter-spacing: 3px;
+                            text-align: center;
+
+                            &:hover {
+                                &:not(.disabled) {
+                                    background-color: #7eb5ff;
+                                }
+                            }
+
+                            &.disabled {
+                                cursor: not-allowed;
+                                opacity: 0.1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /deep/.introductActionModal {
+            .ivu-modal-wrap {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .ivu-modal {
+                    width: 74.66vw!important;
+                    height: 36.8vw;
+                    top: 0!important;
+
+                    .ivu-modal-content {
+                        height: 100%;
+
+                        .ivu-modal-body {
+                            height: 100%;
+                            padding: 24px;
+
+                            .title {
+                                font-family: Gilroy-Bold;
+                                font-size: 16px;
+                                margin-bottom: 9px;
+                            }
+
+                            .context {
+                                font-family: Gilroy;
+                                font-size: 14px;
+                            }
                         }
                     }
                 }
