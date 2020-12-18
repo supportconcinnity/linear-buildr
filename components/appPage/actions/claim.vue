@@ -16,6 +16,7 @@
                             }"
                         >
                             <div class="box">
+                                <div class="titleMobile">Staking Rewards</div>
                                 <img
                                     v-if="feesAreClaimable"
                                     src="@/static/LINA_logo.svg"
@@ -32,6 +33,7 @@
                                 </div>
                             </div>
                             <div class="box">
+                                <div class="titleMobile">Exchange Rewards</div>
                                 <img
                                     v-if="feesAreClaimable"
                                     src="@/static/currency/lUSD.svg"
@@ -61,6 +63,13 @@
                                     >
                                         <img src="@/static/info.svg" alt="" />
                                     </Tooltip>
+
+                                    <img
+                                        class="showInfoMobile"
+                                        src="@/static/info_white.svg"
+                                        alt=""
+                                        @click="showIntroductActionModal"
+                                    />
                                 </div>
                                 <div
                                     class="status"
@@ -122,6 +131,20 @@
                 ></wrong>
             </TabPane>
         </Tabs>
+
+        <Modal
+            v-model="introductActionModal"
+            :footer-hide="true"
+            :closable="true"
+            :transfer="false"
+            :mask="true"
+            class="introductActionModal"
+        >
+            <div class="title">Reward Status</div>
+            <div class="context">
+                Reward can only be claimed when target ratio is reached.
+            </div>
+        </Modal>
     </div>
 </template>
 
@@ -152,6 +175,7 @@ export default {
             actionTabs: "m0", //子页(m0默认,m1等待,m2成功,m3错误)
             confirmTransactionStep: -1, //当前交易进度
             waitProcessArray: [], //等待交易进度组
+            introductActionModal: false,
 
             closeIn: "", //多少天后可领取奖励
             feesAreClaimable: false, //是否可以领取奖励
@@ -368,6 +392,10 @@ export default {
             }
         },
 
+        showIntroductActionModal() {
+            this.introductActionModal = true;
+        },
+
         //到 etherscan 查看交易记录详情
         etherscan() {
             //模拟跳到错误页
@@ -462,6 +490,10 @@ export default {
                                 background: rgba(#7eb5ff, 0.1);
                                 text-align: center;
 
+                                .titleMobile {
+                                    display: none;
+                                }
+
                                 img {
                                     width: 56px;
                                     margin: 74px 0 24px 0;
@@ -545,6 +577,13 @@ export default {
                                     line-height: 1.5;
                                     letter-spacing: normal;
                                     color: #5a575c;
+
+                                    .globalInfoStyle {
+                                    }
+
+                                    .showInfoMobile {
+                                        display: none;
+                                    }
                                 }
 
                                 .status {
@@ -638,8 +677,8 @@ export default {
                 background: #fff;
 
                 .ivu-tabs-tabpane {
-                    width: 786px;
-                    height: 840px !important;
+                    width: 100%;
+                    height: 88vh!important;
 
                     .claimBox,
                     .waitingBox,
@@ -653,7 +692,10 @@ export default {
                         position: relative;
 
                         .actionBody {
-                            padding: 64px 193px 0;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            padding: 0;
 
                             .actionTitle {
                                 display: none;
@@ -661,6 +703,232 @@ export default {
 
                             .actionDesc {
                                 display: none;
+                            }
+
+                            .rewardsBox {
+                                width: 74.4vw;
+                                height: 80vw;
+                                display: flex;
+                                justify-content: space-between;
+                                margin: 39px 0 24px;
+
+                                .box {
+                                    flex: 1;
+                                    width: unset;
+                                    height: unset;
+                                    border-radius: 8px;
+                                    background: rgba(#7eb5ff, 0.1);
+                                    text-align: center;
+
+                                    .titleMobile {
+                                        margin: 57px 0 39px;
+                                        display: block;
+                                        padding: 0 15px;
+                                        color: #99999a;
+                                        font-family: Gilroy-Bold;
+                                        font-size: 14px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.5;
+                                        letter-spacing: normal;
+                                        text-align: center;
+                                    }
+
+                                    img {
+                                        width: 56px;
+                                        margin: 0px 0 16px 0;
+                                    }
+
+                                    .title {
+                                        display: none;
+                                    }
+
+                                    .amount {
+                                        display: flex;
+                                        flex-direction: column;
+                                        align-items: center;
+                                        justify-content: center;
+                                        color: #99999a;
+                                        font-family: Gilroy-Regular;
+                                        font-size: 12px;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.25;
+                                        letter-spacing: normal;
+
+                                        span {
+                                            color: #99999a;
+                                            font-family: Gilroy-Bold;
+                                            font-size: 16px;
+                                            font-weight: bold;
+                                            margin-right: 0;
+                                        }
+                                    }
+
+                                    &:nth-child(1) {
+                                        margin-right: 8px;
+                                    }
+
+                                    &:nth-child(2) {
+                                        margin-left: 8px;
+                                    }
+                                }
+                            }
+
+                            .rewardsBoxClosed {
+                                .box {
+                                    background: #f6f5f6;
+
+                                    .title {
+                                        color: #99999a;
+                                    }
+
+                                    .amount {
+                                        color: #99999a;
+
+                                        span {
+                                            color: #99999a;
+                                        }
+                                    }
+                                }
+                            }
+
+                            .infoBox {
+                                .statusBox,
+                                .periodBox {
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: space-between;
+                                    margin-bottom: 14px;
+
+                                    .title {
+                                        display: flex;
+                                        font-family: Gilroy-Regular;
+                                        font-size: 12px;
+                                        font-weight: normal;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.5;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
+
+                                        .globalInfoStyle {
+                                            display: none;
+                                        }
+
+                                        .showInfoMobile {
+                                            display: block;
+                                            margin-left: 4px;
+                                        }
+                                    }
+
+                                    .status {
+                                        padding: 0;
+                                        text-align: center;
+                                        border-radius: 12px;
+                                        background: unset;
+                                        font-family: Gilroy-Medium;
+                                        font-size: 12px;
+                                        font-weight: 500;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.33;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
+                                    }
+
+                                    .open {
+                                        color: #1a38f8;
+                                        background: rgba(
+                                            $color: #7eb5ff,
+                                            $alpha: 0.1
+                                        );
+                                    }
+
+                                    .days {
+                                        font-family: Gilroy-Regular;
+                                        font-size: 12px;
+                                        font-weight: normal;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.5;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
+                                    }
+                                }
+                            }
+                        }
+
+                        .claimBtn {
+                            width: 100%;
+                            height: 12.8vw!important;
+                            background: #1a38f8;
+                            position: absolute;
+                            bottom: 0px;
+                            color: #ffffff;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            text-transform: uppercase;
+                            cursor: pointer;
+                            transition: $animete-time linear;
+                            font-family: Gilroy-Bold;
+                            font-size: 16px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.33;
+                            letter-spacing: 3px;
+                            text-align: center;
+
+                            &:hover {
+                                &:not(.disabled) {
+                                    background-color: #7eb5ff;
+                                }
+                            }
+
+                            &.disabled {
+                                opacity: 0.1;
+                                cursor: not-allowed;
+                            }
+
+                            &.claimBtnActivited {
+                                opacity: unset;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /deep/.introductActionModal {
+            .ivu-modal-wrap {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .ivu-modal {
+                    width: 74.66vw!important;
+                    height: 36.8vw;
+                    top: 0!important;
+
+                    .ivu-modal-content {
+                        height: 100%;
+
+                        .ivu-modal-body {
+                            height: 100%;
+                            padding: 24px;
+
+                            .title {
+                                font-family: Gilroy-Bold;
+                                font-size: 16px;
+                                margin-bottom: 9px;
+                            }
+
+                            .context {
+                                font-family: Gilroy;
+                                font-size: 14px;
                             }
                         }
                     }
