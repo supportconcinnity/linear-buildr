@@ -62,12 +62,8 @@
                 <div
                     class="mRect mobileShow"
                     @click="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
-                    >
-                    <img
-                        class="boxLogo"
-                        src="@/static/metamask.svg"
-                        alt=""
-                    />
+                >
+                    <img class="boxLogo" src="@/static/metamask.svg" alt="" />
                     <div class="box">
                         <div class="context">
                             Connect MetaMask Wallet
@@ -84,23 +80,23 @@
                         class="boxItem"
                         @click="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
                     >
-                        <div class="boxSub">Connect</div>
+                        <img
+                            class="boxLogo"
+                            src="@/static/metamask.svg"
+                            alt=""
+                        />
 
-                        <div class="boxTitle">
-                            Ethereum<br />
-                            Network
+                        <div>
+                            <div class="boxSub">Connect</div>
+
+                            <div class="boxTitle">
+                                Ethereum<br />
+                                Network
+                            </div>
                         </div>
 
                         <div class="boxDesc">
-                            <img
-                                class="boxLogo"
-                                src="@/static/metamask.svg"
-                                alt=""
-                            />
-                            <div>
-                                <div class="top">via</div>
-                                <div class="bottom">MetaMask</div>
-                            </div>
+                            via MetaMask
                         </div>
                     </div>
 
@@ -110,23 +106,24 @@
                             selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)
                         "
                     >
-                        <div class="boxSub">Connect</div>
+                        <img
+                            class="boxLogo"
+                            src="@/static/binance.svg"
+                            alt=""
+                        />
 
-                        <div class="boxTitle">
-                            Binance<br />
-                            Smart Chain Network
+                        <div>
+                            <div class="boxSub">Connect</div>
+
+                            <div class="boxTitle">
+                                Binance<br />
+                                Smart Chain <br />
+                                Network
+                            </div>
                         </div>
 
                         <div class="boxDesc">
-                            <img
-                                class="boxLogo"
-                                src="@/static/binance.svg"
-                                alt=""
-                            />
-                            <div>
-                                <div class="top">via</div>
-                                <div class="bottom">Binance Chain Wallet</div>
-                            </div>
+                            via Binance Chain Wallet
                         </div>
                     </div>
                 </div>
@@ -343,72 +340,60 @@ export default {
                     flex-direction: column;
                     transition: $animete-time linear;
                     background-color: #ffffff;
-                    padding: 32px 32px 32px 40px;
+                    padding: 80px 32px 38px;
                     border-radius: 8px;
+                    align-items: center;
                     justify-content: space-between;
 
                     &:not(:last-of-type) {
                         margin-bottom: 28px;
                     }
 
+                    .boxLogo {
+                        width: 80px;
+                        height: 80px;
+                    }
+
                     .boxSub {
-                        font-family: Gilroy-bold;
+                        font-family: Gilroy-Bold;
                         font-size: 16px;
                         font-weight: bold;
                         font-stretch: normal;
                         font-style: normal;
                         line-height: 1.5;
                         letter-spacing: normal;
+                        text-align: center;
                         color: #5a575c;
+                        margin-bottom: 8px;
                     }
 
                     .boxTitle {
                         font-family: Gilroy-bold;
-                        font-size: 32px;
+                        font-size: 24px;
                         font-weight: bold;
                         font-stretch: normal;
                         font-style: normal;
-                        line-height: 1.25;
+                        line-height: 1.33;
                         letter-spacing: normal;
                         color: #1a38f8;
+                        text-align: center;
                     }
 
                     .boxDesc {
-                        display: flex;
-                        align-items: center;
-
-                        .boxLogo {
-                            width: 54px;
-                            height: 54px;
-                            margin-right: 16px;
-                        }
-
-                        .top {
-                            font-family: Gilroy-Regular;
-                            font-size: 14px;
-                            font-weight: normal;
-                            font-stretch: normal;
-                            font-style: normal;
-                            line-height: 1.29;
-                            letter-spacing: normal;
-                            color: #99999a;
-                        }
-
-                        .bottom {
-                            font-family: Gilroy-Regular;
-                            font-size: 14px;
-                            font-weight: normal;
-                            font-stretch: normal;
-                            font-style: normal;
-                            line-height: 1.29;
-                            letter-spacing: normal;
-                            color: #99999a;
-                        }
+                        font-family: Gilroy-Regular;
+                        font-size: 16px;
+                        font-weight: normal;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.5;
+                        letter-spacing: normal;
+                        text-align: center;
+                        color: #99999a;
                     }
 
                     &:hover {
                         border: solid 1px #deddde;
-                        box-shadow: 0 2px 12px 0 #e5e5e5;
+                        box-shadow: 0 2px 12px 0 #deddde;
                     }
                 }
             }
