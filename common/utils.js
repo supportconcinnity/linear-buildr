@@ -4,6 +4,7 @@ import {
     isEthereumNetwork,
     SUPPORTED_NETWORKS_MAP
 } from "@/assets/linearLibrary/linearTools/network";
+import { URLS } from "@/assets/linearLibrary/linearTools/constants/urls";
 import { DECIMAL_PRECISION } from "@/assets/linearLibrary/linearTools/constants/process";
 
 /**
@@ -239,6 +240,13 @@ export const openBlockchainScan = ($hash, blockChain) => {
     } catch (error) {
         console.log(error, "openBlockchainScan");
     }
+};
+
+/**
+ * 打开购买LINA站点
+ */
+export const openBuyLINA = () => {
+    window.open(URLS.BUY_LINA);
 };
 
 //设置输入框的光标位置，会选中 selectionStart 到 selectionEnd 间的内容

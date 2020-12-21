@@ -137,6 +137,8 @@ import { selectedWallet } from "@/assets/linearLibrary/linearTools/lnrJSConnecto
 
 import { SUPPORTED_WALLETS_MAP } from "@/assets/linearLibrary/linearTools/network";
 
+import { openBuyLINA } from "@/common/utils";
+
 export default {
     name: "landingPage",
     data() {
@@ -162,10 +164,7 @@ export default {
     },
     methods: {
         openBuy() {
-            return;
-            window.open(
-                "https://app.uniswap.org/#/swap?inputCurrency=0x3e9bc21c9b189c09df3ef1b824798658d5011937&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7"
-            );
+            // openBuyLINA()
         }
     }
 };

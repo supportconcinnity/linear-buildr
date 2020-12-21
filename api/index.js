@@ -43,5 +43,20 @@ export default {
             .catch(err => {
                 return Promise.reject(err.response);
             });
+    },
+
+    async getTokenPrice({ tokenid = [], target = "usd" }) {
+        return await $nuxt.$axios
+            .$get(
+                `https://api.coingecko.com/api/v3/simple/price?ids=${tokenid.join(
+                    ","
+                )}&vs_currencies=${target}`
+            )
+            .then(res => {
+                return Promise.resolve(res);
+            })
+            .catch(err => {
+                return Promise.reject(err.response);
+            });
     }
 };

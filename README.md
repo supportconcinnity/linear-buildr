@@ -25,7 +25,6 @@ Depends on your environment, create the corrsponding files ".env.development" or
 NODE_ENV="development or production"
 BASE_URL=""
 INFURA_PROJECT_ID=""
-ETHERSCAN_KEY=""
 ALCHEMY_KEY=""
 ETH_GAS_STATION_KEY=""
 DEFI_PULSE_STATION_KEY=""

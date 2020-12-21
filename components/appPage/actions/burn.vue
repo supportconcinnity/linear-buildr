@@ -408,6 +408,7 @@ import {
 import {
     storeDetailsData,
     getPriceRates,
+    getPriceRatesFromApi,
     getBuildRatio
 } from "@/assets/linearLibrary/linearTools/request";
 
@@ -574,7 +575,8 @@ export default {
 
                 const targetRatioPercent = 100 / buildRatio; //目标抵押率
 
-                const priceRates = await getPriceRates(["LINA", "lUSD"]);
+                // const priceRates = await getPriceRates(["LINA", "lUSD"]);
+                const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
 
                 const LINAPrice = priceRates.LINA / priceRates.lUSD;
                 const LINAPriceBN = bnDiv(priceRates.LINA, priceRates.lUSD);
@@ -692,6 +694,8 @@ export default {
                             //         "LINA",
                             //         "lUSD"
                             //     ]);
+
+                            // const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
 
                             //     const currentLINAPrice = bnDiv(
                             //         priceRates.LINA,

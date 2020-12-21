@@ -15,10 +15,9 @@
                     Buy LINA <br />
                     on other platform
                 </div>
-                <div class="btn">
+                <div class="btn" @click="btnClick(1)">
                     BUY LINA <Icon type="ios-arrow-round-forward" />
                 </div>
-                <!-- @click="btnClick(1)" -->
             </div>
             <div class="boxItem">
                 <div class="imgBox">
@@ -35,17 +34,17 @@
 </template>
 
 <script>
+import { openBuyLINA } from "@/common/utils";
+
 export default {
     name: "homePage",
     data() {
         return {};
     },
     methods: {
-        btnClick: function(type) {
+        btnClick(type) {
             if (type == 1) {
-                window.open(
-                    "https://app.uniswap.org/#/swap?inputCurrency=0x3e9bc21c9b189c09df3ef1b824798658d5011937&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7"
-                );
+                // openBuyLINA();
             } else {
                 this.$store.commit("setCurrentAction", 1);
             }
