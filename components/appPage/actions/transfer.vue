@@ -156,6 +156,146 @@
                         <gasEditor></gasEditor>
                     </div>
 
+                    <div class="transferMainMobile">
+                        <div
+                            class="errMsg"
+                            :style="{
+                                display: errors.amountMsg || (walletError && this.transferToAddress != '') ? 'flex' : 'none'
+                            }"
+                        >
+                            <img src="@/static/error.svg" alt="">
+                            <div v-if="errors.amountMsg">
+                                {{ errors.amountMsg }}
+                            </div>
+                            <div v-else>
+                                Please input a valid address.
+                            </div>
+                        </div>
+                        <div
+                            class="from actionInputItem"
+                            :class="{
+                                error: errors.amountMsg,
+                                showDropdown
+                            }"
+                        >
+                            <div class="iconBox">
+                                <div class="icon">
+                                    <img :src="currency[selected].img" alt="" />
+                                </div>
+                            </div>
+
+                            <div class="dropBox">
+                                <div class="tokenName">
+                                    {{ currentSelectCurrency.name }}
+                                </div>
+                                <div
+                                    class="arrow"
+                                    @click.stop="showDropdownFun"
+                                    :class="{ showDropdown }"
+                                    @mouseenter="dropdownHover = true"
+                                    @mouseleave="dropdownHover = false"
+                                >
+                                    <img
+                                        v-show="showDropdown || dropdownHover"
+                                        src="@/static/arrow.svg"
+                                        alt=""
+                                    />
+                                    <img
+                                        v-show="!showDropdown && !dropdownHover"
+                                        src="@/static/arrow_gray.svg"
+                                        alt=""
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="currentBalance">
+                                <div v-if="currentSelectCurrency.name == 'ETH' || currentSelectCurrency.name == 'BNB'">
+                                    Avaliable: {{currency[selected].avaliable}} {{ currentSelectCurrency.name }}
+                                </div>
+                                <div v-else>
+                                    Avaliable: {{ currentSelectCurrency.avaliable }} {{ currentSelectCurrency.name }}
+                                </div>
+                            </div>
+
+                            <div class="amountInputBox">
+                                <div class="box">
+                                    Amount
+                                    <InputNumber
+                                        class="input"
+                                        ref="itemInput2"
+                                        element-id="transfer_number_input"
+                                        :min="0"
+                                        :max="
+                                            currency[selected].avaliable
+                                        "
+                                        type="text"
+                                        v-model="transferNumber"
+                                        placeholder="2"
+                                        @on-change="changeAmount"
+                                        @on-focus="inputFocus(2)"
+                                        @on-blur="inputBlur(2)"
+                                        :formatter="formatterInput"
+                                    />
+                                </div>
+
+                                <span
+                                    class="maxBtn"
+                                    :class="{ active: activeItemBtn == 0 }"
+                                    @click="clickMaxAmount"
+                                >
+                                    MAX
+                                </span>
+                            </div>
+
+                            <div class="dropdown" v-if="showDropdown">
+                                <div
+                                    class="dropdownItem"
+                                    v-for="(item, index) in currency"
+                                    @click="selectCurrencyFun(index)"
+                                    :key="index"
+                                    :class="{
+                                        activity: index == selected
+                                    }"
+                                >
+                                    <div class="iconBox">
+                                        <div class="icon">
+                                            <img :src="item.img" alt="" />
+                                        </div>
+                                    </div>
+                                    <div class="midle">
+                                        <div class="p_1">
+                                            {{
+                                                item.name == "lUSD"
+                                                    ? "ℓUSD"
+                                                    : item.name
+                                            }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="to actionInputItem"
+                            :class="{
+                                error:
+                                    walletError && this.transferToAddress != ''
+                            }"
+                        >
+                            To Wallet
+                            <Input
+                                type="text"
+                                ref="itemInput3"
+                                v-model="transferToAddress"
+                                @on-focus="inputFocus(3)"
+                                @on-blur="inputBlur(3)"
+                                placeholder="Please enter the wallet address …"
+                            />
+                        </div>
+
+                        <gasEditor></gasEditor>
+                    </div>
+
                     <div
                         class="transferBtn"
                         :class="{ disabled: transferDisabled || walletError }"
@@ -552,6 +692,7 @@ export default {
                 this.errors.amountMsg = "";
             }
         },
+        
         //获取焦点
         inputFocus(index) {
             this.$nextTick(() => {
@@ -982,6 +1123,10 @@ export default {
                         }
                     }
 
+                    .transferMainMobile {
+                        display: none;
+                    }
+
                     .transferBtn {
                         width: 100%;
                         height: 80px;
@@ -1012,6 +1157,278 @@ export default {
                         &.disabled {
                             cursor: not-allowed;
                             opacity: 0.1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #transfer {
+        .actionTabs {
+            border-radius: 16px;
+            box-shadow: 0px 2px 6px #deddde;
+
+            .ivu-tabs-bar {
+                display: none;
+            }
+
+            .ivu-tabs-content {
+                background: #fff;
+
+                .ivu-tabs-tabpane {
+                    width: 100%;
+                    height: 88vh!important;
+
+                    .transferBox,
+                    .waitingBox,
+                    .successBox,
+                    .failBox {
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                    .transferBox {
+                        position: relative;
+
+                        .transferMain {
+                            display: none;
+                        }
+
+                        .transferMainMobile {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+
+                            .errMsg {
+                                align-items: center;
+                                height: 14.6vw;
+                                width: 74.4vw;
+                                padding: 12px 16px;
+                                margin-top: 24px;
+                                border-radius: 8px;
+                                background-color: rgba(223,67,76,.05);
+                                font-size: 12px;
+                                color: #df434c;
+
+                                img {
+                                    margin-right: 16px;
+                                }
+                            }
+
+                            .from {
+                                position: relative;
+                                height: 67.2vw;
+                                width: 74.4vw;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                border: solid 1px #e5e5e5;
+                                border-radius: 8px;
+                                margin: 32px 0 16px;
+
+                                .iconBox {
+                                    margin: 24px 0 16px;
+
+                                    img {
+                                        width: 64px;
+                                    }
+                                }
+
+                                .dropBox {
+                                    display: flex;
+
+                                    .tokenName {
+                                        font-family: Gilroy-Bold;
+                                        font-size: 24px;
+                                        text-align: center;
+                                        color: #5a575c;
+                                    }
+                                }
+
+                                .currentBalance {
+                                    font-family: Gilroy;
+                                    font-size: 12px;
+                                    font-weight: 500;
+                                    color: #99999a;
+                                }
+
+                                .amountInputBox {
+                                    width: 100%;
+                                    height: 75px;
+                                    display: flex;
+                                    position: absolute;
+                                    align-items: center;
+                                    justify-content: space-around;
+                                    bottom: 0;
+                                    border-top: solid 1px #e5e5e5;
+                                    padding: 0 16px;
+
+                                    .box {
+                                        display: flex;
+                                        flex-direction: column;
+                                        font-family: Gilroy;
+                                        font-size: 12px;
+                                        color: #99999a;
+
+                                        .input {
+                                            width: 60%;
+                                            border: none;
+                                            box-shadow: none;
+
+                                            .ivu-input-number-handler-wrap {
+                                                display: none;
+                                            }
+
+                                            .ivu-input-number-input {
+                                                text-align: left;
+                                                color: #99999a;
+                                                font-family: Gilroy-Bold;
+                                                font-size: 16px;
+                                                font-weight: bold;
+                                                font-stretch: normal;
+                                                font-style: normal;
+                                                line-height: 1.25;
+                                                letter-spacing: normal;
+
+                                                &::placeholder {
+                                                    color: #99999a;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    .maxBtn {
+                                        width: 74px;
+                                        height: 44px;
+                                        border-radius: 8px;
+                                        background-color: rgba(126,181,255,.1);
+                                        text-align: center;
+                                        line-height: 44px;
+                                        font-family: Gilroy-Bold;
+                                        font-size: 10px;
+                                        font-weight: bold;
+                                        color: #1a38f8;
+                                    }
+                                }
+
+                                .dropdown {
+                                    position: absolute;
+                                    left: 0;
+                                    top: calc(100% + 2px);
+                                    width: 74.4vw;
+                                    background: #fff;
+                                    box-shadow: 0 2px 12px 0 #deddde;
+                                    z-index: 1;
+                                    border-radius: 8px;
+                                    border: 1px solid #deddde;
+                                    transition: box-shadow $animete-time linear;
+                                    display: flex;
+                                    flex-direction: column;
+                                    padding: 8px 0;
+
+                                    .dropdownItem {
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        cursor: pointer;
+
+                                        .iconBox {
+                                            margin: 8px;
+
+                                            .icon {
+                                                margin-right: 16px;
+                                                width: 40px;
+                                                height: 40px;
+                                                img {
+                                                    width: 100%;
+                                                    height: 100%;
+                                                }
+                                            }
+                                        }
+                                        .midle {
+                                            flex: 1;
+                                            font-family: Gilroy-Bold;
+                                            font-size: 16px;
+                                            font-weight: bold;
+                                            font-stretch: normal;
+                                            font-style: normal;
+                                            line-height: 1.5;
+                                            letter-spacing: normal;
+                                            color: #5a575c;
+                                        }
+
+                                        &:hover {
+                                            .midle {
+                                                color: #1a38f8;
+                                            }
+                                        }
+
+                                        &.activity {
+                                            background: rgba(#7eb5ff, 0.1);
+
+                                            .midle {
+                                                color: #1a38f8;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            .to {
+                                height: 26.6vw;
+                                width: 74.4vw;
+                                display: flex;
+                                padding: 0 16px;
+                                flex-direction: column;
+                                justify-content: center;
+                                border: solid 1px #e5e5e5;
+                                border-radius: 8px;
+                                font-family: Gilroy;
+                                font-size: 12px;
+                                color: #99999a;
+                                margin-bottom: 16px;
+
+                                input {
+                                    width: 100%;
+                                    border: none;
+                                    box-shadow: none;
+                                    outline: none;
+                                    color: #5a575c;
+                                    font-family: Gilroy-Bold;
+                                    font-size: 14px;
+                                    font-weight: bold;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    letter-spacing: normal;
+                                    padding: 0;
+                                    height: unset;
+                                    line-height: 1;
+
+                                    &::placeholder {
+                                        color: #99999a;
+                                    }
+                                }
+                            }
+
+                            .from, .to {
+                                &:hover,
+                                &.active {
+                                    border-color: white;
+                                    box-shadow: 0px 2px 12px #deddde;
+                                }
+
+                                &.error {
+                                    border-color: #df434c;
+                                }
+                            }
+                        }
+
+                        .transferBtn {
+                            height: 12.8vw!important;
+                            font-size: 16px;
                         }
                     }
                 }

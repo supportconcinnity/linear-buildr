@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import landingPage from "@/components/landingPage";
 import appPage from "@/components/appPage";
 
@@ -18,7 +19,14 @@ export default {
     },
     name: "mainPage",
     data() {
-        return {};
+        return {
+            windowScreen: { //窗口
+                width: 0,
+                height: 0,
+            },
+            mobileWidth: 414, //移动端布局
+            isMobile: window.innerWidth <= 414,
+        };
     },
     watch: {
         walletAddress() {}
@@ -28,7 +36,25 @@ export default {
            return this.$store.state?.wallet?.address;
         }
     },
-    methods: {}
+    methods: {
+        //获取窗口数据
+        getWindowScreen: _.throttle(function () {
+            this.windowScreen = {
+                width: window.innerWidth,
+                height: window.innerHeight,
+            }
+
+            this.isMobile = this.windowScreen.width <= this.mobileWidth;
+            this.$store.commit('setIsMobile', this.isMobile);
+        }, 50)
+    },
+    mounted() {
+        //监视窗口变化
+        window.addEventListener("resize", this.getWindowScreen, false);
+    },
+    destroyed() {
+        window.removeEventListener("resize", this.getWindowScreen, false);
+    }
 };
 </script>
 

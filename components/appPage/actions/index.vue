@@ -25,11 +25,15 @@
             </a>
 
             <div class="introductActionBox" v-if="currentAction != 0">
-                <div class="title" v-if="currentAction == 1">Build</div>
-                <div class="title" v-if="currentAction == 2">Burn</div>
-                <div class="title" v-if="currentAction == 3">Claim</div>
-                <div class="title" v-if="currentAction == 4">Transfer</div>
-                <div class="title" v-if="currentAction == 5">Swap</div>
+                <div class="title" v-if="currentAction == 1 && othersAction == 0">Build</div>
+                <div class="title" v-if="currentAction == 2 && othersAction == 0">Burn</div>
+                <div class="title" v-if="currentAction == 3 && othersAction == 0">Claim</div>
+                <div class="title" v-if="currentAction == 4 && othersAction == 0">Transfer</div>
+                <div class="title" v-if="currentAction == 5 && othersAction == 0">Swap</div>
+
+                <div class="title" v-if="othersAction == 1">Track Debt</div>
+                <div class="title" v-if="othersAction == 2">Transaction</div>
+                <div class="title" v-if="othersAction == 3">Referral</div>
 
                 <img src="@/static/info.svg" @click="showIntroductActionModal"/>
             </div>
@@ -167,9 +171,41 @@ export default {
         return {
             introductActionModal: false,
             currentAction: this.$store.state.currentAction, //显示不同功能 0homePage 1build 2burn 3claim 4transfer 5swap
+            othersAction: 0, // 0没有 1track 2transaction 3referral
             currentHover: 0,
-            actions: ["Build", "Burn", "Claim", "Transfer", "Swap"]
+            actions: ["Build", "Burn", "Claim", "Transfer", "Swap"],
         };
+    },
+    created() {
+        //订阅组件改变事件
+        this.$pub.subscribe("trackModalChange", (msg, params) => {console.log("trackModalChange");
+            if (params) {
+                this.othersAction = 1;
+            }
+        });
+        this.$pub.subscribe("transactionModalChange", (msg, params) => {console.log("transactionModalChange");
+            if (params) {    
+                this.othersAction = 2;
+            }
+        });
+        this.$pub.subscribe("referralModalChange", (msg, params) => {console.log("referralModalChange");
+        if (params) {    
+                this.othersAction = 3;
+            }
+        });
+
+        //订阅历史记录窗口关闭事件
+        this.$pub.subscribe("transactionModalCloseEvent", (msg, params) => {
+            this.othersAction = 0;
+        });
+        //订阅历史记录窗口关闭事件
+        this.$pub.subscribe("trackModalCloseEvent", (msg, params) => {
+            this.othersAction = 0;
+        });
+        //订阅推荐窗口关闭事件
+        this.$pub.subscribe("referralModalCloseEvent", (msg, params) => {
+            this.othersAction = 0;
+        });
     },
     watch: {
         currentActionComputed(newVal, oldVal) {
@@ -381,7 +417,7 @@ export default {
                 position: fixed;
                 left: 0;
                 top: 0;
-                z-index: 2;
+                z-index: 10000;
                 background-color: #ffffff;
                 .mHead {
                     width: 100%;

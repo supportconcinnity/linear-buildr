@@ -694,6 +694,10 @@ export default {
                 this.trackStatus = false;
                 this.$pub.publish("referralModalChange", this.referStatus);
                 this.$pub.publish("trackModalChange", this.trackStatus);
+
+                if (this.mShowWallet) {
+                    this.mShowWallet = false;
+                }
             }
         },
 
@@ -706,11 +710,12 @@ export default {
             if (this.referStatus) {
                 this.transactionStatus = false;
                 this.trackStatus = false;
-                this.$pub.publish(
-                    "transactionModalChange",
-                    this.transactionStatus
-                );
+                this.$pub.publish("transactionModalChange", this.transactionStatus);
                 this.$pub.publish("trackModalChange", this.trackStatus);
+
+                if (this.mShowWallet) {
+                    this.mShowWallet = false;
+                }
             }
         },
 
@@ -723,11 +728,12 @@ export default {
             if (this.trackStatus) {
                 this.transactionStatus = false;
                 this.referStatus = false;
-                this.$pub.publish(
-                    "transactionModalChange",
-                    this.transactionStatus
-                );
+                this.$pub.publish("transactionModalChange", this.transactionStatus);
                 this.$pub.publish("referralModalChange", this.referStatus);
+
+                if (this.mShowWallet) {
+                    this.mShowWallet = false;
+                }
             }
         },
 
