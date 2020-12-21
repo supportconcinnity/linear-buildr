@@ -17,6 +17,16 @@
         <Tabs v-model="referralTabs" class="referralTabs">
             <TabPane name="m0" class="m0">
                 <div class="content">
+                    <div
+                        class="errMsg"
+                        :style="{
+                            display: codeInputErrorMsg ? 'flex' : 'none'
+                        }"
+                    >
+                        <img src="@/static/error.svg" alt="">
+                        {{ codeInputErrorMsg }}
+                    </div>
+
                     <div class="contentTitle">Earn LINA with friends</div>
                     <div class="contentDesc">
                         Receive 10 USD worth LINA when a friend adds your code
@@ -62,6 +72,13 @@
                             >
                                 <img src="@/static/info.svg" />
                             </Tooltip>
+
+                            <img
+                                class="showInfoMobile"
+                                src="@/static/info_white.svg"
+                                alt=""
+                                @click="showIntroductActionModal"
+                            />
                         </div>
                         <input
                             :disabled="loading"
@@ -77,15 +94,6 @@
                         <div v-else class="codeInput">
                             {{ referralCode.referral_code }}
                         </div>
-
-                        <div
-                            class="itemErrMsg"
-                            :style="{
-                                opacity: codeInputErrorMsg ? '1' : '0'
-                            }"
-                        >
-                            {{ codeInputErrorMsg }}
-                        </div>
                     </div>
                 </div>
 
@@ -100,6 +108,7 @@
             </TabPane>
 
             <TabPane name="m1" class="m1">
+                <div class="titleMobile">Confirmation</div>
                 <div class="icon"><img src="@/static/success.svg" /></div>
                 <div class="title">
                     You are adding {{ referralCode.referral_code }}. Are you
@@ -122,7 +131,22 @@
                 </div>
             </TabPane>
         </Tabs>
+
         <Spin size="large" fix v-if="loading"></Spin>
+
+        <Modal
+            v-model="introductActionModal"
+            :footer-hide="true"
+            :closable="true"
+            :transfer="false"
+            :mask="true"
+            class="introductActionModal"
+        >
+            <div class="title">Enter referral code</div>
+            <div class="context">
+                Referral code can only be submitted once.
+            </div>
+        </Modal>
     </Modal>
 </template>
 
@@ -151,7 +175,9 @@ export default {
 
             loading: false,
 
-            copyStatus: 0
+            copyStatus: 0,
+
+            introductActionModal: false,
         };
     },
     created() {
@@ -317,7 +343,11 @@ export default {
                         this.referralTabs = "m0";
                     });
             }
-        }
+        },
+
+        showIntroductActionModal() {
+            this.introductActionModal = true;
+        },
     }
 };
 </script>
@@ -534,6 +564,10 @@ export default {
                                         margin-top: -3px;
                                     }
                                 }
+
+                                .showInfoMobile {
+                                    display: none;
+                                }
                             }
 
                             .codeInput {
@@ -610,6 +644,10 @@ export default {
                     justify-content: center;
                     align-items: center;
 
+                    .titleMobile {
+                        display: none;
+                    }
+
                     .title {
                         margin: 40px 0 8px;
                         font-family: Gilroy-Bold;
@@ -668,6 +706,321 @@ export default {
                             &.disabled {
                                 opacity: 0.1;
                                 cursor: not-allowed;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #referralModal {
+        .ivu-modal-wrap {
+            .ivu-modal-body {
+                .closeBtn {
+                    top: 7px;
+                    right: 7px;
+
+                    #closeSvg {
+                        width: 26px!important;
+                        height: 26px!important;
+                    }
+                }
+
+                .referralTabs {
+                    height: 100%;
+
+                    .ivu-tabs-bar {
+                        display: none;
+                    }
+
+                    .ivu-tabs-content {
+                        height: 100%;
+                    }
+
+                    .m0 {
+                        .content {
+                            padding: 0;
+
+                            .errMsg {
+                                align-items: center;
+                                height: 14.6vw;
+                                width: 74.4vw;
+                                padding: 12px 16px;
+                                margin-top: 24px;
+                                border-radius: 8px;
+                                background-color: rgba(223,67,76,.05);
+                                font-size: 12px;
+                                color: #df434c;
+
+                                img {
+                                    margin-right: 16px;
+                                }
+                            }
+
+                            .contentTitle {
+                                margin-top: 24px;
+                                font-family: Gilroy;
+                                font-size: 16px;
+                                font-weight: 500;
+                                color: #99999a;
+                            }
+
+                            .contentDesc {
+                                display: none;
+                            }
+
+                            .youCodeBox {
+                                
+                            }
+
+                            .youCodeBox {
+                                width: 74.6vw;
+                                margin-top: 16px;
+
+                                .title {
+                                    font-size: 14px;
+                                    font-weight: bold;
+                                }
+
+                                .code {
+                                    font-size: 24px;
+                                }
+                            }
+
+                            .dashLine {
+                                margin: 48px 0;
+                                width: 786px;
+                                display: inline-block;
+                                height: 1px;
+                                // border: 1px dashed #deddde;
+                                background-image: linear-gradient(
+                                    to right,
+                                    #ccc 0%,
+                                    #ccc 50%,
+                                    transparent 50%
+                                );
+                                background-size: 12px 1px;
+                                background-repeat: repeat-x;
+                            }
+
+                            .referralCodeBox {
+                                width: 74.6vw;
+                                padding: 16px 24px;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                border-radius: 8px;
+                                border: solid 1px #deddde;
+                                transition: $animete-time linear;
+                                position: relative;
+
+                                &.hasCode {
+                                    background: rgba(126, 181, 255, 0.1);
+                                    border: none;
+                                }
+
+                                &:hover {
+                                    &:not(.hasCode) {
+                                        box-shadow: 0px 2px 12px #deddde;
+                                    }
+
+                                    &:not(.error) {
+                                        border-color: white;
+                                    }
+                                }
+
+                                &.error {
+                                    border-color: #df434c;
+                                }
+
+                                .info {
+                                    display: flex;
+                                    align-items: center;
+                                    font-family: Gilroy-Bold;
+                                    font-size: 12px;
+                                    font-weight: unset;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.5;
+                                    letter-spacing: normal;
+                                    text-align: center;
+                                    color: #5a575c;
+
+                                    .tip {
+                                        display: none;
+                                    }
+
+                                    .showInfoMobile {
+                                        display: block;
+                                        position: absolute;
+                                        top: 9px;
+                                        right: 9px;
+                                    }
+                                }
+
+                                .codeInput {
+                                    margin-top: 8px;
+                                    width: 100%;
+                                    color: #5a575c;
+                                    border: none;
+                                    box-shadow: none;
+                                    text-align: center;
+                                    outline: none;
+                                    font-family: Gilroy-Bold;
+                                    font-size: 24px;
+                                    font-weight: bold;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.25;
+                                    letter-spacing: normal;
+
+                                    &::placeholder {
+                                        color: #99999a;
+                                    }
+                                }
+                            }
+                        }
+
+                        .submitBtn {
+                            height: 12.8vw!important;
+                            font-size: 16px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            &:hover {
+                                &:not(.disabled) {
+                                    background-color: #7eb5ff;
+                                }
+                            }
+
+                            &.disabled {
+                                opacity: 0.1;
+                                cursor: not-allowed;
+                            }
+                        }
+                    }
+
+                    .m1 {
+                        position: relative;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        padding: 24px 30px 0;
+
+                        .titleMobile {
+                            position: absolute;
+                            top: 24px;
+                            left: 30px;
+                            display: block;
+                            font-family: Gilroy-Bold;
+                            font-size: 16px;
+                            color: #5a575c;
+                        }
+
+                        .title {
+                            margin: 40px 0 8px;
+                            font-family: Gilroy-Bold;
+                            font-size: 24px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.33;
+                            letter-spacing: normal;
+                            text-align: center;
+                            color: #5a575c;
+                        }
+
+                        .desc {
+                            color: #5a575c;
+                            font-family: Gilroy-Regular;
+                            font-size: 16px;
+                            font-weight: 400;
+                            line-height: 24px;
+                            text-align: center;
+                        }
+
+                        .btns {
+                            width: 100%;
+                            margin-top: 48px;
+                            display: flex;
+                            flex-direction: column-reverse;
+
+                            .back,
+                            .confirm {
+                                font-family: Gilroy;
+                                font-size: 12px;
+                                font-weight: 700;
+                                line-height: 16px;
+                                text-align: center;
+                                text-transform: uppercase;
+                                letter-spacing: 1.5px;
+                                border-radius: 20px;
+                                padding: 13px 25px 11px;
+                                cursor: pointer;
+                                margin: 0 0;
+                            }
+
+                            .back {
+                                margin-top: 16px;
+                                border: solid 1px #1a38f8;
+                                color: #1a38f8;
+                            }
+
+                            .confirm {
+                                color: white;
+                                background: #1a38f8;
+
+                                &:hover {
+                                    &:not(.disabled) {
+                                        background-color: #7eb5ff;
+                                    }
+                                }
+
+                                &.disabled {
+                                    opacity: 0.1;
+                                    cursor: not-allowed;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /deep/.introductActionModal {
+            .ivu-modal-wrap {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .ivu-modal {
+                    width: 74.66vw!important;
+                    height: 36.8vw;
+                    top: 0!important;
+
+                    .ivu-modal-content {
+                        height: 100%;
+                        border-radius: 6px;
+
+                        .ivu-modal-body {
+                            height: 100%;
+                            padding: 24px;
+                            box-shadow: unset;
+
+                            .title {
+                                font-family: Gilroy-Bold;
+                                font-size: 16px;
+                                margin-bottom: 9px;
+                            }
+
+                            .context {
+                                font-family: Gilroy;
+                                font-size: 14px;
                             }
                         }
                     }
