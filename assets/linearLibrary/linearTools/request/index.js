@@ -264,8 +264,8 @@ export const storeDetailsData = async () => {
             formatData.priceRates = priceRates;
             //不需要格式化
             formatData.transferableAssets = transferableAssets;
-            formatData.liquids = _.floor(liquids, 2);
-            formatData.liquids2USD = _.floor(liquids2USD, 2);
+            formatData.liquids = formatNumber(liquids);
+            formatData.liquids2USD = formatNumber(liquids2USD);
 
             // console.log(formatData,'storeDetailsData');
 

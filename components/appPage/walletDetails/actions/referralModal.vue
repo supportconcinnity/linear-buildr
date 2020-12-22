@@ -763,6 +763,7 @@ export default {
                             padding: 0;
 
                             .errMsgMobile {
+                                text-transform: uppercase;
                                 display: flex;
                                 align-items: center;
                                 height: 14.6vw;
