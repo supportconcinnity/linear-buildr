@@ -168,10 +168,18 @@ export const setGraphApi = ({ networkId }) => {
     if (isEthereumNetwork(networkId)) {
         if (networkId == SUPPORTED_NETWORKS_MAP.MAINNET) {
             graphAPIEndpoints.ethereum =
-                process.env.GRAPH_BUILD_ETHEREUM_MAINNET;
+                process.env.GRAPH_BUILDR_ETHEREUM_MAINNET;
         } else {
             graphAPIEndpoints.ethereum =
-                process.env.GRAPH_BUILD_ETHEREUM_ROPSTEN;
+                process.env.GRAPH_BUILDR_ETHEREUM_ROPSTEN;
+        }
+    } else if (isBinanceNetwork(networkId)) {
+        if (networkId == SUPPORTED_NETWORKS_MAP.BSCMAINNET) {
+            graphAPIEndpoints.binance =
+                process.env.GRAPH_BUILDR_BINANCE_MAINNET;
+        } else {
+            graphAPIEndpoints.binance =
+                process.env.GRAPH_BUILDR_BINANCE_TESTNET;
         }
     }
 };

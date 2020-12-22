@@ -1223,7 +1223,7 @@ export default {
         position: fixed;
         left: 0;
         top: 0;
-        z-index: 1;
+        z-index: 9999;
 
         &.mScroll {
             overflow-y: scroll;
@@ -1403,7 +1403,7 @@ export default {
                 padding: 16px 24px;
                 display: flex;
                 margin-bottom: 16px;
-
+                    
                 .metamaskIcon {
                     width: 32px;
                     height: 32px;
@@ -1475,6 +1475,7 @@ export default {
                     }
                 }
 
+                
                 .mClose {
                     position: fixed;
                     right: 19px;
@@ -1774,8 +1775,10 @@ export default {
                         -webkit-animation: spin 1s linear 1s 5 alternate;
                         animation: spin 1s linear infinite;
                         cursor: not-allowed;
+
                     }
                 }
+
             }
         }
         .mNavigate {
