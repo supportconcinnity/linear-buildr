@@ -9,11 +9,13 @@ import {
     onMetamaskChainChange,
     BLOCKCHAIN,
     isEthereumNetwork,
-    isBinanceNetwork
+    isBinanceNetwork,
+    SUPPORTED_NETWORKS_MAP
 } from "./network";
 import { LinearJs } from "../linearJs";
 import $pub from "pubsub-js";
 import { storeDetailsData } from "./request";
+const { graphAPIEndpoints } = require("./request/linearData/transactionData");
 
 let lnrJSConnector = {
     signers: LinearJs.signers,
@@ -41,6 +43,8 @@ export const connectToWallet = async networkType => {
         }
 
         setSigner({ type: networkType, networkId });
+
+        setGraphApi({ networkId });
 
         switch (networkType) {
             case SUPPORTED_WALLETS_MAP.METAMASK:
@@ -155,6 +159,30 @@ export const setSigner = ({ type, networkId }) => {
     });
 };
 
+/**
+ * 根据网络ID重新设置graph地址
+ * @param networkId 网络ID
+ */
+export const setGraphApi = ({ networkId }) => {
+    if (isEthereumNetwork(networkId)) {
+        if (networkId == SUPPORTED_NETWORKS_MAP.MAINNET) {
+            graphAPIEndpoints.ethereum =
+                process.env.GRAPH_BUILDR_ETHEREUM_MAINNET;
+        } else {
+            graphAPIEndpoints.ethereum =
+                process.env.GRAPH_BUILDR_ETHEREUM_ROPSTEN;
+        }
+    } else if (isBinanceNetwork(networkId)) {
+        if (networkId == SUPPORTED_NETWORKS_MAP.BSCMAINNET) {
+            graphAPIEndpoints.binance =
+                process.env.GRAPH_BUILDR_BINANCE_MAINNET;
+        } else {
+            graphAPIEndpoints.binance =
+                process.env.GRAPH_BUILDR_BINANCE_TESTNET;
+        }
+    }
+};
+
 const getSignerConfig = ({ type, networkId }) => {
     if (type === SUPPORTED_WALLETS_MAP.WALLET_CONNECT) {
         return {
@@ -256,7 +284,7 @@ export const selectedWallet = async (
                         store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
                     ) {
                         selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK);
-                        $pub.publish('onMetamaskChainChange')
+                        $pub.publish("onMetamaskChainChange");
                     }
                 });
 

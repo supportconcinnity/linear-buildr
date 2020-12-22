@@ -18,7 +18,7 @@
 
         <div class="loading">Loading…</div>
 
-        <div class="descript">Your transaction waiting to be confirmed</div>
+        <div class="descript">Your transaction is pending confirmation</div>
 
         <div class="btns">
             <div v-if="value" class="etherscan" @click="$emit('etherscan')">

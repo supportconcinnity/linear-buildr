@@ -153,7 +153,7 @@
                             Please input a valid address.
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="!isMobile"></gasEditor>
                     </div>
 
                     <div class="transferMainMobile">
@@ -293,7 +293,7 @@
                             />
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="isMobile"></gasEditor>
                     </div>
 
                     <div
@@ -389,7 +389,8 @@ export default {
         walletAddressEllipsis() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
-        walletNetworkId() {}
+        walletNetworkId() {},
+        isMobile() {}
     },
     computed: {
         //transfer按钮禁止状态
@@ -475,6 +476,10 @@ export default {
 
         walletNetworkId() {
             return this.$store.state?.walletNetworkId;
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
         }
     },
     async created() {

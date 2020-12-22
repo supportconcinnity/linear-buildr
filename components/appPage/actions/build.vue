@@ -6,7 +6,7 @@
                     <div class="actionBodyWeb">
                         <div class="actionTitle">Build</div>
                         <div class="actionDesc">
-                            Build ℓUSD and earn staking rewards by staking LINA
+                            Build ℓUSD and earn staking rewards by staking LINA.
                         </div>
                         <div class="actionRate">
                             1 LINA =
@@ -202,7 +202,7 @@
                             </div>
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="!isMobile"></gasEditor>
                     </div>
 
                     <div class="actionBodyMobile">
@@ -327,7 +327,7 @@
                             </div>
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="isMobile"></gasEditor>
                     </div>
 
                     <div
@@ -499,7 +499,8 @@ export default {
         errorHandle() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
-        walletNetworkId() {}
+        walletNetworkId() {},
+        isMobile() {}
     },
     computed: {
         //build按钮禁止状态
@@ -529,6 +530,10 @@ export default {
 
         walletNetworkId() {
             return this.$store.state?.walletNetworkId;
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
         }
     },
     created() {
