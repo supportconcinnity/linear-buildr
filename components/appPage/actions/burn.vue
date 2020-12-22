@@ -354,6 +354,7 @@
                     v-if="this.actionTabs == 'm1'"
                     :currentStep="confirmTransactionStep"
                     :currentHash="confirmTransactionHash"
+                    :currentNetworkId="confirmTransactionNetworkId"
                     :currentConfirm="confirmTransactionStatus"
                     :currentErrMsg="transactionErrMsg"
                     :setupArray="waitProcessArray"
@@ -445,6 +446,7 @@ export default {
 
             confirmTransactionStep: 0, //当前交易进度
             confirmTransactionStatus: false, //当前交易确认状态
+            confirmTransactionNetworkId: "", //当前交易确认网络id
             confirmTransactionHash: "", //当前交易hash
             transactionErrMsg: "", //交易错误信息
             waitProcessArray: [], //等待交易进度组
@@ -793,11 +795,13 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
+                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.BURN,
+                    networkId: this.walletNetworkId,
                     value: `Burn ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -841,11 +845,13 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
+                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.BURN,
+                    networkId: this.walletNetworkId,
                     value: `Burn ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -892,11 +898,13 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
+                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.UNSTAKING,
+                    networkId: this.walletNetworkId,
                     value: `Burn ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`

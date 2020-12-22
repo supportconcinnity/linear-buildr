@@ -209,10 +209,15 @@
                         <div
                             class="errMsg"
                             :style="{
-                                display: errors.stakeMsg || errors.ratioMsg || errors.amountMsg ? 'flex' : 'none'
+                                display:
+                                    errors.stakeMsg ||
+                                    errors.ratioMsg ||
+                                    errors.amountMsg
+                                        ? 'flex'
+                                        : 'none'
                             }"
                         >
-                            <img src="@/static/error.svg" alt="">
+                            <img src="@/static/error.svg" alt="" />
                             {{ errors.stakeMsg }}
                             {{ errors.ratioMsg }}
                             {{ errors.amountMsg }}
@@ -245,8 +250,13 @@
 
                                 <div class="box">
                                     <div class="itemType">
-                                        <img src="@/static/LINA_logo.svg" alt="" />
-                                        <div class="itemTypeTitle">Stake LINA</div>
+                                        <img
+                                            src="@/static/LINA_logo.svg"
+                                            alt=""
+                                        />
+                                        <div class="itemTypeTitle">
+                                            Stake LINA
+                                        </div>
                                         <InputNumber
                                             class="input"
                                             ref="itemInput3"
@@ -260,9 +270,12 @@
                                             :formatter="formatterInput"
                                         />
                                     </div>
-    
+
                                     <div class="itemType">
-                                        <img src="@/static/currency/lUSD.svg" alt=""/>
+                                        <img
+                                            src="@/static/currency/lUSD.svg"
+                                            alt=""
+                                        />
                                         <div class="itemTypeTitle">
                                             Build ℓUSD
                                         </div>
@@ -290,7 +303,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div
                             class="actionInputItem"
                             :class="{
@@ -347,6 +360,7 @@
                     v-if="this.actionTabs == 'm1'"
                     :currentStep="confirmTransactionStep"
                     :currentHash="confirmTransactionHash"
+                    :currentNetworkId="confirmTransactionNetworkId"
                     :currentConfirm="confirmTransactionStatus"
                     :currentErrMsg="transactionErrMsg"
                     :setupArray="waitProcessArray"
@@ -366,7 +380,8 @@
         >
             <div class="title">Build ℓUSD</div>
             <div class="context">
-                Amount of ℓUSD built may vary due to block times and price fluctuations in pledge tokens.
+                Amount of ℓUSD built may vary due to block times and price
+                fluctuations in pledge tokens.
             </div>
         </Modal>
     </div>
@@ -390,7 +405,6 @@ import {
     findParents,
     removeClass,
     addClass,
-    openBlockchainScan,
     formatterInput
 } from "@/common/utils";
 
@@ -446,6 +460,7 @@ export default {
 
             confirmTransactionStep: -1, //当前交易进度
             confirmTransactionStatus: false, //当前交易确认状态
+            confirmTransactionNetworkId:"",//当前交易确认网络id
             confirmTransactionHash: "", //当前交易hash
             transactionErrMsg: "", //交易错误信息
             processing: false, // 处理状态, 防止重复点击
@@ -606,7 +621,7 @@ export default {
                 const targetRatioPercent = 100 / buildRatio; //目标抵押率
 
                 // const priceRates = await getPriceRates(["LINA", "lUSD"]);
-                 const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
+                const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
 
                 const LINAPrice = priceRates.LINA / priceRates.lUSD;
                 const LINAPriceBN = bnDiv(priceRates.LINA, priceRates.lUSD);
@@ -1319,10 +1334,12 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
+                this.confirmTransactionNetworkId = this.walletNetworkId;
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.APPROVE,
+                    networkId: this.walletNetworkId,
                     value: `Building ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -1369,10 +1386,12 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
+                 this.confirmTransactionNetworkId = this.walletNetworkId;
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.BUILD,
+                     networkId: this.walletNetworkId,
                     value: `Building ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -1420,10 +1439,12 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
+                 this.confirmTransactionNetworkId = this.walletNetworkId;
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.STAKING,
+                     networkId: this.walletNetworkId,
                     value: `Building ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -1475,11 +1496,13 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
+                 this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.BUILD,
+                     networkId: this.walletNetworkId,
                     value: `Building ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -1680,11 +1703,6 @@ export default {
 
         showIntroductActionModal() {
             this.introductActionModal = true;
-        },
-
-        //查询hash
-        etherscan() {
-            openBlockchainScan(this.confirmTransactionHash);
         },
 
         //交易状态页面回调方法 回到主页
@@ -2026,14 +2044,14 @@ export default {
 
                 .ivu-tabs-tabpane {
                     width: 100%;
-                    height: 88vh!important;
+                    height: 88vh !important;
 
                     .buildBox,
                     .waitingBox,
                     .successBox,
                     .wrongBox {
                         width: 100%;
-                        height: 88vh!important;
+                        height: 88vh !important;
                     }
 
                     .buildBox {
@@ -2055,7 +2073,7 @@ export default {
                                 padding: 12px 16px;
                                 margin-top: 24px;
                                 border-radius: 8px;
-                                background-color: rgba(223,67,76,.05);
+                                background-color: rgba(223, 67, 76, 0.05);
                                 font-size: 12px;
                                 color: #df434c;
 
@@ -2108,7 +2126,8 @@ export default {
                                             display: flex;
                                             justify-content: center;
                                             flex-direction: column;
-                                            align-items: center;height: 50.1vw;
+                                            align-items: center;
+                                            height: 50.1vw;
 
                                             img {
                                                 width: 40px;
@@ -2248,7 +2267,7 @@ export default {
                             width: 100%;
                             position: absolute;
                             bottom: 0px;
-                            height: 12.8vw!important;
+                            height: 12.8vw !important;
                             cursor: pointer;
                             background: #1a38f8;
                             color: #ffffff;
@@ -2288,9 +2307,9 @@ export default {
                 justify-content: center;
 
                 .ivu-modal {
-                    width: 74.66vw!important;
+                    width: 74.66vw !important;
                     height: 36.8vw;
-                    top: 0!important;
+                    top: 0 !important;
 
                     .ivu-modal-content {
                         height: 100%;

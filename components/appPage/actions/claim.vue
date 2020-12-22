@@ -163,7 +163,7 @@ import {
     DEFAULT_GAS_LIMIT
 } from "@/assets/linearLibrary/linearTools/network";
 import { utils } from "ethers";
-import { BUILD_PROCESS_SETUP } from '@/assets/linearLibrary/linearTools/constants/process';
+import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
 
 export default {
     name: "claim",
@@ -191,7 +191,8 @@ export default {
     },
     watch: {
         walletAddress() {},
-        walletNetworkName() {}
+        walletNetworkName() {},
+        walletNetworkId() {}
     },
     computed: {
         walletNetworkName() {
@@ -209,6 +210,10 @@ export default {
                 this.processing ||
                 (this.tradingRewards == 0 && this.stakingRewards == 0)
             );
+        },
+
+        walletNetworkId() {
+            return this.$store.state?.walletNetworkId;
         }
     },
     methods: {
@@ -259,9 +264,9 @@ export default {
                         this.$pub.publish("notificationQueue", {
                             hash: this.confirmTransactionHash,
                             type: BUILD_PROCESS_SETUP.CLAIM,
-                            value: `Claiming ${this.confirmTransactionStep + 1} / ${
-                                this.waitProcessArray.length
-                            }`
+                             networkId: this.walletNetworkId,
+                            value: `Claiming ${this.confirmTransactionStep +
+                                1} / ${this.waitProcessArray.length}`
                         });
 
                         //等待结果返回
@@ -398,8 +403,10 @@ export default {
 
         //到 etherscan 查看交易记录详情
         etherscan() {
-            //模拟跳到错误页
-            this.actionTabs = "m3";
+            openBlockchainBrowser(
+                this.confirmTransactionHash,
+                this.walletNetworkId
+            );
         },
 
         //交易状态页面回调方法 回到主页
@@ -678,7 +685,7 @@ export default {
 
                 .ivu-tabs-tabpane {
                     width: 100%;
-                    height: 88vh!important;
+                    height: 88vh !important;
 
                     .claimBox,
                     .waitingBox,
@@ -862,7 +869,7 @@ export default {
 
                         .claimBtn {
                             width: 100%;
-                            height: 12.8vw!important;
+                            height: 12.8vw !important;
                             background: #1a38f8;
                             position: absolute;
                             bottom: 0px;
@@ -909,9 +916,9 @@ export default {
                 justify-content: center;
 
                 .ivu-modal {
-                    width: 74.66vw!important;
+                    width: 74.66vw !important;
                     height: 36.8vw;
-                    top: 0!important;
+                    top: 0 !important;
 
                     .ivu-modal-content {
                         height: 100%;

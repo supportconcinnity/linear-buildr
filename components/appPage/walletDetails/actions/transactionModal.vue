@@ -202,12 +202,12 @@
                         >
                             <div class="td chain">
                                 <template
-                                    v-if="row.chain == BLOCKCHAIN.ETHEREUM"
+                                    v-if="isEthereumNetwork(row.networkId)"
                                 >
                                     <img src="@/static/ETH.svg" />
                                 </template>
                                 <template
-                                    v-if="row.chain == BLOCKCHAIN.BINANCE"
+                                    v-if="isBinanceNetwork(row.networkId)"
                                 >
                                     <img src="@/static/logo-wallet-bsc.svg" />
                                 </template>
@@ -222,8 +222,16 @@
                             <div class="td amount">
                                 <span>{{ row.amount }}</span>
                             </div>
-                            <div class="td viewInBrowser">
-                                <a :href="row.hash" target="_blank">VIEW →</a>
+                            <div
+                                class="td viewInBrowser"
+                                @click="
+                                    openBlockchainBrowser(
+                                        row.hash,
+                                        row.networkId
+                                    )
+                                "
+                            >
+                                VIEW →
                             </div>
                         </div>
                     </div>
@@ -247,7 +255,7 @@
             </div>
         </div>
 
-        <div class="noTransactionBox">
+        <div v-else class="noTransactionBox">
             <img src="@/static/no_transaction.svg" alt="" />
             <div class="title">No Transactions</div>
             <div class="context">You have not made any transactions yet</div>
@@ -262,10 +270,14 @@ import {
     TRANSACTION_EVENTS
 } from "@/assets/linearLibrary/linearTools/request/transactionHistory";
 import { format } from "date-fns";
-import { BLOCKCHAIN } from "@/assets/linearLibrary/linearTools/network";
+import {
+    isEthereumNetwork,
+    isBinanceNetwork,
+    getOtherNetworks
+} from "@/assets/linearLibrary/linearTools/network";
 import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
-import { getBrowserUrlBase } from "@/assets/linearLibrary/linearJs/contractSettings";
 import closeSvg from "@/components/svg/close.vue";
+import { openBlockchainBrowser } from "@/common/utils";
 
 export default {
     components: { closeSvg },
@@ -293,7 +305,9 @@ export default {
 
             tableData: [],
 
-            BLOCKCHAIN
+            isEthereumNetwork,
+            isBinanceNetwork,
+            openBlockchainBrowser
         };
     },
     created() {
@@ -309,10 +323,8 @@ export default {
     watch: {
         currentPageData() {
             var that = this;
-            var type = "",
-                amount = "",
+            var amount = "",
                 date = "",
-                hash = "",
                 tempData = [];
 
             if (this.currentPageData.length == 0) {
@@ -323,14 +335,8 @@ export default {
             }
 
             this.currentPageData.map(function(item, index, ary) {
-                type = item.type;
                 date = format(item.timestamp, "d MMM yyyy kk:mm");
-
-                let baseUrl = getBrowserUrlBase({
-                    blockChain: item.chain,
-                    netWork: item.net
-                });
-                hash = baseUrl + item.hash;
+                const { networkId, hash, chain, type } = item;
 
                 if (
                     item.type == "Build" ||
@@ -364,11 +370,12 @@ export default {
                 }
 
                 tempData.push({
-                    chain: item.chain,
-                    type: type,
-                    amount: amount,
-                    date: date,
-                    hash: hash
+                    networkId,
+                    chain,
+                    type,
+                    amount,
+                    date,
+                    hash
                 });
             });
 
@@ -376,7 +383,8 @@ export default {
                 this.tableData = tempData;
             });
         },
-        filterTransactionHistoryData() {}
+        filterTransactionHistoryData() {},
+        walletNetworkId() {}
     },
     computed: {
         //根据筛选条件计算交易数据
@@ -499,6 +507,10 @@ export default {
         //网络类型
         walletNetworkId() {
             return this.$store.state.walletNetworkId;
+        },
+
+        walletNetworkId() {
+            return this.$store.state?.walletNetworkId;
         }
     },
     methods: {
@@ -515,16 +527,33 @@ export default {
         },
         //获取交易记录
         async fetchTransactionHistoryClick() {
-            let ethData = await fetchTransactionHistory(
-                this.$store.state?.wallet?.address,
-                BLOCKCHAIN.ETHEREUM
-            );
-            let bscData = await fetchTransactionHistory(
-                this.$store.state?.wallet?.address,
-                BLOCKCHAIN.BINANCE
+            let waitArray = [];
+
+            //push当前网络
+            waitArray.push(
+                fetchTransactionHistory(
+                    this.$store.state?.wallet?.address,
+                    this.walletNetworkId
+                )
             );
 
-            this.transactionHistoryData = [...ethData, ...bscData];
+            //获取其他网络graph数据
+            const other = getOtherNetworks(this.walletNetworkId);
+            if (other.length) {
+                for (const index in other) {
+                    const id = other[index];
+                    waitArray.push(
+                        fetchTransactionHistory(
+                            this.$store.state?.wallet?.address,
+                            id
+                        )
+                    );
+                }
+            }
+
+            const [one, two] = await Promise.all(waitArray);
+            this.transactionHistoryData = [...one, ...two];
+
             this.transactionHistoryData = this.transactionHistoryData.sort(
                 function(record1, record2) {
                     return record2.timestamp - record1.timestamp;
@@ -926,10 +955,11 @@ body {
                                 letter-spacing: 1.5px;
                                 opacity: 0.2;
                                 float: right;
-                            }
+                                cursor: pointer;
 
-                            .viewInBrowser:hover {
-                                opacity: 1;
+                                &:hover {
+                                    opacity: 1;
+                                }
                             }
                         }
                     }
@@ -1002,15 +1032,14 @@ body {
                                 &:last-of-type {
                                     text-align: center;
 
-                                    a {
-                                        color: #1a38f8;
-                                        font-family: Gilroy-Bold;
-                                        font-weight: bold;
-                                        padding-right: 16px;
-                                        opacity: 0.2 !important;
-                                    }
+                                    color: #1a38f8;
+                                    font-family: Gilroy-Bold;
+                                    font-weight: bold;
+                                    padding-right: 16px;
+                                    opacity: 0.2 !important;
+                                    cursor: pointer;
 
-                                    a:hover {
+                                    &:hover {
                                         opacity: 1 !important;
                                     }
                                 }
@@ -1461,10 +1490,10 @@ body {
                                     letter-spacing: 1.5px;
                                     opacity: 0.2;
                                     float: right;
-                                }
 
-                                .viewInBrowser:hover {
-                                    opacity: 1;
+                                    &:hover {
+                                        opacity: 1;
+                                    }
                                 }
                             }
                         }
@@ -1537,15 +1566,14 @@ body {
                                     &:last-of-type {
                                         text-align: center;
 
-                                        a {
-                                            color: #1a38f8;
-                                            font-family: Gilroy-Bold;
-                                            font-weight: bold;
-                                            padding-right: 16px;
-                                            opacity: 0.2 !important;
-                                        }
+                                        color: #1a38f8;
+                                        font-family: Gilroy-Bold;
+                                        font-weight: bold;
+                                        padding-right: 16px;
+                                        opacity: 0.2 !important;
+                                        cursor: pointer;
 
-                                        a:hover {
+                                        &:hover {
                                             opacity: 1 !important;
                                         }
                                     }

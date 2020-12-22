@@ -133,6 +133,7 @@
                     :currentStep="confirmTransactionStep"
                     :currentHash="confirmTransactionHash"
                     :currentConfirm="confirmTransactionStatus"
+                    :currentNetworkId="confirmTransactionNetworkId"
                     :currentErrMsg="transactionErrMsg"
                     :setupArray="waitProcessArray"
                     @tryAgain="waitProcessFlow"
@@ -148,7 +149,6 @@ import _ from "lodash";
 import gasEditorSwap from "@/components/gasEditorSwap";
 import {
     formatterInput,
-    openBlockchainScan,
     setCursorRange,
     findParents,
     removeClass,
@@ -185,6 +185,7 @@ export default {
 
             confirmTransactionStep: 0, //当前交易进度
             confirmTransactionStatus: false, //当前交易确认状态
+            confirmTransactionNetworkId: "", //当前交易确认网络id
             confirmTransactionHash: "", //当前交易hash
             transactionErrMsg: "", //交易错误信息
             processing: false, // 处理状态, 防止重复点击
@@ -443,10 +444,12 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
+                this.confirmTransactionNetworkId = this.walletNetworkId;
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.APPROVE,
+                    networkId: this.walletNetworkId,
                     value: `Approve ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -532,11 +535,13 @@ export default {
                 this.confirmTransactionStatus = true;
                 this.freezeSuccessHash = this.confirmTransactionHash =
                     transaction.hash;
+                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.FREEZE,
+                    networkId: this.walletNetworkId,
                     value: `Swapped on ${SETUP} ${this.confirmTransactionStep +
                         1}/${this.waitProcessArray.length}`
                 });
@@ -666,11 +671,13 @@ export default {
                     if (transaction) {
                         this.confirmTransactionStatus = true;
                         this.confirmTransactionHash = transaction.hash;
+                         this.confirmTransactionNetworkId = this.walletNetworkId;
 
                         // 发起右下角通知
                         this.$pub.publish("notificationQueue", {
                             hash: this.confirmTransactionHash,
                             type: BUILD_PROCESS_SETUP.UNFREEZE,
+                            networkId: this.walletNetworkId,
                             value: `Swapped on ${SETUP} ${this
                                 .confirmTransactionStep + 1}/${
                                 this.waitProcessArray.length

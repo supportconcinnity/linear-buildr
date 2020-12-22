@@ -1,6 +1,6 @@
 const webpack = require("webpack"); //webpack配置扩展
 const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
-require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` }); //读取环境变量
+require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` }); //读取差异环境变量
 
 module.exports = {
     ssr: false,

@@ -17,12 +17,44 @@ export const BINANCE_NETWORKS = {
     97: "BSCTESTNET"
 };
 
+export const MAINNET_NETWORKS = {
+    1: "MAINNET",
+    56: "BSCMAINNET"
+};
+
+export const TESTNET_NETWORKS = {
+    3: "ROPSTEN",
+    97: "BSCTESTNET"
+};
+
 export const isEthereumNetwork = walletNetworkId => {
     return ETHEREUM_NETWORKS.hasOwnProperty(walletNetworkId);
 };
 
 export const isBinanceNetwork = walletNetworkId => {
     return BINANCE_NETWORKS.hasOwnProperty(walletNetworkId);
+};
+
+export const isMainnetNetwork = walletNetworkId => {
+    return MAINNET_NETWORKS.hasOwnProperty(walletNetworkId);
+};
+
+export const isTestnetNetwork = walletNetworkId => {
+    return TESTNET_NETWORKS.hasOwnProperty(walletNetworkId);
+};
+
+/**
+ * 获取所在网络其他网络id
+ * @param walletNetworkId 网络Id
+*/
+export const getOtherNetworks = walletNetworkId => {
+    let other = [];
+    if (isMainnetNetwork(walletNetworkId)) {
+        other = Object.keys(_.omit(MAINNET_NETWORKS, walletNetworkId));
+    } else if (isTestnetNetwork(walletNetworkId)) {
+        other = Object.keys(_.omit(TESTNET_NETWORKS, walletNetworkId));
+    }
+    return other;
 };
 
 export const SUPPORTED_NETWORKS = { ...ETHEREUM_NETWORKS, ...BINANCE_NETWORKS };
@@ -40,6 +72,13 @@ export const WALLET_EXTENSIONS = {
         "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn",
     BINANCE:
         "https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp"
+};
+
+export const BLOCKCHAIN_BROWSER = {
+    1: "https://etherscan.io/tx/",
+    3: "https://ropsten.etherscan.io/tx/",
+    56: "https://bscscan.com/tx/",
+    97: "https://testnet.bscscan.com/tx/"
 };
 
 export const DEFAULT_GAS_LIMIT = {

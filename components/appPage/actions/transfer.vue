@@ -335,7 +335,7 @@
 
 <script>
 import {
-    openBlockchainScan,
+    openBlockchainBrowser,
     findParents,
     removeClass,
     addClass,
@@ -561,6 +561,7 @@ export default {
                         this.$pub.publish("notificationQueue", {
                             hash: this.confirmTransactionHash,
                             type: "Transfer",
+                             networkId: this.walletNetworkId,
                             value: `${formatNumber(
                                 lnrJSConnector.utils.formatEther(sendAmount)
                             )} ${this.currentSelectCurrency.name}`
@@ -723,7 +724,7 @@ export default {
         },
         //交易状态页面回调方法 打开etherscan
         etherscan() {
-            openBlockchainScan(this.confirmTransactionHash);
+            openBlockchainBrowser(this.confirmTransactionHash,this.walletNetworkId);
         },
         //交易状态页面回调方法 回到主页
         homepage() {

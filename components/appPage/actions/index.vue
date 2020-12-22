@@ -178,17 +178,20 @@ export default {
     },
     created() {
         //订阅组件改变事件
-        this.$pub.subscribe("trackModalChange", (msg, params) => {console.log("trackModalChange");
+        this.$pub.subscribe("trackModalChange", (msg, params) => {
+            // console.log("trackModalChange");
             if (params) {
                 this.othersAction = 1;
             }
         });
-        this.$pub.subscribe("transactionModalChange", (msg, params) => {console.log("transactionModalChange");
+        this.$pub.subscribe("transactionModalChange", (msg, params) => {
+            // console.log("transactionModalChange");
             if (params) {    
                 this.othersAction = 2;
             }
         });
-        this.$pub.subscribe("referralModalChange", (msg, params) => {console.log("referralModalChange");
+        this.$pub.subscribe("referralModalChange", (msg, params) => {
+            // console.log("referralModalChange");
         if (params) {    
                 this.othersAction = 3;
             }

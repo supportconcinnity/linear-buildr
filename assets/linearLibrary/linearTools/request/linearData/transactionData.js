@@ -5,9 +5,12 @@ const pageResults = require("graph-results-pager");
 const maxRequest = 1000;
 
 const graphAPIEndpoints = {
-    ethereum: process.env.GRAPH_BUILDR_ETHEREUM_MAINNET,
-    binance: process.env.GRAPH_BUILDR_BINANCE_MAINNET
+    1: process.env.GRAPH_BUILDR_ETHEREUM_MAINNET,
+    3: process.env.GRAPH_BUILDR_ETHEREUM_ROPSTEN,
+    56: process.env.GRAPH_BUILDR_BINANCE_MAINNET,
+    97: process.env.GRAPH_BUILDR_BINANCE_TESTNET
 };
+
 
 module.exports = {
     pageResults,
@@ -17,13 +20,10 @@ module.exports = {
             max = maxRequest,
             account = undefined,
             minBlock = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "minteds",
@@ -64,13 +64,10 @@ module.exports = {
             max = maxRequest,
             account = undefined,
             minBlock = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "burneds",
@@ -111,13 +108,10 @@ module.exports = {
             max = maxRequest,
             account = undefined,
             minBlock = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "debtSnapshots",
@@ -154,13 +148,10 @@ module.exports = {
             max = maxRequest,
             minBlock = undefined,
             maxBlock = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "transfers",
@@ -217,13 +208,10 @@ module.exports = {
         feesClaimed({
             max = maxRequest,
             account = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "feesClaimeds",
@@ -268,13 +256,10 @@ module.exports = {
         collateral({
             max = maxRequest,
             account = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "collaterals",
@@ -320,13 +305,10 @@ module.exports = {
         redeemCollateral({
             max = maxRequest,
             account = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "redeemCollaterals",
@@ -374,13 +356,10 @@ module.exports = {
             max = maxRequest,
             minBlock = undefined,
             maxBlock = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "referrals",
@@ -432,13 +411,10 @@ module.exports = {
         updateUserDebt({
             max = maxRequest,
             filter = {},
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "updateUserDebts",
@@ -475,13 +451,10 @@ module.exports = {
         freeZe({
             max = maxRequest,
             account = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "freeZes",
@@ -518,13 +491,10 @@ module.exports = {
         unfreeze({
             max = maxRequest,
             account = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "unfreezes",
@@ -561,13 +531,10 @@ module.exports = {
         userSwapAssetsCount({
             max = maxRequest,
             account = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "userSwapAssetsCounts",

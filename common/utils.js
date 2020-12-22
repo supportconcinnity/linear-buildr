@@ -1,5 +1,6 @@
 import _ from "lodash";
 import {
+    BLOCKCHAIN_BROWSER,
     isBinanceNetwork,
     isEthereumNetwork,
     SUPPORTED_NETWORKS_MAP
@@ -211,7 +212,7 @@ export const addClass = ($el, $className) => {
  * 根据HASH打开网站
  * @param {String} hash  交易hash
  */
-export const openBlockchainScan = ($hash, blockChain) => {
+export const openBlockchainScan2 = ($hash, blockChain) => {
     try {
         let href;
         let walletNetworkId = $nuxt.$store.state?.walletNetworkId;
@@ -238,7 +239,21 @@ export const openBlockchainScan = ($hash, blockChain) => {
 
         window.open(href, "_blank");
     } catch (error) {
-        console.log(error, "openBlockchainScan");
+        console.log(error, "openBlockchainBrowser");
+    }
+};
+
+/**
+ * 根据HASH打开网站
+ * @param {String} hash  交易hash
+ * @param {Number | String} networdId 网络ID
+ */
+export const openBlockchainBrowser = (hash, networdId) => {
+    try {
+        const baseUrl = BLOCKCHAIN_BROWSER[networdId] + hash;
+        window.open(baseUrl, "_blank");
+    } catch (error) {
+        console.log(error, "openBlockchainBrowser");
     }
 };
 
