@@ -2,7 +2,7 @@ import linearData from '@/assets/linearLibrary/linearTools/request/linearData/tr
 import _ from "lodash";
 import { formatEtherToNumber } from "@/assets/linearLibrary/linearTools/format";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-import ethers from "ethers";
+import { ethers } from "ethers";
 
 export const fetchTrackDebt = async walletAddress => {
 	try {
