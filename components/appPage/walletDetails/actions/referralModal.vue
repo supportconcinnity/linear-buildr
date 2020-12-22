@@ -18,9 +18,9 @@
             <TabPane name="m0" class="m0">
                 <div class="content">
                     <div
-                        class="errMsg"
+                        class="errMsgMobile"
                         :style="{
-                            display: codeInputErrorMsg ? 'flex' : 'none'
+                            display: codeInputErrorMsg && isMobile ? 'flex' : 'none'
                         }"
                     >
                         <img src="@/static/error.svg" alt="">
@@ -93,6 +93,15 @@
 
                         <div v-else class="codeInput">
                             {{ referralCode.referral_code }}
+                        </div>
+
+                        <div
+                            class="itemErrMsg"
+                            :style="{
+                                opacity: codeInputErrorMsg ? '1' : '0'
+                            }"
+                        >
+                            {{ codeInputErrorMsg }}
                         </div>
                     </div>
                 </div>
@@ -188,7 +197,8 @@ export default {
     },
     watch: {
         disabledSubmitBtn() {},
-        walletAddress() {}
+        walletAddress() {},
+        isMobile() {}
     },
     computed: {
         //提交按钮禁止
@@ -213,7 +223,11 @@ export default {
 
         walletAddress() {
             return this.$store.state?.wallet?.address;
-        }
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
+        },
     },
     methods: {
         /**
@@ -290,7 +304,7 @@ export default {
             } else if (
                 this.referralCode.self_code == this.referralCode.referral_code
             ) {
-                this.codeInputErrorMsg = "can't add self referral code";
+                this.codeInputErrorMsg = "Can't add self referral code";
             } else {
                 this.codeInputErrorMsg = "";
             }
@@ -390,6 +404,10 @@ export default {
                         flex-direction: column;
                         align-items: center;
                         padding: 64px 193px;
+
+                        .errMsgMobile {
+                            display: none;        
+                        }
 
                         .contentTitle {
                             color: #5a575c;
@@ -744,7 +762,8 @@ export default {
                         .content {
                             padding: 0;
 
-                            .errMsg {
+                            .errMsgMobile {
+                                display: flex;
                                 align-items: center;
                                 height: 14.6vw;
                                 width: 74.4vw;
@@ -880,6 +899,10 @@ export default {
                                     &::placeholder {
                                         color: #99999a;
                                     }
+                                }
+
+                                .itemErrMsg {
+                                    display: none;
                                 }
                             }
                         }
