@@ -13,9 +13,39 @@
         );
   
         
-      this.admin = async () => {
-        
-        return await this.contract.admin();
+      this.BuildAsset = async (amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.BuildAsset(amount, txParams);
+      };
+    
+      this.BuildMaxAsset = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.BuildMaxAsset(txParams);
+      };
+    
+      this.BurnAsset = async (amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.BurnAsset(amount, txParams);
+      };
+    
+      this.BurnAssetToTarget = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.BurnAssetToTarget(txParams);
+      };
+    
+      this.MaxCanBuildAsset = async (user, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.MaxCanBuildAsset(user, txParams);
+      };
+    
+      this.SetLusdTokenAddress = async (_address, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.SetLusdTokenAddress(_address, txParams);
+      };
+    
+      this.admin = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.admin(txParams);
       };
     
       this.becomeAdmin = async (txParams) => {
@@ -23,14 +53,14 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
-      this.candidate = async () => {
-        
-        return await this.contract.candidate();
+      this.candidate = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.candidate(txParams);
       };
     
-      this.paused = async () => {
-        
-        return await this.contract.paused();
+      this.paused = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.paused(txParams);
       };
     
       this.setCandidate = async (_candidate, txParams) => {
@@ -46,36 +76,6 @@
       this.updateAddressCache = async (_addressStorage, txParams) => {
         txParams = txParams || {};
         return await this.contract.updateAddressCache(_addressStorage, txParams);
-      };
-    
-      this.SetLusdTokenAddress = async (_address, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.SetLusdTokenAddress(_address, txParams);
-      };
-    
-      this.MaxCanBuildAsset = async (user) => {
-        
-        return await this.contract.MaxCanBuildAsset(user);
-      };
-    
-      this.BuildAsset = async (user, amount, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.BuildAsset(user, amount, txParams);
-      };
-    
-      this.BuildMaxAsset = async (user, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.BuildMaxAsset(user, txParams);
-      };
-    
-      this.BurnAsset = async (user, amount, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.BurnAsset(user, amount, txParams);
-      };
-    
-      this.BurnAssetToTarget = async (user, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.BurnAssetToTarget(user, txParams);
       };
     
       }

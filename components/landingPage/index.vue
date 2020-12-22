@@ -6,7 +6,7 @@
                 src="@/static/linear_buildr_logo.svg"
                 alt=""
             />
-            <div class="mBuyLINA mobileShow" @click="openBuy">
+            <div class="mBuyLINA mobileShow" @click="openBuyLINA">
                 BUY LINA
                 <img src="@/static/icon-arrow-left-bold.svg" alt="" />
             </div>
@@ -54,10 +54,10 @@
                     </Panel>
                 </Collapse>
 
-                <div class="buyLINA" @click="openBuy">
+                <!-- <div class="buyLINA" @click="openBuyLINA">
                     Buy LINA
                     <Icon type="ios-arrow-round-forward" />
-                </div>
+                </div> -->
 
                 <div
                     class="mRect mobileShow"
@@ -69,7 +69,7 @@
                             Connect MetaMask Wallet
                         </div>
                         <div class="chain">
-                            Etherium Chain
+                            Ethereum 
                         </div>
                     </div>
                 </div>
@@ -100,7 +100,28 @@
                         </div>
                     </div>
 
-                    <div
+                    <div class="boxItem" @click="openBuyLINA">
+                        <img
+                            class="boxLogo"
+                            src="@/static/LINA_logo.svg"
+                            alt=""
+                        />
+
+                        <div class="boxTitle">
+                            Buy LINA<br />
+                            <img
+                                class="buy_right"
+                                src="@/static/arrow_right.svg"
+                                alt=""
+                            />
+                        </div>
+
+                        <div class="boxDesc">
+                            via Uniswap
+                        </div>
+                    </div>
+
+                    <!-- <div
                         class="boxItem"
                         @click="
                             selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)
@@ -125,7 +146,7 @@
                         <div class="boxDesc">
                             via Binance Chain Wallet
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -134,9 +155,7 @@
 
 <script>
 import { selectedWallet } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-
 import { SUPPORTED_WALLETS_MAP } from "@/assets/linearLibrary/linearTools/network";
-
 import { openBuyLINA } from "@/common/utils";
 
 export default {
@@ -145,7 +164,8 @@ export default {
         return {
             SUPPORTED_WALLETS_MAP,
             introduct: "0",
-            selectedWallet
+            selectedWallet,
+            openBuyLINA
         };
     },
     mounted() {
@@ -154,18 +174,13 @@ export default {
             this.introduct = "1";
         }, 100);
         //调试用,进入指定页,不用时屏蔽
-        // this.$store.commit("setCurrentAction", 4);
+        // this.$store.commit("setCurrentAction", 1);
         // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
         // setTimeout(
         //     () => selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
         //     1000
         // ); //自动连接BINANCE
         //调试用,进入指定页,不用时屏蔽
-    },
-    methods: {
-        openBuy() {
-            // openBuyLINA()
-        }
     }
 };
 </script>
@@ -376,6 +391,12 @@ export default {
                         letter-spacing: normal;
                         color: #1a38f8;
                         text-align: center;
+
+                        .buy_right {
+                            width: 40px;
+                            height: 40px;
+                            vertical-align: middle;
+                        }
                     }
 
                     .boxDesc {

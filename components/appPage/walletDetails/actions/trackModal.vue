@@ -205,7 +205,7 @@ export default {
                     );
                     break;
                 case 2:
-                    window.open("https://medium.com/@linear.finance");
+                    window.open("https://medium.com/linear-finance");
                     break;
                 case 3:
                     window.open("https://twitter.com/LinearFinance");
@@ -267,58 +267,62 @@ export default {
                 let trackData = await fetchTrackDebt(this.walletAddress);
 
                 const results = await Promise.all([
-                    lUSD.balanceOf(this.walletAddress),
-                    lBTC.balanceOf(this.walletAddress),
-                    lETH.balanceOf(this.walletAddress),
-                    lHB10.balanceOf(this.walletAddress)
+                    lUSD.balanceOf(this.walletAddress)
+                    // lBTC.balanceOf(this.walletAddress),
+                    // lETH.balanceOf(this.walletAddress),
+                    // lHB10.balanceOf(this.walletAddress)
                 ]);
 
                 let lUSDBalance = formatEtherToNumber(results[0]);
-                let lBTCBalance = formatEtherToNumber(results[1]);
-                let lETHBalance = formatEtherToNumber(results[2]);
-                let lHB10Balance = formatEtherToNumber(results[3]);
+                // let lBTCBalance = formatEtherToNumber(results[1]);
+                // let lETHBalance = formatEtherToNumber(results[2]);
+                // let lHB10Balance = formatEtherToNumber(results[3]);
 
-                const [lBTCPrice, lETHPrice, lHB10Price] = await Promise.all([
-                    exchangeData.exchange.pricesLast({ source: "lBTC" }),
-                    exchangeData.exchange.pricesLast({ source: "lETH" }),
-                    exchangeData.exchange.pricesLast({ source: "lHB10" })
-                ]);
+                // const [lBTCPrice, lETHPrice, lHB10Price] = await Promise.all([
+                //     exchangeData.exchange.pricesLast({ source: "lBTC" }),
+                //     exchangeData.exchange.pricesLast({ source: "lETH" }),
+                //     exchangeData.exchange.pricesLast({ source: "lHB10" })
+                // ]);
 
                 let tableData = [];
 
-                if (lUSDBalance > 0)
+                if (lUSDBalance > 0) {
                     tableData.push({
                         name: "lUSD",
                         balance: lUSDBalance,
                         valueUSD: lUSDBalance
                     });
-                if (lBTCBalance > 0)
-                    tableData.push({
-                        name: "lBTC",
-                        balance: lBTCBalance,
-                        valueUSD: _.floor(
-                            lBTCBalance * lBTCPrice[0].currentPrice,
-                            2
-                        )
-                    });
-                if (lETHBalance > 0)
-                    tableData.push({
-                        name: "lETH",
-                        balance: lETHBalance,
-                        valueUSD: _.floor(
-                            lETHBalance * lETHPrice[0].currentPrice,
-                            2
-                        )
-                    });
-                if (lHB10Balance > 0)
-                    tableData.push({
-                        name: "lHB10",
-                        balance: lHB10Balance,
-                        valueUSD: _.floor(
-                            lHB10Balance * lHB10Price[0].currentPrice,
-                            2
-                        )
-                    });
+                }
+                // if (lBTCBalance > 0) {
+                //     tableData.push({
+                //         name: "lBTC",
+                //         balance: lBTCBalance,
+                //         valueUSD: _.floor(
+                //             lBTCBalance * lBTCPrice[0].currentPrice,
+                //             2
+                //         )
+                //     });
+                // }
+                // if (lETHBalance > 0) {
+                //     tableData.push({
+                //         name: "lETH",
+                //         balance: lETHBalance,
+                //         valueUSD: _.floor(
+                //             lETHBalance * lETHPrice[0].currentPrice,
+                //             2
+                //         )
+                //     });
+                // }
+                // if (lHB10Balance > 0) {
+                //     tableData.push({
+                //         name: "lHB10",
+                //         balance: lHB10Balance,
+                //         valueUSD: _.floor(
+                //             lHB10Balance * lHB10Price[0].currentPrice,
+                //             2
+                //         )
+                //     });
+                // }
 
                 const currentDebt = trackData.currentDebt.length
                     ? trackData.currentDebt[trackData.currentDebt.length - 1][1]

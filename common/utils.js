@@ -220,16 +220,15 @@ export const openBlockchainScan = ($hash, blockChain) => {
         if (isEthereumNetwork(walletNetworkId)) {
             if (walletNetworkName) {
                 href = `https://${
-                    walletNetworkName === SUPPORTED_NETWORKS_MAP.MAINNET
+                    walletNetworkId === SUPPORTED_NETWORKS_MAP.MAINNET
                         ? ""
                         : walletNetworkName + "."
                 }etherscan.io/tx/${$hash}`;
             }
         } else if (isBinanceNetwork(walletNetworkId)) {
-            ("BSCTESTNET");
             if (walletNetworkName) {
                 href = `https://${
-                    walletNetworkName === SUPPORTED_NETWORKS_MAP.BSCMAINNET
+                    walletNetworkId === SUPPORTED_NETWORKS_MAP.BSCMAINNET
                         ? ""
                         : "testnet."
                 }bscscan.com/tx/${$hash}`;

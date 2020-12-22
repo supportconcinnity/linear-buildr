@@ -1,6 +1,6 @@
 import _ from "lodash";
 import lnrJSConnector from "../lnrJSConnector";
-import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/exchangeData";
+// import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/exchangeData";
 
 import {
     CRYPTO_CURRENCIES,
@@ -35,14 +35,20 @@ export const getLiquids = async wallet => {
     for (let i = 0; i < assetAddress.length; i++) {
         for (const key in addressList) {
             if (addressList[key] == assetAddress[i]) {
-                let asset = lnrJSConnector.lnrJS[key];
+                let asset = lnrJSConnector.lnrJS[key]; //未上exchange时,使用接口数据
 
                 //上exchange时使用合约内价格
+                // let [balance, price] = await Promise.all([
+                //     asset.balanceOf(wallet),
+                //     exchangeData.exchange.pricesLast({ source: key })
+                // ]);
+                // liquids += formatEtherToNumber(balance) * price[0].currentPrice;
+
                 let [balance, price] = await Promise.all([
                     asset.balanceOf(wallet),
-                    exchangeData.exchange.pricesLast({ source: key })
+                    getPriceRatesFromApi(key)
                 ]);
-                liquids += formatEtherToNumber(balance) * price[0].currentPrice;
+                liquids += formatEtherToNumber(balance) * bn2n(price[key]);
             }
         }
     }
@@ -94,9 +100,17 @@ export const getPriceRates = async currency => {
  */
 export const getPriceRatesFromApi = async currency => {
     const rates = {};
+    const {
+        lnrJS: { LnChainLinkPrices },
+        utils
+    } = lnrJSConnector;
     if (_.isString(currency)) {
         if (currency == "lUSD") {
             rates["lUSD"] = n2bn("1");
+        } else if (currency == "LINA") {
+            rates["LINA"] = await LnChainLinkPrices.getPrice(
+                utils.formatBytes32String(name)
+            );
         } else {
             const id = CRYPTO_CURRENCIES_API[currency]?.id;
             const results = await api.getTokenPrice({
@@ -109,16 +123,21 @@ export const getPriceRatesFromApi = async currency => {
 
         for (const index in currency) {
             const c = currency[index];
-            if (c != "lUSD") {
+            if (!["lUSD", "LINA"].includes(c)) {
                 ids.push(CRYPTO_CURRENCIES_API[c]?.id);
             }
         }
+
         const results = await api.getTokenPrice({ tokenid: ids });
 
         for (const index in currency) {
             const c = currency[index];
             if (c == "lUSD") {
                 rates["lUSD"] = n2bn("1");
+            } else if (c == "LINA") {
+                rates["LINA"] = await LnChainLinkPrices.getPrice(
+                    utils.formatBytes32String("LINA")
+                );
             } else {
                 const id = CRYPTO_CURRENCIES_API[c]?.id;
                 rates[c] = n2bn(results[id]?.usd);

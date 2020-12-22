@@ -6,7 +6,7 @@
                     <div class="actionBodyWeb">
                         <div class="actionTitle">Burn</div>
                         <div class="actionDesc">
-                            Burn ℓUSD to unlock staked LINA
+                            Burn ℓUSD to unlock staked LINA.
                         </div>
                         <div class="actionRate">
                             1 LINA = {{ floor(burnData.LINA2USD, 4) }} ℓUSD
@@ -177,17 +177,22 @@
                             </div>
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="!isMobile"></gasEditor>
                     </div>
 
                     <div class="actionBodyMobile">
                         <div
                             class="errMsg"
                             :style="{
-                                display: errors.unStakeMsg || errors.ratioMsg || errors.amountMsg ? 'flex' : 'none'
+                                display:
+                                    errors.unStakeMsg ||
+                                    errors.ratioMsg ||
+                                    errors.amountMsg
+                                        ? 'flex'
+                                        : 'none'
                             }"
                         >
-                            <img src="@/static/error.svg" alt="">
+                            <img src="@/static/error.svg" alt="" />
                             {{ errors.unStakeMsg }}
                             {{ errors.ratioMsg }}
                             {{ errors.amountMsg }}
@@ -212,7 +217,11 @@
                                         @click="showIntroductActionModal"
                                     />
 
-                                    <img class="logo" src="@/static/LINA_logo.svg" alt="" />
+                                    <img
+                                        class="logo"
+                                        src="@/static/LINA_logo.svg"
+                                        alt=""
+                                    />
 
                                     <div class="itemTypeTitle">
                                         Unstake LINA
@@ -253,10 +262,14 @@
                                 @click="changeFocusItem(1)"
                             >
                                 <div class="inputBox">
-                                    <img class="logo" src="@/static/currency/lUSD.svg" alt="" />
+                                    <img
+                                        class="logo"
+                                        src="@/static/currency/lUSD.svg"
+                                        alt=""
+                                    />
 
                                     <div class="itemTypeTitle">Burn ℓUSD</div>
-        
+
                                     <InputNumber
                                         class="input"
                                         ref="itemInput4"
@@ -273,7 +286,7 @@
                                                 floor(value, DECIMAL_PRECISION)
                                         "
                                     />
-        
+
                                     <div
                                         class="itemTypeBtn"
                                         :class="{ active: activeItemBtn == 4 }"
@@ -310,7 +323,7 @@
                                         :formatter="value => floor(value, 0)"
                                     />
                                 </div>
-    
+
                                 <div
                                     class="itemTypeBtn"
                                     :class="{ active: activeItemBtn == 5 }"
@@ -321,7 +334,7 @@
                             </div>
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="isMobile"></gasEditor>
                     </div>
 
                     <div
@@ -360,7 +373,8 @@
         >
             <div class="title">Unstake LINA</div>
             <div class="context">
-                Amount of LINA unstaked may vary due to block times and price fluctuations in pledge tokens.
+                Amount of LINA unstaked may vary due to block times and price
+                fluctuations in pledge tokens.
             </div>
         </Modal>
     </div>
@@ -402,7 +416,8 @@ import {
     bnMul2N,
     bnDiv2N,
     MAX_DECIMAL_LENGTH,
-    n2bn
+    n2bn,
+    bn2n
 } from "@/common/bnCalc";
 
 import {
@@ -482,7 +497,8 @@ export default {
         walletAddress() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
-        walletNetworkId() {}
+        walletNetworkId() {},
+        isMobile() {}
     },
     computed: {
         //burn按钮禁止状态
@@ -512,6 +528,10 @@ export default {
 
         walletNetworkId() {
             return this.$store.state?.walletNetworkId;
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
         }
     },
     methods: {
@@ -624,27 +644,39 @@ export default {
                     this.waitProcessArray = [];
                     this.confirmTransactionStep = 0;
 
-                    if (
-                        this.actionDatas.amount.gt("0") &&
-                        this.actionDatas.unStake.gt("0")
-                    ) {
-                        this.waitProcessArray.push(
-                            BUILD_PROCESS_SETUP.BURN_UNSTAKING
-                        );
-                    } else {
-                        if (this.actionDatas.amount.gt("0")) {
-                            //需要先burn
-                            this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.BURN
-                            );
-                        }
-
-                        if (this.actionDatas.unStake.gt("0")) {
-                            this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.UNSTAKING
-                            );
-                        }
+                    if (this.actionDatas.amount.gt("0")) {
+                        //需要先burn
+                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.BURN);
                     }
+
+                    if (this.actionDatas.unStake.gt("0")) {
+                        this.waitProcessArray.push(
+                            BUILD_PROCESS_SETUP.UNSTAKING
+                        );
+                    }
+
+                    //分步合约暂未好,先屏蔽二合一逻辑
+                    // if (
+                    //     this.actionDatas.amount.gt("0") &&
+                    //     this.actionDatas.unStake.gt("0")
+                    // ) {
+                    //     this.waitProcessArray.push(
+                    //         BUILD_PROCESS_SETUP.BURN_UNSTAKING
+                    //     );
+                    // } else {
+                    //     if (this.actionDatas.amount.gt("0")) {
+                    //         //需要先burn
+                    //         this.waitProcessArray.push(
+                    //             BUILD_PROCESS_SETUP.BURN
+                    //         );
+                    //     }
+
+                    //     if (this.actionDatas.unStake.gt("0")) {
+                    //         this.waitProcessArray.push(
+                    //             BUILD_PROCESS_SETUP.UNSTAKING
+                    //         );
+                    //     }
+                    // }
 
                     this.actionTabs = "m1"; //进入等待页
 
@@ -670,65 +702,94 @@ export default {
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.BURN_UNSTAKING
+                        BUILD_PROCESS_SETUP.BURN
                     ) {
-                        console.log("同时burn和unstake");
-                        await this.burnAndUnstake(this.actionDatas.amount);
-                    } else {
-                        if (
-                            this.waitProcessArray[
-                                this.confirmTransactionStep
-                            ] == BUILD_PROCESS_SETUP.BURN
-                        ) {
-                            console.log("单独burn");
-                            await this.burn(this.actionDatas.amount);
+                        // console.log("单独burn");
+
+                        const amount = n2bn(
+                            _.ceil(bn2n(this.actionDatas.amount), 2)
+                        );
+
+                        if (amount.lt(this.burnData.lUSDBN)) {
+                            this.actionDatas.amount = amount;
                         }
-
-                        if (
-                            this.waitProcessArray[
-                                this.confirmTransactionStep
-                            ] == BUILD_PROCESS_SETUP.UNSTAKING
-                        ) {
-                            // if (this.confirmTransactionStep != 0) {
-                            //     const priceRates = await getPriceRates([
-                            //         "LINA",
-                            //         "lUSD"
-                            //     ]);
-
-                            // const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
-
-                            //     const currentLINAPrice = bnDiv(
-                            //         priceRates.LINA,
-                            //         priceRates.lUSD
-                            //     ); //最新LINA汇率
-
-                            //     if (
-                            //         currentLINAPrice.lt(
-                            //             this.burnData.LINA2USDBN
-                            //         )
-                            //     ) {
-                            //         let fallRate = bnDiv(
-                            //             bnSub(
-                            //                 this.burnData.LINA2USDBN,
-                            //                 currentLINAPrice
-                            //             ),
-                            //             this.burnData.LINA2USDBN
-                            //         );
-
-                            //         this.actionDatas.unStake = bnSub(
-                            //             this.actionDatas.unStake,
-                            //             bnMul(
-                            //                 this.actionDatas.unStake,
-                            //                 fallRate
-                            //             )
-                            //         );
-                            //     }
-                            // }
-
-                            console.log("单独unstake");
-                            await this.unstake(this.actionDatas.unStake);
-                        }
+                        await this.burn(this.actionDatas.amount);
                     }
+
+                    if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.UNSTAKING
+                    ) {
+                        // console.log("单独unstake");
+                        this.actionDatas.unStake = n2bn(
+                            _.floor(bn2n(this.actionDatas.unStake), 1)
+                        );
+                        await this.unstake(this.actionDatas.unStake);
+                    }
+
+                    //分步合约暂未好,先屏蔽二合一逻辑
+
+                    // if (
+                    //     this.waitProcessArray[this.confirmTransactionStep] ==
+                    //     BUILD_PROCESS_SETUP.BURN_UNSTAKING
+                    // ) {
+                    //     console.log("同时burn和unstake");
+                    //     await this.burnAndUnstake(this.actionDatas.amount);
+                    // } else {
+                    //     if (
+                    //         this.waitProcessArray[
+                    //             this.confirmTransactionStep
+                    //         ] == BUILD_PROCESS_SETUP.BURN
+                    //     ) {
+                    //         console.log("单独burn");
+                    //         await this.burn(this.actionDatas.amount);
+                    //     }
+
+                    //     if (
+                    //         this.waitProcessArray[
+                    //             this.confirmTransactionStep
+                    //         ] == BUILD_PROCESS_SETUP.UNSTAKING
+                    //     ) {
+                    //         // if (this.confirmTransactionStep != 0) {
+                    //         //     const priceRates = await getPriceRates([
+                    //         //         "LINA",
+                    //         //         "lUSD"
+                    //         //     ]);
+
+                    //         // const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
+
+                    //         //     const currentLINAPrice = bnDiv(
+                    //         //         priceRates.LINA,
+                    //         //         priceRates.lUSD
+                    //         //     ); //最新LINA汇率
+
+                    //         //     if (
+                    //         //         currentLINAPrice.lt(
+                    //         //             this.burnData.LINA2USDBN
+                    //         //         )
+                    //         //     ) {
+                    //         //         let fallRate = bnDiv(
+                    //         //             bnSub(
+                    //         //                 this.burnData.LINA2USDBN,
+                    //         //                 currentLINAPrice
+                    //         //             ),
+                    //         //             this.burnData.LINA2USDBN
+                    //         //         );
+
+                    //         //         this.actionDatas.unStake = bnSub(
+                    //         //             this.actionDatas.unStake,
+                    //         //             bnMul(
+                    //         //                 this.actionDatas.unStake,
+                    //         //                 fallRate
+                    //         //             )
+                    //         //         );
+                    //         //     }
+                    //         // }
+
+                    //         console.log("单独unstake");
+                    //         await this.unstake(this.actionDatas.unStake);
+                    //     }
+                    // }
 
                     //全部执行完毕显示成功
                     // this.confirmTransactionStep += 1;
@@ -811,7 +872,7 @@ export default {
             const burnGasLimit = await this.getBurnGasEstimate(burnAmount);
 
             let transaction = await LnBuildBurnSystem.BurnAsset(
-                this.walletAddress,
+                // this.walletAddress,
                 burnAmount,
                 {
                     gasPrice: this.$store.state?.gasDetails?.price,
@@ -861,7 +922,7 @@ export default {
             );
 
             let transaction = await LnCollateralSystem.Redeem(
-                this.walletAddress,
+                // this.walletAddress,
                 utils.formatBytes32String("LINA"),
                 unstakeAmount,
                 {
@@ -928,7 +989,7 @@ export default {
                 } = lnrJSConnector;
 
                 let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BurnAsset(
-                    this.walletAddress,
+                    // this.walletAddress,
                     burnAmount
                 );
 
@@ -948,7 +1009,7 @@ export default {
                 } = lnrJSConnector;
 
                 let gasEstimate = await LnCollateralSystem.contract.estimateGas.Redeem(
-                    this.walletAddress,
+                    // this.walletAddress,
                     utils.formatBytes32String("LINA"),
                     unstakeAmount
                 );
@@ -2188,7 +2249,7 @@ export default {
 
                 .ivu-tabs-tabpane {
                     width: 100%;
-                    height: 88vh!important;
+                    height: 88vh !important;
 
                     .burnBox,
                     .waitingBox,
@@ -2217,7 +2278,7 @@ export default {
                                 padding: 12px 16px;
                                 margin-top: 24px;
                                 border-radius: 8px;
-                                background-color: rgba(223,67,76,.05);
+                                background-color: rgba(223, 67, 76, 0.05);
                                 font-size: 12px;
                                 color: #df434c;
 
@@ -2245,7 +2306,7 @@ export default {
                                 text-align: center;
                                 color: #99999a;
                             }
-                            
+
                             .inputGroupBox {
                                 width: 74.4vw;
                                 display: flex;
@@ -2421,7 +2482,7 @@ export default {
                             width: 100%;
                             position: absolute;
                             bottom: 0px;
-                            height: 12.8vw!important;
+                            height: 12.8vw !important;
                             cursor: pointer;
                             background: #1a38f8;
                             color: #ffffff;
@@ -2461,9 +2522,9 @@ export default {
                 justify-content: center;
 
                 .ivu-modal {
-                    width: 74.66vw!important;
+                    width: 74.66vw !important;
                     height: 36.8vw;
-                    top: 0!important;
+                    top: 0 !important;
 
                     .ivu-modal-content {
                         height: 100%;

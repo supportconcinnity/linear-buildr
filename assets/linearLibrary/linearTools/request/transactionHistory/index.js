@@ -45,7 +45,7 @@ export const fetchTransactionHistory = async (
             linearData.lnr.freeZe({ account: walletAddress, blockChain }),
             linearData.lnr.unfreeze({ account: walletAddress, blockChain })
         ]);
-        
+
         if (!blockChain) {
             blockChain = $nuxt.$store.state?.currentGraphApi;
         }
@@ -68,31 +68,43 @@ export const fetchTransactionHistory = async (
                 freeZes,
                 unfreezes
             ].map((eventType, i) => {
-                return eventType.map(event => {
-                    event.value
-                        ? (event.value = _.floor(event.value, 2))
-                        : null;
-                    event.amount
-                        ? (event.amount = _.floor(event.amount, 2))
-                        : null;
-                    event.rewardslusd
-                        ? (event.rewardslusd = _.floor(event.rewardslusd, 2))
-                        : null;
-                    event.rewardsLina
-                        ? (event.rewardsLina = _.floor(event.rewardsLina, 2))
-                        : null;
-                    event.source
-                        ? (event.source = event.source.replace(/l/,"ℓ"))
-                        : null;
-                    return event.type
-                        ? { chain: blockChain, net: netWork, ...event }
-                        : {
-                              chain: blockChain,
-                              net: netWork,
-                              type: TRANSACTION_EVENTS[i],
-                              ...event
-                          };
-                });
+                let result = [];
+
+                if (eventType && eventType.length) {
+                    result = eventType.map(event => {
+                        event.value
+                            ? (event.value = _.floor(event.value, 2))
+                            : null;
+                        event.amount
+                            ? (event.amount = _.floor(event.amount, 2))
+                            : null;
+                        event.rewardslusd
+                            ? (event.rewardslusd = _.floor(
+                                  event.rewardslusd,
+                                  2
+                              ))
+                            : null;
+                        event.rewardsLina
+                            ? (event.rewardsLina = _.floor(
+                                  event.rewardsLina,
+                                  2
+                              ))
+                            : null;
+                        event.source
+                            ? (event.source = event.source.replace(/l/, "ℓ"))
+                            : null;
+                        return event.type
+                            ? { chain: blockChain, net: netWork, ...event }
+                            : {
+                                  chain: blockChain,
+                                  net: netWork,
+                                  type: TRANSACTION_EVENTS[i],
+                                  ...event
+                              };
+                    });
+                }
+
+                return result;
             })
         );
 

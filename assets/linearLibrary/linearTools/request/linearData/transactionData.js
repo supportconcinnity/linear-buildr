@@ -5,7 +5,7 @@ const pageResults = require("graph-results-pager");
 const maxRequest = 1000;
 
 const graphAPIEndpoints = {
-    ethereum: process.env.GRAPH_BUILD_ETHEREUM,
+    ethereum: process.env.GRAPH_BUILD_ETHEREUM_MAINNET,
     binance: process.env.GRAPH_BUILD_BINANCE
 };
 

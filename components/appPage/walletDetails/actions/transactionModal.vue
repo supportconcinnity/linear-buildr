@@ -70,10 +70,10 @@
                             <img src="@/static/ETH.svg" alt="" />
                             <span>Ethereum</span>
                         </Option>
-                        <Option value="binance" label="Binance">
+                        <!-- <Option value="binance" label="Binance">
                             <img src="@/static/logo-wallet-bsc.svg" alt="" />
                             <span> Binance</span>
-                        </Option>
+                        </Option> -->
                     </Select>
 
                     <DatePicker
@@ -244,7 +244,9 @@
                                 >
                                     <img src="@/static/ETH.svg" />
                                 </template>
-                                <template v-if="row.chain == BLOCKCHAIN.BINANCE">
+                                <template
+                                    v-if="row.chain == BLOCKCHAIN.BINANCE"
+                                >
                                     <img src="@/static/logo-wallet-bsc.svg" />
                                 </template>
                                 {{ row.chain }}
@@ -298,9 +300,7 @@ import {
     TRANSACTION_EVENTS
 } from "@/assets/linearLibrary/linearTools/request/transactionHistory";
 import { format } from "date-fns";
-import {
-    BLOCKCHAIN
-} from "@/assets/linearLibrary/linearTools/network";
+import { BLOCKCHAIN } from "@/assets/linearLibrary/linearTools/network";
 import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
 import { getBrowserUrlBase } from "@/assets/linearLibrary/linearJs/contractSettings";
 
@@ -362,7 +362,10 @@ export default {
                 type = item.type;
                 date = format(item.timestamp, "d MMM yyyy kk:mm");
 
-                let baseUrl = getBrowserUrlBase({blockChain: item.chain,netWork: item.net});
+                let baseUrl = getBrowserUrlBase({
+                    blockChain: item.chain,
+                    netWork: item.net
+                });
                 hash = baseUrl + item.hash;
 
                 if (
@@ -370,13 +373,16 @@ export default {
                     item.type == "Unstake" ||
                     item.type == "Burn" ||
                     item.type == "Stake" ||
-                    item.type == "Swap"||
-                    item.type == "Referral"||
+                    item.type == "Swap" ||
+                    item.type == "Referral" ||
                     item.type == "Transfer"
                 ) {
-                    amount = item.symbol + formatNumber(item.value) + " " + item.source;
-                }
-                else if (item.type == "Claim") {
+                    amount =
+                        item.symbol +
+                        formatNumber(item.value) +
+                        " " +
+                        item.source;
+                } else if (item.type == "Claim") {
                     let rewardslusd = "";
                     let rewardsLina = "";
                     if (
@@ -527,7 +533,7 @@ export default {
             return filterNum;
         },
         //网络类型
-        walletNetworkId(){
+        walletNetworkId() {
             return this.$store.state.walletNetworkId;
         }
     },
@@ -549,15 +555,20 @@ export default {
                 this.$store.state?.wallet?.address,
                 BLOCKCHAIN.ETHEREUM
             );
-            let bscData = await fetchTransactionHistory(
-                this.$store.state?.wallet?.address,
-                BLOCKCHAIN.BINANCE
-            );
 
-            this.transactionHistoryData = [...ethData,...bscData];
-            this.transactionHistoryData = this.transactionHistoryData.sort(function(record1, record2) {
-                return record2.timestamp - record1.timestamp;
-             });
+            //屏蔽bsc
+            // let bscData = await fetchTransactionHistory(
+            //     this.$store.state?.wallet?.address,
+            //     BLOCKCHAIN.BINANCE
+            // );
+            // this.transactionHistoryData = [...ethData, ...bscData];
+
+            this.transactionHistoryData = ethData;
+            this.transactionHistoryData = this.transactionHistoryData.sort(
+                function(record1, record2) {
+                    return record2.timestamp - record1.timestamp;
+                }
+            );
 
             this.gettingData = false;
         },
@@ -697,7 +708,6 @@ body {
                     display: flex;
                     justify-content: space-between;
                     margin: 32px 0;
-
 
                     .box {
                         display: flex;

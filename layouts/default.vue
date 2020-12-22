@@ -1,9 +1,14 @@
 <template>
-    <div>
-        <nuxt />
-    </div>
+    <nuxt />
 </template>
 
-<style>
+<script>
+export default {
+    name: "",
+    data() {
+        return {};
+    }
+};
+</script>
 
-</style>
+<style lang="scss" scoped></style>

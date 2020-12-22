@@ -163,7 +163,7 @@ import {
     DEFAULT_GAS_LIMIT
 } from "@/assets/linearLibrary/linearTools/network";
 import { utils } from "ethers";
-import { BUILD_PROCESS_SETUP } from '@/assets/linearLibrary/linearTools/constants/process';
+import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
 
 export default {
     name: "claim",
@@ -237,20 +237,24 @@ export default {
                         lnrJS: { LnFeeSystemTest, LnFeeSystem }
                     } = lnrJSConnector;
 
-                    let transaction = null;
-                    if (
-                        ["ROPSTEN", "BSCTESTNET"].includes(
-                            this.walletNetworkName
-                        )
-                    ) {
-                        transaction = await LnFeeSystemTest.claimFees(
-                            transactionSettings
-                        );
-                    } else {
-                        transaction = await LnFeeSystem.claimFees(
-                            transactionSettings
-                        );
-                    }
+                    // let transaction = null;
+                    // if (
+                    //     ["ROPSTEN", "BSCTESTNET"].includes(
+                    //         this.walletNetworkName
+                    //     )
+                    // ) {
+                    //     transaction = await LnFeeSystemTest.claimFees(
+                    //         transactionSettings
+                    //     );
+                    // } else {
+                    //     transaction = await LnFeeSystem.claimFees(
+                    //         transactionSettings
+                    //     );
+                    // }
+
+                    let transaction = await LnFeeSystem.claimFees(
+                        transactionSettings
+                    );
 
                     if (transaction) {
                         this.confirmTransactionHash = transaction.hash;
@@ -259,9 +263,8 @@ export default {
                         this.$pub.publish("notificationQueue", {
                             hash: this.confirmTransactionHash,
                             type: BUILD_PROCESS_SETUP.CLAIM,
-                            value: `Claiming ${this.confirmTransactionStep + 1} / ${
-                                this.waitProcessArray.length
-                            }`
+                            value: `Claiming ${this.confirmTransactionStep +
+                                1} / ${this.waitProcessArray.length}`
                         });
 
                         //等待结果返回
@@ -322,15 +325,17 @@ export default {
             try {
                 this.processing = true;
 
-                let contract = null;
-                if (
-                    ["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName)
-                ) {
-                    //测试合约, 较短时间
-                    contract = lnrJSConnector.lnrJS.LnFeeSystemTest;
-                } else {
-                    contract = lnrJSConnector.lnrJS.LnFeeSystem;
-                }
+                // let contract = null;
+                // if (
+                //     ["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName)
+                // ) {
+                //     //测试合约, 较短时间
+                //     contract = lnrJSConnector.lnrJS.LnFeeSystemTest;
+                // } else {
+                //     contract = lnrJSConnector.lnrJS.LnFeeSystem;
+                // }
+
+                let contract = lnrJSConnector.lnrJS.LnFeeSystem;
 
                 let [
                     feePeriodDuration,
@@ -376,11 +381,13 @@ export default {
                     lnrJS: { LnFeeSystemTest, LnFeeSystem }
                 } = lnrJSConnector;
 
-                let gasEstimate = null;
-                if (["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName))
-                    gasEstimate = await LnFeeSystemTest.contract.estimateGas.claimFees();
-                else
-                    gasEstimate = await LnFeeSystem.contract.estimateGas.claimFees();
+                // let gasEstimate = null;
+                // if (["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName))
+                //     gasEstimate = await LnFeeSystemTest.contract.estimateGas.claimFees();
+                // else
+                //     gasEstimate = await LnFeeSystem.contract.estimateGas.claimFees();
+
+                let gasEstimate = await LnFeeSystem.contract.estimateGas.claimFees();
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {

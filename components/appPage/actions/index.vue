@@ -25,17 +25,45 @@
             </a>
 
             <div class="introductActionBox" v-if="currentAction != 0">
-                <div class="title" v-if="currentAction == 1 && othersAction == 0">Build</div>
-                <div class="title" v-if="currentAction == 2 && othersAction == 0">Burn</div>
-                <div class="title" v-if="currentAction == 3 && othersAction == 0">Claim</div>
-                <div class="title" v-if="currentAction == 4 && othersAction == 0">Transfer</div>
-                <div class="title" v-if="currentAction == 5 && othersAction == 0">Swap</div>
+                <div
+                    class="title"
+                    v-if="currentAction == 1 && othersAction == 0"
+                >
+                    Build
+                </div>
+                <div
+                    class="title"
+                    v-if="currentAction == 2 && othersAction == 0"
+                >
+                    Burn
+                </div>
+                <div
+                    class="title"
+                    v-if="currentAction == 3 && othersAction == 0"
+                >
+                    Claim
+                </div>
+                <div
+                    class="title"
+                    v-if="currentAction == 4 && othersAction == 0"
+                >
+                    Transfer
+                </div>
+                <div
+                    class="title"
+                    v-if="currentAction == 5 && othersAction == 0"
+                >
+                    Swap
+                </div>
 
                 <div class="title" v-if="othersAction == 1">Track Debt</div>
                 <div class="title" v-if="othersAction == 2">Transaction</div>
                 <div class="title" v-if="othersAction == 3">Referral</div>
 
-                <img src="@/static/info.svg" @click="showIntroductActionModal"/>
+                <img
+                    src="@/static/info.svg"
+                    @click="showIntroductActionModal"
+                />
             </div>
 
             <Modal
@@ -65,8 +93,8 @@
                     Transfer different currencies to specified wallet address
                 </div>
                 <div class="context" v-if="currentAction == 5">
-                    You can select the type of currency and enter the
-                    amount you want to swap
+                    You can select the type of currency and enter the amount you
+                    want to swap
                 </div>
             </Modal>
 
@@ -89,9 +117,7 @@
             <div class="mNavigate" v-if="mMenuState">
                 <div class="mHead">
                     <div class="mLogo">
-                        <img
-                            src="@/static/logo-crypto-linear-colour.svg"
-                        />
+                        <img src="@/static/logo-crypto-linear-colour.svg" />
                         Menu
                     </div>
                     <img
@@ -173,23 +199,26 @@ export default {
             currentAction: this.$store.state.currentAction, //显示不同功能 0homePage 1build 2burn 3claim 4transfer 5swap
             othersAction: 0, // 0没有 1track 2transaction 3referral
             currentHover: 0,
-            actions: ["Build", "Burn", "Claim", "Transfer", "Swap"],
+            actions: ["Build", "Burn", "Claim", "Transfer", "Swap"]
         };
     },
     created() {
         //订阅组件改变事件
-        this.$pub.subscribe("trackModalChange", (msg, params) => {console.log("trackModalChange");
+        this.$pub.subscribe("trackModalChange", (msg, params) => {
+            // console.log("trackModalChange");
             if (params) {
                 this.othersAction = 1;
             }
         });
-        this.$pub.subscribe("transactionModalChange", (msg, params) => {console.log("transactionModalChange");
-            if (params) {    
+        this.$pub.subscribe("transactionModalChange", (msg, params) => {
+            // console.log("transactionModalChange");
+            if (params) {
                 this.othersAction = 2;
             }
         });
-        this.$pub.subscribe("referralModalChange", (msg, params) => {console.log("referralModalChange");
-        if (params) {    
+        this.$pub.subscribe("referralModalChange", (msg, params) => {
+            // console.log("referralModalChange");
+            if (params) {
                 this.othersAction = 3;
             }
         });
@@ -217,7 +246,7 @@ export default {
             return this.$store.state.currentAction;
         },
         mMenuState() {
-            return this.$store.state.mMenuState
+            return this.$store.state.mMenuState;
         }
     },
     methods: {
@@ -235,7 +264,7 @@ export default {
             this.$pub.publish("referralModalChange", false);
             this.$pub.publish("transactionModalChange", false);
             this.$pub.publish("trackModalChange", false);
-            this.$store.commit('setmMenuState', false)
+            this.$store.commit("setmMenuState", false);
         },
 
         showIntroductActionModal() {
@@ -250,7 +279,7 @@ export default {
             this.currentHover = 0;
         },
         mHideMenuFun() {
-            this.$store.commit('setmMenuState', false)
+            this.$store.commit("setmMenuState", false);
         }
     }
 };
@@ -380,9 +409,9 @@ export default {
                     justify-content: center;
 
                     .ivu-modal {
-                        width: 74.66vw!important;
+                        width: 74.66vw !important;
                         height: 36.8vw;
-                        top: 0!important;
+                        top: 0 !important;
 
                         .ivu-modal-content {
                             height: 100%;
@@ -410,7 +439,7 @@ export default {
             .action {
                 display: none;
             }
-            
+
             .mNavigate {
                 width: 100vw;
                 height: 100vh;

@@ -108,6 +108,69 @@ export default [
     type: 'function'
   },
   {
+    inputs: [ { internalType: 'address', name: '_address', type: 'address' } ],
+    name: 'IsAdmin',
+    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'address', name: '_address', type: 'address' } ],
+    name: 'SetAdmin',
+    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address[]', name: 'burner', type: 'address[]' },
+      { internalType: 'bool[]', name: 'setTo', type: 'bool[]' }
+    ],
+    name: 'SetBurnAssetRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address[]',
+        name: '_address',
+        type: 'address[]'
+      },
+      { internalType: 'bool[]', name: '_setTo', type: 'bool[]' }
+    ],
+    name: 'SetDebtSystemRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address[]', name: 'issuer', type: 'address[]' },
+      { internalType: 'bool[]', name: 'setTo', type: 'bool[]' }
+    ],
+    name: 'SetIssueAssetRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'roleType', type: 'bytes32' },
+      {
+        internalType: 'address[]',
+        name: 'addresses',
+        type: 'address[]'
+      },
+      { internalType: 'bool[]', name: 'setTo', type: 'bool[]' }
+    ],
+    name: 'SetRoles',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
     inputs: [ { internalType: 'bytes32', name: 'role', type: 'bytes32' } ],
     name: 'getRoleAdmin',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
@@ -167,69 +230,6 @@ export default [
       { internalType: 'address', name: 'account', type: 'address' }
     ],
     name: 'revokeRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'address', name: '_address', type: 'address' } ],
-    name: 'IsAdmin',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'address', name: '_address', type: 'address' } ],
-    name: 'SetAdmin',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'roleType', type: 'bytes32' },
-      {
-        internalType: 'address[]',
-        name: 'addresses',
-        type: 'address[]'
-      },
-      { internalType: 'bool[]', name: 'setTo', type: 'bool[]' }
-    ],
-    name: 'SetRoles',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address[]', name: 'issuer', type: 'address[]' },
-      { internalType: 'bool[]', name: 'setTo', type: 'bool[]' }
-    ],
-    name: 'SetIssueAssetRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address[]', name: 'burner', type: 'address[]' },
-      { internalType: 'bool[]', name: 'setTo', type: 'bool[]' }
-    ],
-    name: 'SetBurnAssetRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address[]',
-        name: '_address',
-        type: 'address[]'
-      },
-      { internalType: 'bool[]', name: '_setTo', type: 'bool[]' }
-    ],
-    name: 'SetDebtSystemRole',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'

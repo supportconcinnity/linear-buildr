@@ -153,17 +153,22 @@
                             Please input a valid address.
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="!isMobile"></gasEditor>
                     </div>
 
                     <div class="transferMainMobile">
                         <div
                             class="errMsg"
                             :style="{
-                                display: errors.amountMsg || (walletError && this.transferToAddress != '') ? 'flex' : 'none'
+                                display:
+                                    errors.amountMsg ||
+                                    (walletError &&
+                                        this.transferToAddress != '')
+                                        ? 'flex'
+                                        : 'none'
                             }"
                         >
-                            <img src="@/static/error.svg" alt="">
+                            <img src="@/static/error.svg" alt="" />
                             <div v-if="errors.amountMsg">
                                 {{ errors.amountMsg }}
                             </div>
@@ -209,11 +214,20 @@
                             </div>
 
                             <div class="currentBalance">
-                                <div v-if="currentSelectCurrency.name == 'ETH' || currentSelectCurrency.name == 'BNB'">
-                                    Avaliable: {{currency[selected].avaliable}} {{ currentSelectCurrency.name }}
+                                <div
+                                    v-if="
+                                        currentSelectCurrency.name == 'ETH' ||
+                                            currentSelectCurrency.name == 'BNB'
+                                    "
+                                >
+                                    Avaliable:
+                                    {{ currency[selected].avaliable }}
+                                    {{ currentSelectCurrency.name }}
                                 </div>
                                 <div v-else>
-                                    Avaliable: {{ currentSelectCurrency.avaliable }} {{ currentSelectCurrency.name }}
+                                    Avaliable:
+                                    {{ currentSelectCurrency.avaliable }}
+                                    {{ currentSelectCurrency.name }}
                                 </div>
                             </div>
 
@@ -225,9 +239,7 @@
                                         ref="itemInput2"
                                         element-id="transfer_number_input"
                                         :min="0"
-                                        :max="
-                                            currency[selected].avaliable
-                                        "
+                                        :max="currency[selected].avaliable"
                                         type="text"
                                         v-model="transferNumber"
                                         placeholder="2"
@@ -293,7 +305,7 @@
                             />
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="isMobile"></gasEditor>
                     </div>
 
                     <div
@@ -389,7 +401,8 @@ export default {
         walletAddressEllipsis() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
-        walletNetworkId() {}
+        walletNetworkId() {},
+        isMobile() {}
     },
     computed: {
         //transfer按钮禁止状态
@@ -475,6 +488,10 @@ export default {
 
         walletNetworkId() {
             return this.$store.state?.walletNetworkId;
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
         }
     },
     async created() {
@@ -692,7 +709,7 @@ export default {
                 this.errors.amountMsg = "";
             }
         },
-        
+
         //获取焦点
         inputFocus(index) {
             this.$nextTick(() => {
@@ -1180,7 +1197,7 @@ export default {
 
                 .ivu-tabs-tabpane {
                     width: 100%;
-                    height: 88vh!important;
+                    height: 88vh !important;
 
                     .transferBox,
                     .waitingBox,
@@ -1209,7 +1226,7 @@ export default {
                                 padding: 12px 16px;
                                 margin-top: 24px;
                                 border-radius: 8px;
-                                background-color: rgba(223,67,76,.05);
+                                background-color: rgba(223, 67, 76, 0.05);
                                 font-size: 12px;
                                 color: #df434c;
 
@@ -1304,7 +1321,12 @@ export default {
                                         width: 74px;
                                         height: 44px;
                                         border-radius: 8px;
-                                        background-color: rgba(126,181,255,.1);
+                                        background-color: rgba(
+                                            126,
+                                            181,
+                                            255,
+                                            0.1
+                                        );
                                         text-align: center;
                                         line-height: 44px;
                                         font-family: Gilroy-Bold;
@@ -1413,7 +1435,8 @@ export default {
                                 }
                             }
 
-                            .from, .to {
+                            .from,
+                            .to {
                                 &:hover,
                                 &.active {
                                     border-color: white;
@@ -1427,7 +1450,7 @@ export default {
                         }
 
                         .transferBtn {
-                            height: 12.8vw!important;
+                            height: 12.8vw !important;
                             font-size: 16px;
                         }
                     }

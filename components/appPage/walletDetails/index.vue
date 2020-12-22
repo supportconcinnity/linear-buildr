@@ -1,5 +1,5 @@
 <template>
-    <div id="walletDetails" :class="{mScroll: mShowWallet}">
+    <div id="walletDetails" :class="{ mScroll: mShowWallet }">
         <div class="walletAndAddressBox" v-if="!mShowWallet">
             <div class="info">
                 <div class="wallet">
@@ -27,7 +27,6 @@
                         xmlns:xlink="http://www.w3.org/1999/xlink"
                         xmlns="http://www.w3.org/2000/svg"
                     >
-                        <desc>Created with Lunacy</desc>
                         <g id="Icon/Copy">
                             <path
                                 d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
@@ -64,13 +63,22 @@
                         selected:
                             walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
                     }"
-                    @click="changeChain(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)"
                 >
-                    <binanceSvg
-                        :selected="
-                            walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
-                        "
-                    />
+                    <!-- @click="changeChain(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)" -->
+                    <Tooltip
+                        max-width="305"
+                        placement="top"
+                        class="tip globalInfoStyle"
+                        content="Coming Soon"
+                        offset="0 4"
+                    >
+                        <binanceSvg
+                            :selected="
+                                walletType ==
+                                    SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                            "
+                        />
+                    </Tooltip>
                 </div>
                 <div class="mNetworkName" @click="mShowWallet = true">
                     {{ walletNetworkName }}
@@ -78,13 +86,14 @@
             </div>
 
             <div class="mMenu" @click="mShowMenuFun">
-                <img
-                    src="@/static/icon-menu.svg"
-                />
+                <img src="@/static/icon-menu.svg" />
             </div>
         </div>
 
-        <div class="walletDetailsBox" :class="{mShowWalletClass: mShowWallet}">
+        <div
+            class="walletDetailsBox"
+            :class="{ mShowWalletClass: mShowWallet }"
+        >
             <div class="mWalletHead">
                 <metamaskSvg
                     class="metamaskIcon"
@@ -134,7 +143,6 @@
                             </g>
                         </svg>
                     </Tooltip>
-                    
                 </div>
                 <img
                     @click="mShowWallet = false"
@@ -460,8 +468,8 @@
                     }"
                     @click="getdata"
                     xmlns="http://www.w3.org/2000/svg"
-                    :width="mShowWallet? 40: 64"
-                    :height="mShowWallet? 40: 64"
+                    :width="mShowWallet ? 40 : 64"
+                    :height="mShowWallet ? 40 : 64"
                     viewBox="0 0 64 64"
                     @mousedown="refreshSelected = true"
                     @mouseup="refreshSelected = false"
@@ -530,9 +538,8 @@ export default {
 
             refreshSelected: false,
 
-            
             //移动端 显示钱包状态
-            mShowWallet: false,
+            mShowWallet: false
         };
     },
     components: {
@@ -748,7 +755,7 @@ export default {
             this.$store.commit("setCurrentAction", 0);
         },
         mShowMenuFun() {
-            this.$store.commit('setmMenuState', true)
+            this.$store.commit("setmMenuState", true);
         }
     }
 };
@@ -874,6 +881,16 @@ export default {
                     background-color: #ffffff;
                 }
             }
+
+            //屏蔽bsc样式
+            .bscBox {
+                .ivu-tooltip-rel {
+                    opacity: 1;
+                    #binanceSvg {
+                        cursor: default;
+                    }
+                }
+            }
             .mNetworkName {
                 display: none;
             }
@@ -886,7 +903,7 @@ export default {
     .walletDetailsBox {
         width: 100%;
         height: 840px;
-        
+
         .mWalletHead {
             display: none;
         }
@@ -1200,224 +1217,66 @@ export default {
     }
 }
 
-
 @media only screen and (max-width: $max-phone-width) {
-
-#walletDetails {
-    width: 100vw;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 1;
-
-    &.mScroll {
-        overflow-y: scroll;
-        height: 100%;
-    }
-
-    @-webkit-keyframes spin {
-        from {
-            -webkit-transform: rotate(360deg);
-        }
-        to {
-            -webkit-transform: rotate(0deg);
-        }
-    }
-
-    @keyframes spin {
-        from {
-            transform: rotate(360deg);
-        }
-        to {
-            transform: rotate(0deg);
-        }
-    }
-
-    .img-fade-enter-active,
-    .img-fade-leave-active {
-        transition: opacity $animete-time;
-    }
-
-    .img-fade-enter,
-    .img-fade-leave-to {
-        opacity: 0;
-    }
-
-    .walletAndAddressBox {
-        width: 130px;
-        height: 32px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    #walletDetails {
+        width: 100vw;
         position: fixed;
-        top: 16px;
-        right: 16px;
+        left: 0;
+        top: 0;
+        z-index: 1;
 
-        .info {
-            width: 294px;
-            padding: 7px 16px;
+        &.mScroll {
+            overflow-y: scroll;
+            height: 100%;
+        }
+
+        @-webkit-keyframes spin {
+            from {
+                -webkit-transform: rotate(360deg);
+            }
+            to {
+                -webkit-transform: rotate(0deg);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(360deg);
+            }
+            to {
+                transform: rotate(0deg);
+            }
+        }
+
+        .img-fade-enter-active,
+        .img-fade-leave-active {
+            transition: opacity $animete-time;
+        }
+
+        .img-fade-enter,
+        .img-fade-leave-to {
+            opacity: 0;
+        }
+
+        .walletAndAddressBox {
+            width: 130px;
+            height: 32px;
             display: flex;
-            justify-content: space-evenly;
+            justify-content: space-between;
             align-items: center;
-            border-radius: 20px;
-            background: #f6f5f6;
-            display: none;
+            position: fixed;
+            top: 16px;
+            right: 16px;
 
-            .wallet {
-                margin-right: 8px;
-                font-family: Gilroy-Bold;
-                font-size: 14px;
-                font-weight: bold;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.29;
-                letter-spacing: normal;
-                color: #5a575c;
-            }
-
-            .address {
-                flex: 1;
-                font-family: Gilroy-Regular;
-                font-size: 14px;
-                margin-right: 16px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-weight: normal;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.29;
-                letter-spacing: normal;
-                color: #99999a;
-            }
-
-            .copyBtn {
-                cursor: pointer;
-                width: 16px;
-                height: 16px;
-                display: none;
-
-                &:hover {
-                    #Combined-Shape {
-                        fill: #1a38f8;
-                        stroke: #1a38f8;
-                    }
-                }
-            }
-        }
-
-        .chainChange {
-            width: 90px;
-            height: 32px;
-            display: flex;
-            border-radius: 20px;
-            background: #fff;
-            box-shadow: 0 2px 6px 0 #deddde;
-            padding: 0 0;
-            position: relative;
-
-            &.chainChanging {
-                .ethBox,
-                .bscBox {
-                    opacity: 0.2 !important;
-                    cursor: not-allowed !important;
-                }
-            }
-
-            .ethBox,
-            .bscBox {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                cursor: pointer;
-                transition: $animete-time linear;
-
-                &.selected {
-                    box-shadow: 0 0 0 0 #deddde;
-                    background-color: #ffffff;
-                }
-            }
-
-            .bscBox {
-                display: none;
-            }
-
-            .mNetworkName {
-                display: block;
-                font-family: Gilroy;
-                font-size: 12px;
-                font-weight: 500;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 32px;
-                letter-spacing: normal;
-                color: #99999a;
-                position: absolute;
-                padding-left: 29px;
-                left: 0;
-                top: 0px;
-            }
-        }
-
-        .mMenu {
-            display: block;
-            width: 32px;
-            height: 32px;
-            line-height: 37px;
-            border-radius: 20px;
-            box-shadow: 0 2px 6px 0 #deddde;
-            background-color: #ffffff;
-            text-align: center;
-        }
-    }
-    .mShowWalletClass {
-        display: block !important;
-    }
-    .walletDetailsBox {
-        width: 100%;
-        height: 890px;
-        display: none;
-        background-color: #ffffff;
-
-        .mWalletHead {
-            width: 100%;
-            height: 64px;
-            padding: 16px 24px;
-            display: flex;
-            margin-bottom: 16px;
-                
-            .metamaskIcon {
-                width: 32px;
-                height: 32px;
-                padding: 8px 8px 8px 8px;
-                box-shadow: 0 2px 6px 0 #deddde;
-                background-color: #ffffff;
-                text-align: center;
-                border-radius: 16px;
-                span {
-                    width: 100%;
-                    height: 100%;
-                    display: block;
-                }
-                img {
-                    width: 16px;
-                    height: 16px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                }
-            }
-            .mInfo {
-                width: 65.3333333317vw;
+            .info {
+                width: 294px;
                 padding: 7px 16px;
                 display: flex;
                 justify-content: space-evenly;
                 align-items: center;
                 border-radius: 20px;
                 background: #f6f5f6;
-                margin-left: 10px;
+                display: none;
 
                 .wallet {
                     margin-right: 8px;
@@ -1435,6 +1294,7 @@ export default {
                     flex: 1;
                     font-family: Gilroy-Regular;
                     font-size: 14px;
+                    margin-right: 16px;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -1450,6 +1310,7 @@ export default {
                     cursor: pointer;
                     width: 16px;
                     height: 16px;
+                    display: none;
 
                     &:hover {
                         #Combined-Shape {
@@ -1460,250 +1321,296 @@ export default {
                 }
             }
 
-            
-            .mClose {
-                position: fixed;
-                right: 19px;
-                top: 19px;
-            }
-        }
-        .actionsBox {
-            display: flex;
-            justify-content: space-around;
+            .chainChange {
+                width: 90px;
+                height: 32px;
+                display: flex;
+                border-radius: 20px;
+                background: #fff;
+                box-shadow: 0 2px 6px 0 #deddde;
+                padding: 0 0;
+                position: relative;
 
-            .box {
-                .boxItem {
+                &.chainChanging {
+                    .ethBox,
+                    .bscBox {
+                        opacity: 0.2 !important;
+                        cursor: not-allowed !important;
+                    }
+                }
+
+                .ethBox,
+                .bscBox {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50%;
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    flex-direction: column;
-                    color: #99999a;
-                    text-align: center;
-                    text-transform: uppercase;
                     cursor: pointer;
                     transition: $animete-time linear;
-                    font-weight: bold;
-                    letter-spacing: 1.5px;
-                    font-family: Gilroy-bold;
-                    font-size: 12px;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 1.33;
 
-                    .placeholder {
-                        width: 40px;
-                        height: 40px;
-                        margin-bottom: 8px;
-                        position: relative;
-
-                        img {
-                            left: 0;
-                            width: 40px;
-                            position: absolute;
-                            transform: translateZ(0);
-                        }
-                    }
-
-                    &:hover,
                     &.selected {
-                        color: #1a38f8;
+                        box-shadow: 0 0 0 0 #deddde;
+                        background-color: #ffffff;
                     }
                 }
+
+                .bscBox {
+                    display: none;
+                }
+
+                .mNetworkName {
+                    display: block;
+                    font-family: Gilroy;
+                    font-size: 12px;
+                    font-weight: 500;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 32px;
+                    letter-spacing: normal;
+                    color: #99999a;
+                    position: absolute;
+                    padding-left: 29px;
+                    left: 0;
+                    top: 0px;
+                }
+            }
+
+            .mMenu {
+                display: block;
+                width: 32px;
+                height: 32px;
+                line-height: 37px;
+                border-radius: 20px;
+                box-shadow: 0 2px 6px 0 #deddde;
+                background-color: #ffffff;
+                text-align: center;
             }
         }
+        .mShowWalletClass {
+            display: block !important;
+        }
+        .walletDetailsBox {
+            width: 100%;
+            height: 890px;
+            display: none;
+            background-color: #ffffff;
 
-        .ratioBox {
-            margin: 24px 0 24px;
-            border-top: solid 1px #e5e5e5;
-            border-bottom: solid 1px #e5e5e5;
-            padding: 16px 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            .title {
+            .mWalletHead {
                 width: 100%;
+                height: 64px;
+                padding: 16px 24px;
                 display: flex;
-                align-items: center;
-                margin-bottom: 27px;
-                font-family: Gilroy-bold;
-                font-size: 14px;
-                font-weight: bold;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.29;
-                letter-spacing: normal;
-                color: #5a575c;
+                margin-bottom: 16px;
 
-                .ivu-tooltip {
-                    margin-left: 8px;
-                }
-            }
-
-            .ratio {
-                display: flex;
-                width: 100%;
-
-                .box {
-                    flex: 1;
-                    font-family: Gilroy-bold;
-                    font-size: 24px;
-                    font-weight: bold;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 1.25;
-                    letter-spacing: normal;
+                .metamaskIcon {
+                    width: 32px;
+                    height: 32px;
+                    padding: 8px 8px 8px 8px;
+                    box-shadow: 0 2px 6px 0 #deddde;
+                    background-color: #ffffff;
                     text-align: center;
-                    color: #5a575c;
+                    border-radius: 16px;
+                    span {
+                        width: 100%;
+                        height: 100%;
+                        display: block;
+                    }
+                    img {
+                        width: 16px;
+                        height: 16px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                    }
+                }
+                .mInfo {
+                    width: 65.3333333317vw;
+                    padding: 7px 16px;
+                    display: flex;
+                    justify-content: space-evenly;
+                    align-items: center;
+                    border-radius: 20px;
+                    background: #f6f5f6;
+                    margin-left: 10px;
 
-                    .context {
+                    .wallet {
+                        margin-right: 8px;
+                        font-family: Gilroy-Bold;
                         font-size: 14px;
-                        font-family: Gilroy;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
                         line-height: 1.29;
-                        font-weight: 100;
+                        letter-spacing: normal;
+                        color: #5a575c;
                     }
 
-                    &:nth-child(1) {
-                        border-right: solid 1px #eae9ea;
-                    }
-
-                    &:nth-child(2) {
+                    .address {
+                        flex: 1;
+                        font-family: Gilroy-Regular;
+                        font-size: 14px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        font-weight: normal;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.29;
+                        letter-spacing: normal;
                         color: #99999a;
                     }
-                }
-            }
 
-            .ivu-progress {
-                margin-top: 4px;
-                width: 87.46666666448vw;
-                .ivu-progress-outer {
-                    .ivu-progress-inner {
-                        .ivu-progress-bg {
-                            background-color: rgba(#7eb5ff, 0.2) !important;
-                        }
-                        .ivu-progress-success-bg {
-                            background-color: #1a38f8;
+                    .copyBtn {
+                        cursor: pointer;
+                        width: 16px;
+                        height: 16px;
+
+                        &:hover {
+                            #Combined-Shape {
+                                fill: #1a38f8;
+                                stroke: #1a38f8;
+                            }
                         }
                     }
                 }
+
+                .mClose {
+                    position: fixed;
+                    right: 19px;
+                    top: 19px;
+                }
             }
-        }
-
-        .walletInfo {
-            margin-bottom: 24px;
-            padding: 0 24px;
-
-            .tokenIcon {
-                border-radius: 50%;
-            }
-
-            .title {
-                font-family: Gilroy-bold;
-                font-size: 14px;
-                font-weight: bold;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.29;
-                letter-spacing: normal;
-                color: #5a575c;
-                margin-bottom: 8px;
-            }
-
-            .tokenBox {
-                border-bottom: solid 1px #e5e5e5;
+            .actionsBox {
                 display: flex;
-                padding: 16px 0;
-                &:nth-last-child(1) {
-                    border: 0px;
-                }
-
-                .tokenIcon {
-                    width: 40px;
-                    height: 40px;
-                    margin-right: 8px;
-                }
+                justify-content: space-around;
 
                 .box {
-                    flex: 1;
-                    .tokenItems {
-                        font-family: Gilroy-Medium;
+                    .boxItem {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        flex-direction: column;
+                        color: #99999a;
+                        text-align: center;
+                        text-transform: uppercase;
+                        cursor: pointer;
+                        transition: $animete-time linear;
+                        font-weight: bold;
+                        letter-spacing: 1.5px;
+                        font-family: Gilroy-bold;
                         font-size: 12px;
-                        font-weight: 500;
                         font-stretch: normal;
                         font-style: normal;
                         line-height: 1.33;
-                        letter-spacing: normal;
-                        color: #5a575c;
-                        display: flex;
-                        justify-content: space-between;
 
-                        &.obtrusive {
-                            .left {
-                                font-family: Gilroy-bold;
-                                font-size: 16px;
-                                line-height: 1.5;
-                                text-align: left;
-                            }
+                        .placeholder {
+                            width: 40px;
+                            height: 40px;
+                            margin-bottom: 8px;
+                            position: relative;
 
-                            .right {
-                                font-family: Gilroy-Medium;
-                                font-size: 16px;
-                                text-align: right;
-                            }
-
-                            &.singer {
-                                height: 100%;
-                                .left {
-                                    display: flex;
-                                    align-items: center;
-
-                                    .ivu-tooltip {
-                                        margin-left: 8px;
-                                    }
-                                }
-
-                                .right {
-                                    font-family: Gilroy-Medium;
-                                    font-weight: 500;
-                                    font-stretch: normal;
-                                    font-style: normal;
-                                    letter-spacing: normal;
-                                    color: #5a575c;
-                                    .top {
-                                        font-size: 16px;
-                                        line-height: 1.5;
-                                    }
-                                    .bottom {
-                                        font-size: 12px;
-                                        line-height: 1.33;
-                                    }
-                                }
+                            img {
+                                left: 0;
+                                width: 40px;
+                                position: absolute;
+                                transform: translateZ(0);
                             }
                         }
 
-                        &.unobtrusive {
-                            color: #99999a;
-                            margin-top: 8px;
+                        &:hover,
+                        &.selected {
+                            color: #1a38f8;
                         }
                     }
                 }
             }
-        }
 
-        .totalBalanceToUSD {
-            height: 90px;
-            width: 100vw;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 24px;
-            box-shadow: 0 -2px 6px 0 #deddde;
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            background-color: #ffffff;
+            .ratioBox {
+                margin: 24px 0 24px;
+                border-top: solid 1px #e5e5e5;
+                border-bottom: solid 1px #e5e5e5;
+                padding: 16px 24px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
 
-            .box {
+                .title {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 27px;
+                    font-family: Gilroy-bold;
+                    font-size: 14px;
+                    font-weight: bold;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.29;
+                    letter-spacing: normal;
+                    color: #5a575c;
+
+                    .ivu-tooltip {
+                        margin-left: 8px;
+                    }
+                }
+
+                .ratio {
+                    display: flex;
+                    width: 100%;
+
+                    .box {
+                        flex: 1;
+                        font-family: Gilroy-bold;
+                        font-size: 24px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.25;
+                        letter-spacing: normal;
+                        text-align: center;
+                        color: #5a575c;
+
+                        .context {
+                            font-size: 14px;
+                            font-family: Gilroy;
+                            line-height: 1.29;
+                            font-weight: 100;
+                        }
+
+                        &:nth-child(1) {
+                            border-right: solid 1px #eae9ea;
+                        }
+
+                        &:nth-child(2) {
+                            color: #99999a;
+                        }
+                    }
+                }
+
+                .ivu-progress {
+                    margin-top: 4px;
+                    width: 87.46666666448vw;
+                    .ivu-progress-outer {
+                        .ivu-progress-inner {
+                            .ivu-progress-bg {
+                                background-color: rgba(#7eb5ff, 0.2) !important;
+                            }
+                            .ivu-progress-success-bg {
+                                background-color: #1a38f8;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .walletInfo {
+                margin-bottom: 24px;
+                padding: 0 24px;
+
+                .tokenIcon {
+                    border-radius: 50%;
+                }
+
                 .title {
                     font-family: Gilroy-bold;
                     font-size: 14px;
@@ -1716,65 +1623,169 @@ export default {
                     margin-bottom: 8px;
                 }
 
-                .amount {
-                    font-family: Gilroy-Bold;
-                    font-size: 24px;
-                    font-weight: bold;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 1.25;
-                    letter-spacing: normal;
-                    color: #5a575c;
+                .tokenBox {
+                    border-bottom: solid 1px #e5e5e5;
+                    display: flex;
+                    padding: 16px 0;
+                    &:nth-last-child(1) {
+                        border: 0px;
+                    }
+
+                    .tokenIcon {
+                        width: 40px;
+                        height: 40px;
+                        margin-right: 8px;
+                    }
+
+                    .box {
+                        flex: 1;
+                        .tokenItems {
+                            font-family: Gilroy-Medium;
+                            font-size: 12px;
+                            font-weight: 500;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.33;
+                            letter-spacing: normal;
+                            color: #5a575c;
+                            display: flex;
+                            justify-content: space-between;
+
+                            &.obtrusive {
+                                .left {
+                                    font-family: Gilroy-bold;
+                                    font-size: 16px;
+                                    line-height: 1.5;
+                                    text-align: left;
+                                }
+
+                                .right {
+                                    font-family: Gilroy-Medium;
+                                    font-size: 16px;
+                                    text-align: right;
+                                }
+
+                                &.singer {
+                                    height: 100%;
+                                    .left {
+                                        display: flex;
+                                        align-items: center;
+
+                                        .ivu-tooltip {
+                                            margin-left: 8px;
+                                        }
+                                    }
+
+                                    .right {
+                                        font-family: Gilroy-Medium;
+                                        font-weight: 500;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
+                                        .top {
+                                            font-size: 16px;
+                                            line-height: 1.5;
+                                        }
+                                        .bottom {
+                                            font-size: 12px;
+                                            line-height: 1.33;
+                                        }
+                                    }
+                                }
+                            }
+
+                            &.unobtrusive {
+                                color: #99999a;
+                                margin-top: 8px;
+                            }
+                        }
+                    }
                 }
             }
 
-            .refreshBtn {
-                cursor: pointer;
-                .border,
-                .shape {
-                    transition: fill $animete-time linear;
+            .totalBalanceToUSD {
+                height: 90px;
+                width: 100vw;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 24px;
+                box-shadow: 0 -2px 6px 0 #deddde;
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                background-color: #ffffff;
+
+                .box {
+                    .title {
+                        font-family: Gilroy-bold;
+                        font-size: 14px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.29;
+                        letter-spacing: normal;
+                        color: #5a575c;
+                        margin-bottom: 8px;
+                    }
+
+                    .amount {
+                        font-family: Gilroy-Bold;
+                        font-size: 24px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.25;
+                        letter-spacing: normal;
+                        color: #5a575c;
+                    }
                 }
 
-                &:hover {
-                    &:not(.selected) {
+                .refreshBtn {
+                    cursor: pointer;
+                    .border,
+                    .shape {
+                        transition: fill $animete-time linear;
+                    }
+
+                    &:hover {
+                        &:not(.selected) {
+                            .border {
+                                stroke: #1a38f8;
+                            }
+                            .shape {
+                                fill: #1a38f8;
+                            }
+                        }
+                    }
+
+                    &.selected {
                         .border {
                             stroke: #1a38f8;
-                        }
-                        .shape {
                             fill: #1a38f8;
                         }
+                        .shape {
+                            fill: #fff;
+                        }
                     }
-                }
 
-                &.selected {
-                    .border {
-                        stroke: #1a38f8;
-                        fill: #1a38f8;
+                    &.refreshing {
+                        -webkit-animation: spin 1s linear 1s 5 alternate;
+                        animation: spin 1s linear infinite;
+                        cursor: not-allowed;
                     }
-                    .shape {
-                        fill: #fff;
-                    }
-                }
-
-                &.refreshing {
-                    -webkit-animation: spin 1s linear 1s 5 alternate;
-                    animation: spin 1s linear infinite;
-                    cursor: not-allowed;
-
                 }
             }
-
+        }
+        .mNavigate {
+            width: 100vw;
+            position: fixed;
+            height: 100%;
+            position: fixed;
+            left: 0;
+            top: 0;
         }
     }
-    .mNavigate {
-        width: 100vw;
-        position: fixed;
-        height: 100%;
-        position: fixed;
-        left: 0;
-        top: 0;
-    }
-}
-
 }
 </style>

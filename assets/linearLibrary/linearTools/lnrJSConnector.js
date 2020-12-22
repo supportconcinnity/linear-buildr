@@ -9,11 +9,13 @@ import {
     onMetamaskChainChange,
     BLOCKCHAIN,
     isEthereumNetwork,
-    isBinanceNetwork
+    isBinanceNetwork,
+    SUPPORTED_NETWORKS_MAP
 } from "./network";
 import { LinearJs } from "../linearJs";
 import $pub from "pubsub-js";
 import { storeDetailsData } from "./request";
+const { graphAPIEndpoints } = require("./request/linearData/transactionData");
 
 let lnrJSConnector = {
     signers: LinearJs.signers,
@@ -36,11 +38,14 @@ export const connectToWallet = async networkType => {
 
         const { name, networkId } = network;
 
-        if (!name) {
+        //屏蔽mainnet和ropsten以外的网络
+        if (!name || !isEthereumNetwork(networkId)) {
             throw new Error("not support network");
         }
 
         setSigner({ type: networkType, networkId });
+
+        setGraphApi({ networkId });
 
         switch (networkType) {
             case SUPPORTED_WALLETS_MAP.METAMASK:
@@ -155,6 +160,22 @@ export const setSigner = ({ type, networkId }) => {
     });
 };
 
+/**
+ * 根据网络ID重新设置graph地址
+ * @param networkId 网络ID
+ */
+export const setGraphApi = ({ networkId }) => {
+    if (isEthereumNetwork(networkId)) {
+        if (networkId == SUPPORTED_NETWORKS_MAP.MAINNET) {
+            graphAPIEndpoints.ethereum =
+                process.env.GRAPH_BUILD_ETHEREUM_MAINNET;
+        } else {
+            graphAPIEndpoints.ethereum =
+                process.env.GRAPH_BUILD_ETHEREUM_ROPSTEN;
+        }
+    }
+};
+
 const getSignerConfig = ({ type, networkId }) => {
     if (type === SUPPORTED_WALLETS_MAP.WALLET_CONNECT) {
         return {
@@ -255,8 +276,16 @@ export const selectedWallet = async (
                     if (
                         store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
                     ) {
-                        selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK);
-                        $pub.publish('onMetamaskChainChange')
+                        if (isEthereumNetwork(Number(chainId))) {
+                            selectedWallet(
+                                SUPPORTED_WALLETS_MAP.METAMASK,
+                                true
+                            );
+                            $pub.publish("onMetamaskChainChange");
+                        } else {
+                            //屏蔽mainnet和ropsten以外的网络
+                            location.reload();
+                        }
                     }
                 });
 

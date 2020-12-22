@@ -1,21 +1,21 @@
 const webpack = require("webpack"); //webpack配置扩展
 const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
-const env = require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` }); //读取环境变量
+require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` }); //读取环境变量
 
 module.exports = {
     ssr: false,
     env: {
-        baseUrl: env.BASE_URL,
+        baseUrl: process.env.BASE_URL
     },
     server: {
-        port: 6100, // default: 6100
-        host: "127.0.0.1", // default: localhost
+        port: process.env.SERVER_PORT,
+        host: "127.0.0.1" // default: localhost
     },
     /*
      ** Headers of the page
      */
     head: {
-        title: "Buildr - Testnet",
+        title: "Buildr",
         meta: [
             { charset: "utf-8" },
             {
@@ -80,10 +80,10 @@ module.exports = {
         [
             "@nuxtjs/dotenv",
             {
-                filename: `.env.${process.env.NODE_ENV}`, //引入对应文件内环境变量到process.env内
-            },
+                filename: `.env.${process.env.NODE_ENV}` //引入对应文件内环境变量到process.env内
+            }
         ],
-        "@nuxtjs/style-resources",
+        "@nuxtjs/style-resources"
     ],
     /*
      ** Axios module configuration
@@ -103,14 +103,14 @@ module.exports = {
             pathRewrite: {
                 "^/buildr_api/": "/", //将前缀替换成 /
                 changeOrigin: true, //标识跨域
-                secure: false, //https使用
+                secure: false //https使用
             },
             proxyTimeout: 600000, //响应超时 毫秒
-            timeout: 600000, //请求超时  毫秒
-        },
+            timeout: 600000 //请求超时  毫秒
+        }
     },
     router: {
-        middleware: "i18n", // 引入全局多语言中间件
+        middleware: "i18n" // 引入全局多语言中间件
     },
     /*
      ** Build configuration
@@ -121,7 +121,7 @@ module.exports = {
         extractCSS: true, //css分离
 
         splitChunks: {
-            layouts: false, //layout文件分离
+            layouts: false //layout文件分离
         },
 
         vendor: ["axios"], // 防止重复打包

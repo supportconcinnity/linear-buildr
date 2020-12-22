@@ -6,7 +6,7 @@
                     <div class="actionBodyWeb">
                         <div class="actionTitle">Build</div>
                         <div class="actionDesc">
-                            Build ℓUSD and earn staking rewards by staking LINA
+                            Build ℓUSD and earn staking rewards by staking LINA.
                         </div>
                         <div class="actionRate">
                             1 LINA =
@@ -202,17 +202,22 @@
                             </div>
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="!isMobile"></gasEditor>
                     </div>
 
                     <div class="actionBodyMobile">
                         <div
                             class="errMsg"
                             :style="{
-                                display: errors.stakeMsg || errors.ratioMsg || errors.amountMsg ? 'flex' : 'none'
+                                display:
+                                    errors.stakeMsg ||
+                                    errors.ratioMsg ||
+                                    errors.amountMsg
+                                        ? 'flex'
+                                        : 'none'
                             }"
                         >
-                            <img src="@/static/error.svg" alt="">
+                            <img src="@/static/error.svg" alt="" />
                             {{ errors.stakeMsg }}
                             {{ errors.ratioMsg }}
                             {{ errors.amountMsg }}
@@ -245,8 +250,13 @@
 
                                 <div class="box">
                                     <div class="itemType">
-                                        <img src="@/static/LINA_logo.svg" alt="" />
-                                        <div class="itemTypeTitle">Stake LINA</div>
+                                        <img
+                                            src="@/static/LINA_logo.svg"
+                                            alt=""
+                                        />
+                                        <div class="itemTypeTitle">
+                                            Stake LINA
+                                        </div>
                                         <InputNumber
                                             class="input"
                                             ref="itemInput3"
@@ -260,9 +270,12 @@
                                             :formatter="formatterInput"
                                         />
                                     </div>
-    
+
                                     <div class="itemType">
-                                        <img src="@/static/currency/lUSD.svg" alt=""/>
+                                        <img
+                                            src="@/static/currency/lUSD.svg"
+                                            alt=""
+                                        />
                                         <div class="itemTypeTitle">
                                             Build ℓUSD
                                         </div>
@@ -290,7 +303,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div
                             class="actionInputItem"
                             :class="{
@@ -327,7 +340,7 @@
                             </div>
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="isMobile"></gasEditor>
                     </div>
 
                     <div
@@ -366,7 +379,8 @@
         >
             <div class="title">Build ℓUSD</div>
             <div class="context">
-                Amount of ℓUSD built may vary due to block times and price fluctuations in pledge tokens.
+                Amount of ℓUSD built may vary due to block times and price
+                fluctuations in pledge tokens.
             </div>
         </Modal>
     </div>
@@ -417,7 +431,8 @@ import {
     bnMul2N,
     bnDiv2N,
     MAX_DECIMAL_LENGTH,
-    n2bn
+    n2bn,
+    bn2n
 } from "@/common/bnCalc";
 
 import { BigNumber, utils } from "ethers";
@@ -499,7 +514,8 @@ export default {
         errorHandle() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
-        walletNetworkId() {}
+        walletNetworkId() {},
+        isMobile() {}
     },
     computed: {
         //build按钮禁止状态
@@ -529,6 +545,10 @@ export default {
 
         walletNetworkId() {
             return this.$store.state?.walletNetworkId;
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
         }
     },
     created() {
@@ -601,7 +621,7 @@ export default {
                 const targetRatioPercent = 100 / buildRatio; //目标抵押率
 
                 // const priceRates = await getPriceRates(["LINA", "lUSD"]);
-                 const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
+                const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
 
                 const LINAPrice = priceRates.LINA / priceRates.lUSD;
                 const LINAPriceBN = bnDiv(priceRates.LINA, priceRates.lUSD);
@@ -1172,28 +1192,38 @@ export default {
                         this.waitProcessArray.push(BUILD_PROCESS_SETUP.APPROVE);
                     }
 
-                    if (
-                        this.actionData.stake.gt("0") &&
-                        this.actionData.amount.gt("0")
-                    ) {
-                        //一步调用
-                        this.waitProcessArray.push(
-                            BUILD_PROCESS_SETUP.STAKING_BUILD
-                        );
-                    } else {
-                        //单独调用
-                        if (this.actionData.stake.gt("0")) {
-                            this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.STAKING
-                            );
-                        }
-
-                        if (this.actionData.amount.gt("0")) {
-                            this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.BUILD
-                            );
-                        }
+                    //单独调用
+                    if (this.actionData.stake.gt("0")) {
+                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.STAKING);
                     }
+
+                    if (this.actionData.amount.gt("0")) {
+                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.BUILD);
+                    }
+
+                    //分步合约暂未好,先屏蔽二合一逻辑
+                    // if (
+                    //     this.actionData.stake.gt("0") &&
+                    //     this.actionData.amount.gt("0")
+                    // ) {
+                    //     //一步调用
+                    //     this.waitProcessArray.push(
+                    //         BUILD_PROCESS_SETUP.STAKING_BUILD
+                    //     );
+                    // } else {
+                    //     //单独调用
+                    //     if (this.actionData.stake.gt("0")) {
+                    //         this.waitProcessArray.push(
+                    //             BUILD_PROCESS_SETUP.STAKING
+                    //         );
+                    //     }
+
+                    //     if (this.actionData.amount.gt("0")) {
+                    //         this.waitProcessArray.push(
+                    //             BUILD_PROCESS_SETUP.BUILD
+                    //         );
+                    //     }
+                    // }
 
                     this.actionTabs = "m1"; //进入等待页
 
@@ -1227,36 +1257,63 @@ export default {
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.STAKING_BUILD
+                        BUILD_PROCESS_SETUP.STAKING
                     ) {
-                        console.log("同时stake和buid");
-                        //一步调用
-                        await this.startStakingAndBuildContract(
-                            this.actionData.stake
+                        // console.log("单独stake");
+
+                        const stake = n2bn(
+                            _.ceil(bn2n(this.actionData.stake), 2)
                         );
-                    } else {
-                        //单独调用
-                        if (
-                            this.waitProcessArray[
-                                this.confirmTransactionStep
-                            ] == BUILD_PROCESS_SETUP.STAKING
-                        ) {
-                            console.log("单独stake");
-                            await this.startStakingContract(
-                                this.actionData.stake
-                            );
+
+                        if (stake.lt(this.buildData.LINABN)) {
+                            this.actionData.stake = stake;
                         }
-                        if (
-                            this.waitProcessArray[
-                                this.confirmTransactionStep
-                            ] == BUILD_PROCESS_SETUP.BUILD
-                        ) {
-                            console.log("单独build");
-                            await this.startBuildContract(
-                                this.actionData.amount
-                            );
-                        }
+                        await this.startStakingContract(this.actionData.stake);
                     }
+                    if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.BUILD
+                    ) {
+                        // console.log("单独build");
+                        this.actionData.amount = n2bn(
+                            _.floor(bn2n(this.actionData.amount), 1)
+                        );
+                        await this.startBuildContract(this.actionData.amount);
+                    }
+
+                    //分步合约暂未好,先屏蔽二合一逻辑
+                    // if (
+                    //     this.waitProcessArray[this.confirmTransactionStep] ==
+                    //     BUILD_PROCESS_SETUP.STAKING_BUILD
+                    // ) {
+                    //     console.log("同时stake和buid");
+                    //     //一步调用
+                    //     await this.startStakingAndBuildContract(
+                    //         this.actionData.stake
+                    //     );
+                    // } else {
+                    //     //单独调用
+                    //     if (
+                    //         this.waitProcessArray[
+                    //             this.confirmTransactionStep
+                    //         ] == BUILD_PROCESS_SETUP.STAKING
+                    //     ) {
+                    //         console.log("单独stake");
+                    //         await this.startStakingContract(
+                    //             this.actionData.stake
+                    //         );
+                    //     }
+                    //     if (
+                    //         this.waitProcessArray[
+                    //             this.confirmTransactionStep
+                    //         ] == BUILD_PROCESS_SETUP.BUILD
+                    //     ) {
+                    //         console.log("单独build");
+                    //         await this.startBuildContract(
+                    //             this.actionData.amount
+                    //         );
+                    //     }
+                    // }
                 } catch (error) {
                     //自定义错误
                     if (
@@ -1406,7 +1463,7 @@ export default {
             );
 
             let transaction = await LnCollateralSystem.Collateral(
-                this.walletAddress,
+                // this.walletAddress,
                 utils.formatBytes32String("LINA"),
                 stakeAmountLINA,
                 transactionSettings
@@ -1462,7 +1519,7 @@ export default {
             let transaction;
 
             transaction = await LnBuildBurnSystem.BuildAsset(
-                this.walletAddress,
+                // this.walletAddress,
                 buildAmountlUSD,
                 transactionSettings
             );
@@ -1567,13 +1624,14 @@ export default {
                 }
 
                 let gasEstimate = await LnCollateralSystem.contract.estimateGas.Collateral(
-                    this.walletAddress,
+                    // this.walletAddress,
                     utils.formatBytes32String("LINA"),
                     stakeAmountLINA
                 );
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
+                console.log(e, "getGasEstimateFromStaking");
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
             }
         },
@@ -1593,7 +1651,7 @@ export default {
                 }
 
                 let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BuildAsset(
-                    this.walletAddress,
+                    // this.walletAddress,
                     buildAmountlUSD
                 );
 
@@ -1669,7 +1727,7 @@ export default {
 
         //点击购买
         clickBuy() {
-            // openBuyLINA()
+            openBuyLINA();
             this.activeItemBtn = 0;
         },
 
@@ -2021,14 +2079,14 @@ export default {
 
                 .ivu-tabs-tabpane {
                     width: 100%;
-                    height: 88vh!important;
+                    height: 88vh !important;
 
                     .buildBox,
                     .waitingBox,
                     .successBox,
                     .wrongBox {
                         width: 100%;
-                        height: 88vh!important;
+                        height: 88vh !important;
                     }
 
                     .buildBox {
@@ -2050,7 +2108,7 @@ export default {
                                 padding: 12px 16px;
                                 margin-top: 24px;
                                 border-radius: 8px;
-                                background-color: rgba(223,67,76,.05);
+                                background-color: rgba(223, 67, 76, 0.05);
                                 font-size: 12px;
                                 color: #df434c;
 
@@ -2103,7 +2161,8 @@ export default {
                                             display: flex;
                                             justify-content: center;
                                             flex-direction: column;
-                                            align-items: center;height: 50.1vw;
+                                            align-items: center;
+                                            height: 50.1vw;
 
                                             img {
                                                 width: 40px;
@@ -2243,7 +2302,7 @@ export default {
                             width: 100%;
                             position: absolute;
                             bottom: 0px;
-                            height: 12.8vw!important;
+                            height: 12.8vw !important;
                             cursor: pointer;
                             background: #1a38f8;
                             color: #ffffff;
@@ -2283,9 +2342,9 @@ export default {
                 justify-content: center;
 
                 .ivu-modal {
-                    width: 74.66vw!important;
+                    width: 74.66vw !important;
                     height: 36.8vw;
-                    top: 0!important;
+                    top: 0 !important;
 
                     .ivu-modal-content {
                         height: 100%;

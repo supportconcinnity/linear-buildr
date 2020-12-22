@@ -34,6 +34,7 @@ export const getBrowserUrlBase = ({ blockChain, netWork }) => {
 
 const API_KEY = {
     infura: process.env.INFURA_PROJECT_ID,
+    etherscan: process.env.ETHERSCAN_KEY,
     alchemy: process.env.ALCHEMY_KEY
 };
 

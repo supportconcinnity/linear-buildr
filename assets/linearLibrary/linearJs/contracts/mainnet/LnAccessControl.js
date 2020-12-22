@@ -33,6 +33,36 @@
         return await this.contract.ISSUE_ASSET_ROLE(txParams);
       };
     
+      this.IsAdmin = async (_address, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.IsAdmin(_address, txParams);
+      };
+    
+      this.SetAdmin = async (_address, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.SetAdmin(_address, txParams);
+      };
+    
+      this.SetBurnAssetRole = async (burner, setTo, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.SetBurnAssetRole(burner, setTo, txParams);
+      };
+    
+      this.SetDebtSystemRole = async (_address, _setTo, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.SetDebtSystemRole(_address, _setTo, txParams);
+      };
+    
+      this.SetIssueAssetRole = async (issuer, setTo, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.SetIssueAssetRole(issuer, setTo, txParams);
+      };
+    
+      this.SetRoles = async (roleType, addresses, setTo, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.SetRoles(roleType, addresses, setTo, txParams);
+      };
+    
       this.getRoleAdmin = async (role, txParams) => {
         txParams = txParams || {};
         return await this.contract.getRoleAdmin(role, txParams);
@@ -66,36 +96,6 @@
       this.revokeRole = async (role, account, txParams) => {
         txParams = txParams || {};
         return await this.contract.revokeRole(role, account, txParams);
-      };
-    
-      this.IsAdmin = async (_address, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.IsAdmin(_address, txParams);
-      };
-    
-      this.SetAdmin = async (_address, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.SetAdmin(_address, txParams);
-      };
-    
-      this.SetRoles = async (roleType, addresses, setTo, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.SetRoles(roleType, addresses, setTo, txParams);
-      };
-    
-      this.SetIssueAssetRole = async (issuer, setTo, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.SetIssueAssetRole(issuer, setTo, txParams);
-      };
-    
-      this.SetBurnAssetRole = async (burner, setTo, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.SetBurnAssetRole(burner, setTo, txParams);
-      };
-    
-      this.SetDebtSystemRole = async (_address, _setTo, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.SetDebtSystemRole(_address, _setTo, txParams);
       };
     
       }
