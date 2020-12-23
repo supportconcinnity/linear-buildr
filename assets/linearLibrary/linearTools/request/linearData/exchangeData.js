@@ -5,7 +5,7 @@ const pageResults = require("graph-results-pager");
 const maxRequest = 1000;
 
 const graphAPIEndpoints = {
-    1: process.env.GRAPH_EXCHANGE_ETHEREUM_MAINNET_,
+    1: process.env.GRAPH_EXCHANGE_ETHEREUM_MAINNET,
     3: process.env.GRAPH_EXCHANGE_ETHEREUM_ROPSTEN,
     56: process.env.GRAPH_EXCHANGE_BINANCE_MAINNET,
     97: process.env.GRAPH_EXCHANGE_BINANCE_TESTNET

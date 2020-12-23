@@ -10,8 +10,6 @@
                             amount you want to swap
                         </div>
 
-                        <!-- {{ frozenBalance }}-frozenBalance -->
-
                         <div class="fromToBox">
                             <div class="box">
                                 <img
@@ -89,11 +87,11 @@
                                                 class="input"
                                                 ref="itemInput0"
                                                 element-id="transfer_number_input"
-                                                :min="0"
+                                                :min="frozenBalance"
                                                 :max="
                                                     floor(
                                                         currentSelectCurrency.avaliable,
-                                                        2
+                                                        DECIMAL_PRECISION
                                                     )
                                                 "
                                                 type="text"
@@ -165,9 +163,15 @@ import lnrJSConnector, {
     connectToWallet,
     selectedWallet
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-import { log } from "util";
-import { bn2n, bnSub, n2bn } from "~/common/bnCalc";
-import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
+import { bn2n, bnSub, n2bn } from "@/common/bnCalc";
+import {
+    BUILD_PROCESS_SETUP,
+    DECIMAL_PRECISION
+} from "@/assets/linearLibrary/linearTools/constants/process";
+import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
+
+// metamask添加bsc
+// https://docs.binance.org/smart-chain/wallet/metamask.html
 
 export default {
     name: "swap",
@@ -199,9 +203,11 @@ export default {
             chainChangeToken: "", //等待事件监听id
             autoChainChange: false, //是否自动切换链
 
-            frozenBalance: 0,
-
             floor: _.floor,
+
+            frozenBalance: 0, //已经冻结的数量
+
+            DECIMAL_PRECISION,
 
             errors: {
                 amountMsg: ""
@@ -209,7 +215,14 @@ export default {
         };
     },
     async created() {
-        // await this.getFrozenBalance();
+        //监听链切换
+        this.$pub.subscribe("onWalletChainChange", async () => {
+            if (this.actionTabs == "m0") {
+                await this.getFrozenBalance();
+            }
+        });
+
+        await this.getFrozenBalance();
     },
     watch: {
         walletAddress() {},
@@ -256,18 +269,21 @@ export default {
         async getFrozenBalance() {
             try {
                 this.processing = true;
-                let LnBridge;
-                if (this.isEthereumNetwork) {
-                    LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                } else if (this.isBinanceNetwork) {
-                    LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                }
 
-                this.frozenBalance = bn2n(
-                    await LnBridge.frozenOf(this.walletAddress)
-                );
+                const result = await lnr.userSwapAssetsCount({
+                    account: this.walletAddress,
+                    networkId: this.walletNetworkId
+                });
+
+                if (result.length) {
+                    const { freeZeTokens, UnFreeZeTokens } = result[0];
+                    const frozenBalance = freeZeTokens - UnFreeZeTokens;
+                    this.frozenBalance = this.swapNumber =
+                        frozenBalance > 0
+                            ? _.floor(frozenBalance, DECIMAL_PRECISION)
+                            : 0;
+                }
             } catch (error) {
-                this.frozenBalance = 0;
                 console.log(error, "getFrozenBalance error");
             } finally {
                 this.processing = false;
@@ -324,7 +340,11 @@ export default {
 
                     //  this.waitProcessArray.push(BUILD_PROCESS_SETUP.APPROVE);
 
-                    this.waitProcessArray.push(BUILD_PROCESS_SETUP.FREEZE);
+                    //如果新输入的大于已冻结的
+                    if (this.swapNumber > this.frozenBalance) {
+                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.FREEZE);
+                    }
+
                     this.waitProcessArray.push(BUILD_PROCESS_SETUP.UNFREEZE);
 
                     this.actionTabs = "m1"; //进入等待页
@@ -343,11 +363,11 @@ export default {
         },
 
         startFlow() {
-            if (this.isEthereumNetwork) {
-                this.sourceWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
-            } else if (this.isBinanceNetwork) {
-                this.sourceWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
-            }
+            // if (this.isEthereumNetwork) {
+            //     this.sourceWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+            // } else if (this.isBinanceNetwork) {
+            //     this.sourceWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+            // }
 
             return async () => {
                 try {
@@ -366,7 +386,11 @@ export default {
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.FREEZE
                     ) {
-                        await this.startFreezeContract(n2bn(this.swapNumber));
+                        const swapNumber = _.floor(
+                            this.swapNumber - this.frozenBalance,
+                            DECIMAL_PRECISION
+                        );
+                        await this.startFreezeContract(n2bn(swapNumber));
                     }
 
                     if (
@@ -396,11 +420,11 @@ export default {
                             "Something went wrong, please try again.";
                     }
                 } finally {
-                    if (this.autoChainChange) {
-                        //切换回原始网络
-                        await selectedWallet(this.sourceWalletType);
-                        this.sourceWalletType = "";
-                    }
+                    // if (this.autoChainChange) {
+                    //     //切换回原始网络
+                    //     await selectedWallet(this.sourceWalletType);
+                    //     this.sourceWalletType = "";
+                    // }
                 }
             };
         },
@@ -593,25 +617,41 @@ export default {
                 swapWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
             }
 
-            let walletStatus;
-            if (this.autoChainChange) {
-                //切换钱包
-                console.log("开始自动切换钱包");
-                walletStatus = await selectedWallet(swapWalletType);
-                console.log("自动切换钱包完成");
-            } else {
-                //监听手动切换事件
-                this.chainChangeToken = this.$pub.subscribe(
-                    "onMetamaskChainChange",
-                    () => {
-                        this.waitChainChangeStatus = true;
-                    }
-                );
+            //监听手动切换事件
+            this.chainChangeToken = this.$pub.subscribe(
+                "onWalletChainChange",
+                () => {
+                    console.log("onWalletChainChange startUnFreezeContract");
+                    this.waitChainChangeStatus = true;
+                }
+            );
 
-                console.log("开始手动切换metamask链");
-                walletStatus = await this.waitChainChange();
-                console.log("手动切换metamask链完成");
-            }
+            console.log("开始手动切换metamask链");
+            let walletStatus = await this.waitChainChange();
+            console.log("手动切换metamask链完成");
+
+            // let walletStatus;
+            // if (this.autoChainChange) {
+            //     //切换钱包
+            //     console.log("开始自动切换钱包");
+            //     walletStatus = await selectedWallet(swapWalletType);
+            //     console.log("自动切换钱包完成");
+            // } else {
+            //     //监听手动切换事件
+            //     this.chainChangeToken = this.$pub.subscribe(
+            //         "onWalletChainChange",
+            //         () => {
+            //             console.log(
+            //                 "onWalletChainChange startUnFreezeContract"
+            //             );
+            //             this.waitChainChangeStatus = true;
+            //         }
+            //     );
+
+            //     console.log("开始手动切换metamask链");
+            //     walletStatus = await this.waitChainChange();
+            //     console.log("手动切换metamask链完成");
+            // }
 
             //验证钱包是否相同
             if (this.walletAddress.toLocaleLowerCase() != sourceWallet) {
@@ -671,7 +711,7 @@ export default {
                     if (transaction) {
                         this.confirmTransactionStatus = true;
                         this.confirmTransactionHash = transaction.hash;
-                         this.confirmTransactionNetworkId = this.walletNetworkId;
+                        this.confirmTransactionNetworkId = this.walletNetworkId;
 
                         // 发起右下角通知
                         this.$pub.publish("notificationQueue", {
@@ -798,19 +838,23 @@ export default {
             this.waitPendingProcess = false;
             this.freezeSuccessHash = "";
             this.processing = false;
+            await this.getFrozenBalance();
 
-            if (this.autoChainChange) {
-                //切换回原始网络
-                this.sourceWalletType &&
-                    (await selectedWallet(this.sourceWalletType));
-                // this.getFrozenBalance();
-            }
+            // if (this.autoChainChange) {
+            //     //切换回原始网络
+            //     this.sourceWalletType &&
+            //         (await selectedWallet(this.sourceWalletType));
+            //     await this.getFrozenBalance();
+            // }
         },
 
         //点击最大
         clickMaxAmount() {
             this.activeItemBtn = 0;
-            this.swapNumber = _.floor(this.currentSelectCurrency.avaliable, 2);
+            this.swapNumber = _.floor(
+                this.currentSelectCurrency.avaliable,
+                DECIMAL_PRECISION
+            );
 
             var el = document.getElementById("transfer_number_input");
             this.setCursorRange(el, 0, 0);

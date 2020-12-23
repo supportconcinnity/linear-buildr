@@ -63,7 +63,7 @@ module.exports = {
         { src: "@/plugins/i18n", ssr: false }, //多语言
         { src: "@/plugins/localStorage", ssr: false }, //vuex持久化
         { src: "@/plugins/pubsub", ssr: false }, //发布订阅消息
-        { src: "@/plugins/walletListener", ssr: false }, //全局钱包改变监听
+        // { src: "@/plugins/walletListener", ssr: false }, //全局钱包改变监听
         { src: "@/plugins/refreshListen", ssr: false } //全局钱包面板数据更新监听
     ],
     /*
