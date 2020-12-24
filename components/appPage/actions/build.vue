@@ -50,6 +50,7 @@
                                         type="text"
                                         v-model="inputData.stake"
                                         placeholder="0"
+                                        :min="1"
                                         :max="100000000000"
                                         @on-change="changeStakeAmount"
                                         @on-focus="inputFocus(0)"
@@ -556,6 +557,21 @@ export default {
     },
     methods: {
         /**
+         * 调整stake最小数为1,小于为0
+         */
+        adjustMinStake() {
+            if (
+                this.inputData.stake < 1 ||
+                this.actionData.stake.lt(n2bn("1"))
+            ) {
+                this.$nextTick(() => {
+                    this.inputData.stake = 0;
+                    this.actionData.stake = n2bn("0");
+                });
+            }
+        },
+
+        /**
          * 获取数据
          */
         async getBuildData(walletAddress) {
@@ -712,6 +728,8 @@ export default {
                     this.buildData.debtBN
                 );
                 this.actionData.ratio = BigNumber.from("500");
+
+                this.adjustMinStake();
             } catch (error) {
                 console.log(error, "clickMaxBuildAmount error");
             }
@@ -813,6 +831,8 @@ export default {
                     this.actionData.amount = BigNumber.from("0");
                     this.actionData.ratio = BigNumber.from("500");
                 }
+
+                this.adjustMinStake();
                 //抵押率刚好则不动
             } catch (error) {
                 console.log(error, "clickTargetRatio error");
@@ -836,8 +856,6 @@ export default {
                         "You don't have enough amount of LINA.";
                     return;
                 }
-
-                this.inputData.ratio = this.buildData.targetRatio;
 
                 //抵押输入的lina时能生成的最大lusd
                 let canBuildMaxAfterStake = bnDiv(
@@ -879,22 +897,22 @@ export default {
                 this.inputData.stake = stakeAmount;
                 this.actionData.stake = n2bn(stakeAmount.toString());
 
-                // this.actionData.ratio = bnMul(
-                //     bnDiv(
-                //         bnMul(
-                //             canBuildMaxAfterStake,
-                //             n2bn(
-                //                 (this.buildData.targetRatio / 100).toString()
-                //             )
-                //         ),
-                //         bnAdd(this.actionData.amount, this.buildData.debtBN)
-                //     ),
-                //     n2bn("100".toString())
-                // );
+                this.adjustMinStake();
 
-                // this.inputData.ratio = formatEtherToNumber(
-                //     this.buildData.targetRatio
-                // );
+                this.actionData.ratio = bnMul(
+                    bnDiv(
+                        bnMul(
+                            canBuildMaxAfterStake,
+                            n2bn(this.buildData.targetRatio / 100)
+                        ),
+                        bnAdd(this.actionData.amount, this.buildData.debtBN)
+                    ),
+                    n2bn("100")
+                );
+
+                this.inputData.ratio = formatEtherToNumber(
+                    this.actionData.ratio
+                );
             } catch (error) {
                 console.log(error, "stake change error");
                 this.errors.stakeMsg = "Invalid number";
@@ -1022,6 +1040,8 @@ export default {
 
                 this.inputData.amount = buildAmount;
                 this.actionData.amount = n2bn(buildAmount.toString());
+
+                this.adjustMinStake();
             } catch (error) {
                 console.log(error, "build change error");
                 this.errors.amountMsg = "Invalid number";
@@ -1170,6 +1190,8 @@ export default {
                         ratioAmount.toString()
                     );
                 }
+
+                this.adjustMinStake();
             } catch (error) {
                 console.log(error, "ratio change error");
                 this.errors.ratioMsg = "Invalid number";
@@ -1193,11 +1215,11 @@ export default {
                     }
 
                     //单独调用
-                    if (this.actionData.stake.gt("0")) {
+                    if (this.actionData.stake.gte(n2bn("1"))) {
                         this.waitProcessArray.push(BUILD_PROCESS_SETUP.STAKING);
                     }
 
-                    if (this.actionData.amount.gt("0")) {
+                    if (this.actionData.amount.gte(n2bn("0.01"))) {
                         this.waitProcessArray.push(BUILD_PROCESS_SETUP.BUILD);
                     }
 
@@ -1261,13 +1283,22 @@ export default {
                     ) {
                         // console.log("单独stake");
 
+                        //多抵押一点,防止build失败
                         const stake = n2bn(
                             _.ceil(bn2n(this.actionData.stake), 2)
                         );
-
                         if (stake.lt(this.buildData.LINABN)) {
                             this.actionData.stake = stake;
                         }
+
+                        //合约需要大于1
+                        if (this.actionData.stake.eq(n2bn("1"))) {
+                            this.actionData.stake = bnAdd(
+                                this.actionData.stake,
+                                n2bn("0.000000000000000001")
+                            );
+                        }
+
                         await this.startStakingContract(this.actionData.stake);
                     }
                     if (
@@ -1276,7 +1307,7 @@ export default {
                     ) {
                         // console.log("单独build");
                         this.actionData.amount = n2bn(
-                            _.floor(bn2n(this.actionData.amount), 1)
+                            _.floor(bn2n(this.actionData.amount), 2)
                         );
                         await this.startBuildContract(this.actionData.amount);
                     }
@@ -1324,6 +1355,7 @@ export default {
                     ) {
                         this.transactionErrMsg = error.message;
                     } else {
+                        console.log(error, "startFlow error");
                         //通用错误
                         this.transactionErrMsg =
                             "Something went wrong, please try again.";
