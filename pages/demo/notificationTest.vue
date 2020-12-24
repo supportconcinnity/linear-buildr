@@ -1,6 +1,6 @@
 <template>
     <div>
-        <notificationQueue> </notificationQueue>
+        <!-- <notificationQueue> </notificationQueue> -->
 
         <!-- <watingEnhance
             :currentStep="confirmTransactionStep"
@@ -28,6 +28,7 @@ export default {
             waitProcessArray: ["Confirm Staking", "Confirm Building"],
             transactionErrMsg: null,
             confirmTransactionStep: 0,
+            confirmTransactionHash:"0x5eb146eb55ce95345e96f88b03139d34bde5d4f0caf4c6427119e07fd5315c0e",
             confirmTransactionStatus: false,
             walletNetworkId: 1
         };

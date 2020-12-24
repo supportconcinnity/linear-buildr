@@ -1,20 +1,5 @@
 <template>
     <div id="transferWatingEnhance">
-        <img
-            v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
-            class="wallteLogo"
-            src="@/static/metamask.svg"
-        />
-        <img
-            v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
-            class="wallteLogo"
-            src="@/static/binance.svg"
-        />
-
-        <div class="close" @click.stop="$emit('close')">
-            <closeSvg></closeSvg>
-        </div>
-
         <div class="waitTitle">
             <span v-if="currentStep > setupArray.length - 1"
                 >Congratulations!</span
@@ -29,6 +14,21 @@
             ><span class="error" v-else-if="currentErrMsg">{{
                 currentErrMsg
             }}</span>
+        </div>
+
+        <img
+            v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
+            class="wallteLogo"
+            src="@/static/metamask.svg"
+        />
+        <img
+            v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
+            class="wallteLogo"
+            src="@/static/binance.svg"
+        />
+
+        <div class="close" @click.stop="$emit('close')">
+            <closeSvg></closeSvg>
         </div>
 
         <div class="processBar">
@@ -49,14 +49,39 @@
                             />
 
                             <!-- 当前进度没错误 -->
-                            <img
-                                key="2"
-                                class="loading"
+
+                            <template
                                 v-else-if="
                                     currentStep == index && !currentErrMsg
                                 "
-                                src="@/static/transferProgress/loading.svg"
-                            />
+                            >
+                                <img
+                                    key="2"
+                                    class="loading"
+                                    src="@/static/transferProgress/loading.svg"
+                                />
+
+                                <template
+                                    v-if="isEthereumNetwork(currentNetworkId)"
+                                >
+                                    <img
+                                        key="21"
+                                        class="walletType"
+                                        src="@/static/transferProgress/eth_network.svg"
+                                    />
+                                </template>
+                                <template
+                                    v-else-if="
+                                        isBinanceNetwork(currentNetworkId)
+                                    "
+                                >
+                                    <img
+                                        key="22"
+                                        class="walletType"
+                                        src="@/static/transferProgress/bsc_network.svg"
+                                    />
+                                </template>
+                            </template>
 
                             <!-- 当前进度有错误 -->
                             <img
@@ -84,7 +109,12 @@
                             />
                         </transition-group>
                     </div>
-                    <div class="text">{{ item }}</div>
+                    <div
+                        class="text"
+                        :class="{ current: currentStep == index }"
+                    >
+                        {{ item }}
+                    </div>
                     <div
                         class="view"
                         v-if="
@@ -96,7 +126,15 @@
                             openBlockchainBrowser(currentHash, currentNetworkId)
                         "
                     >
-                        View on Etherscan
+                        <template v-if="isEthereumNetwork(currentNetworkId)">
+                            View Etherscan
+                        </template>
+                        <template
+                            v-else-if="isBinanceNetwork(currentNetworkId)"
+                        >
+                            View Bscscan
+                        </template>
+
                         <img src="@/static/arrow_right.svg" />
                     </div>
                     <div
@@ -132,7 +170,11 @@
 <script>
 import { openBlockchainBrowser } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
-import { SUPPORTED_WALLETS_MAP } from "@/assets/linearLibrary/linearTools/network";
+import {
+    SUPPORTED_WALLETS_MAP,
+    isEthereumNetwork,
+    isBinanceNetwork
+} from "@/assets/linearLibrary/linearTools/network";
 export default {
     name: "transferWatingEnhance",
     components: {
@@ -169,7 +211,9 @@ export default {
     data() {
         return {
             openBlockchainBrowser,
-            SUPPORTED_WALLETS_MAP
+            SUPPORTED_WALLETS_MAP,
+            isEthereumNetwork,
+            isBinanceNetwork
         };
     },
     watch: {
@@ -197,42 +241,53 @@ export default {
     align-items: center;
     position: relative;
 
-    .wallteLogo {
-        width: 120px;
-        height: 120px;
-        margin-top: 245px;
-        margin-bottom: 64px;
-    }
-
     .waitTitle {
-        font-family: Gilroy;
-        font-size: 24px;
+        font-family: Gilroy-Bold;
+        font-size: 32px;
         font-weight: bold;
-        line-height: 32px;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.25;
+        letter-spacing: normal;
         text-align: center;
         color: #5a575c;
-        max-width: 500px;
+        max-width: 550px;
         width: 100%;
+        margin-top: 228px;
+        margin-bottom: 4px;
     }
 
     .waitDesc {
         width: 100%;
         max-width: 500px;
-        max-height: 115px;
+        max-height: 50px;
         overflow-y: auto;
-        font-family: Gilroy;
-        font-size: 16px;
-        line-height: 24px;
-        text-align: center;
         color: #5a575c;
-        margin-bottom: 32px;
+        font-family: Gilroy-Regular;
+        font-size: 16px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.5;
+        letter-spacing: normal;
+        text-align: center;
+        position: absolute;
+        top: 272px;
+        word-break: break-all;
 
         .error {
-            color: #f22e45;
+            color: #df434c;
         }
     }
 
+    .wallteLogo {
+        width: 160px;
+        height: 160px;
+        margin-top: 56px;
+    }
+
     .processBar {
+        margin-top: 192px;
         width: 100%;
         max-width: 500px;
         position: relative;
@@ -264,6 +319,14 @@ export default {
                         position: absolute;
                         transform: translateZ(0);
 
+                        &.walletType {
+                            width: 16px;
+                            height: 16px;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                        }
+
                         &.loading {
                             animation: rotate 3s linear infinite;
                         }
@@ -271,26 +334,38 @@ export default {
                 }
 
                 .text {
-                    font-family: Gilroy;
+                    margin-bottom: 4px;
+                    font-family: Gilroy-Medium;
                     font-size: 12px;
                     font-weight: 500;
-                    line-height: 16px;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.33;
+                    letter-spacing: normal;
                     text-align: center;
-                    margin-bottom: 4px;
+                    color: #5a575c;
+
+                    &.current {
+                        font-family: Gilroy-Bold;
+                        font-weight: bold;
+                    }
                 }
 
                 .view,
                 .tryAgain {
                     cursor: pointer;
                     opacity: 0.2;
-                    font-family: Gilroy;
+                    text-align: center;
+                    display: flex;
+                    font-family: Gilroy-Bold;
                     font-size: 10px;
                     font-weight: bold;
-                    line-height: 16px;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.6;
                     letter-spacing: 1.25px;
-                    text-align: center;
                     color: #1a38f8;
-                    display: flex;
+                    text-transform: uppercase;
 
                     transition: opacity $animete-time linear;
 

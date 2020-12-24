@@ -454,6 +454,8 @@ export default {
                 gasLimit: this.gasLimit
             };
 
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
             transactionSettings.gasLimit = await this.getGasEstimateFromApprove(
                 LnBridgeAddress,
                 approveAmountLINA
@@ -468,7 +470,7 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
-                this.confirmTransactionNetworkId = this.walletNetworkId;
+
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
@@ -543,14 +545,14 @@ export default {
                 gasLimit: DEFAULT_GAS_LIMIT.freeze
             };
 
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
             transactionSettings.gasLimit = await this.getGasEstimateFromFreeze(
                 LnBridge,
                 swapNumber
             );
 
-            let transaction;
-
-            transaction = await LnBridge.freeze(
+            let transaction = await LnBridge.freeze(
                 swapNumber,
                 transactionSettings
             );
@@ -559,7 +561,6 @@ export default {
                 this.confirmTransactionStatus = true;
                 this.freezeSuccessHash = this.confirmTransactionHash =
                     transaction.hash;
-                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
@@ -616,6 +617,8 @@ export default {
             } else if (this.isBinanceNetwork) {
                 swapWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
             }
+
+            this.confirmTransactionNetworkId = this.walletNetworkId;
 
             //监听手动切换事件
             this.chainChangeToken = this.$pub.subscribe(
@@ -711,7 +714,6 @@ export default {
                     if (transaction) {
                         this.confirmTransactionStatus = true;
                         this.confirmTransactionHash = transaction.hash;
-                        this.confirmTransactionNetworkId = this.walletNetworkId;
 
                         // 发起右下角通知
                         this.$pub.publish("notificationQueue", {
