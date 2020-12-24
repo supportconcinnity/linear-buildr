@@ -14,11 +14,12 @@
             <closeSvg></closeSvg>
         </div>
 
-        <div class="transactionBox">
-            <div class="title">Track Debt</div>
-            <div class="context">
+        <div class="trackBox">
+            <div class="title" v-if="!isMobile">Track Debt</div>
+            <div class="context" v-if="!isMobile">
                 Track your debt over time, with charts
             </div>
+
             <div class="data">
                 <div class="li_1">
                     <div class="p_1">
@@ -38,7 +39,17 @@
                     </div>
                 </div>
             </div>
-            <div class="chart">
+
+            <div class="mobileTabs" v-if="isMobile">
+                <div class="debtChart" :class="{'activated':currentMobileTabs==1}" @click="mobileTabsClick(1)">
+                    DEBT CHART
+                </div>
+                <div class="debtList" :class="{'activated':currentMobileTabs==2}" @click="mobileTabsClick(2)">
+                    DEBT LIST
+                </div>
+            </div>
+
+            <div class="chart" v-if="!isMobile || (isMobile && currentMobileTabs==1)">
                 <trackchart
                     key="1"
                     v-if="!hasTrackData"
@@ -64,7 +75,8 @@
                     :title="'Total Current Debt\n(ℓUSD)'"
                 ></trackchart>
             </div>
-            <div class="table">
+
+            <div class="table" v-if="!isMobile || (isMobile && currentMobileTabs==2)">
                 <Table
                     v-if="trackTableData.length != 0"
                     :columns="trackTableColumn"
@@ -127,6 +139,7 @@ export default {
             currencies,
             trackModal: false,
             hasTrackData: false, //有无图表记录
+            currentMobileTabs: 1, //移动端下的tabs, 1chart 2list
 
             trackData: {
                 xAxis: {
@@ -185,7 +198,11 @@ export default {
     computed: {
         walletAddress() {
             return this.$store.state?.wallet?.address;
-        }
+        },
+        //移动端
+        isMobile() {
+            return this.$store.state?.isMobile;
+        },
     },
     created() {
         //订阅组件改变事件
@@ -335,6 +352,9 @@ export default {
             } catch (e) {
                 console.error(e, "getTrackData err");
             }
+        },
+        mobileTabsClick(mobileTabs) {
+            this.currentMobileTabs = mobileTabs;
         }
     }
 };
@@ -361,7 +381,7 @@ export default {
                 right: 24px;
             }
 
-            .transactionBox {
+            .trackBox {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -533,6 +553,129 @@ export default {
                             line-height: 1.5;
                             letter-spacing: normal;
                             font-size: 16px;
+
+                            .title {
+                                font-family: Gilroy-Bold;
+                            }
+                            .subject {
+                                font-family: Gilroy-Regular;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #trackModal {
+        .ivu-modal-wrap {
+            .ivu-modal-body {
+                padding: 24px 24px 0;
+
+                .closeBtn {
+                    position: absolute;
+                    top: 7px;
+                    right: 7px;
+
+                    #closeSvg {
+                        width: 26px;
+                    }
+                }
+
+                .data {
+                    margin-top: 16px;
+
+                    .li_1,
+                    .li_2 {
+                        flex: 1;
+                        text-align: center;
+                        .p_1 {
+                            font-size: 24px;
+                        }
+                        .p_2 {
+                            font-size: 12px;
+                        }
+                    }
+                }
+
+                .mobileTabs {
+                    width: 74.6vw;
+                    height: 32px;
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    font-family: Gilroy-Bold;
+                    font-size: 12px;
+                    line-height: 26px;
+                    color: #99999a;
+                    margin: 0 0 40px 0;
+                    border-radius: 20.5px;
+                    border: solid 1px #e5e5e5;
+
+                    .debtChart, .debtList {
+                        flex: 1;
+                        height: 26px;
+                        margin: 0 3px 0;
+                        text-align: center;
+                        border-radius: 20px;
+                    }
+
+                    .activated {
+                        background-color: rgba(126,181,255,.2);
+                        color: #1a38f8;
+                    }
+                }
+
+                .table {
+                    .ivu-table {
+                        .ivu-table-tbody {
+                            .ivu-table-row {
+                                .cellAsset {
+                                    .ivu-table-cell {
+                                        padding: 0 0 0 8px;
+
+                                        .ivu-table-cell-slot {
+                                            font-size: 14px!important;
+
+                                            img {
+                                                width: 24px!important;
+                                                height: 24px!important;
+                                                margin-right: 8px;
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+
+                    .nothing {
+                        width: 100%;
+                        height: 100%;
+                        border-radius: 8px;
+                        border: solid 1px #deddde;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+
+                        img {
+                            width: 60px!important;
+                            margin-right: 0px!important;
+                            vertical-align: middle;
+                        }
+                        .text {
+                            color: #5a575c;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.5;
+                            letter-spacing: normal;
+                            font-size: 16px;
+                            text-align: center;
 
                             .title {
                                 font-family: Gilroy-Bold;

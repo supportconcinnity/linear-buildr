@@ -56,9 +56,9 @@
             v-if="transactionHistoryData.length != 0 || gettingData"
             class="transactionBox"
         >
-            <div class="title">Transaction History</div>
+            <div class="title" v-if="!isMobile">Transaction History</div>
 
-            <div class="filterMenu">
+            <div class="filterMenu" v-if="!isMobile">
                 <div class="box">
                     <Select
                         class="chainSelect"
@@ -71,7 +71,7 @@
                             <span>Ethereum</span>
                         </Option>
                         <Option value="binance" label="Binance">
-                            <img src="@/static/logo-wallet-bsc.svg" alt="" />
+                            <img src="@/static/binance.svg" alt="" />
                             <span> Binance</span>
                         </Option>
                     </Select>
@@ -214,20 +214,37 @@
                 </div>
             </div>
 
+            <div class="filterMenuMobile" v-if="isMobile">
+                <img src="@/static/add.svg" alt="" @click="showFilterMenuMobileModal">
+                <template v-if="filterNum != 0">
+                    {{filterNum}} Filters applied
+                </template>
+                <template v-if="filterNum == 0">
+                    Filter
+                </template>
+            </div>
+
             <div class="customTable">
                 <div class="tabelHeader">
                     <div class="th sort chain">
-                        Smart Chain
+                        <template v-if="!isMobile">Smart </template>Chain
                     </div>
                     <div class="th sort date">
                         Date
                     </div>
-                    <div class="th sort type">
-                        Type
-                    </div>
-                    <div class="th sort amount">
-                        Amount
-                    </div>
+                    <template v-if="!isMobile">
+                        <div class="th sort type">
+                            Type
+                        </div>
+                        <div class="th sort amount">
+                            Amount
+                        </div>
+                    </template>
+                    <template v-if="isMobile">
+                        <div class="th sort typeAmount">
+                            Type/Amount
+                        </div>
+                    </template>
                     <div class="th sort viewInBrowser"></div>
                 </div>
 
@@ -245,21 +262,46 @@
                                     <img src="@/static/ETH.svg" />
                                 </template>
                                 <template v-if="row.chain == BLOCKCHAIN.BINANCE">
-                                    <img src="@/static/logo-wallet-bsc.svg" />
+                                    <img src="@/static/binance.svg" />
                                 </template>
-                                {{ row.chain }}
+
+                                <template
+                                    v-if="isMobile && row.chain == BLOCKCHAIN.ETHEREUM"
+                                >
+                                    ETH
+                                </template>
+                                <template
+                                    v-if="isMobile && row.chain == BLOCKCHAIN.BINANCE"
+                                >
+                                    BSC
+                                </template>
+                                <template
+                                    v-if="!isMobile"
+                                >
+                                    {{ row.chain }}
+                                </template>
                             </div>
                             <div class="td date">
                                 {{ row.date }}
                             </div>
-                            <div class="td type">
-                                {{ row.type }}
-                            </div>
-                            <div class="td amount">
-                                <span>{{ row.amount }}</span>
-                            </div>
+                            <template v-if="!isMobile">
+                                <div class="td type">
+                                    {{ row.type }}
+                                </div>
+                                <div class="td amount">
+                                    <span>{{ row.amount }}</span>
+                                </div>
+                            </template>
+                            <template v-if="isMobile">
+                                <div class="td typeAmount">
+                                    <span>{{ row.type }}</span>
+                                    <span>{{ row.amount }}</span>
+                                </div>
+                            </template>
                             <div class="td viewInBrowser">
-                                <a :href="row.hash" target="_blank">VIEW →</a>
+                                <a :href="row.hash" target="_blank">
+                                    <template v-if="!isMobile">VIEW</template> →
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -289,10 +331,191 @@
             <div class="context">You have not made any transactions yet</div>
             <div class="buildBtn" @click="toBuild()">Build ℓUSD</div>
         </div>
+
+        <Modal
+            v-model="filterMenuMobileModal"
+            :footer-hide="true"
+            :closable="true"
+            :transfer="false"
+            :mask="true"
+            class="filterMenuMobileModal"
+        >
+            <div class="titleBox">
+                <template v-if="filterNum != 0">
+                    {{filterNum}} Filters applied
+                    <div
+                        class="clearFiltersBtn"
+                        :class="{
+                            hasFilter:
+                                filters.chainType ||
+                                filters.dateRange.length != 0 ||
+                                filters.transactionType.length != 0 ||
+                                filters.amountRange.from ||
+                                filters.amountRange.to
+                        }"
+                        @click="clearMobileFilters"
+                    >
+                        CLEAR
+                    </div>
+                </template>
+                <template v-if="filterNum == 0">
+                    Filter
+                </template>
+            </div>
+
+            <div class="filterBox">
+                <Select
+                    class="chainSelect"
+                    :class="{ hasFilter: mobileFilters.chainType }"
+                    v-model="mobileFilters.chainType"
+                    placeholder="All Chains"
+                >
+                    <Option value="ethereum" label="Ethereum">
+                        <img src="@/static/ETH.svg" alt="" />
+                        <span>Ethereum</span>
+                    </Option>
+                    <Option value="binance" label="Binance">
+                        <img src="@/static/binance.svg" alt="" />
+                        <span> Binance</span>
+                    </Option>
+                </Select>
+
+                <DatePicker
+                    :value="dateValue"
+                    class="dateDropdown"
+                    :class="{
+                        hasFilter:
+                            mobileFilters.dateRange.length != 0 &&
+                            mobileFilters.dateRange[0] != '' &&
+                            mobileFilters.dateRange[1] != ''
+                    }"
+                    split-panels
+                    @on-change="dateRangeChange"
+                    format="yyyy/MM/dd"
+                    type="daterange"
+                    placement="bottom-end"
+                    placeholder="All Dates"
+                    :options="options1"
+                    transfer
+                >
+                </DatePicker>
+
+                <Dropdown
+                    trigger="click"
+                    class="typeDropdown"
+                    :class="{
+                        hasFilter: mobileFilters.transactionType.length != 0
+                    }"
+                >
+                    <div
+                        class="typeBtn"
+                        v-if="mobileFilters.transactionType.length == 0"
+                    >
+                        <span>All Types</span
+                        ><Icon type="ios-arrow-down"></Icon>
+                    </div>
+                    <div
+                        class="typeBtnSelected"
+                        v-else-if="mobileFilters.transactionType.length == 1"
+                    >
+                        {{ mobileFilters.transactionType[0] }}
+                    </div>
+                    <div class="typeBtnSelected" v-else>
+                        {{ mobileFilters.transactionType.length }} Selected
+                    </div>
+                    <DropdownMenu slot="list">
+                        <CheckboxGroup v-model="mobileFilters.transactionType">
+                            <Checkbox label="Build">
+                                Build
+                            </Checkbox>
+                            <Checkbox label="Burn">
+                                Burn
+                            </Checkbox>
+                            <Checkbox label="Claim">
+                                Claim
+                            </Checkbox>
+                            <Checkbox label="Transfer">
+                                Transfer
+                            </Checkbox>
+                            <Checkbox label="Stake">
+                                Stake
+                            </Checkbox>
+                            <Checkbox label="Unstake">
+                                Unstake
+                            </Checkbox>
+                            <Checkbox label="Referral">
+                                Referral
+                            </Checkbox>
+                            <Checkbox label="Swap">
+                                Swap
+                            </Checkbox>
+                        </CheckboxGroup>
+                    </DropdownMenu>
+                </Dropdown>
+
+                <Dropdown
+                    trigger="click"
+                    class="amountDropdown"
+                    :class="{
+                        hasFilter:
+                            mobileFilters.amountRange.from ||
+                            mobileFilters.amountRange.to
+                    }"
+                >
+                    <div
+                        class="amountBtn"
+                        v-if="
+                            mobileFilters.amountRange.from ||
+                                mobileFilters.amountRange.to
+                        "
+                    >
+                        From
+                        {{
+                            mobileFilters.amountRange.from
+                                ? mobileFilters.amountRange.from
+                                : 0
+                        }}
+                        to
+                        {{
+                            mobileFilters.amountRange.to
+                                ? mobileFilters.amountRange.to
+                                : 0
+                        }}
+                    </div>
+                    <div class="amountBtnSelected" v-else>
+                        <span>All Amount</span
+                        ><Icon type="ios-arrow-down"></Icon>
+                    </div>
+                    <DropdownMenu slot="list">
+                        <span>From:</span>
+                        <InputNumber
+                            :max="999999999999"
+                            :min="0"
+                            v-model="mobileFilters.amountRange.from"
+                        ></InputNumber>
+                        <span>To:</span>
+                        <InputNumber
+                            :max="999999999999"
+                            :min="0"
+                            v-model="mobileFilters.amountRange.to"
+                        ></InputNumber>
+                    </DropdownMenu>
+                </Dropdown>
+                
+                <div
+                    class="applyFilterBtn"
+                    :class="{'mobileFiltersChange':mobileFiltersChange}"
+                    @click="applyMobileFilters"
+                >
+                    APPLY FILTERS
+                </div>
+            </div>
+        </Modal>
     </Modal>
 </template>
 
 <script>
+import _ from "lodash";
 import {
     fetchTransactionHistory,
     TRANSACTION_EVENTS
@@ -317,8 +540,15 @@ export default {
                 transactionType: [],
                 amountRange: { from: 0, to: 0 }
             }, //筛选条件：当前选择的链0all 1eth 2bsc 交易类型 时间区间 金额区间
+            mobileFilters: {
+                chainType: null,
+                dateRange: [],
+                transactionType: [],
+                amountRange: { from: 0, to: 0 }
+            },
             currentPage: 1, //当前所在页数
             defaultPageSize: 10, //每页显示数据条数
+            filterMenuMobileModal: false, //手机显示filter modal
             transactionHistoryData: [], //交易记录数据
             //显示表格日期,大于今天的日期禁用
             options1: {
@@ -328,6 +558,8 @@ export default {
             },
 
             tableData: [],
+
+            tableDataMobile: [],
 
             BLOCKCHAIN
         };
@@ -406,7 +638,7 @@ export default {
                 this.tableData = tempData;
             });
         },
-        filterTransactionHistoryData() {}
+        filterTransactionHistoryData() {},
     },
     computed: {
         //根据筛选条件计算交易数据
@@ -529,6 +761,17 @@ export default {
         //网络类型
         walletNetworkId(){
             return this.$store.state.walletNetworkId;
+        },
+        //移动端
+        isMobile() {
+            return this.$store.state?.isMobile;
+        },
+        mobileFiltersChange() {
+            if (!_.isEqual(this.filters, this.mobileFilters) && this.filterMenuMobileModal) {
+                return true;
+            } else {
+                return false;
+            }
         }
     },
     methods: {
@@ -557,13 +800,17 @@ export default {
             this.transactionHistoryData = [...ethData,...bscData];
             this.transactionHistoryData = this.transactionHistoryData.sort(function(record1, record2) {
                 return record2.timestamp - record1.timestamp;
-             });
+            });
 
             this.gettingData = false;
         },
         //日期范围改变
-        dateRangeChange(dateRange) {
-            this.filters.dateRange = dateRange;
+        dateRangeChange(dateRange) {console.log(dateRange, "dateRangeChange");
+            if (this.isMobile) {
+                this.mobileFilters.dateRange = dateRange;
+            } else {
+                this.filters.dateRange = dateRange;
+            }
         },
         //当前分页改变
         pageChange(currentPage) {
@@ -580,10 +827,35 @@ export default {
             this.dateValue = [];
             this.currentPag = 1;
         },
+        //移动端清除筛选条件数据
+        clearMobileFilters() {
+            this.filters = {
+                chainType: null,
+                transactionType: [],
+                dateRange: [],
+                amountRange: { from: 0, to: 0 }
+            };
+            this.mobileFilters = {
+                chainType: null,
+                transactionType: [],
+                dateRange: [],
+                amountRange: { from: 0, to: 0 }
+            };
+            this.dateValue = [];
+            this.currentPag = 1;
+        },
         //打开build功能
         toBuild() {
             this.transactionModal = false;
             this.$store.commit("setCurrentAction", 1);
+        },
+        showFilterMenuMobileModal() {
+            this.mobileFilters = _.cloneDeep(this.filters);
+            this.filterMenuMobileModal = true;
+        },
+        applyMobileFilters() {
+            this.filters = _.cloneDeep(this.mobileFilters);
+            this.filterMenuMobileModal = false;
         }
     }
 };
@@ -593,6 +865,16 @@ export default {
 body {
     .ivu-date-picker-transfer {
         font-family: Gilroy;
+
+        .ivu-date-picker-with-range {
+            .ivu-picker-panel-body-date {
+                min-width: unset;
+
+                .ivu-picker-panel-content-right {
+                    display: none;
+                }
+            }
+        }
     }
 }
 
@@ -1168,13 +1450,9 @@ body {
 
 @media only screen and (max-width: $max-phone-width) {
     #transactionModal {
-        $animete-time: 0.2s;
-
         .ivu-modal-wrap {
-            position: absolute;
-
             .ivu-modal-body {
-                padding: 24px 24px 0;
+                padding: 24px 16px 0;
 
                 .closeBtn {
                     width: 26px;
@@ -1220,257 +1498,21 @@ body {
                 }
 
                 .transactionBox {
-                    .title {
-                        color: #5a575c;
-                        font-family: Gilroy-Bold;
-                        font-size: 32px;
-                        font-weight: 700;
-                        line-height: 40px;
-                        text-align: center;
-                    }
-
-                    .filterMenu {
+                    .filterMenuMobile {
                         display: flex;
-                        justify-content: space-between;
-                        margin: 32px 0;
+                        align-items: center;
+                        font-family: Gilroy-Bold;
+                        font-size: 14px;
+                        color: #99999a;
+                        margin-bottom: 16px;
 
-
-                        .box {
-                            display: flex;
-                            justify-content: space-between;
-                            padding-left: 16px;
-
-                            .chainSelect,
-                            .dateDropdown,
-                            .typeDropdown {
-                                margin-right: 8px;
-                            }
-
-                            .chainSelect {
-                                width: 100px;
-
-                                .ivu-select-selection {
-                                    border: 1px solid #e5e5e5;
-                                    box-shadow: none !important;
-
-                                    span {
-                                        font-family: Gilroy-Medium;
-                                        font-size: 12px;
-                                        font-weight: 500;
-                                        color: #99999a;
-                                    }
-
-                                    .ivu-icon:before {
-                                        line-height: 32px;
-                                        content: "\f116";
-                                        color: #cacaca;
-                                    }
-                                }
-
-                                .ivu-select-dropdown {
-                                    .ivu-select-dropdown-list {
-                                        .ivu-select-item {
-                                            display: flex;
-                                            align-items: center;
-                                            font-family: Gilroy;
-                                            font-size: 12px;
-                                            color: #515a6e;
-
-                                            img {
-                                                width: 24px;
-                                                margin-right: 8px;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                &.hasFilter {
-                                    .ivu-select-selection {
-                                        border: 1px solid #1a38f8;
-
-                                        span {
-                                            color: #5a575c;
-                                        }
-                                    }
-                                }
-                            }
-
-                            .dateDropdown {
-                                font-family: Gilroy-Medium;
-
-                                * {
-                                    box-shadow: none !important;
-                                }
-
-                                .ivu-date-picker-rel {
-                                    .ivu-input-suffix {
-                                        cursor: pointer;
-
-                                        i:before {
-                                            line-height: 32px;
-                                            content: "\f116";
-                                            color: #cacaca;
-                                        }
-                                    }
-
-                                    input {
-                                        width: 144px;
-                                        height: 32px;
-                                        font-size: 12px;
-                                        line-height: 32px;
-                                        border: 1px solid #e5e5e5;
-                                        border-radius: 4px;
-                                        color: #99999a;
-                                    }
-
-                                    input::-webkit-input-placeholder {
-                                        color: #99999a;
-                                    }
-                                    input:-ms-input-placeholder {
-                                        color: #99999a;
-                                    }
-                                    input:-moz-placeholder {
-                                        color: #99999a;
-                                    }
-                                    input::-moz-placeholder {
-                                        color: #99999a;
-                                    }
-                                }
-
-                                &.hasFilter {
-                                    input {
-                                        border: 1px solid #1a38f8;
-                                        color: #5a575c;
-                                    }
-                                }
-                            }
-
-                            .typeDropdown {
-                                font-family: Gilroy-Medium;
-
-                                .ivu-dropdown-rel {
-                                    .typeBtn,
-                                    .typeBtnSelected {
-                                        width: 103px;
-                                        height: 32px;
-                                        font-size: 12px;
-                                        line-height: 32px;
-                                        border: 1px solid #e5e5e5;
-                                        border-radius: 4px;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: space-between;
-                                        padding: 0 8px;
-                                        color: #99999a;
-                                        cursor: pointer;
-
-                                        img {
-                                            width: 20px;
-                                            margin-top: 12px;
-                                            display: inline-block;
-                                        }
-                                    }
-
-                                    .typeBtnSelected {
-                                        justify-content: center;
-                                    }
-                                }
-
-                                .ivu-select-dropdown {
-                                    width: 144px;
-                                    left: 0;
-                                    padding-left: 6px;
-
-                                    .ivu-checkbox-group {
-                                        display: flex;
-                                        flex-direction: column;
-
-                                        .ivu-checkbox-wrapper {
-                                            margin: 4px 0;
-
-                                            img {
-                                                width: 16px;
-                                                margin: 0 2px 0 3px;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                &.hasFilter {
-                                    .ivu-dropdown-rel {
-                                        .typeBtn,
-                                        .typeBtnSelected {
-                                            border: 1px solid #1a38f8;
-                                            color: #5a575c;
-                                        }
-                                    }
-                                }
-                            }
-
-                            .amountDropdown {
-                                font-family: Gilroy-Medium;
-
-                                .ivu-dropdown-rel {
-                                    .amountBtn,
-                                    .amountBtnSelected {
-                                        width: 144px;
-                                        height: 32px;
-                                        font-size: 12px;
-                                        //line-height: 32px;
-                                        border: 1px solid #e5e5e5;
-                                        border-radius: 4px;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: space-between;
-                                        padding: 0 8px;
-                                        color: #99999a;
-                                        cursor: pointer;
-                                    }
-                                }
-
-                                .ivu-select-dropdown {
-                                    width: 190px;
-                                    padding: 16px 24px;
-
-                                    .ivu-dropdown-menu {
-                                        display: flex;
-                                        flex-direction: column;
-
-                                        .ivu-input-number {
-                                            width: 100%;
-                                        }
-                                    }
-                                }
-
-                                &.hasFilter {
-                                    .ivu-dropdown-rel {
-                                        .amountBtn,
-                                        .amountBtnSelected {
-                                            border: 1px solid #1a38f8;
-                                            color: #5a575c;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        .clearFiltersBtn {
-                            width: 166px;
-                            color: #1a38f8;
-                            opacity: 0.2;
-                            font-family: Gilroy-Bold;
-                            font-size: 12px;
-                            font-weight: 700;
-                            line-height: 32px;
-                            text-transform: uppercase;
-                            letter-spacing: 1.5px;
-                            cursor: not-allowed;
-                            text-align: center;
-
-                            &.hasFilter {
-                                opacity: 1;
-                                cursor: pointer;
-                            }
+                        img {
+                            width: 24px;
+                            height: 24px;
+                            margin-right: 8px;
+                            padding: 5px 4px 4px 5px;
+                            border: solid 1px #e5e5e5;
+                            border-radius: 50%;
                         }
                     }
                 }
@@ -1540,6 +1582,7 @@ body {
                             }
 
                             &:last-of-type {
+                                flex: 1.5;
                                 padding-right: 16px;
                             }
                         }
@@ -1577,17 +1620,18 @@ body {
                                     word-break: break-all;
 
                                     &:first-of-type {
-                                        padding-left: 16px;
+                                        padding-left: 0px;
                                     }
 
                                     &:last-of-type {
                                         text-align: center;
+                                        flex: 0.2;
 
                                         a {
                                             color: #1a38f8;
                                             font-family: Gilroy-Bold;
                                             font-weight: bold;
-                                            padding-right: 16px;
+                                            padding-right: 0px;
                                             opacity: 0.2 !important;
                                         }
 
@@ -1600,17 +1644,30 @@ body {
                                 .chain {
                                     display: flex;
                                     align-items: center;
+                                    justify-content: center;
                                     text-transform: capitalize;
+                                    flex-direction: column;
+
                                     img {
                                         width: 16px;
-                                        margin-right: 8px;
+                                        margin-right: 0px;
                                     }
+                                }
+
+                                .date {
+                                    flex: 1.4;
                                 }
 
                                 .amount {
                                     span {
                                         white-space: pre-wrap;
                                     }
+                                }
+
+                                .typeAmount {
+                                    display: flex;
+                                    flex-direction: column;
+                                    flex: 2.8;
                                 }
                             }
                         }
@@ -1693,6 +1750,280 @@ body {
                                     i {
                                         color: #1b05a1;
                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /deep/.filterMenuMobileModal {
+            .ivu-modal-wrap {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .ivu-modal {
+                    width: 100%!important;
+                    height: 100%;
+                    top: 0!important;
+                    margin: 0;
+
+                    .ivu-modal-content {
+                        height: 100%;
+                        border-radius: 6px;
+
+                        .ivu-modal-body {
+                            height: 100%;
+                            padding: 24px;
+                            box-shadow: unset;
+
+                            .titleBox {
+                                display: flex;
+                                align-items: center;
+                                font-family: Gilroy-Bold;
+                                font-size: 14px;
+                                color: #99999a;
+                                margin-bottom: 16px;
+
+                                .clearFiltersBtn {
+                                    color: #1a38f8;
+                                    margin-left: 16px;
+                                }
+                            }
+
+                            .filterBox {
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: space-between;
+
+                                .chainSelect,
+                                .dateDropdown,
+                                .typeDropdown,
+                                .amountDropdown {
+                                    margin-bottom: 16px;
+                                }
+
+                                .chainSelect {
+                                    width: 100%;
+
+                                    .ivu-select-selection {
+                                        height: 80px;
+                                        border: 1px solid #e5e5e5;
+                                        box-shadow: none !important;
+
+                                        span {
+                                            height: 80px;
+                                            line-height: 80px;
+                                            font-family: Gilroy-Medium;
+                                            font-size: 16px;
+                                            font-weight: 500;
+                                            color: #99999a;
+                                        }
+
+                                        .ivu-icon:before {
+                                            line-height: 32px;
+                                            content: "\f116";
+                                            color: #cacaca;
+                                        }
+                                    }
+
+                                    .ivu-select-dropdown {
+                                        .ivu-select-dropdown-list {
+                                            .ivu-select-item {
+                                                display: flex;
+                                                align-items: center;
+                                                font-family: Gilroy;
+                                                font-size: 16px;
+                                                color: #515a6e;
+
+                                                img {
+                                                    width: 24px;
+                                                    margin-right: 8px;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    &.hasFilter {
+                                        .ivu-select-selection {
+                                            border: 1px solid #1a38f8;
+
+                                            span {
+                                                color: #5a575c;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                .dateDropdown {
+                                    font-family: Gilroy-Medium;
+
+                                    * {
+                                        box-shadow: none !important;
+                                    }
+
+                                    .ivu-date-picker-rel {
+                                        .ivu-input-suffix {
+                                            cursor: pointer;
+
+                                            i:before {
+                                                line-height: 80px;
+                                                content: "\f116";
+                                                color: #cacaca;
+                                            }
+                                        }
+
+                                        input {
+                                            height: 80px;
+                                            font-size: 16px;
+                                            line-height: 32px;
+                                            border: 1px solid #e5e5e5;
+                                            border-radius: 4px;
+                                            color: #99999a;
+                                        }
+
+                                        input::-webkit-input-placeholder {
+                                            color: #99999a;
+                                        }
+                                        input:-ms-input-placeholder {
+                                            color: #99999a;
+                                        }
+                                        input:-moz-placeholder {
+                                            color: #99999a;
+                                        }
+                                        input::-moz-placeholder {
+                                            color: #99999a;
+                                        }
+                                    }
+
+                                    &.hasFilter {
+                                        input {
+                                            border: 1px solid #1a38f8;
+                                            color: #5a575c;
+                                        }
+                                    }
+                                }
+
+                                .typeDropdown {
+                                    font-family: Gilroy-Medium;
+
+                                    .ivu-dropdown-rel {
+                                        .typeBtn,
+                                        .typeBtnSelected {
+                                            width: 100%;
+                                            height: 80px;
+                                            font-size: 16px;
+                                            line-height: 32px;
+                                            border: 1px solid #e5e5e5;
+                                            border-radius: 4px;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: space-between;
+                                            padding: 0 8px;
+                                            color: #99999a;
+                                            cursor: pointer;
+
+                                            img {
+                                                width: 20px;
+                                                margin-top: 12px;
+                                                display: inline-block;
+                                            }
+                                        }
+                                    }
+
+                                    .ivu-select-dropdown {
+                                        width: calc(100% - 48px);
+                                        left: 0;
+                                        padding-left: 6px;
+
+                                        .ivu-checkbox-group {
+                                            display: flex;
+                                            flex-direction: column;
+
+                                            .ivu-checkbox-wrapper {
+                                                margin: 4px 0;
+
+                                                img {
+                                                    width: 16px;
+                                                    margin: 0 2px 0 3px;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    &.hasFilter {
+                                        .ivu-dropdown-rel {
+                                            .typeBtn,
+                                            .typeBtnSelected {
+                                                border: 1px solid #1a38f8;
+                                                color: #5a575c;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                .amountDropdown {
+                                    font-family: Gilroy-Medium;
+
+                                    .ivu-dropdown-rel {
+                                        .amountBtn,
+                                        .amountBtnSelected {
+                                            width: 100%;
+                                            height: 80px;
+                                            font-size: 16px;
+                                            border: 1px solid #e5e5e5;
+                                            border-radius: 4px;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: space-between;
+                                            padding: 0 8px;
+                                            color: #99999a;
+                                            cursor: pointer;
+                                        }
+                                    }
+
+                                    .ivu-select-dropdown {
+                                        width: calc(100% - 48px);
+                                        padding: 16px 24px;
+
+                                        .ivu-dropdown-menu {
+                                            display: flex;
+                                            flex-direction: column;
+
+                                            .ivu-input-number {
+                                                width: 100%;
+                                            }
+                                        }
+                                    }
+
+                                    &.hasFilter {
+                                        .ivu-dropdown-rel {
+                                            .amountBtn,
+                                            .amountBtnSelected {
+                                                border: 1px solid #1a38f8;
+                                                color: #5a575c;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                .applyFilterBtn {
+                                    width: 100%;
+                                    height: 40px;
+                                    line-height: 40px;
+                                    font-family: Gilroy-Bold;
+                                    font-size: 12px;
+                                    text-align: center;
+                                    color: #ffffff;
+                                    background-color:rgba(126,181,255,.2);
+                                    border-radius: 20px;
+                                    letter-spacing: 1.5px;
+                                }
+
+                                .mobileFiltersChange {
+                                    background-color: #1a38f8;
                                 }
                             }
                         }

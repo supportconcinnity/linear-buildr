@@ -8,7 +8,7 @@
             />
             <div class="mBuyLINA mobileShow" @click="openBuy">
                 BUY LINA
-                <img src="@/static/icon-arrow-left-bold.svg" alt="" />
+                <img src="@/static/arrow_right.svg" alt="" />
             </div>
         </div>
         <div class="container">

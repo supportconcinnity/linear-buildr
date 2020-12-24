@@ -49,11 +49,13 @@ export default {
         }, 50)
     },
     mounted() {
+        this.$store.commit('setIsMobile', this.isMobile);
+
         //监视窗口变化
         window.addEventListener("resize", this.getWindowScreen, false);
     },
     destroyed() {
-        window.removeEventListener("resize", this.getWindowScreen, false);
+        //window.removeEventListener("resize", this.getWindowScreen, false);
     }
 };
 </script>
