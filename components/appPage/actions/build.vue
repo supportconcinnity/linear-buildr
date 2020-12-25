@@ -50,6 +50,7 @@
                                         type="text"
                                         v-model="inputData.stake"
                                         placeholder="0"
+                                        :min="1"
                                         :max="100000000000"
                                         @on-change="changeStakeAmount"
                                         @on-focus="inputFocus(0)"
@@ -123,6 +124,7 @@
                                         class="input"
                                         ref="itemInput1"
                                         type="text"
+                                        :min="0"
                                         :max="100000000000"
                                         v-model="inputData.amount"
                                         @on-change="changeBuildAmount"
@@ -431,7 +433,8 @@ import {
     bnMul2N,
     bnDiv2N,
     MAX_DECIMAL_LENGTH,
-    n2bn
+    n2bn,
+    bn2n
 } from "@/common/bnCalc";
 
 import { BigNumber, utils } from "ethers";
@@ -460,7 +463,7 @@ export default {
 
             confirmTransactionStep: -1, //当前交易进度
             confirmTransactionStatus: false, //当前交易确认状态
-            confirmTransactionNetworkId:"",//当前交易确认网络id
+            confirmTransactionNetworkId: "", //当前交易确认网络id
             confirmTransactionHash: "", //当前交易hash
             transactionErrMsg: "", //交易错误信息
             processing: false, // 处理状态, 防止重复点击
@@ -555,6 +558,21 @@ export default {
         this.getBuildData(this.walletAddress);
     },
     methods: {
+        /**
+         * 调整stake最小数为1,小于为0
+         */
+        adjustMinStake() {
+            if (
+                this.inputData.stake < 1 ||
+                this.actionData.stake.lt(n2bn("1"))
+            ) {
+                this.$nextTick(() => {
+                    this.inputData.stake = 0;
+                    this.actionData.stake = n2bn("0");
+                });
+            }
+        },
+
         /**
          * 获取数据
          */
@@ -712,6 +730,8 @@ export default {
                     this.buildData.debtBN
                 );
                 this.actionData.ratio = BigNumber.from("500");
+
+                this.adjustMinStake();
             } catch (error) {
                 console.log(error, "clickMaxBuildAmount error");
             }
@@ -813,6 +833,8 @@ export default {
                     this.actionData.amount = BigNumber.from("0");
                     this.actionData.ratio = BigNumber.from("500");
                 }
+
+                this.adjustMinStake();
                 //抵押率刚好则不动
             } catch (error) {
                 console.log(error, "clickTargetRatio error");
@@ -836,8 +858,6 @@ export default {
                         "You don't have enough amount of LINA.";
                     return;
                 }
-
-                this.inputData.ratio = this.buildData.targetRatio;
 
                 //抵押输入的lina时能生成的最大lusd
                 let canBuildMaxAfterStake = bnDiv(
@@ -879,22 +899,22 @@ export default {
                 this.inputData.stake = stakeAmount;
                 this.actionData.stake = n2bn(stakeAmount.toString());
 
-                // this.actionData.ratio = bnMul(
-                //     bnDiv(
-                //         bnMul(
-                //             canBuildMaxAfterStake,
-                //             n2bn(
-                //                 (this.buildData.targetRatio / 100).toString()
-                //             )
-                //         ),
-                //         bnAdd(this.actionData.amount, this.buildData.debtBN)
-                //     ),
-                //     n2bn("100".toString())
-                // );
+                this.adjustMinStake();
 
-                // this.inputData.ratio = formatEtherToNumber(
-                //     this.buildData.targetRatio
-                // );
+                this.actionData.ratio = bnMul(
+                    bnDiv(
+                        bnMul(
+                            canBuildMaxAfterStake,
+                            n2bn(this.buildData.targetRatio / 100)
+                        ),
+                        bnAdd(this.actionData.amount, this.buildData.debtBN)
+                    ),
+                    n2bn("100")
+                );
+
+                this.inputData.ratio = formatEtherToNumber(
+                    this.actionData.ratio
+                );
             } catch (error) {
                 console.log(error, "stake change error");
                 this.errors.stakeMsg = "Invalid number";
@@ -1022,6 +1042,8 @@ export default {
 
                 this.inputData.amount = buildAmount;
                 this.actionData.amount = n2bn(buildAmount.toString());
+
+                this.adjustMinStake();
             } catch (error) {
                 console.log(error, "build change error");
                 this.errors.amountMsg = "Invalid number";
@@ -1170,6 +1192,8 @@ export default {
                         ratioAmount.toString()
                     );
                 }
+
+                this.adjustMinStake();
             } catch (error) {
                 console.log(error, "ratio change error");
                 this.errors.ratioMsg = "Invalid number";
@@ -1193,8 +1217,8 @@ export default {
                     }
 
                     if (
-                        this.actionData.stake.gt("0") &&
-                        this.actionData.amount.gt("0")
+                        this.actionData.stake.gte(n2bn("1")) &&
+                        this.actionData.amount.gte(n2bn("0.01"))
                     ) {
                         //一步调用
                         this.waitProcessArray.push(
@@ -1202,13 +1226,13 @@ export default {
                         );
                     } else {
                         //单独调用
-                        if (this.actionData.stake.gt("0")) {
+                        if (this.actionData.stake.gte(n2bn("1"))) {
                             this.waitProcessArray.push(
                                 BUILD_PROCESS_SETUP.STAKING
                             );
                         }
 
-                        if (this.actionData.amount.gt("0")) {
+                        if (this.actionData.amount.gte(n2bn("0.01"))) {
                             this.waitProcessArray.push(
                                 BUILD_PROCESS_SETUP.BUILD
                             );
@@ -1262,6 +1286,21 @@ export default {
                             ] == BUILD_PROCESS_SETUP.STAKING
                         ) {
                             console.log("单独stake");
+                            //多抵押一点,防止build失败
+                            const stake = n2bn(
+                                _.ceil(bn2n(this.actionData.stake), 2)
+                            );
+                            if (stake.lt(this.buildData.LINABN)) {
+                                this.actionData.stake = stake;
+                            }
+
+                            //合约需要大于1
+                            if (this.actionData.stake.eq(n2bn("1"))) {
+                                this.actionData.stake = bnAdd(
+                                    this.actionData.stake,
+                                    n2bn("0.000000000000000001")
+                                );
+                            }
                             await this.startStakingContract(
                                 this.actionData.stake
                             );
@@ -1272,6 +1311,9 @@ export default {
                             ] == BUILD_PROCESS_SETUP.BUILD
                         ) {
                             console.log("单独build");
+                            this.actionData.amount = n2bn(
+                                _.floor(bn2n(this.actionData.amount), 2)
+                            );
                             await this.startBuildContract(
                                 this.actionData.amount
                             );
@@ -1287,6 +1329,7 @@ export default {
                     ) {
                         this.transactionErrMsg = error.message;
                     } else {
+                        console.log(error, "startFlow error");
                         //通用错误
                         this.transactionErrMsg =
                             "Something went wrong, please try again.";
@@ -1320,6 +1363,8 @@ export default {
                 gasLimit: this.gasLimit
             };
 
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
             transactionSettings.gasLimit = await this.getGasEstimateFromApprove(
                 LnCollateralSystemAddress,
                 approveAmountLINA
@@ -1334,7 +1379,7 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
-                this.confirmTransactionNetworkId = this.walletNetworkId;
+
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
@@ -1373,6 +1418,8 @@ export default {
                 gasLimit: this.gasLimit
             };
 
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
             transactionSettings.gasLimit = await this.getGasEstimateFromStakingAndBuild(
                 stakeAmountLINA
             );
@@ -1386,12 +1433,12 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
-                 this.confirmTransactionNetworkId = this.walletNetworkId;
+
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.BUILD,
-                     networkId: this.walletNetworkId,
+                    networkId: this.walletNetworkId,
                     value: `Building ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -1425,6 +1472,8 @@ export default {
                 gasLimit: this.gasLimit
             };
 
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
             transactionSettings.gasLimit = await this.getGasEstimateFromStaking(
                 stakeAmountLINA
             );
@@ -1439,12 +1488,12 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
-                 this.confirmTransactionNetworkId = this.walletNetworkId;
+
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.STAKING,
-                     networkId: this.walletNetworkId,
+                    networkId: this.walletNetworkId,
                     value: `Building ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -1481,13 +1530,13 @@ export default {
                 gasLimit: this.gasLimit
             };
 
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
             transactionSettings.gasLimit = await this.getGasEstimateFromBuild(
                 buildAmountlUSD
             );
 
-            let transaction;
-
-            transaction = await LnBuildBurnSystem.BuildAsset(
+            let transaction = await LnBuildBurnSystem.BuildAsset(
                 this.walletAddress,
                 buildAmountlUSD,
                 transactionSettings
@@ -1496,13 +1545,12 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
-                 this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.BUILD,
-                     networkId: this.walletNetworkId,
+                    networkId: this.walletNetworkId,
                     value: `Building ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
