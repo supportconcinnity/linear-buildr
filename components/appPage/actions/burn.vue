@@ -177,17 +177,22 @@
                             </div>
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="!isMobile"></gasEditor>
                     </div>
 
                     <div class="actionBodyMobile">
                         <div
                             class="errMsg"
                             :style="{
-                                display: errors.unStakeMsg || errors.ratioMsg || errors.amountMsg ? 'flex' : 'none'
+                                display:
+                                    errors.unStakeMsg ||
+                                    errors.ratioMsg ||
+                                    errors.amountMsg
+                                        ? 'flex'
+                                        : 'none'
                             }"
                         >
-                            <img src="@/static/error.svg" alt="">
+                            <img src="@/static/error.svg" alt="" />
                             {{ errors.unStakeMsg }}
                             {{ errors.ratioMsg }}
                             {{ errors.amountMsg }}
@@ -212,7 +217,11 @@
                                         @click="showIntroductActionModal"
                                     />
 
-                                    <img class="logo" src="@/static/LINA_logo.svg" alt="" />
+                                    <img
+                                        class="logo"
+                                        src="@/static/LINA_logo.svg"
+                                        alt=""
+                                    />
 
                                     <div class="itemTypeTitle">
                                         Unstake LINA
@@ -253,10 +262,14 @@
                                 @click="changeFocusItem(1)"
                             >
                                 <div class="inputBox">
-                                    <img class="logo" src="@/static/currency/lUSD.svg" alt="" />
+                                    <img
+                                        class="logo"
+                                        src="@/static/currency/lUSD.svg"
+                                        alt=""
+                                    />
 
                                     <div class="itemTypeTitle">Burn ℓUSD</div>
-        
+
                                     <InputNumber
                                         class="input"
                                         ref="itemInput4"
@@ -273,7 +286,7 @@
                                                 floor(value, DECIMAL_PRECISION)
                                         "
                                     />
-        
+
                                     <div
                                         class="itemTypeBtn"
                                         :class="{ active: activeItemBtn == 4 }"
@@ -310,7 +323,7 @@
                                         :formatter="value => floor(value, 0)"
                                     />
                                 </div>
-    
+
                                 <div
                                     class="itemTypeBtn"
                                     :class="{ active: activeItemBtn == 5 }"
@@ -321,7 +334,7 @@
                             </div>
                         </div>
 
-                        <gasEditor></gasEditor>
+                        <gasEditor v-if="isMobile"></gasEditor>
                     </div>
 
                     <div
@@ -341,6 +354,7 @@
                     v-if="this.actionTabs == 'm1'"
                     :currentStep="confirmTransactionStep"
                     :currentHash="confirmTransactionHash"
+                    :currentNetworkId="confirmTransactionNetworkId"
                     :currentConfirm="confirmTransactionStatus"
                     :currentErrMsg="transactionErrMsg"
                     :setupArray="waitProcessArray"
@@ -360,7 +374,8 @@
         >
             <div class="title">Unstake LINA</div>
             <div class="context">
-                Amount of LINA unstaked may vary due to block times and price fluctuations in pledge tokens.
+                Amount of LINA unstaked may vary due to block times and price
+                fluctuations in pledge tokens.
             </div>
         </Modal>
     </div>
@@ -431,6 +446,7 @@ export default {
 
             confirmTransactionStep: 0, //当前交易进度
             confirmTransactionStatus: false, //当前交易确认状态
+            confirmTransactionNetworkId: "", //当前交易确认网络id
             confirmTransactionHash: "", //当前交易hash
             transactionErrMsg: "", //交易错误信息
             waitProcessArray: [], //等待交易进度组
@@ -482,7 +498,8 @@ export default {
         walletAddress() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
-        walletNetworkId() {}
+        walletNetworkId() {},
+        isMobile() {}
     },
     computed: {
         //burn按钮禁止状态
@@ -512,6 +529,10 @@ export default {
 
         walletNetworkId() {
             return this.$store.state?.walletNetworkId;
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
         }
     },
     methods: {
@@ -774,11 +795,13 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
+                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.BURN,
+                    networkId: this.walletNetworkId,
                     value: `Burn ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -822,11 +845,13 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
+                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.BURN,
+                    networkId: this.walletNetworkId,
                     value: `Burn ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -873,11 +898,13 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
+                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.UNSTAKING,
+                    networkId: this.walletNetworkId,
                     value: `Burn ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
                     }`
@@ -2188,7 +2215,7 @@ export default {
 
                 .ivu-tabs-tabpane {
                     width: 100%;
-                    height: 88vh!important;
+                    height: 88vh !important;
 
                     .burnBox,
                     .waitingBox,
@@ -2217,7 +2244,7 @@ export default {
                                 padding: 12px 16px;
                                 margin-top: 24px;
                                 border-radius: 8px;
-                                background-color: rgba(223,67,76,.05);
+                                background-color: rgba(223, 67, 76, 0.05);
                                 font-size: 12px;
                                 color: #df434c;
 
@@ -2245,7 +2272,7 @@ export default {
                                 text-align: center;
                                 color: #99999a;
                             }
-                            
+
                             .inputGroupBox {
                                 width: 74.4vw;
                                 display: flex;
@@ -2421,7 +2448,7 @@ export default {
                             width: 100%;
                             position: absolute;
                             bottom: 0px;
-                            height: 12.8vw!important;
+                            height: 12.8vw !important;
                             cursor: pointer;
                             background: #1a38f8;
                             color: #ffffff;
@@ -2461,9 +2488,9 @@ export default {
                 justify-content: center;
 
                 .ivu-modal {
-                    width: 74.66vw!important;
+                    width: 74.66vw !important;
                     height: 36.8vw;
-                    top: 0!important;
+                    top: 0 !important;
 
                     .ivu-modal-content {
                         height: 100%;

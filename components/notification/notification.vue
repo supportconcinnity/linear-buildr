@@ -32,7 +32,7 @@
             </div>
             <div class="description">
                 <span class="info">{{ value }} &nbsp;</span>
-                <span class="view" @click="openBlockchainScan(hash)">view</span>
+                <span class="view" @click="openBlockchainBrowser(hash,networkId)">view</span>
             </div>
         </div>
         <div class="btns">
@@ -49,7 +49,7 @@
 
 <script>
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-import { openBlockchainScan } from "@/common/utils";
+import { openBlockchainBrowser } from "@/common/utils";
 import { BUILD_PROCESS_SETUP } from '@/assets/linearLibrary/linearTools/constants/process';
 
 export default {
@@ -57,7 +57,7 @@ export default {
     data() {
         return {
             status: 0, //0执行中,1执行完成,2执行失败
-            openBlockchainScan,
+            openBlockchainBrowser,
             stepRegex: /[\s]*[0-9]{1,}[\s]*\/[\s]*[0-9]{1,}[\s]*/i, //获取进度正则(允许数字前后有空格),例:1/5
             sliderPercent: 100 //当前进度百分比
         };
@@ -67,6 +67,7 @@ export default {
         hash: "",
         type: "",
         value: "",
+        networkId:"",
         unit: "" //测试用,无用时删除
     },
     watch: {

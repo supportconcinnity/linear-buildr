@@ -5,8 +5,10 @@ const pageResults = require("graph-results-pager");
 const maxRequest = 1000;
 
 const graphAPIEndpoints = {
-    ethereum: process.env.GRAPH_EXCHANGE_ETHEREUM,
-    binance: process.env.GRAPH_EXCHANGE_BINANCE
+    1: process.env.GRAPH_EXCHANGE_ETHEREUM_MAINNET,
+    3: process.env.GRAPH_EXCHANGE_ETHEREUM_ROPSTEN,
+    56: process.env.GRAPH_EXCHANGE_BINANCE_MAINNET,
+    97: process.env.GRAPH_EXCHANGE_BINANCE_TESTNET
 };
 
 module.exports = {
@@ -16,13 +18,10 @@ module.exports = {
         pricesLast({
             max = maxRequest,
             source = undefined,
-            blockChain = undefined
+            networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            if (!blockChain) {
-                blockChain = $nuxt.$store.state?.currentGraphApi;
-            }
             return pageResults({
-                api: graphAPIEndpoints[blockChain],
+                api: graphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "pricesLasts",

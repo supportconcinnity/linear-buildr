@@ -10,47 +10,9 @@
         fullscreen
         @on-visible-change="transactionModalChange"
     >
-        <svg
-            class="closeBtn"
-            @click="transactionModal = false"
-            width="40px"
-            height="40px"
-            viewBox="-1 -1 42 42"
-        >
-            <defs>
-                <path
-                    d="M20 40C31.0457 40 40 31.0457 40 20C40 8.9543 31.0457 0 20 0C8.9543 0 0 8.9543 0 20C0 31.0457 8.9543 40 20 40Z"
-                    id="path_1"
-                />
-                <clipPath id="clip_1">
-                    <use xlink:href="#path_1" />
-                </clipPath>
-            </defs>
-            <g id="Icon-Button/Cancel">
-                <g id="Setup/Icon-Button/Outline">
-                    <g id="Oval">
-                        <g clip-path="url(#clip_1)">
-                            <use
-                                id="round"
-                                xlink:href="#path_1"
-                                fill="none"
-                                stroke="#DEDDDE"
-                                stroke-width="1.5"
-                            />
-                        </g>
-                    </g>
-                </g>
-                <g id="Icon/Arrow-Left" transform="translate(8 8)">
-                    <path
-                        d="M8.5 0C8.74546 0 8.94961 0.176875 8.99194 0.410124L9 0.5L9 8L16.5 8C16.7761 8 17 8.22386 17 8.5C17 8.74546 16.8231 8.94961 16.5899 8.99194L16.5 9L9 9L9 16.5C9 16.7761 8.77614 17 8.5 17C8.25454 17 8.05039 16.8231 8.00806 16.5899L8 16.5L8 9L0.5 9C0.223858 9 0 8.77614 0 8.5C0 8.25454 0.176875 8.05039 0.410124 8.00806L0.5 8L8 8L8 0.5C8 0.223858 8.22386 0 8.5 0Z"
-                        transform="matrix(0.70710677 0.70710677 -0.70710677 0.70710677 12 -0.020814896)"
-                        id="shape"
-                        fill="#DEDDDE"
-                        stroke="none"
-                    />
-                </g>
-            </g>
-        </svg>
+        <div class="closeBtn" @click="transactionModal = false">
+            <closeSvg />
+        </div>
 
         <div
             v-if="transactionHistoryData.length != 0 || gettingData"
@@ -257,33 +219,38 @@
                         >
                             <div class="td chain">
                                 <template
-                                    v-if="row.chain == BLOCKCHAIN.ETHEREUM"
+                                    v-if="isEthereumNetwork(row.networkId)"
                                 >
                                     <img src="@/static/ETH.svg" />
                                 </template>
-                                <template v-if="row.chain == BLOCKCHAIN.BINANCE">
-                                    <img src="@/static/binance.svg" />
+                                <template
+                                    v-if="isBinanceNetwork(row.networkId)"
+                                >
+                                    <img src="@/static/logo-wallet-bsc.svg" />
                                 </template>
 
-                                <template
-                                    v-if="isMobile && row.chain == BLOCKCHAIN.ETHEREUM"
-                                >
-                                    ETH
-                                </template>
-                                <template
-                                    v-if="isMobile && row.chain == BLOCKCHAIN.BINANCE"
-                                >
-                                    BSC
-                                </template>
                                 <template
                                     v-if="!isMobile"
                                 >
                                     {{ row.chain }}
                                 </template>
+
+
+                                <template
+                                    v-if="isMobile && isEthereumNetwork(row.networkId)"
+                                >
+                                    ETH
+                                </template>
+                                <template
+                                    v-if="isMobile && isBinanceNetwork(row.networkId)"
+                                >
+                                    BSC
+                                </template>
                             </div>
                             <div class="td date">
                                 {{ row.date }}
                             </div>
+
                             <template v-if="!isMobile">
                                 <div class="td type">
                                     {{ row.type }}
@@ -298,10 +265,16 @@
                                     <span>{{ row.amount }}</span>
                                 </div>
                             </template>
-                            <div class="td viewInBrowser">
-                                <a :href="row.hash" target="_blank">
-                                    <template v-if="!isMobile">VIEW</template> →
-                                </a>
+                            <div
+                                class="td viewInBrowser"
+                                @click="
+                                    openBlockchainBrowser(
+                                        row.hash,
+                                        row.networkId
+                                    )
+                                "
+                            >
+                                <template v-if="!isMobile">VIEW</template> →
                             </div>
                         </div>
                     </div>
@@ -522,12 +495,16 @@ import {
 } from "@/assets/linearLibrary/linearTools/request/transactionHistory";
 import { format } from "date-fns";
 import {
-    BLOCKCHAIN
+    isEthereumNetwork,
+    isBinanceNetwork,
+    getOtherNetworks
 } from "@/assets/linearLibrary/linearTools/network";
 import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
-import { getBrowserUrlBase } from "@/assets/linearLibrary/linearJs/contractSettings";
+import closeSvg from "@/components/svg/close.vue";
+import { openBlockchainBrowser } from "@/common/utils";
 
 export default {
+    components: { closeSvg },
     name: "transactionModal",
     data() {
         return {
@@ -558,10 +535,11 @@ export default {
             },
 
             tableData: [],
-
             tableDataMobile: [],
 
-            BLOCKCHAIN
+            isEthereumNetwork,
+            isBinanceNetwork,
+            openBlockchainBrowser
         };
     },
     created() {
@@ -577,10 +555,8 @@ export default {
     watch: {
         currentPageData() {
             var that = this;
-            var type = "",
-                amount = "",
+            var amount = "",
                 date = "",
-                hash = "",
                 tempData = [];
 
             if (this.currentPageData.length == 0) {
@@ -591,24 +567,24 @@ export default {
             }
 
             this.currentPageData.map(function(item, index, ary) {
-                type = item.type;
                 date = format(item.timestamp, "d MMM yyyy kk:mm");
-
-                let baseUrl = getBrowserUrlBase({blockChain: item.chain,netWork: item.net});
-                hash = baseUrl + item.hash;
+                const { networkId, hash, chain, type } = item;
 
                 if (
                     item.type == "Build" ||
                     item.type == "Unstake" ||
                     item.type == "Burn" ||
                     item.type == "Stake" ||
-                    item.type == "Swap"||
-                    item.type == "Referral"||
+                    item.type == "Swap" ||
+                    item.type == "Referral" ||
                     item.type == "Transfer"
                 ) {
-                    amount = item.symbol + formatNumber(item.value) + " " + item.source;
-                }
-                else if (item.type == "Claim") {
+                    amount =
+                        item.symbol +
+                        formatNumber(item.value) +
+                        " " +
+                        item.source;
+                } else if (item.type == "Claim") {
                     let rewardslusd = "";
                     let rewardsLina = "";
                     if (
@@ -626,11 +602,12 @@ export default {
                 }
 
                 tempData.push({
-                    chain: item.chain,
-                    type: type,
-                    amount: amount,
-                    date: date,
-                    hash: hash
+                    networkId,
+                    chain,
+                    type,
+                    amount,
+                    date,
+                    hash
                 });
             });
 
@@ -639,6 +616,7 @@ export default {
             });
         },
         filterTransactionHistoryData() {},
+        walletNetworkId() {}
     },
     computed: {
         //根据筛选条件计算交易数据
@@ -759,7 +737,7 @@ export default {
             return filterNum;
         },
         //网络类型
-        walletNetworkId(){
+        walletNetworkId() {
             return this.$store.state.walletNetworkId;
         },
         //移动端
@@ -772,6 +750,9 @@ export default {
             } else {
                 return false;
             }
+        },
+        walletNetworkId() {
+            return this.$store.state?.walletNetworkId;
         }
     },
     methods: {
@@ -788,19 +769,38 @@ export default {
         },
         //获取交易记录
         async fetchTransactionHistoryClick() {
-            let ethData = await fetchTransactionHistory(
-                this.$store.state?.wallet?.address,
-                BLOCKCHAIN.ETHEREUM
-            );
-            let bscData = await fetchTransactionHistory(
-                this.$store.state?.wallet?.address,
-                BLOCKCHAIN.BINANCE
+            let waitArray = [];
+
+            //push当前网络
+            waitArray.push(
+                fetchTransactionHistory(
+                    this.$store.state?.wallet?.address,
+                    this.walletNetworkId
+                )
             );
 
-            this.transactionHistoryData = [...ethData,...bscData];
-            this.transactionHistoryData = this.transactionHistoryData.sort(function(record1, record2) {
-                return record2.timestamp - record1.timestamp;
-            });
+            //获取其他网络graph数据
+            const other = getOtherNetworks(this.walletNetworkId);
+            if (other.length) {
+                for (const index in other) {
+                    const id = other[index];
+                    waitArray.push(
+                        fetchTransactionHistory(
+                            this.$store.state?.wallet?.address,
+                            id
+                        )
+                    );
+                }
+            }
+
+            const [one, two] = await Promise.all(waitArray);
+            this.transactionHistoryData = [...one, ...two];
+
+            this.transactionHistoryData = this.transactionHistoryData.sort(
+                function(record1, record2) {
+                    return record2.timestamp - record1.timestamp;
+                }
+            );
 
             this.gettingData = false;
         },
@@ -899,22 +899,6 @@ body {
                 top: 24px;
                 right: 24px;
                 cursor: pointer;
-
-                #round,
-                #shape {
-                    transition: fill $animete-time linear;
-                }
-
-                &:hover {
-                    #round {
-                        stroke: #1b05a1;
-                        fill: #1b05a1;
-                    }
-
-                    #shape {
-                        fill: white;
-                    }
-                }
             }
 
             .noTransactionBox {
@@ -949,7 +933,7 @@ body {
                     width: 134px;
                     height: 40px;
                     border-radius: 20px;
-                    background-color: #1b05a1;
+                    background-color: #1a38f8;
                     font-family: Gilroy;
                     font-size: 12px;
                     font-weight: bold;
@@ -961,7 +945,7 @@ body {
                 }
 
                 .buildBtn:hover {
-                    background-color: #1f04c6;
+                    background-color: #1a38f8;
                 }
             }
 
@@ -979,7 +963,6 @@ body {
                     display: flex;
                     justify-content: space-between;
                     margin: 32px 0;
-
 
                     .box {
                         display: flex;
@@ -1253,10 +1236,11 @@ body {
                                 letter-spacing: 1.5px;
                                 opacity: 0.2;
                                 float: right;
-                            }
+                                cursor: pointer;
 
-                            .viewInBrowser:hover {
-                                opacity: 1;
+                                &:hover {
+                                    opacity: 1;
+                                }
                             }
                         }
                     }
@@ -1329,15 +1313,14 @@ body {
                                 &:last-of-type {
                                     text-align: center;
 
-                                    a {
-                                        color: #1a38f8;
-                                        font-family: Gilroy-Bold;
-                                        font-weight: bold;
-                                        padding-right: 16px;
-                                        opacity: 0.2 !important;
-                                    }
+                                    color: #1a38f8;
+                                    font-family: Gilroy-Bold;
+                                    font-weight: bold;
+                                    padding-right: 16px;
+                                    opacity: 0.2 !important;
+                                    cursor: pointer;
 
-                                    a:hover {
+                                    &:hover {
                                         opacity: 1 !important;
                                     }
                                 }
@@ -1388,17 +1371,17 @@ body {
 
                     .ivu-page-item:hover {
                         &:not(.ivu-page-item-active) {
-                            border: 1px solid #1b05a1;
+                            border: 1px solid #1a38f8;
 
                             a {
-                                color: #1b05a1;
+                                color: #1a38f8;
                             }
                         }
                     }
 
                     .ivu-page-item-active {
-                        border-color: #1b05a1;
-                        background-color: #1b05a1;
+                        border-color: #1a38f8;
+                        background-color: #1a38f8;
 
                         a {
                             color: #fff;
@@ -1418,7 +1401,7 @@ body {
                     .ivu-page-item-jump-prev:hover {
                         a {
                             i {
-                                color: #1b05a1;
+                                color: #1a38f8;
                             }
                         }
                     }
@@ -1437,7 +1420,7 @@ body {
                         &:not(.ivu-page-disabled) {
                             a {
                                 i {
-                                    color: #1b05a1;
+                                    color: #1a38f8;
                                 }
                             }
                         }
@@ -1455,10 +1438,13 @@ body {
                 padding: 24px 16px 0;
 
                 .closeBtn {
-                    width: 26px;
                     position: absolute;
                     top: 7px;
                     right: 7px;
+
+                    #closeSvg {
+                        width: 26px;
+                    }
                 }
 
                 .noTransactionBox {
@@ -1493,7 +1479,7 @@ body {
                     }
 
                     .buildBtn:hover {
-                        background-color: #1f04c6;
+                        background-color: #1a38f8;
                     }
                 }
 
@@ -1549,10 +1535,10 @@ body {
                                     letter-spacing: 1.5px;
                                     opacity: 0.2;
                                     float: right;
-                                }
 
-                                .viewInBrowser:hover {
-                                    opacity: 1;
+                                    &:hover {
+                                        opacity: 1;
+                                    }
                                 }
                             }
                         }
@@ -1627,15 +1613,14 @@ body {
                                         text-align: center;
                                         flex: 0.2;
 
-                                        a {
-                                            color: #1a38f8;
-                                            font-family: Gilroy-Bold;
-                                            font-weight: bold;
-                                            padding-right: 0px;
-                                            opacity: 0.2 !important;
-                                        }
+                                        color: #1a38f8;
+                                        font-family: Gilroy-Bold;
+                                        font-weight: bold;
+                                        padding-right: 16px;
+                                        opacity: 0.2 !important;
+                                        cursor: pointer;
 
-                                        a:hover {
+                                        &:hover {
                                             opacity: 1 !important;
                                         }
                                     }
@@ -1699,17 +1684,17 @@ body {
 
                         .ivu-page-item:hover {
                             &:not(.ivu-page-item-active) {
-                                border: 1px solid #1b05a1;
+                                border: 1px solid #1a38f8;
 
                                 a {
-                                    color: #1b05a1;
+                                    color: #1a38f8;
                                 }
                             }
                         }
 
                         .ivu-page-item-active {
-                            border-color: #1b05a1;
-                            background-color: #1b05a1;
+                            border-color: #1a38f8;
+                            background-color: #1a38f8;
 
                             a {
                                 color: #fff;
@@ -1729,7 +1714,7 @@ body {
                         .ivu-page-item-jump-prev:hover {
                             a {
                                 i {
-                                    color: #1b05a1;
+                                    color: #1a38f8;
                                 }
                             }
                         }
@@ -1748,7 +1733,7 @@ body {
                             &:not(.ivu-page-disabled) {
                                 a {
                                     i {
-                                        color: #1b05a1;
+                                        color: #1a38f8;
                                     }
                                 }
                             }

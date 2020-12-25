@@ -1,6 +1,7 @@
 import linearData from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 import flatten from "lodash/flatten";
 import _ from "lodash";
+import { isBinanceNetwork, isEthereumNetwork } from "../../network";
 
 export const PAGINATION_INDEX = 10;
 
@@ -18,7 +19,7 @@ export const TRANSACTION_EVENTS = [
 
 export const fetchTransactionHistory = async (
     walletAddress,
-    blockChain = undefined
+    networkId = undefined
 ) => {
     try {
         const [
@@ -32,28 +33,25 @@ export const fetchTransactionHistory = async (
             freeZes,
             unfreezes
         ] = await Promise.all([
-            linearData.lnr.minted({ account: walletAddress, blockChain }),
-            linearData.lnr.burned({ account: walletAddress, blockChain }),
-            linearData.lnr.feesClaimed({ account: walletAddress, blockChain }),
-            linearData.lnr.collateral({ account: walletAddress, blockChain }),
+            linearData.lnr.minted({ account: walletAddress, networkId }),
+            linearData.lnr.burned({ account: walletAddress, networkId }),
+            linearData.lnr.feesClaimed({ account: walletAddress, networkId }),
+            linearData.lnr.collateral({ account: walletAddress, networkId }),
             linearData.lnr.redeemCollateral({
                 account: walletAddress,
-                blockChain
+                networkId
             }),
-            linearData.lnr.transfer({ account: walletAddress, blockChain }),
-            linearData.lnr.referral({ to: walletAddress, blockChain }),
-            linearData.lnr.freeZe({ account: walletAddress, blockChain }),
-            linearData.lnr.unfreeze({ account: walletAddress, blockChain })
+            linearData.lnr.transfer({ account: walletAddress, networkId }),
+            linearData.lnr.referral({ to: walletAddress, networkId }),
+            linearData.lnr.freeZe({ account: walletAddress, networkId }),
+            linearData.lnr.unfreeze({ account: walletAddress, networkId })
         ]);
-        
-        if (!blockChain) {
-            blockChain = $nuxt.$store.state?.currentGraphApi;
-        }
 
-        let netWork = "testNet";
-        let walletNetworkId = $nuxt.$store.state?.walletNetworkId;
-        if (walletNetworkId == 1 || walletNetworkId == 56) {
-            netWork = "mainNet";
+        let chain; //链
+        if (isEthereumNetwork(networkId)) {
+            chain = "ethereum";
+        } else if (isBinanceNetwork(networkId)) {
+            chain = "binance";
         }
 
         const mergedArray = flatten(
@@ -82,13 +80,13 @@ export const fetchTransactionHistory = async (
                         ? (event.rewardsLina = _.floor(event.rewardsLina, 2))
                         : null;
                     event.source
-                        ? (event.source = event.source.replace(/l/,"ℓ"))
+                        ? (event.source = event.source.replace(/l/, "ℓ"))
                         : null;
                     return event.type
-                        ? { chain: blockChain, net: netWork, ...event }
+                        ? { networkId, chain, ...event }
                         : {
-                              chain: blockChain,
-                              net: netWork,
+                              networkId,
+                              chain,
                               type: TRANSACTION_EVENTS[i],
                               ...event
                           };

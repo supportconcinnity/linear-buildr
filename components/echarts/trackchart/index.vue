@@ -86,6 +86,12 @@ export default {
             }
         }
     },
+    computed: {
+        //移动端
+        isMobile() {
+            return this.$store.state?.isMobile;
+        },
+    },
     methods: {
         //更新数据
         updateData(newData) {
@@ -192,7 +198,7 @@ export default {
                         //文本样式
                         textStyle: {
                             color: "#c6c4c7", //轴上的字体颜色
-                            fontSize: "14", // 轴字体大小
+                            fontSize: "12", // 轴字体大小
                             fontWeight :"bold"
                         }
                     }
@@ -208,7 +214,7 @@ export default {
                     // maxInterval: _.round(_.min(this.data.series) / 2),//手动计算间隔
                     splitNumber: 3, //echart自己计算间隔
                     axisLine: {
-                        show: false //不显示轴线
+                        show: false, //不显示轴线,
                     },
                     splitLine: {
                         //网格线
@@ -217,11 +223,12 @@ export default {
                         }
                     },
                     axisLabel: {
+                        rotate: 90,
                         //文本样式
                         padding: [0, 10, 0, 0],
                         textStyle: {
                             color: "#c6c4c7", //轴上的字体颜色
-                            fontSize: "14", // 轴字体大小
+                            fontSize: "12", // 轴字体大小
                              fontWeight :"bold"
                         }
                     }

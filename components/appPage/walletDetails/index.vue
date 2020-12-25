@@ -1,5 +1,5 @@
 <template>
-    <div id="walletDetails" :class="{mScroll: mShowWallet}">
+    <div id="walletDetails" :class="{ mScroll: mShowWallet }">
         <div class="walletAndAddressBox" v-if="!mShowWallet">
             <div class="info">
                 <div class="wallet">
@@ -78,13 +78,14 @@
             </div>
 
             <div class="mMenu" @click="mShowMenuFun">
-                <img
-                    src="@/static/icon-menu.svg"
-                />
+                <img src="@/static/icon-menu.svg" />
             </div>
         </div>
 
-        <div class="walletDetailsBox" :class="{mShowWalletClass: mShowWallet}">
+        <div
+            class="walletDetailsBox"
+            :class="{ mShowWalletClass: mShowWallet }"
+        >
             <div class="mWalletHead">
                 <metamaskSvg
                     class="metamaskIcon"
@@ -134,7 +135,6 @@
                             </g>
                         </svg>
                     </Tooltip>
-                    
                 </div>
                 <img
                     @click="mShowWallet = false"
@@ -460,8 +460,8 @@
                     }"
                     @click="getdata"
                     xmlns="http://www.w3.org/2000/svg"
-                    :width="mShowWallet? 40: 64"
-                    :height="mShowWallet? 40: 64"
+                    :width="mShowWallet ? 40 : 64"
+                    :height="mShowWallet ? 40 : 64"
                     viewBox="0 0 64 64"
                     @mousedown="refreshSelected = true"
                     @mouseup="refreshSelected = false"
@@ -530,9 +530,8 @@ export default {
 
             refreshSelected: false,
 
-            
             //移动端 显示钱包状态
-            mShowWallet: false,
+            mShowWallet: false
         };
     },
     components: {
@@ -606,18 +605,12 @@ export default {
         });
         //订阅钱包账户改变事件
         this.$pub.subscribe("onWalletAccountChange", (msg, params) => {
-            this.walletStatusChange();
+            this.walletStatusChange({ forceAction: true });
         });
 
         //订阅链改变事件
-        this.$pub.subscribe("onWalletStatusChange", (msg, params) => {
+        this.$pub.subscribe("onWalletChainChange", (msg, params) => {
             this.walletStatusChange();
-        });
-
-        //等待钱包设置完毕
-        this.waitWalletAddressInit().then(() => {
-            //开启自动刷新
-            // this.$pub.publish("onWalletDetailsLoopRefreshStart");
         });
     },
     destroyed() {
@@ -630,21 +623,7 @@ export default {
         // 测试用,无用时删除
     },
     methods: {
-        //等待钱包设置完毕
-        async waitWalletAddressInit() {
-            return new Promise(resolve => {
-                const check = async () => {
-                    const walletAddress = this.$store.state?.wallet?.address;
-                    if (walletAddress) {
-                        resolve(true);
-                    } else {
-                        setTimeout(check, 1000);
-                    }
-                };
-
-                check();
-            });
-        },
+    
 
         //测试复制文字
         copyAddress() {
@@ -672,7 +651,8 @@ export default {
             if (walletType == this.walletType || this.chainChanging) return;
 
             // this.chainChanging = true;
-            await selectedWallet(walletType, true);
+            await selectedWallet(walletType);
+            this.$pub.publish("onWalletChainChange");
             // this.chainChanging = false;
         },
 
@@ -710,7 +690,10 @@ export default {
             if (this.referStatus) {
                 this.transactionStatus = false;
                 this.trackStatus = false;
-                this.$pub.publish("transactionModalChange", this.transactionStatus);
+                this.$pub.publish(
+                    "transactionModalChange",
+                    this.transactionStatus
+                );
                 this.$pub.publish("trackModalChange", this.trackStatus);
 
                 if (this.mShowWallet) {
@@ -728,7 +711,10 @@ export default {
             if (this.trackStatus) {
                 this.transactionStatus = false;
                 this.referStatus = false;
-                this.$pub.publish("transactionModalChange", this.transactionStatus);
+                this.$pub.publish(
+                    "transactionModalChange",
+                    this.transactionStatus
+                );
                 this.$pub.publish("referralModalChange", this.referStatus);
 
                 if (this.mShowWallet) {
@@ -737,7 +723,7 @@ export default {
             }
         },
 
-        walletStatusChange() {
+        walletStatusChange({ forceAction = undefined } = {}) {
             //切换钱包关闭窗口,防止出错
             this.referStatus = false;
             this.transactionStatus = false;
@@ -745,10 +731,14 @@ export default {
             this.$pub.publish("referralModalChange", this.referStatus);
             this.$pub.publish("transactionModalChange", this.transactionStatus);
             this.$pub.publish("trackModalChange", this.trackStatus);
-            this.$store.commit("setCurrentAction", 0);
+
+            //不是swap的情况下关闭其他
+            if (this.$store.state?.currentAction != 5 || forceAction) {
+                this.$store.commit("setCurrentAction", 0);
+            }
         },
         mShowMenuFun() {
-            this.$store.commit('setmMenuState', true)
+            this.$store.commit("setmMenuState", true);
         }
     }
 };
@@ -886,7 +876,7 @@ export default {
     .walletDetailsBox {
         width: 100%;
         height: 840px;
-        
+
         .mWalletHead {
             display: none;
         }
@@ -1386,7 +1376,7 @@ export default {
                 padding: 16px 24px;
                 display: flex;
                 margin-bottom: 16px;
-                    
+
                 .metamaskIcon {
                     width: 32px;
                     height: 32px;
@@ -1458,11 +1448,9 @@ export default {
                     }
                 }
 
-                
                 .mClose {
-                    position: fixed;
-                    right: 19px;
-                    top: 19px;
+                    position: relative;
+                    left: 16px;
                 }
             }
             .actionsBox {
@@ -1758,10 +1746,8 @@ export default {
                         -webkit-animation: spin 1s linear 1s 5 alternate;
                         animation: spin 1s linear infinite;
                         cursor: not-allowed;
-
                     }
                 }
-
             }
         }
         .mNavigate {

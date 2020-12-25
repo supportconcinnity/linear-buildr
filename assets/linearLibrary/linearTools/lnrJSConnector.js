@@ -167,15 +167,10 @@ const getSignerConfig = ({ type, networkId }) => {
 /**
  * 选择钱包
  * @param walletType 钱包类型
- * @param chainChange  是否为切换链状态
  * @param waitStore  是否等待数据获取完成
  * @param regisEvent 是否注册事件
  */
-export const selectedWallet = async (
-    walletType,
-    chainChange = false,
-    waitStore = true
-) => {
+export const selectedWallet = async (walletType, waitStore = true) => {
     try {
         //连接钱包
         const walletStatus = await connectToWallet(walletType);
@@ -184,8 +179,6 @@ export const selectedWallet = async (
 
         //连接成功
         if (walletStatus && walletStatus?.currentWallet) {
-            chainChange && $pub.publish("onWalletStatusChange");
-
             store.commit(
                 "setWalletNetworkName",
                 walletStatus?.networkName.toUpperCase()
@@ -228,7 +221,6 @@ export const selectedWallet = async (
                         store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
                     ) {
                         $nuxt.$Spin.show();
-                        $pub.publish("onWalletStatusChange");
                         let { networkId } = await getEthereumNetwork();
 
                         const address = await lnrJSConnector.signer.getNextAddresses();
@@ -240,6 +232,8 @@ export const selectedWallet = async (
                             networkId,
                             signer
                         });
+
+                        $pub.publish("onWalletAccountChange");
 
                         store.commit("mergeWallet", {
                             address: address[0]
@@ -255,8 +249,9 @@ export const selectedWallet = async (
                     if (
                         store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
                     ) {
-                        selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK);
-                        $pub.publish('onMetamaskChainChange')
+                        await selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK);
+                        // $pub.publish("onMetamaskChainChange");
+                        $pub.publish("onWalletChainChange");
                     }
                 });
 
@@ -272,7 +267,6 @@ export const selectedWallet = async (
                         SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
                     ) {
                         $nuxt.$Spin.show();
-                        $pub.publish("onWalletStatusChange");
 
                         const address = await lnrJSConnector.signer.getNextAddresses();
                         const signer = new lnrJSConnector.signers[
@@ -283,6 +277,8 @@ export const selectedWallet = async (
                             networkId: walletStatus.networkId,
                             signer
                         });
+
+                        $pub.publish("onWalletAccountChange");
 
                         store.commit("mergeWallet", {
                             address: address[0]
@@ -300,6 +296,7 @@ export const selectedWallet = async (
                         SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
                     ) {
                         location.reload();
+                        // $pub.publish("onBinanceChainChange");
                     }
                 });
 

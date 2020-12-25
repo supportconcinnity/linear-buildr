@@ -7,6 +7,7 @@
                         :key="item.key"
                         :hash="item.hash"
                         :type="item.type"
+                        :networkId="item.networkId"
                         :value="item.value"
                         :unit="item.unit"
                         @closeNotification="removeNotification(index)"

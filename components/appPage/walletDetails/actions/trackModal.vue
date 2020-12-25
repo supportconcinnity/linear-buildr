@@ -591,11 +591,16 @@ export default {
                     .li_2 {
                         flex: 1;
                         text-align: center;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+
                         .p_1 {
-                            font-size: 24px;
+                            font-size: 24px!important;
                         }
                         .p_2 {
-                            font-size: 12px;
+                            font-size: 12px!important;
                         }
                     }
                 }
@@ -626,6 +631,12 @@ export default {
                         background-color: rgba(126,181,255,.2);
                         color: #1a38f8;
                     }
+                }
+
+                .chart {
+                    position: relative;
+                    width: 160%!important;
+                    height: 270px;
                 }
 
                 .table {

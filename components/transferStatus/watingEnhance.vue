@@ -92,7 +92,9 @@
                                 currentConfirm &&
                                 !currentErrMsg
                         "
-                        @click.stop="openBlockchainScan(currentHash)"
+                        @click.stop="
+                            openBlockchainBrowser(currentHash, currentNetworkId)
+                        "
                     >
                         View on Etherscan
                         <img src="@/static/arrow_right.svg" />
@@ -128,7 +130,7 @@
 </template>
 
 <script>
-import { openBlockchainScan } from "@/common/utils";
+import { openBlockchainBrowser } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
 import { SUPPORTED_WALLETS_MAP } from "@/assets/linearLibrary/linearTools/network";
 export default {
@@ -149,6 +151,10 @@ export default {
             type: Boolean,
             default: false
         },
+        currentNetworkId: {
+            type: [Number, String],
+            default: 1
+        },
         currentErrMsg: {
             type: String,
             default: ""
@@ -162,7 +168,7 @@ export default {
     },
     data() {
         return {
-            openBlockchainScan,
+            openBlockchainBrowser,
             SUPPORTED_WALLETS_MAP
         };
     },
@@ -222,7 +228,7 @@ export default {
         margin-bottom: 32px;
 
         .error {
-            color: #F22E45;
+            color: #f22e45;
         }
     }
 
