@@ -644,12 +644,12 @@ export default {
                     this.waitProcessArray = [];
                     this.confirmTransactionStep = 0;
 
-                    if (this.actionDatas.amount.gt("0")) {
+                    if (this.actionDatas.amount.gte(n2bn("0.01"))) {
                         //需要先burn
                         this.waitProcessArray.push(BUILD_PROCESS_SETUP.BURN);
                     }
 
-                    if (this.actionDatas.unStake.gt("0")) {
+                    if (this.actionDatas.unStake.gte(n2bn("0.01"))) {
                         this.waitProcessArray.push(
                             BUILD_PROCESS_SETUP.UNSTAKING
                         );
@@ -722,7 +722,7 @@ export default {
                     ) {
                         // console.log("单独unstake");
                         this.actionDatas.unStake = n2bn(
-                            _.floor(bn2n(this.actionDatas.unStake), 1)
+                            _.floor(bn2n(this.actionDatas.unStake), 2)
                         );
                         await this.unstake(this.actionDatas.unStake);
                     }
@@ -1148,30 +1148,39 @@ export default {
                 let lockLINAToLUSDBN = this.burnData.lockBN.mul(
                     this.burnData.LINA2USDBN
                 );
+
                 let lockLINAToBuildLUSDBN = this.burnData.lockBN
                     .mul(this.burnData.LINA2USDBN)
                     .div(n2bn((this.burnData.targetRatio / 100).toString()));
-
                 if (this.burnData.debtBN.lte(lockLINAToBuildLUSDBN)) {
                     //债务 <= lockLINAToLUSDBN 时，则可以直接解锁所有stake lina
+
                     this.inputData.unStake = formatEtherToNumber(
                         this.burnData.stakedBN
                     );
+
                     this.inputData.amount = formatEtherToNumber(
                         this.burnData.debtBN
                     );
-                    this.inputData.ratio = formatEtherToNumber(
-                        bnDiv(lockLINAToLUSDBN, this.burnData.debtBN)
-                    );
 
                     this.actionDatas.unStake = this.burnData.stakedBN;
-                    this.actionDatas.amount = formatEtherToNumber(
-                        this.burnData.debtBN
-                    );
-                    this.actionDatas.ratio = bnDiv(
-                        lockLINAToLUSDBN,
-                        this.burnData.debtBN
-                    );
+
+                    this.actionDatas.amount = this.burnData.debtBN;
+
+                    if (this.burnData.debtBN.eq("0")) {
+                        //没有债务
+                        this.inputData.ratio = 0;
+                        this.actionDatas.ratio = n2bn(0);
+                    } else {
+                        //有债务
+                        this.inputData.ratio = formatEtherToNumber(
+                            bnDiv(lockLINAToLUSDBN, this.burnData.debtBN)
+                        );
+                        this.actionDatas.ratio = bnDiv(
+                            lockLINAToLUSDBN,
+                            this.burnData.debtBN
+                        );
+                    }
                 } else {
                     let stakeDebt = this.burnData.debtBN.sub(
                         lockLINAToBuildLUSDBN
