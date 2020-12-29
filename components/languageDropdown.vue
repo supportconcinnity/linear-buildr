@@ -87,7 +87,7 @@ export default {
                 img {
                     height: 18px;
                     margin-right: 16px;
-                    vertical-align: middle;
+                    
                 }
             }
         }

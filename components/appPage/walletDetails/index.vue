@@ -497,6 +497,7 @@ import _ from "lodash";
 import Clipboard from "clipboard";
 import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 import {
+    CHAIN_CHANGE_TYPE,
     isBinanceNetwork,
     isEthereumNetwork,
     SUPPORTED_WALLETS_MAP
@@ -605,11 +606,13 @@ export default {
         });
         //订阅钱包账户改变事件
         this.$pub.subscribe("onWalletAccountChange", (msg, params) => {
-            this.walletStatusChange({ forceAction: true });
+            console.log("onWalletAccountChange");
+            this.walletStatusChange(true);
         });
 
         //订阅链改变事件
         this.$pub.subscribe("onWalletChainChange", (msg, params) => {
+            console.log("onWalletChainChange");
             this.walletStatusChange();
         });
     },
@@ -623,8 +626,6 @@ export default {
         // 测试用,无用时删除
     },
     methods: {
-    
-
         //测试复制文字
         copyAddress() {
             var that = this;
@@ -652,7 +653,7 @@ export default {
 
             // this.chainChanging = true;
             await selectedWallet(walletType);
-            this.$pub.publish("onWalletChainChange");
+            this.$pub.publish("onWalletChainChange", CHAIN_CHANGE_TYPE.WALLET);
             // this.chainChanging = false;
         },
 
@@ -723,7 +724,7 @@ export default {
             }
         },
 
-        walletStatusChange({ forceAction = undefined } = {}) {
+        walletStatusChange(forceAction = false) {
             //切换钱包关闭窗口,防止出错
             this.referStatus = false;
             this.transactionStatus = false;
@@ -731,6 +732,8 @@ export default {
             this.$pub.publish("referralModalChange", this.referStatus);
             this.$pub.publish("transactionModalChange", this.transactionStatus);
             this.$pub.publish("trackModalChange", this.trackStatus);
+
+            console.log(forceAction, "walletStatusChange");
 
             //不是swap的情况下关闭其他
             if (this.$store.state?.currentAction != 5 || forceAction) {

@@ -17,7 +17,7 @@ export const state = () => ({
     walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS_MAP
     walletNetworkId: "1", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
     walletNetworkName: SUPPORTED_NETWORKS["1"], //当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
-    currentGraphApi: BLOCKCHAIN.ETHEREUM, //当前钱包网络子图接口地址
+    // currentGraphApi: BLOCKCHAIN.ETHEREUM, //当前钱包网络子图接口地址
     mMenuState: false, //移动端 显示菜单
     mWalletState: false, //移动端 显示钱包详情
     isMobile: false, //是否移动端
@@ -50,9 +50,9 @@ export const mutations = {
         state.gasDetailsBSC = gasDetails;
     },
 
-    setCurrentBlockChain(state, blockChain) {
-        state.currentGraphApi = blockChain;
-    },
+    // setCurrentBlockChain(state, blockChain) {
+    //     state.currentGraphApi = blockChain;
+    // },
 
     mergeGasDetails(state, gasDetails) {
         state.gasDetails = { ...state.gasDetails, ...gasDetails };
