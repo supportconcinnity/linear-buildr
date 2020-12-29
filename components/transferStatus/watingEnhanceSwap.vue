@@ -17,11 +17,29 @@
                 </template>
 
                 <template
-                    v-if="sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK"
+                    v-if="
+                        sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK &&
+                            currentWalletType == SUPPORTED_WALLETS_MAP.METAMASK
+                    "
+                >
+                    <template v-if="isEthereumNetwork(targetNetworkId)"
+                        >Ethereum</template
+                    >
+                    <template v-if="isBinanceNetwork(targetNetworkId)"
+                        >BSC</template
+                    >
+                    Network in Metamask
+                </template>
+                <template
+                    v-if="
+                        sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK &&
+                            currentWalletType != SUPPORTED_WALLETS_MAP.METAMASK
+                    "
                 >
                     BSC Wallet
                 </template>
             </template>
+
             <template v-else>
                 <span v-if="currentStep > setupArray.length - 1"
                     >Congratulations!</span
@@ -65,7 +83,13 @@
                 <template
                     v-if="sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK"
                 >
-                    <div v-if="hasBinanceWallet" class="hasBinanceWallet">
+                    <div
+                        v-if="
+                            hasBinanceWallet &&
+                                !isBinanceNetwork(currentNetworkId)
+                        "
+                        class="hasBinanceWallet"
+                    >
                         <div class="step" @click="jumpToStep">
                             How to setup
                             <img src="@/static/arrow_right.svg" />
@@ -87,14 +111,14 @@
                                 src="@/static/transferProgress/short_arrow.svg"
                             />
                             <img
-                                v-if="isEthereumNetwork(currentNetworkId)"
-                                class="wallteLogo"
-                                src="@/static/transferProgress/metamask_bsc.svg"
-                            />
-                            <img
-                                v-if="isBinanceNetwork(currentNetworkId)"
+                                v-if="isEthereumNetwork(targetNetworkId)"
                                 class="wallteLogo"
                                 src="@/static/transferProgress/metamask_eth.svg"
+                            />
+                            <img
+                                v-if="isBinanceNetwork(targetNetworkId)"
+                                class="wallteLogo"
+                                src="@/static/transferProgress/metamask_bsc.svg"
                             />
                         </div>
 
@@ -142,14 +166,14 @@
                                 src="@/static/transferProgress/long_arrow.svg"
                             />
                             <img
-                                v-if="isEthereumNetwork(currentNetworkId)"
-                                class="wallteLogo"
-                                src="@/static/transferProgress/metamask_bsc.svg"
-                            />
-                            <img
-                                v-if="isBinanceNetwork(currentNetworkId)"
+                                v-if="isEthereumNetwork(targetNetworkId)"
                                 class="wallteLogo"
                                 src="@/static/transferProgress/metamask_eth.svg"
+                            />
+                            <img
+                                v-if="isBinanceNetwork(targetNetworkId)"
+                                class="wallteLogo"
+                                src="@/static/transferProgress/metamask_bsc.svg"
                             />
                         </div>
                     </div>
@@ -276,43 +300,43 @@
                                     src="@/static/transferProgress/loading.svg"
                                 />
 
-                                <template
-                                    v-if="
-                                        sourceWalletType ==
-                                            SUPPORTED_WALLETS_MAP.BINANCE_CHAIN &&
-                                            waitChainChange
-                                    "
-                                >
+                                <template v-if="waitChainChange">
+
                                     <img
-                                        key="22"
+                                        v-if="
+                                            isEthereumNetwork(targetNetworkId)
+                                        "
+                                        key="23"
                                         class="walletType"
                                         src="@/static/transferProgress/eth_network.svg"
+                                    />
+                                    <img
+                                        v-if="
+                                            isBinanceNetwork(targetNetworkId)
+                                        "
+                                        key="24"
+                                        class="walletType"
+                                        src="@/static/transferProgress/bsc_network.svg"
                                     />
                                 </template>
 
                                 <template v-else>
-                                    <template
+                                    <img
                                         v-if="
                                             isEthereumNetwork(currentNetworkId)
                                         "
-                                    >
-                                        <img
-                                            key="21"
-                                            class="walletType"
-                                            src="@/static/transferProgress/eth_network.svg"
-                                        />
-                                    </template>
-                                    <template
+                                        key="23"
+                                        class="walletType"
+                                        src="@/static/transferProgress/eth_network.svg"
+                                    />
+                                    <img
                                         v-if="
                                             isBinanceNetwork(currentNetworkId)
                                         "
-                                    >
-                                        <img
-                                            key="22"
-                                            class="walletType"
-                                            src="@/static/transferProgress/bsc_network.svg"
-                                        />
-                                    </template>
+                                        key="24"
+                                        class="walletType"
+                                        src="@/static/transferProgress/bsc_network.svg"
+                                    />
                                 </template>
                             </template>
 
@@ -439,7 +463,6 @@ export default {
             type: String,
             default: ""
         },
-
         currentErrMsg: {
             type: String,
             default: ""
@@ -473,7 +496,7 @@ export default {
         },
 
         hasBinanceWallet() {
-            return true;
+            return window.BinanceChain;
         }
     },
     mounted() {},
@@ -553,6 +576,7 @@ export default {
             text-align: center;
             color: #1a38f8;
             text-transform: uppercase;
+            margin-top: 8px;
 
             img {
                 margin-left: 4px;
@@ -605,6 +629,9 @@ export default {
 
             .divider {
                 border-top: 1px solid #e5e5e5;
+                margin: 40px 0;
+                position: relative;
+                width: 150%;
 
                 span {
                     font-family: Gilroy-Regular;
@@ -616,11 +643,16 @@ export default {
                     letter-spacing: normal;
                     text-align: center;
                     color: #99999a;
+                    position: absolute;
+                    left: 50%;
+                    background: white;
+                    width: 75px;
+                    transform: translate(-50%, -50%);
                 }
             }
 
             .waitTitle {
-                margin-top: 40px;
+                margin-top: 0px;
             }
         }
 
@@ -642,6 +674,7 @@ export default {
             position: absolute;
             display: flex;
             justify-content: space-around;
+            z-index: 2;
 
             .item {
                 // z-index: 1;
@@ -657,7 +690,7 @@ export default {
                     margin-bottom: 8px;
 
                     img {
-                        background-color: #fafafa;
+                        background-color: white;
                         border-radius: 50%;
                         width: 100%;
                         height: 100%;
@@ -728,7 +761,7 @@ export default {
 
         .dividerBox {
             position: relative;
-            z-index: -1;
+            z-index: 1;
             ul {
                 list-style: none;
                 width: 100%;

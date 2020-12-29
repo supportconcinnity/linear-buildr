@@ -250,6 +250,7 @@ export default {
     flex-direction: column;
     align-items: center;
     position: relative;
+    background-color: white;
 
     .waitTitle {
         font-family: Gilroy-Bold;
@@ -295,7 +296,7 @@ export default {
         height: 120px;
         margin-top: 76px;
 
-        &.eth{
+        &.eth {
             margin-left: 20px;
         }
     }
@@ -311,6 +312,7 @@ export default {
             position: absolute;
             display: flex;
             justify-content: space-around;
+            z-index: 2;
 
             .item {
                 // z-index: 1;
@@ -397,7 +399,7 @@ export default {
 
         .dividerBox {
             position: relative;
-            z-index: -1;
+            z-index: 1;
             ul {
                 list-style: none;
                 width: 100%;

@@ -134,6 +134,7 @@
                     :currentNetworkId="confirmTransactionNetworkId"
                     :waitChainChange="confirmTransactionChainChanging"
                     :sourceWalletType="sourceWalletType"
+                    :targetNetworkId="targetNetworkId"
                     :currentErrMsg="transactionErrMsg"
                     :setupArray="waitProcessArray"
                     @tryAgain="waitProcessFlow"
@@ -167,7 +168,7 @@ import lnrJSConnector, {
     connectToWallet,
     selectedWallet
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-import { bn2n, bnSub, n2bn } from "@/common/bnCalc";
+import { bn2n, bnSub, bnSub2N, n2bn } from "@/common/bnCalc";
 import {
     BUILD_PROCESS_SETUP,
     DECIMAL_PRECISION
@@ -335,7 +336,10 @@ export default {
                 other.length && (otherUnFreeZeTokens = other[0].UnFreeZeTokens);
 
                 //计算可以解冻的数量
-                const frozenBalance = currentFreeZeTokens - otherUnFreeZeTokens;
+                const frozenBalance = bnSub2N(
+                    n2bn(currentFreeZeTokens),
+                    n2bn(otherUnFreeZeTokens)
+                );
                 this.frozenBalance = this.swapNumber =
                     frozenBalance > 0
                         ? _.floor(frozenBalance, DECIMAL_PRECISION)
@@ -700,7 +704,7 @@ export default {
             ) {
                 this.confirmTransactionChainChanging = true;
                 this.chainChangedStatus = false;
-                this.confirmTransactionNetworkId = this.targetNetworkId;
+                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 //监听手动切换事件
                 this.chainChangeTokenFromUnfreeze = this.$pub.subscribe(
@@ -777,8 +781,6 @@ export default {
                     gasPrice = this.$store.state?.gasDetailsBSC?.price;
                     SETUP = " BSC";
                 }
-
-                console.log(LnBridge, gasPrice, SETUP);
 
                 console.log(`等待 [${targetWalletType}] 获取锁定hash`);
                 this.waitPendingProcess = true;
