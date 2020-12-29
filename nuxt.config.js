@@ -58,6 +58,7 @@ module.exports = {
      */
     plugins: [
         { src: "@/plugins/iview", ssr: false }, //UI框架
+        { src: "@/plugins/vue-swiper.js", ssr: false },
         { src: "@/plugins/axios", ssr: false }, //异步请求
         { src: "@/plugins/echarts", ssr: false }, //图表
         { src: "@/plugins/i18n", ssr: false }, //多语言

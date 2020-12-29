@@ -1,3 +1,5 @@
+<!-- pc/移动端单步交易 -->
+
 <template>
     <div id="transferWating">
         <div class="title">Confirm with Wallet</div>
@@ -22,7 +24,7 @@
 
         <div class="btns">
             <div v-if="value" class="etherscan" @click="$emit('etherscan')">
-                View on Etherscan
+                View on Etherscan <span><img src="@/static/arrow_right.svg" alt=""></span>
             </div>
             <div class="gap">&nbsp;</div>
 
@@ -139,6 +141,10 @@ export default {
         text-transform: uppercase;
         letter-spacing: 1.5px;
         cursor: pointer;
+
+        img {
+            display: none;
+        }
     }
     .gap {
         width: 16px;
@@ -162,6 +168,103 @@ export default {
 
         &:hover {
             background-color: #1a38f8;
+        }
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #transferWating {
+        width: 74.6vw;
+        margin: 0 auto;
+
+        .title {
+            width: unset;
+            height: unset;
+            font-family: "Gilroy-Bold";
+            font-size: 16px;
+            line-height: 16px;
+            text-align: left;
+            margin: 24px 0 0;
+        }
+        .ivu-chart-circle {
+            margin: 50px 0 0 50%;
+            transform: translateX(-50%);
+
+            img {
+                width: 80px;
+                height: 80px;
+            }
+        }
+        .loading {
+            width: unset;
+            height: unset;
+            color: #5a575c;
+            font-size: 16px;
+            line-height: 16px;
+            margin: 40px auto 0 auto;
+        }
+
+        .descript {
+            width: unset;
+            height: unset;
+            font-size: 12px;
+            line-height: 12px;
+            margin: 8px auto 0 auto;
+        }
+        .btns {
+            width: unset;
+            height: unset;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            margin: 50px auto 0 auto;
+        }
+        .etherscan {
+            flex: 1;
+            width: 100%;
+            height: 12px;
+            border-radius: unset;
+            border: unset;
+            color: #1a38f8;
+            font-family: "Gilroy-Bold";
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 12px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+
+            img {
+                display: inline;
+                display: inline;
+                position: relative;
+                top: 4px;
+            }
+        }
+        .gap {
+            width: 16px;
+        }
+        .homepage {
+            flex: 1;
+            width: 100%;
+            height: 40px;
+            border-radius: 20px;
+            background: #1a38f8;
+            color: #ffffff;
+            font-family: "Gilroy-Bold";
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 40px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: $animete-time linear;
+
+            &:hover {
+                background-color: #1a38f8;
+            }
         }
     }
 }

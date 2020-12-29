@@ -1,4 +1,4 @@
-<!-- pc端多步build、burn -->
+<!-- 移动端多步build、burn -->
 
 <template>
     <div id="transferWatingEnhance">
@@ -16,7 +16,7 @@
             ><span class="error" v-else-if="currentErrMsg">{{
                 currentErrMsg
             }}</span>
-        </div>
+        </div>        
 
         <img
             v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK"

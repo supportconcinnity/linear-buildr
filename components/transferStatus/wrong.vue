@@ -125,4 +125,101 @@ export default {
         }
     }
 }
+
+@media only screen and (max-width: $max-phone-width) {
+    #transferWrong {
+        width: 74.6vw;
+        margin: 0 auto;
+
+        .close {
+            width: 26px;
+            height: 26px;
+            position: absolute;
+            top: 10px;
+            right: 0;
+
+            #closeSvg {
+                width: 26px;
+                height: 26px;
+            }
+        }
+
+        .icon {
+            width: unset;
+            height: unset;
+            margin: 80px 0 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .title {
+            width: unset;
+            height: unset;
+            color: #5a575c;
+            font-family: "Gilroy";
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 16px;
+            text-align: center;
+            margin: 40px auto 0 auto;
+        }
+
+        .descript {
+            width: unset;
+            height: unset;
+            color: #5a575c;
+            font-family: "Gilroy-Regular";
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 12px;
+            text-align: center;
+            margin: 8px auto 0 auto;
+        }
+        .btns {
+            width: unset;
+            height: unset;
+            display: flex;
+            flex-direction: column-reverse;
+            margin: 32px auto 0 auto;
+        }
+        .try {
+            width: 100%;
+            height: 40px;
+            border-radius: 20px;
+            border: solid 1px #1a38f8;
+            color: #1a38f8;
+            font-family: "Gilroy-Bold";
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 40px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+        }
+        .gap {
+            width: 16px;
+        }
+        .homepage {
+            width: 100%;
+            height: 40px;
+            border-radius: 20px;
+            background: #1a38f8;
+            color: #ffffff;
+            font-family: "Gilroy-Bold";
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 40px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: $animete-time linear;
+
+            &:hover {
+                background-color: #1a38f8;
+            }
+        }
+    }
+}
 </style>
