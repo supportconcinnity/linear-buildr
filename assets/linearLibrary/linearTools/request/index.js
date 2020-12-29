@@ -230,7 +230,7 @@ export const storeDetailsData = async () => {
                     : 0;
 
             const amountLINA = avaliableLINA + stakedLINA + lockLINA;
-            const amountLINA2USD = avaliableLINA * LINA2USDRate;
+            const amountLINA2USD = amountLINA * LINA2USDRate;
             const amountlUSD2USD = amountlUSD * lUSD2USDRate;
             const amountETH2USD = amountETH * ETH2USDRate;
             const liquids2USD = liquids;
