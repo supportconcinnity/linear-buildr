@@ -28,10 +28,13 @@ $size4k-width: 3840px; //4k宽度
     padding: 0;
 }
 
+img {
+    
+}
 
-$mainColor: #1B05A1;
-$mainTextColor: #5A575C;
-$secondaryTextColor: #C6C4C7;
+$mainColor: #1b05a1;
+$mainTextColor: #5a575c;
+$secondaryTextColor: #c6c4c7;
 $lightBlue: #f1f7ff;
 
 //全局poptip样式
@@ -49,12 +52,10 @@ $lightBlue: #f1f7ff;
         img {
             width: 16px;
             height: 16px;
-            vertical-align: middle;
         }
     }
 
     .ivu-tooltip-popper {
-
         &[x-placement="top"] {
             .ivu-tooltip-arrow {
                 border-right: 1px solid #1a38f8;
@@ -108,11 +109,9 @@ $lightBlue: #f1f7ff;
             word-break: keep-all;
             white-space: break-spaces;
         }
-
-  
     }
 }
 
 .ivu-spin-fullscreen {
-    z-index: 10000!important;
+    z-index: 10000 !important;
 }

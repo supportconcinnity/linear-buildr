@@ -1054,7 +1054,7 @@ export default {
                                         line-height: 40px;
                                         border-radius: 100%;
                                         background-color: #fff;
-                                        vertical-align: middle;
+                                        
                                         img {
                                             width: 100%;
                                             height: 100%;

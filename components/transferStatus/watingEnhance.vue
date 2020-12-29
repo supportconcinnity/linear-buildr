@@ -4,7 +4,7 @@
             <span v-if="currentStep > setupArray.length - 1"
                 >Congratulations!</span
             >
-            <span v-else-if="currentErrMsg">Oops! Something is wrong</span>
+            <span v-else-if="currentErrMsg">Oops! Something went wrong</span>
             <span v-else-if="!currentConfirm">Confirm with your wallet</span>
             <span v-else>Interacting with the smart contract</span>
         </div>
@@ -16,11 +16,19 @@
             }}</span>
         </div>
 
-        <img
-            v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
-            class="wallteLogo"
-            src="@/static/metamask.svg"
-        />
+        <template v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK">
+            <img
+                v-if="isEthereumNetwork(currentNetworkId)"
+                class="wallteLogo eth"
+                src="@/static/transferProgress/metamask_eth.svg"
+            />
+            <img
+                v-else-if="isBinanceNetwork(currentNetworkId)"
+                class="wallteLogo eth"
+                src="@/static/transferProgress/metamask_bsc.svg"
+            />
+        </template>
+
         <img
             v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
             class="wallteLogo"
@@ -281,13 +289,17 @@ export default {
     }
 
     .wallteLogo {
-        width: 160px;
-        height: 160px;
-        margin-top: 56px;
+        width: 120px;
+        height: 120px;
+        margin-top: 76px;
+
+        &.eth{
+            margin-left: 20px;
+        }
     }
 
     .processBar {
-        margin-top: 192px;
+        margin-top: 216px;
         width: 100%;
         max-width: 500px;
         position: relative;

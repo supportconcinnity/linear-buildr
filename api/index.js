@@ -31,7 +31,7 @@ export default {
 
     async getBSCGasPrice() {
         return await $nuxt.$axios
-            .$post("https://bsc-dataseed2.binance.org", {
+            .$post("https://bsc-dataseed.binance.org", {
                 jsonrpc: "2.0",
                 id: 1,
                 method: "eth_gasPrice",

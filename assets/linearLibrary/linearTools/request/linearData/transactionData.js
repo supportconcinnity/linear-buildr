@@ -540,7 +540,7 @@ module.exports = {
                     entity: "userSwapAssetsCounts",
                     selection: {
                         where: {
-                            id: account ? `\\"${account}\\"` : undefined
+                            id: account ? `\\"${account.toLocaleLowerCase()}\\"` : undefined
                         }
                     },
                     properties: ["id", "freeZeTokens", "UnFreeZeTokens"]

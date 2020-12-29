@@ -1894,7 +1894,7 @@ export default {
                                     img {
                                         width: 100%;
                                         height: 100%;
-                                        vertical-align: middle;
+                                        
                                     }
                                 }
 
@@ -1936,7 +1936,7 @@ export default {
                                         color: #1a38f8;
 
                                         img {
-                                            vertical-align: middle;
+                                            
                                             margin-left: 6px;
                                         }
 

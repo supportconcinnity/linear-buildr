@@ -7,9 +7,10 @@ import {
     onBinanceAccountChange,
     onBinanceChainChange,
     onMetamaskChainChange,
-    BLOCKCHAIN,
-    isEthereumNetwork,
-    isBinanceNetwork
+    // BLOCKCHAIN,
+    // isEthereumNetwork,
+    // isBinanceNetwork,
+    CHAIN_CHANGE_TYPE
 } from "./network";
 import { LinearJs } from "../linearJs";
 import $pub from "pubsub-js";
@@ -168,7 +169,6 @@ const getSignerConfig = ({ type, networkId }) => {
  * 选择钱包
  * @param walletType 钱包类型
  * @param waitStore  是否等待数据获取完成
- * @param regisEvent 是否注册事件
  */
 export const selectedWallet = async (walletType, waitStore = true) => {
     try {
@@ -194,13 +194,13 @@ export const selectedWallet = async (walletType, waitStore = true) => {
             });
 
             //子图接口api
-            let blockChain;
-            if (isEthereumNetwork(walletStatus.networkId)) {
-                blockChain = BLOCKCHAIN.ETHEREUM;
-            } else if (isBinanceNetwork(walletStatus.networkId)) {
-                blockChain = BLOCKCHAIN.BINANCE;
-            }
-            store.commit("setCurrentBlockChain", blockChain);
+            // let blockChain;
+            // if (isEthereumNetwork(walletStatus.networkId)) {
+            //     blockChain = BLOCKCHAIN.ETHEREUM;
+            // } else if (isBinanceNetwork(walletStatus.networkId)) {
+            //     blockChain = BLOCKCHAIN.BINANCE;
+            // }
+            // store.commit("setCurrentBlockChain", blockChain);
 
             store.commit("setWalletType", walletType);
 
@@ -250,8 +250,10 @@ export const selectedWallet = async (walletType, waitStore = true) => {
                         store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
                     ) {
                         await selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK);
-                        // $pub.publish("onMetamaskChainChange");
-                        $pub.publish("onWalletChainChange");
+                        $pub.publish(
+                            "onWalletChainChange",
+                            CHAIN_CHANGE_TYPE.NETWORK
+                        );
                     }
                 });
 

@@ -15,7 +15,7 @@ module.exports = {
      ** Headers of the page
      */
     head: {
-        title: "Buildr - Testnet",
+        title: "Linear | Buildr - Testnet",
         meta: [
             { charset: "utf-8" },
             {

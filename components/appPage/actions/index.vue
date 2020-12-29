@@ -275,7 +275,7 @@ export default {
 
         .webLogo {
             .linearBuildrlogo {
-                vertical-align: middle;
+                
                 width: 163px;
                 height: 32px;
                 cursor: pointer;
@@ -352,7 +352,7 @@ export default {
                 display: block;
 
                 .linearBuildrlogo {
-                    vertical-align: middle;
+                    
                     width: 163px;
                     height: 32px;
                     cursor: pointer;
@@ -360,7 +360,7 @@ export default {
                 }
 
                 .logoWhenAction {
-                    vertical-align: middle;
+                    
                     cursor: pointer;
                     margin-right: 8px;
                 }

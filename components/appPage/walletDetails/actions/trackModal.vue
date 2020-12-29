@@ -519,7 +519,7 @@ export default {
                                         img {
                                             width: 32px;
                                             height: 32px;
-                                            vertical-align: middle;
+                                            
                                             margin-right: 8px;
                                         }
                                     }
@@ -543,7 +543,7 @@ export default {
 
                         img {
                             margin-right: 16px;
-                            vertical-align: middle;
+                            
                         }
                         .text {
                             color: #5a575c;
@@ -676,7 +676,7 @@ export default {
                         img {
                             width: 60px!important;
                             margin-right: 0px!important;
-                            vertical-align: middle;
+                            
                         }
                         .text {
                             color: #5a575c;

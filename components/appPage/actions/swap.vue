@@ -125,18 +125,20 @@
                 </div>
             </TabPane>
             <TabPane name="m1">
-                <watingEnhance
+                <watingEnhanceSwap
                     class="waitingBox"
                     v-if="this.actionTabs == 'm1'"
                     :currentStep="confirmTransactionStep"
                     :currentHash="confirmTransactionHash"
                     :currentConfirm="confirmTransactionStatus"
                     :currentNetworkId="confirmTransactionNetworkId"
+                    :waitChainChange="confirmTransactionChainChanging"
+                    :sourceWalletType="sourceWalletType"
                     :currentErrMsg="transactionErrMsg"
                     :setupArray="waitProcessArray"
                     @tryAgain="waitProcessFlow"
                     @close="setDefaultTab"
-                ></watingEnhance>
+                ></watingEnhanceSwap>
             </TabPane>
         </Tabs>
     </div>
@@ -145,6 +147,7 @@
 <script>
 import _ from "lodash";
 import gasEditorSwap from "@/components/gasEditorSwap";
+import watingEnhanceSwap from "@/components/transferStatus/watingEnhanceSwap";
 import {
     formatterInput,
     setCursorRange,
@@ -155,6 +158,7 @@ import {
 import {
     bufferGasLimit,
     DEFAULT_GAS_LIMIT,
+    getOtherNetworks,
     isBinanceNetwork,
     isEthereumNetwork,
     SUPPORTED_WALLETS_MAP
@@ -170,13 +174,11 @@ import {
 } from "@/assets/linearLibrary/linearTools/constants/process";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 
-// metamask添加bsc
-// https://docs.binance.org/smart-chain/wallet/metamask.html
-
 export default {
     name: "swap",
     components: {
-        gasEditorSwap
+        gasEditorSwap,
+        watingEnhanceSwap
     },
     data() {
         return {
@@ -187,20 +189,24 @@ export default {
 
             activeItemBtn: -1,
 
-            confirmTransactionStep: 0, //当前交易进度
+            confirmTransactionStep: -1, //当前交易进度
             confirmTransactionStatus: false, //当前交易确认状态
             confirmTransactionNetworkId: "", //当前交易确认网络id
             confirmTransactionHash: "", //当前交易hash
+
             transactionErrMsg: "", //交易错误信息
             processing: false, // 处理状态, 防止重复点击
-            waitProcessArray: [], //等待交易进度组
+            waitProcessArray: [],
+            // waitProcessArray: [
+            //     "Confirm Swapping on BSC",
+            //     "Confirm Swapping on Ethereum"
+            // ], //等待交易进度组
             waitProcessFlow: Function, //flow闭包函数
 
             freezeSuccessHash: "", //冻结hash
             waitPendingProcess: false, //等待查询
-            sourceWalletType: "", //原始钱包类型
-            waitChainChangeStatus: false, //等待metamask切换链状态,false为切换,true已切换
-            chainChangeToken: "", //等待事件监听id
+
+            chainChangedStatus: false, //是否已经切换网络或链,false未切换,true已切换
             autoChainChange: false, //是否自动切换链
 
             floor: _.floor,
@@ -211,24 +217,56 @@ export default {
 
             errors: {
                 amountMsg: ""
-            }
+            },
+
+            confirmTransactionChainChanging: false, //当前是否在切链步骤
+            sourNetworkId: "", //原始网络ID
+            targetNetworkId: "", //目标网络ID
+            sourceWalletType: "", //原始钱包类型
+            sourceWalletAddress: "", //原始钱包地址
+
+            chainChangeTokenFromUnfreeze: "", //解冻切换钱包事件监听id
+            chainChangeTokenFromSubscribe: "", //切换钱包事件监听id
+            walletChangeTokenFromSubscribe: "" //切换钱包地址时间监听id
         };
     },
     async created() {
         //监听链切换
-        this.$pub.subscribe("onWalletChainChange", async () => {
-            if (this.actionTabs == "m0") {
-                await this.getFrozenBalance();
+        this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
+            "onWalletChainChange",
+            async () => {
+                if (this.actionTabs == "m0") {
+                    console.log("onWalletChainChange");
+                    await this.getFrozenBalance();
+                }
             }
-        });
+        );
+
+        this.walletChangeTokenFromSubscribe = this.$pub.subscribe(
+            "onWalletAccountChange",
+            async () => {
+                if (this.actionTabs == "m0") {
+                    console.log("onWalletAccountChange");
+                    await this.getFrozenBalance();
+                }
+            }
+        );
 
         await this.getFrozenBalance();
+    },
+
+    destroyed() {
+        //清除事件,防止重复
+        this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
+        this.$pub.unsubscribe(this.chainChangeTokenFromSubscribe);
+        this.$pub.unsubscribe(this.walletChangeTokenFromSubscribe);
     },
     watch: {
         walletAddress() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
-        walletNetworkId() {}
+        walletNetworkId() {},
+        walletType() {}
     },
     computed: {
         isEthereumNetwork() {
@@ -263,6 +301,10 @@ export default {
 
         swapDisabled() {
             return !this.swapNumber || this.processing;
+        },
+
+        walletType() {
+            return this.$store.state?.walletType;
         }
     },
     methods: {
@@ -270,19 +312,40 @@ export default {
             try {
                 this.processing = true;
 
-                const result = await lnr.userSwapAssetsCount({
-                    account: this.walletAddress,
-                    networkId: this.walletNetworkId
-                });
+                //获取其他网络id
+                let otherNetworkId = getOtherNetworks(
+                    this.walletNetworkId
+                ).join();
 
-                if (result.length) {
-                    const { freeZeTokens, UnFreeZeTokens } = result[0];
-                    const frozenBalance = freeZeTokens - UnFreeZeTokens;
-                    this.frozenBalance = this.swapNumber =
-                        frozenBalance > 0
-                            ? _.floor(frozenBalance, DECIMAL_PRECISION)
-                            : 0;
-                }
+                //获取当前和其他网络冻结数据
+                const [current, other] = await Promise.all([
+                    lnr.userSwapAssetsCount({
+                        account: this.walletAddress,
+                        networkId: this.walletNetworkId
+                    }),
+                    lnr.userSwapAssetsCount({
+                        account: this.walletAddress,
+                        networkId: otherNetworkId
+                    })
+                ]);
+                let currentFreeZeTokens = 0,
+                    otherUnFreeZeTokens = 0;
+                current.length &&
+                    (currentFreeZeTokens = current[0].freeZeTokens);
+                other.length && (otherUnFreeZeTokens = other[0].UnFreeZeTokens);
+
+                //计算可以解冻的数量
+                const frozenBalance = currentFreeZeTokens - otherUnFreeZeTokens;
+                this.frozenBalance = this.swapNumber =
+                    frozenBalance > 0
+                        ? _.floor(frozenBalance, DECIMAL_PRECISION)
+                        : null;
+
+                console.log(
+                    currentFreeZeTokens,
+                    otherUnFreeZeTokens,
+                    frozenBalance
+                );
             } catch (error) {
                 console.log(error, "getFrozenBalance error");
             } finally {
@@ -347,6 +410,17 @@ export default {
 
                     this.waitProcessArray.push(BUILD_PROCESS_SETUP.UNFREEZE);
 
+                    //记录原始钱包类型
+                    this.sourceWalletType = this.walletType;
+
+                    //记录目标网络id
+                    this.targetNetworkId = getOtherNetworks(
+                        this.walletNetworkId
+                    ).join();
+
+                    //记录原始钱包地址
+                    this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
+
                     this.actionTabs = "m1"; //进入等待页
 
                     this.waitProcessFlow = this.startFlow();
@@ -410,7 +484,8 @@ export default {
                             6100003,
                             6100004,
                             6100005,
-                            6100006
+                            6100006,
+                            6100007
                         ].includes(error.code)
                     ) {
                         this.transactionErrMsg = error.message;
@@ -609,45 +684,57 @@ export default {
 
         async startUnFreezeContract() {
             this.confirmTransactionStatus = false;
-
-            let swapWalletType,
+            let targetWalletType,
+                walletStatus,
                 sourceWallet = this.walletAddress.toLocaleLowerCase();
             if (this.isEthereumNetwork) {
-                swapWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+                targetWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
             } else if (this.isBinanceNetwork) {
-                swapWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+                targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
             }
 
-            this.confirmTransactionNetworkId = this.walletNetworkId;
+            //原始网络Id,不等于目标网络Id当前情况下,等待用户切换钱包或网络
+            if (
+                this.walletNetworkId != this.targetNetworkId &&
+                this.walletType == this.sourceWalletType
+            ) {
+                this.confirmTransactionChainChanging = true;
+                this.chainChangedStatus = false;
+                this.confirmTransactionNetworkId = this.targetNetworkId;
 
-            //监听手动切换事件
-            this.chainChangeToken = this.$pub.subscribe(
-                "onWalletChainChange",
-                () => {
-                    console.log("onWalletChainChange startUnFreezeContract");
-                    this.waitChainChangeStatus = true;
-                }
-            );
+                //监听手动切换事件
+                this.chainChangeTokenFromUnfreeze = this.$pub.subscribe(
+                    "onWalletChainChange",
+                    async (msg, changeType) => {
+                        console.log(changeType, "startUnFreezeContract");
+                        this.chainChangedStatus = true;
+                        this.confirmTransactionChainChanging = false;
+                        this.confirmTransactionNetworkId = this.walletNetworkId;
+                    }
+                );
 
-            console.log("开始手动切换metamask链");
-            let walletStatus = await this.waitChainChange();
-            console.log("手动切换metamask链完成");
+                console.log("开始手动切换metamask链");
+                walletStatus = await this.waitChainChange();
+                console.log("手动切换metamask链完成");
+            } else {
+                walletStatus = true;
+            }
 
             // let walletStatus;
             // if (this.autoChainChange) {
             //     //切换钱包
             //     console.log("开始自动切换钱包");
-            //     walletStatus = await selectedWallet(swapWalletType);
+            //     walletStatus = await selectedWallet(targetWalletType);
             //     console.log("自动切换钱包完成");
             // } else {
             //     //监听手动切换事件
-            //     this.chainChangeToken = this.$pub.subscribe(
+            //     this.chainChangeTokenFromUnfreeze = this.$pub.subscribe(
             //         "onWalletChainChange",
             //         () => {
             //             console.log(
             //                 "onWalletChainChange startUnFreezeContract"
             //             );
-            //             this.waitChainChangeStatus = true;
+            //             this.chainChangedStatus = true;
             //         }
             //     );
 
@@ -656,8 +743,22 @@ export default {
             //     console.log("手动切换metamask链完成");
             // }
 
-            //验证钱包是否相同
-            if (this.walletAddress.toLocaleLowerCase() != sourceWallet) {
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
+            //验证当前网络id是否目标网络id
+            if (this.walletNetworkId != this.targetNetworkId) {
+                throw {
+                    code: 6100007,
+                    message:
+                        "The network is not correct. Please switch to a valid network"
+                };
+            }
+
+            //验证钱包地址是否相同
+            if (
+                this.walletAddress.toLocaleLowerCase() !=
+                this.sourceWalletAddress
+            ) {
                 throw {
                     code: 6100005,
                     message:
@@ -679,11 +780,11 @@ export default {
 
                 console.log(LnBridge, gasPrice, SETUP);
 
-                console.log(`等待 [${swapWalletType}] 获取锁定hash`);
+                console.log(`等待 [${targetWalletType}] 获取锁定hash`);
                 this.waitPendingProcess = true;
                 const processArray = await this.getPendingProcess(LnBridge);
                 console.log(
-                    `[${swapWalletType}] 获取锁定hash完成`,
+                    `[${targetWalletType}] 获取锁定hash完成`,
                     processArray
                 );
 
@@ -700,6 +801,8 @@ export default {
                     if (!txId) {
                         continue;
                     }
+
+                    this.confirmTransactionStatus = false;
 
                     transactionSettings.gasLimit = await this.getGasEstimateFromUnFreeze(
                         LnBridge,
@@ -754,10 +857,12 @@ export default {
         waitChainChange() {
             return new Promise(resolve => {
                 const wait = () => {
-                    if (this.waitChainChangeStatus) {
-                        this.$pub.unsubscribe(this.chainChangeToken);
-                        this.chainChangeToken = "";
-                        this.waitChainChangeStatus = false;
+                    if (this.chainChangedStatus) {
+                        this.$pub.unsubscribe(
+                            this.chainChangeTokenFromUnfreeze
+                        );
+                        this.chainChangeTokenFromUnfreeze = "";
+                        this.chainChangedStatus = false;
                         resolve(true);
                     } else {
                         setTimeout(wait, 1000);
@@ -782,7 +887,7 @@ export default {
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.unfreez);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.unfreeze);
             }
         },
 
@@ -833,13 +938,23 @@ export default {
 
         //回到默认状态
         async setDefaultTab() {
-            this.actionTabs = "m0";
             this.waitProcessArray = [];
             this.confirmTransactionStep = 0;
             this.swapNumber = null;
             this.waitPendingProcess = false;
             this.freezeSuccessHash = "";
             this.processing = false;
+            this.sourNetworkId = "";
+            this.targetNetworkId = "";
+            this.sourceWalletType = "";
+            this.sourceWalletAddress = "";
+            this.frozenBalance = null;
+            this.chainChangedStatus = false;
+            this.confirmTransactionChainChanging = false;
+            this.confirmTransactionHash = "";
+            this.confirmTransactionNetworkId = false;
+            this.confirmTransactionStatus = false;
+            this.actionTabs = "m0";
             await this.getFrozenBalance();
 
             // if (this.autoChainChange) {

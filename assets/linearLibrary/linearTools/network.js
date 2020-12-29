@@ -7,21 +7,33 @@ import {
 import { URLS } from "./constants/urls";
 import api from "@/api";
 
+/**
+ * ethererm网络
+ */
 export const ETHEREUM_NETWORKS = {
     1: "MAINNET",
     3: "ROPSTEN"
 };
 
+/**
+ * bsc网络
+ */
 export const BINANCE_NETWORKS = {
     56: "BSCMAINNET",
     97: "BSCTESTNET"
 };
 
+/**
+ * 主网网络
+ */
 export const MAINNET_NETWORKS = {
     1: "MAINNET",
     56: "BSCMAINNET"
 };
 
+/**
+ * 测试网网络
+ */
 export const TESTNET_NETWORKS = {
     3: "ROPSTEN",
     97: "BSCTESTNET"
@@ -46,13 +58,13 @@ export const isTestnetNetwork = walletNetworkId => {
 /**
  * 获取所在网络其他网络id
  * @param walletNetworkId 网络Id
-*/
+ */
 export const getOtherNetworks = walletNetworkId => {
     let other = [];
     if (isMainnetNetwork(walletNetworkId)) {
-        other = Object.keys(_.omit(MAINNET_NETWORKS, walletNetworkId));
+        other = Object.keys(_.omit(MAINNET_NETWORKS, [walletNetworkId]));
     } else if (isTestnetNetwork(walletNetworkId)) {
-        other = Object.keys(_.omit(TESTNET_NETWORKS, walletNetworkId));
+        other = Object.keys(_.omit(TESTNET_NETWORKS, [walletNetworkId]));
     }
     return other;
 };
@@ -67,6 +79,9 @@ export const SUPPORTED_WALLETS_MAP = {
     WALLET_CONNECT: "WalletConnect"
 };
 
+/**
+ * PC端钱包安装地址
+ */
 export const WALLET_EXTENSIONS = {
     METAMASK:
         "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn",
@@ -74,6 +89,9 @@ export const WALLET_EXTENSIONS = {
         "https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp"
 };
 
+/**
+ * 区块链浏览器地址
+ */
 export const BLOCKCHAIN_BROWSER = {
     1: "https://etherscan.io/tx/",
     3: "https://ropsten.etherscan.io/tx/",
@@ -81,6 +99,19 @@ export const BLOCKCHAIN_BROWSER = {
     97: "https://testnet.bscscan.com/tx/"
 };
 
+/**
+ * 链切换类型
+ * network 钱包内切换网络
+ * wallet 切换钱包
+ */
+export const CHAIN_CHANGE_TYPE = {
+    NETWORK: "network",
+    WALLET: "wallet"
+};
+
+/**
+ * 默认gas 限制
+ */
 export const DEFAULT_GAS_LIMIT = {
     approve: 220000,
     staking: 220000,
@@ -93,6 +124,9 @@ export const DEFAULT_GAS_LIMIT = {
     unfreez: 220000
 };
 
+/**
+ * 钱包信息更新状态
+ */
 export const WALLET_STATUS = {
     UNINIT: -1, //未初始化
     UPDATING: 0, //更新中
@@ -108,10 +142,10 @@ export const INFURA_JSON_RPC_URLS = {
     3: `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`
 };
 
-export const BLOCKCHAIN = {
-    ETHEREUM: "ethereum",
-    BINANCE: "binance"
-};
+// export const BLOCKCHAIN = {
+//     ETHEREUM: "ethereum",
+//     BINANCE: "binance"
+// };
 
 export async function getEthereumNetwork() {
     if (!window.ethereum) {
