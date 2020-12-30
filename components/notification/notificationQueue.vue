@@ -1,5 +1,5 @@
 <template>
-    <div class="nitificationQueue" ref="nitificationQueue">
+    <div class="nitificationQueue" ref="nitificationQueue" v-if="!isMobile">
         <div class="notificationBox">
             <transition-group name="list" tag="div">
                 <template v-for="(item, index) in queue">
@@ -42,6 +42,14 @@ export default {
             newQueue.push(data);
             this.queue = _.clone(newQueue);
         });
+    },
+    watch: {
+        isMobile() {}
+    },
+    computed: {
+        isMobile() {
+            return this.$store.state?.isMobile;
+        }
     },
     methods: {
         removeNotification(index) {

@@ -130,7 +130,8 @@
                         v-if="
                             currentStep == index &&
                                 currentConfirm &&
-                                !currentErrMsg
+                                !currentErrMsg &&
+                                !isMobile
                         "
                         @click.stop="
                             openBlockchainBrowser(currentHash, currentNetworkId)
@@ -148,7 +149,7 @@
                         <img src="@/static/arrow_right.svg" />
                     </div>
                     <div
-                        v-else-if="currentStep == index && currentErrMsg"
+                        v-else-if="currentStep == index && currentErrMsg && !isMobile"
                         class="tryAgain"
                         @click.stop="tryAgain"
                     >
@@ -172,6 +173,35 @@
                         }"
                     ></li>
                 </ul>
+            </div>
+        </div>
+
+        <div class="btnBoxMobile" v-if="isMobile">
+            <div
+                v-if="currentErrMsg"
+                class="tryAgain"
+                @click.stop="tryAgain"
+            >
+                try again
+            </div>
+
+            <div
+                class="view"
+                v-if="currentConfirm || currentErrMsg"
+                @click.stop="
+                    openBlockchainBrowser(currentHash, currentNetworkId)
+                "
+            >
+                <template v-if="isEthereumNetwork(currentNetworkId)">
+                    View Etherscan
+                </template>
+                <template
+                    v-else-if="isBinanceNetwork(currentNetworkId)"
+                >
+                    View Bscscan
+                </template>
+
+                <img src="@/static/arrow_right.svg" />
             </div>
         </div>
     </div>
@@ -227,11 +257,15 @@ export default {
         };
     },
     watch: {
-        walletType() {}
+        walletType() {},
+        isMobile() {}
     },
     computed: {
         walletType() {
             return this.$store.state?.walletType;
+        },
+        isMobile() {
+            return this.$store.state?.isMobile;
         }
     },
     mounted() {},
@@ -427,6 +461,104 @@ export default {
         position: absolute;
         top: 24px;
         right: 24px;
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #transferWatingEnhance {
+        width: 78vw!important;
+        margin: 0 auto;
+
+        .waitTitle {
+            width: 100%;
+            font-size: 16px;
+            text-align: left;
+            color: #5a575c;
+            max-width: unset;
+            margin-top: 24px;
+            margin-bottom: 0;
+        }
+
+        .waitDesc {
+            width: 100%;
+            max-width: unset;
+            max-height: unset;
+            font-size: 12px;
+            text-align: left;
+            position: unset;
+            top: 0;
+
+            .error {
+                color: #df434c;
+            }
+        }
+
+        .wallteLogo {
+            width: 80px;
+            height: 80px;
+            margin-top: 76px;
+
+            &.eth{
+                margin-left: 0;
+            }
+        }
+
+        .processBar {
+            margin-top: 24px;
+        }
+
+        .btnBoxMobile {
+            width: 100%;
+            position: relative;
+            top: 100px;
+            text-transform: uppercase;
+
+            .tryAgain {
+                width: 100%;
+                height: 40px;
+                border-radius: 20px;
+                background-color: #1a38f8;
+                font-family: Gilroy-Bold;
+                font-size: 12px;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 40px;
+                letter-spacing: 1.5px;
+                text-align: center;
+                color: #ffffff;
+            }
+
+            .view {
+                margin-top: 17px;
+                font-family: Gilroy-Bold;
+                font-size: 10px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.6;
+                letter-spacing: 1.25px;
+                text-align: center;
+                color: #1a38f8;
+
+                img {
+                    position: relative;
+                    top: 5px;
+                }
+            }
+        }
+
+        .close {
+            width: 26px;
+            height: 26px;
+            position: absolute;
+            top: 10px;
+            right: -10px;
+
+            #closeSvg {
+                width: 26px;
+                height: 26px;
+            }
+        }
     }
 }
 

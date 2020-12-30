@@ -4,7 +4,7 @@
             <TabPane name="m0">
                 <div class="burnBox">
                     <div class="actionBodyWeb">
-                        <div class="actionTitle">Burn</div>
+                        <div class="actionTitle">Burn{{walletNetworkId}}</div>
                         <div class="actionDesc">
                             Burn ℓUSD to unlock staked LINA
                         </div>
@@ -782,6 +782,7 @@ export default {
             } = lnrJSConnector;
 
             this.confirmTransactionStatus = false;
+            this.confirmTransactionNetworkId = this.walletNetworkId;
 
             const burnGasLimit = await this.getBurnAndUnstakeGasEstimate(
                 burnAmount
@@ -799,7 +800,6 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
-                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
@@ -834,6 +834,7 @@ export default {
             } = lnrJSConnector;
 
             this.confirmTransactionStatus = false;
+            this.confirmTransactionNetworkId = this.walletNetworkId;
 
             const burnGasLimit = await this.getBurnGasEstimate(burnAmount);
 
@@ -849,7 +850,6 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
-                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
@@ -884,6 +884,7 @@ export default {
             } = lnrJSConnector;
 
             this.confirmTransactionStatus = false;
+            this.confirmTransactionNetworkId = this.walletNetworkId;
 
             const unstakeGasLimit = await this.getUnstakeGasEstimate(
                 unstakeAmount
@@ -902,7 +903,6 @@ export default {
             if (transaction) {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
-                this.confirmTransactionNetworkId = this.walletNetworkId;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
