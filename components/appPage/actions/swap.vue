@@ -10,49 +10,6 @@
                             amount you want to swap
                         </div>
 
-                        <div class="fromToBox">
-                            <div class="box">
-                                <img
-                                    v-if="isEthereumNetwork"
-                                    src="@/static/ETH.svg"
-                                />
-                                <img
-                                    v-else-if="isBinanceNetwork"
-                                    src="@/static/bnb.svg"
-                                />
-                                <div class="title">
-                                    <template v-if="isEthereumNetwork"
-                                        >Ethereum Chain</template
-                                    >
-                                    <template v-else-if="isBinanceNetwork"
-                                        >Binance Smart Chain</template
-                                    >
-                                </div>
-                            </div>
-                            <img
-                                class="arrow"
-                                src="@/static/swap_arrow_right.svg"
-                            />
-                            <div class="box">
-                                <img
-                                    v-if="isEthereumNetwork"
-                                    src="@/static/bnb.svg"
-                                />
-                                <img
-                                    v-else-if="isBinanceNetwork"
-                                    src="@/static/ETH.svg"
-                                />
-                                <div class="title">
-                                    <template v-if="isEthereumNetwork"
-                                        >Binance Smart Chain</template
-                                    >
-                                    <template v-else-if="isBinanceNetwork"
-                                        >Ethereum Chain</template
-                                    >
-                                </div>
-                            </div>
-                        </div>
-
                         <div
                             class="swapInputBox"
                             :class="{
@@ -60,57 +17,57 @@
                             }"
                         >
                             <div class="iconBox">
-                                <div class="icon">
-                                    <img
-                                        :src="currentSelectCurrency.img"
-                                        alt=""
-                                    />
-                                </div>
-                            </div>
-                            <div class="midle">
-                                <div class="p_1">
+                                <img
+                                    class="icon"
+                                    :src="currentSelectCurrency.img"
+                                />
+                                <div class="name">
                                     {{ currentSelectCurrency.name }}
                                 </div>
-                                <span
-                                    class="p_2"
-                                    :class="{ active: activeItemBtn == 0 }"
-                                    @click="clickMaxAmount"
-                                >
-                                    MAX
-                                </span>
                             </div>
-                            <div class="value">
-                                <div class="price">
-                                    <div class="number">
-                                        <div class="inputRect">
-                                            <InputNumber
-                                                class="input"
-                                                ref="itemInput0"
-                                                element-id="transfer_number_input"
-                                                :min="frozenBalance"
-                                                :max="
-                                                    floor(
-                                                        currentSelectCurrency.avaliable,
-                                                        DECIMAL_PRECISION
-                                                    )
-                                                "
-                                                type="text"
-                                                v-model="swapNumber"
-                                                placeholder="0"
-                                                @on-focus="inputFocus(0)"
-                                                @on-blur="inputBlur(0)"
-                                                :formatter="formatterInput"
-                                            />
-                                        </div>
+
+                            <div class="divider"></div>
+
+                            <div class="inputBox" @click="inputFocus(0)">
+                                <div class="label">
+                                    <div class="amount">
+                                        Amount
                                     </div>
+                                    <span
+                                        class="max"
+                                        :class="{ active: activeItemBtn == 0 }"
+                                        @click="clickMaxAmount"
+                                    >
+                                        MAX
+                                    </span>
                                 </div>
+                                <InputNumber
+                                    class="input"
+                                    ref="itemInput0"
+                                    element-id="transfer_number_input"
+                                    :min="frozenBalance"
+                                    :max="
+                                        floor(
+                                            currentSelectCurrency.avaliable,
+                                            DECIMAL_PRECISION
+                                        )
+                                    "
+                                    type="text"
+                                    v-model="swapNumber"
+                                    placeholder="0"
+                                    @on-focus="inputFocus(0)"
+                                    @on-blur="inputBlur(0)"
+                                    :formatter="formatterInput"
+                                />
                             </div>
                         </div>
 
                         <div class="someWrong" v-show="errors.amountMsg">
                             {{ errors.amountMsg }}
                         </div>
-                        <gasEditorSwap></gasEditorSwap>
+                        <gasEditorSwap
+                            v-if="this.actionTabs == 'm0'"
+                        ></gasEditorSwap>
                     </div>
 
                     <div
@@ -228,7 +185,10 @@ export default {
 
             chainChangeTokenFromUnfreeze: "", //解冻切换钱包事件监听id
             chainChangeTokenFromSubscribe: "", //切换钱包事件监听id
-            walletChangeTokenFromSubscribe: "" //切换钱包地址时间监听id
+            walletChangeTokenFromSubscribe: "", //切换钱包地址时间监听id
+
+            sourceGasPrice: 0, //原始网络gas
+            targetGasPrice: 0 //目标网络gas
         };
     },
     async created() {
@@ -422,6 +382,12 @@ export default {
                         this.walletNetworkId
                     ).join();
 
+                    //记录gas price
+                    this.sourceGasPrice =
+                        this.$store.state?.sourceGasDetails?.price || 50000000000;
+                    this.targetGasPrice =
+                        this.$store.state?.targetGasDetails?.price || 50000000000;
+
                     //记录原始钱包地址
                     this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
 
@@ -512,15 +478,13 @@ export default {
         async startApproveContract(approveAmountLINA) {
             this.confirmTransactionStatus = false;
 
-            let LnProxy, LnBridge, gasPrice;
+            let LnProxy, LnBridge;
             if (this.isEthereumNetwork) {
                 LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
                 LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                gasPrice = this.$store.state?.gasDetailsETH?.price;
             } else if (this.isBinanceNetwork) {
                 LnProxy = lnrJSConnector.lnrJS.LinearFinance;
                 LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                gasPrice = this.$store.state?.gasDetailsBSC?.price;
             }
 
             const { utils } = lnrJSConnector;
@@ -529,7 +493,7 @@ export default {
             const LnBridgeAddress = LnBridge.contract.address;
 
             const transactionSettings = {
-                gasPrice,
+                gasPrice: this.sourceGasPrice,
                 gasLimit: this.gasLimit
             };
 
@@ -606,21 +570,20 @@ export default {
         async startFreezeContract(swapNumber) {
             this.confirmTransactionStatus = false;
 
-            let LnBridge, gasPrice, SETUP;
+            let LnBridge, SETUP;
             if (this.isEthereumNetwork) {
                 LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                gasPrice = this.$store.state?.gasDetailsETH?.price;
+
                 SETUP = " Ethereum";
             } else if (this.isBinanceNetwork) {
                 LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                gasPrice = this.$store.state?.gasDetailsBSC?.price;
                 SETUP = " BSC";
             }
 
             const { utils } = lnrJSConnector;
 
             const transactionSettings = {
-                gasPrice,
+                gasPrice: this.sourceGasPrice,
                 gasLimit: DEFAULT_GAS_LIMIT.freeze
             };
 
@@ -771,14 +734,12 @@ export default {
             }
 
             if (walletStatus) {
-                let LnBridge, gasPrice, SETUP;
+                let LnBridge, SETUP;
                 if (this.isEthereumNetwork) {
                     LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                    gasPrice = this.$store.state?.gasDetailsETH?.price;
                     SETUP = " Ethereum";
                 } else if (this.isBinanceNetwork) {
                     LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                    gasPrice = this.$store.state?.gasDetailsBSC?.price;
                     SETUP = " BSC";
                 }
 
@@ -793,7 +754,7 @@ export default {
                 const { utils } = lnrJSConnector;
 
                 const transactionSettings = {
-                    gasPrice,
+                    gasPrice: this.targetGasPrice,
                     gasLimit: DEFAULT_GAS_LIMIT.freeze
                 };
 
@@ -1046,7 +1007,7 @@ export default {
                         }
 
                         .actionDesc {
-                            margin: 8px 55px 100px;
+                            margin: 8px 55px 84px;
                             font-family: Gilroy-Regular;
                             font-size: 14px;
                             font-weight: normal;
@@ -1059,37 +1020,6 @@ export default {
                         }
                     }
 
-                    .fromToBox {
-                        padding: 0 46px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-around;
-
-                        .box {
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-
-                            .title {
-                                font-family: Gilroy-Bold;
-                                font-size: 14px;
-                                font-weight: bold;
-                                line-height: 18px;
-                                color: #99999a;
-                                margin-top: 20px;
-                            }
-
-                            img {
-                                width: 48px;
-                            }
-                        }
-
-                        .arrow {
-                            width: 42px;
-                            align-self: flex-start;
-                        }
-                    }
-
                     .swapInputBox {
                         width: 400px;
                         border-radius: 8px;
@@ -1098,9 +1028,9 @@ export default {
                         box-shadow: 0 0 0 #deddde;
                         margin-top: 64px;
                         display: flex;
+                        flex-direction: column;
                         align-items: center;
                         position: relative;
-                        padding: 40px 24px;
                         margin-bottom: 24px;
 
                         &:hover,
@@ -1111,153 +1041,100 @@ export default {
                         &.error {
                             border-color: #df434c;
                         }
-                        & > div {
-                            height: 100%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                        }
 
                         .iconBox {
-                            margin-right: 16px;
                             .icon {
-                                text-align: center;
-                                width: 40px;
-                                height: 40px;
-                                line-height: 40px;
+                                margin: 24px 0 16px;
+                                width: 64px;
+                                height: 64px;
                                 border-radius: 100%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                img {
+                                margin img {
                                     width: 100%;
                                     height: 100%;
                                 }
                             }
-                        }
 
-                        .midle {
-                            flex-direction: column;
-                            align-items: flex-start;
-                            margin-right: 20px;
-                            > div {
-                                width: 100%;
-                            }
-                            .p_1 {
+                            .name {
                                 font-family: Gilroy-Bold;
-                                font-size: 16px;
-                                font-weight: bold;
-                                line-height: 24px;
-                                color: #5a575c;
-                            }
-                            .p_2 {
-                                opacity: 0.2;
-                                cursor: pointer;
-                                transition: $animete-time linear;
-                                font-family: Gilroy-Bold;
-                                font-size: 12px;
-                                font-weight: bold;
-                                line-height: 16px;
-                                letter-spacing: 1.5px;
-                                color: #1a38f8;
-
-                                &:hover {
-                                    opacity: 1;
-                                }
-
-                                &.active {
-                                    opacity: 1;
-                                }
+                                text-align: center;
+                                font-size: 24px;
+                                line-height: 32px;
+                                letter-spacing: 0;
                             }
                         }
-                        .arrow {
-                            width: 30px;
-                            cursor: pointer;
-                            transition: $animete-time linear;
 
-                            &.perversion {
-                                transform: rotate(180deg);
-                                .blueArrow {
-                                    display: inline !important;
-                                }
-                                .grayArrow {
-                                    display: none !important;
-                                }
-                            }
-                            .grayArrow {
-                                display: inline;
-                            }
-                            .blueArrow {
-                                display: none;
-                                transform: rotate(180deg);
-                            }
+                        .divider {
+                            margin-top: 24px;
+                            width: 100%;
+                            height: 2px;
+                            background-color: #e5e5e5;
                         }
-                        &:hover {
-                            .blueArrow {
-                                display: inline;
-                            }
-                            .grayArrow {
-                                display: none;
-                            }
-                        }
-                        .value {
-                            flex: 1;
-                            flex-direction: column;
-                            .price {
-                                width: 100%;
-                                display: flex;
-                                .number {
-                                    flex: 1;
-                                    color: #c6c4c7;
-                                    font-family: Gilroy;
-                                    font-size: 32px;
-                                    text-align: right;
 
-                                    .inputRect {
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: flex-end;
-                                        .input {
-                                            width: 100%;
-                                            border: none;
-                                            box-shadow: none;
+                        .inputBox {
+                            display: flex;
+                            padding: 24px;
+                            width: 100%;
+                            align-items: center;
 
-                                            .ivu-input-number-handler-wrap {
-                                                display: none;
-                                            }
+                            .label {
+                                .amount {
+                                    font-family: Gilroy-Bold;
+                                    font-size: 16px;
+                                    font-weight: bold;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.5;
+                                    letter-spacing: normal;
+                                    color: #5a575c;
+                                }
 
-                                            .ivu-input-number-input {
-                                                text-align: right;
-                                                color: #5a575c;
-                                                font-family: Gilroy-Bold;
-                                                font-size: 32px;
-                                                font-weight: bold;
-                                                line-height: 40px;
-                                                padding: 0;
-                                                &::placeholder {
-                                                    color: #99999a;
-                                                }
-                                            }
-                                        }
+                                .max {
+                                    font-family: Gilroy-Bold;
+                                    font-size: 12px;
+                                    font-weight: bold;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.33;
+                                    letter-spacing: 1.5px;
+                                    text-align: center;
+                                    color: #1a38f8;
+                                    opacity: 0.2;
+                                    cursor: pointer;
+
+                                    &:hover {
+                                        opacity: 1;
+                                    }
+
+                                    &.active {
+                                        opacity: 1;
                                     }
                                 }
-                                .unit {
-                                    width: 40px;
-                                    color: #5a575c;
-                                    font-family: "PingFangHK-Regular";
-                                    font-size: 16px;
-                                    text-align: right;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                }
                             }
-                            .avaliable {
-                                color: #c6c4c7;
-                                font-family: Gilroy;
-                                font-size: 12px;
-                                width: 100%;
-                                text-align: right;
+
+                            .input {
+                                flex: 1;
+                                border: none;
+                                box-shadow: none;
+
+                                .ivu-input-number-handler-wrap {
+                                    display: none;
+                                }
+
+                                .ivu-input-number-input {
+                                    text-align: right;
+                                    font-family: Gilroy-bold;
+                                    font-size: 32px;
+                                    font-weight: bold;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.25;
+                                    letter-spacing: normal;
+                                    color: #5a575c;
+
+                                    &::placeholder {
+                                        color: #99999a;
+                                    }
+                                }
                             }
                         }
                     }

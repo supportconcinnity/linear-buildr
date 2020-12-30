@@ -1,64 +1,63 @@
 <template>
     <div id="gasEditorSwap">
-        <div class="editInfo">
-            <div class="infoLeft">
-                <span class="editTitle">
-                    Ethereum Network Fee
-                </span>
-                <span class="editBtn" @click="gasEditorETHModal = true"
-                    ><svg width="16px" height="16px" viewBox="0 0 16 16">
-                        <g>
-                            <path
-                                d="M1.3334 0L2.6668 0C3.40322 0 4.0002 0.596984 4.0002 1.3334L4.0002 9.82349C4.0002 10.0555 3.93967 10.2835 3.82459 10.4849L2.579 12.6653C2.32307 13.1133 1.67713 13.1133 1.4212 12.6653L0.175608 10.4849C0.0605293 10.2835 0 10.0555 0 9.82349L0 1.3334C0 0.596984 0.596984 0 1.3334 0ZM3.3335 1.3334C3.3335 0.965192 3.03501 0.6667 2.6668 0.6667L1.3334 0.6667C0.965192 0.6667 0.6667 0.965192 0.6667 1.3334L0.6667 9.82349C0.6667 9.93949 0.696965 10.0535 0.754504 10.1542L2.0001 12.3346L3.2457 10.1542C3.30324 10.0535 3.3335 9.93949 3.3335 9.82349L3.3335 1.3334Z"
-                                transform="matrix(0.70710677 0.70710677 -0.70710677 0.70710677 11.182764 1.8231096)"
-                                fill="#deddde"
-                                fill-rule="evenodd"
-                                stroke="none"
-                            />
-                        </g></svg
-                    >EDIT</span
-                >
-            </div>
-            <div class="infoRight">
-                <span class="price">
-                    {{ price }}
-                </span>
-                <span class="unit">
-                    GWEI
-                </span>
+        <div class="source">
+            <div class="editInfo">
+                <template v-if="isEthereumNetwork">
+                    <img class="editLogo" src="@/static/ETH.svg" />
+                    <div class="editNetwork">
+                        Ethereum Network
+                    </div>
+                </template>
+                <template v-if="isBinanceNetwork">
+                    <img class="editLogo" src="@/static/binance.svg" />
+                    <div class="editNetwork">
+                        Binance Smart Chain
+                    </div>
+                </template>
+
+                <div class="editFee">
+                    Network Fee : {{ sourcePrice }} Gwei
+                    <img
+                        class="editBtn"
+                        @click="sourceGasEditorModal = true"
+                        src="@/static/edit_pencil.svg"
+                    />
+                </div>
             </div>
         </div>
-        <div class="editInfo">
-            <div class="infoLeft">
-                <span class="editTitle">
-                    Binance Smart Chain Fee
-                </span>
-                <span class="editBtn" @click="gasEditorBSCModal = true"
-                    ><svg width="16px" height="16px" viewBox="0 0 16 16">
-                        <g>
-                            <path
-                                d="M1.3334 0L2.6668 0C3.40322 0 4.0002 0.596984 4.0002 1.3334L4.0002 9.82349C4.0002 10.0555 3.93967 10.2835 3.82459 10.4849L2.579 12.6653C2.32307 13.1133 1.67713 13.1133 1.4212 12.6653L0.175608 10.4849C0.0605293 10.2835 0 10.0555 0 9.82349L0 1.3334C0 0.596984 0.596984 0 1.3334 0ZM3.3335 1.3334C3.3335 0.965192 3.03501 0.6667 2.6668 0.6667L1.3334 0.6667C0.965192 0.6667 0.6667 0.965192 0.6667 1.3334L0.6667 9.82349C0.6667 9.93949 0.696965 10.0535 0.754504 10.1542L2.0001 12.3346L3.2457 10.1542C3.30324 10.0535 3.3335 9.93949 3.3335 9.82349L3.3335 1.3334Z"
-                                transform="matrix(0.70710677 0.70710677 -0.70710677 0.70710677 11.182764 1.8231096)"
-                                fill="#deddde"
-                                fill-rule="evenodd"
-                                stroke="none"
-                            />
-                        </g></svg
-                    >EDIT</span
-                >
-            </div>
-            <div class="infoRight">
-                <span class="price">
-                    {{ priceBSC }}
-                </span>
-                <span class="unit">
-                    GWEI
-                </span>
+
+        <div class="arrow">
+            <img src="@/static/transferProgress/arrow_right.svg" />
+        </div>
+
+        <div class="target">
+            <div class="editInfo">
+                <template v-if="isEthereumNetwork">
+                    <img class="editLogo" src="@/static/binance.svg" />
+                    <div class="editNetwork">
+                        Binance Smart Chain
+                    </div>
+                </template>
+                <template v-if="isBinanceNetwork">
+                    <img class="editLogo" src="@/static/ETH.svg" />
+                    <div class="editNetwork">
+                        Ethereum Network
+                    </div>
+                </template>
+
+                <div class="editFee">
+                    Network Fee : {{ targetPrice }} Gwei
+                    <img
+                        class="editBtn"
+                        @click="targetGasEditorModal = true"
+                        src="@/static/edit_pencil.svg"
+                    />
+                </div>
             </div>
         </div>
 
         <Modal
-            v-model="gasEditorETHModal"
+            v-model="sourceGasEditorModal"
             :footer-hide="true"
             :closable="false"
             :transfer="false"
@@ -67,10 +66,10 @@
             fullscreen
             class-name="vertical-center-modal"
             class="gasEditorSwapModal"
-            @on-visible-change="gasEditorETHModalChange"
+            @on-visible-change="sourceGasEditorModalChange"
         >
             <div class="header">
-                <div class="closeBtn" @click="gasEditorETHModal = false">
+                <div class="closeBtn" @click="sourceGasEditorModal = false">
                     <closeSvg></closeSvg>
                 </div>
             </div>
@@ -85,9 +84,12 @@
                 <div class="selections">
                     <div
                         class="selectionItem"
-                        @click="selectedTypeChange(NETWORK_SPEEDS_TO_KEY.SLOW)"
+                        @click="
+                            sourceSelectedTypeChange(NETWORK_SPEEDS_TO_KEY.SLOW)
+                        "
                         :class="{
-                            active: selectedType == NETWORK_SPEEDS_TO_KEY.SLOW
+                            active:
+                                sourceSelectedType == NETWORK_SPEEDS_TO_KEY.SLOW
                         }"
                     >
                         <div class="itemSpeed">
@@ -95,21 +97,25 @@
                         </div>
 
                         <div class="itemNumBox">
-                            {{ networkSpeeds.SLOW.price }}
+                            {{ sourceNetworkSpeeds.SLOW.price }}
                         </div>
 
                         <div class="itemTime">
-                            {{ networkSpeeds.SLOW.time }} mins
+                            {{ sourceNetworkSpeeds.SLOW.time }} mins
                         </div>
                     </div>
 
                     <div
                         class="selectionItem"
                         @click="
-                            selectedTypeChange(NETWORK_SPEEDS_TO_KEY.MEDIUM)
+                            sourceSelectedTypeChange(
+                                NETWORK_SPEEDS_TO_KEY.MEDIUM
+                            )
                         "
                         :class="{
-                            active: selectedType == NETWORK_SPEEDS_TO_KEY.MEDIUM
+                            active:
+                                sourceSelectedType ==
+                                NETWORK_SPEEDS_TO_KEY.MEDIUM
                         }"
                     >
                         <div class="itemSpeed">
@@ -117,19 +123,22 @@
                         </div>
 
                         <div class="itemNumBox">
-                            {{ networkSpeeds.MEDIUM.price }}
+                            {{ sourceNetworkSpeeds.MEDIUM.price }}
                         </div>
 
                         <div class="itemTime">
-                            {{ networkSpeeds.MEDIUM.time }} mins
+                            {{ sourceNetworkSpeeds.MEDIUM.time }} mins
                         </div>
                     </div>
 
                     <div
                         class="selectionItem"
-                        @click="selectedTypeChange(NETWORK_SPEEDS_TO_KEY.FAST)"
+                        @click="
+                            sourceSelectedTypeChange(NETWORK_SPEEDS_TO_KEY.FAST)
+                        "
                         :class="{
-                            active: selectedType == NETWORK_SPEEDS_TO_KEY.FAST
+                            active:
+                                sourceSelectedType == NETWORK_SPEEDS_TO_KEY.FAST
                         }"
                     >
                         <div class="itemSpeed">
@@ -137,11 +146,11 @@
                         </div>
 
                         <div class="itemNumBox">
-                            {{ networkSpeeds.FAST.price }}
+                            {{ sourceNetworkSpeeds.FAST.price }}
                         </div>
 
                         <div class="itemTime">
-                            {{ networkSpeeds.FAST.time }} mins
+                            {{ sourceNetworkSpeeds.FAST.time }} mins
                         </div>
                     </div>
                 </div>
@@ -149,13 +158,21 @@
                 <div
                     class="custom"
                     :class="{
-                        active: selectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM
+                        active:
+                            sourceSelectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM
                     }"
-                    @click="customPriceFocus"
+                    source="customPriceFocusSource"
                 >
                     <div class="leftRect">
                         <div class="icon">
-                            <img src="@/static/ETH.svg" />
+                            <img
+                                v-if="isEthereumNetwork"
+                                src="@/static/ETH.svg"
+                            />
+                            <img
+                                v-if="isBinanceNetwork"
+                                src="@/static/bnb.svg"
+                            />
                         </div>
 
                         <div class="desc">
@@ -170,10 +187,10 @@
 
                     <InputNumber
                         class="rightNum"
-                        ref="num"
+                        ref="source"
                         :min="0"
                         :max="10000"
-                        v-model="customPrice"
+                        v-model="sourceCustomPrice"
                         placeholder="0"
                         :formatter="value => `${parseInt(value)}`"
                     ></InputNumber>
@@ -184,15 +201,15 @@
 
             <div
                 class="confirm"
-                :class="{ disabled: disabledConfirmBtn }"
-                @click="confirmGas(networkType.ETH)"
+                :class="{ disabled: sourceDisabledConfirmBtn }"
+                @click="confirmGas(CONFIRM_TYPE.SOURCE)"
             >
                 CONFIRM
             </div>
         </Modal>
 
         <Modal
-            v-model="gasEditorBSCModal"
+            v-model="targetGasEditorModal"
             :footer-hide="true"
             :closable="false"
             :transfer="false"
@@ -201,10 +218,10 @@
             fullscreen
             class-name="vertical-center-modal"
             class="gasEditorSwapModal"
-            @on-visible-change="gasEditorBSCModalChange"
+            @on-visible-change="targetGasEditorModalChange"
         >
             <div class="header">
-                <div class="closeBtn" @click="gasEditorBSCModal = false">
+                <div class="closeBtn" @click="targetGasEditorModal = false">
                     <closeSvg></closeSvg>
                 </div>
             </div>
@@ -220,11 +237,11 @@
                     <div
                         class="selectionItem"
                         @click="
-                            selectedTypeChangeBSC(NETWORK_SPEEDS_TO_KEY.SLOW)
+                            targetSelectedTypeChange(NETWORK_SPEEDS_TO_KEY.SLOW)
                         "
                         :class="{
                             active:
-                                selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.SLOW
+                                targetSelectedType == NETWORK_SPEEDS_TO_KEY.SLOW
                         }"
                     >
                         <div class="itemSpeed">
@@ -232,22 +249,25 @@
                         </div>
 
                         <div class="itemNumBox">
-                            {{ networkSpeedsBSC.SLOW.price }}
+                            {{ targetNetworkSpeeds.SLOW.price }}
                         </div>
 
                         <div class="itemTime">
-                            {{ networkSpeedsBSC.SLOW.time }} mins
+                            {{ targetNetworkSpeeds.SLOW.time }} mins
                         </div>
                     </div>
 
                     <div
                         class="selectionItem"
                         @click="
-                            selectedTypeChangeBSC(NETWORK_SPEEDS_TO_KEY.MEDIUM)
+                            targetSelectedTypeChange(
+                                NETWORK_SPEEDS_TO_KEY.MEDIUM
+                            )
                         "
                         :class="{
                             active:
-                                selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.MEDIUM
+                                targetSelectedType ==
+                                NETWORK_SPEEDS_TO_KEY.MEDIUM
                         }"
                     >
                         <div class="itemSpeed">
@@ -255,22 +275,22 @@
                         </div>
 
                         <div class="itemNumBox">
-                            {{ networkSpeedsBSC.MEDIUM.price }}
+                            {{ targetNetworkSpeeds.MEDIUM.price }}
                         </div>
 
                         <div class="itemTime">
-                            {{ networkSpeedsBSC.MEDIUM.time }} mins
+                            {{ targetNetworkSpeeds.MEDIUM.time }} mins
                         </div>
                     </div>
 
                     <div
                         class="selectionItem"
                         @click="
-                            selectedTypeChangeBSC(NETWORK_SPEEDS_TO_KEY.FAST)
+                            targetSelectedTypeChange(NETWORK_SPEEDS_TO_KEY.FAST)
                         "
                         :class="{
                             active:
-                                selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.FAST
+                                targetSelectedType == NETWORK_SPEEDS_TO_KEY.FAST
                         }"
                     >
                         <div class="itemSpeed">
@@ -278,11 +298,11 @@
                         </div>
 
                         <div class="itemNumBox">
-                            {{ networkSpeedsBSC.FAST.price }}
+                            {{ targetNetworkSpeeds.FAST.price }}
                         </div>
 
                         <div class="itemTime">
-                            {{ networkSpeedsBSC.FAST.time }} mins
+                            {{ targetNetworkSpeeds.FAST.time }} mins
                         </div>
                     </div>
                 </div>
@@ -290,13 +310,21 @@
                 <div
                     class="custom"
                     :class="{
-                        active: selectedTypeBSC == NETWORK_SPEEDS_TO_KEY.CUSTOM
+                        active:
+                            targetSelectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM
                     }"
-                    @click="customPriceFocusBSC"
+                    @click="targetCustomPriceFocus"
                 >
                     <div class="leftRect">
                         <div class="icon">
-                            <img src="@/static/bnb.svg" />
+                            <img
+                                v-if="isEthereumNetwork"
+                                src="@/static/bnb.svg"
+                            />
+                            <img
+                                v-if="isBinanceNetwork"
+                                src="@/static/ETH.svg"
+                            />
                         </div>
 
                         <div class="desc">
@@ -311,10 +339,10 @@
 
                     <InputNumber
                         class="rightNum"
-                        ref="numbsc"
+                        ref="target"
                         :min="0"
                         :max="10000"
-                        v-model="customPriceBSC"
+                        v-model="targetCustomPrice"
                         placeholder="0"
                         :formatter="value => `${parseInt(value)}`"
                     ></InputNumber>
@@ -325,8 +353,8 @@
 
             <div
                 class="confirm"
-                :class="{ disabled: disabledConfirmBtnBSC }"
-                @click="confirmGas(networkType.BSC)"
+                :class="{ disabled: targetDisabledConfirmBtn }"
+                @click="confirmGas(CONFIRM_TYPE.TARGET)"
             >
                 CONFIRM
             </div>
@@ -344,34 +372,38 @@ import {
     unFormatGasPrice,
     isEthereumNetwork,
     isBinanceNetwork,
-    SUPPORTED_NETWORKS_MAP
+    SUPPORTED_NETWORKS_MAP,
+    getOtherNetworks
 } from "@/assets/linearLibrary/linearTools/network";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import { Logger } from "ethers/lib/utils";
 
 export default {
     data() {
         return {
-            price: unFormatGasPrice(this.$store.state?.gasDetailsETH?.price), //当前选中的gas
-            priceBSC: unFormatGasPrice(this.$store.state?.gasDetailsBSC?.price), //当前选中的gas BSC
-            gasEditorETHModal: false, //设置弹窗
-            gasEditorBSCModal: false, //设置弹窗
-            selectedType: this.$store.state?.gasDetailsETH?.type, //当前选择类型
-            selectedTypeBSC: this.$store.state?.gasDetailsBSC?.type, //当前选择类型 BSC
-            networkSpeeds: { SLOW: {}, MEDIUM: {}, FAST: {} }, //网络速度
-            networkSpeedsBSC: { SLOW: {}, MEDIUM: {}, FAST: {} }, //网络速度
+            sourcePrice: unFormatGasPrice(
+                this.$store.state?.sourceGasDetails?.price
+            ), //当前选中的gas
+            targetPrice: unFormatGasPrice(
+                this.$store.state?.targetGasDetails?.price
+            ), //当前选中的gas BSC
+            sourceGasEditorModal: false, //设置弹窗
+            targetGasEditorModal: false, //设置弹窗
+            sourceSelectedType: this.$store.state?.sourceGasDetails?.type, //当前选择类型
+            targetSelectedType: this.$store.state?.targetGasDetails?.type, //当前选择类型 BSC
+            sourceNetworkSpeeds: { SLOW: {}, MEDIUM: {}, FAST: {} }, //网络速度
+            targetNetworkSpeeds: { SLOW: {}, MEDIUM: {}, FAST: {} }, //网络速度
             speedLoading: false, //加载状态
-            customPrice: null, //自定义的gas
-            customPriceBSC: null, //自定义的gas
+            sourceCustomPrice: null, //自定义的gas
+            targetCustomPrice: null, //自定义的gas
             NETWORK_SPEEDS_TO_KEY, //速度类型
-            networkType: {
-                ETH: "ETH",
-                BSC: "BSC"
-            }
+            CONFIRM_TYPE: {
+                SOURCE: "source",
+                TARGET: "target"
+            },
+            chainChangeTokenFromSubscribe: null
         };
-    },
-    props: {
-        forceNetwork: ""
     },
     filters: {
         capitalize(val) {
@@ -387,28 +419,66 @@ export default {
     },
     async created() {
         //获取数据
-        await this.getNetworkSpeeds(true);
+        await this.getNetworkSpeeds({
+            sourceNetwork: true,
+            targetNetwork: true
+        });
 
-        let status = this.$store.state?.gasDetailsETH.status;
-        let statusBSC = this.$store.state?.gasDetailsBSC.status;
+        let sourceStatus = this.$store.state?.sourceGasDetails.status;
+        let targetStatus = this.$store.state?.targetGasDetails.status;
 
         //初始化当前数据
-        if (statusBSC == -1) {
-            this.setGasDetailsBSC(this.priceBSC, this.selectedTypeBSC);
+        if (sourceStatus == -1) {
+            this.setSourceGasDetails(this.sourcePrice, this.sourceSelectedType);
         } else {
-            this.gasEditorBSCModalChange(true);
+            this.sourceGasEditorModalChange(true);
         }
 
         //初始化当前数据
-        if (status == -1) {
-            this.setGasDetails(this.price, this.selectedType);
+        if (targetStatus == -1) {
+            this.setTargetGasDetails(this.targetPrice, this.targetSelectedType);
         } else {
-            this.gasEditorETHModalChange(true);
+            this.targetGasEditorModalChange(true);
         }
+
+        //监听链切换
+        this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
+            "onWalletChainChange",
+            async () => {
+                //更换source和target的price和selected
+                let sourcePrice = this.sourcePrice,
+                    sourceSelectedType = this.sourceSelectedType;
+
+                this.sourcePrice = this.targetPrice;
+                this.sourceSelectedType = this.targetSelectedType;
+
+                this.targetPrice = sourcePrice;
+                this.targetSelectedType = sourceSelectedType;
+
+                this.setSourceGasDetails(
+                    this.sourcePrice,
+                    this.sourceSelectedType
+                );
+                this.setTargetGasDetails(
+                    this.targetPrice,
+                    this.targetSelectedType
+                );
+
+                await this.getNetworkSpeeds({
+                    sourceNetwork: true,
+                    targetNetwork: true
+                });
+            }
+        );
+    },
+
+    destroyed() {
+        //清除事件,防止重复
+        this.$pub.unsubscribe(this.chainChangeTokenFromSubscribe);
     },
     watch: {
-        selectedTypeChangeListener() {},
-        selectedTypeChangeListenerBSC() {},
+        selectedSourceTypeChangeListener() {},
+        selectedTargetTypeChangeListener() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
         walletNetworkId() {}
@@ -416,28 +486,31 @@ export default {
 
     computed: {
         //监听选择类型改变
-        selectedTypeChangeListener() {
-            if (this.selectedType != "CUSTOM") {
-                this.customPrice = null;
+        selectedSourceTypeChangeListener() {
+            if (this.sourceSelectedType != "CUSTOM") {
+                this.sourceCustomPrice = null;
             }
             return;
         },
         //监听选择类型改变
-        selectedTypeChangeListenerBSC() {
-            if (this.selectedTypeBSC != "CUSTOM") {
-                this.customPriceBSC = null;
+        selectedTargetTypeChangeListener() {
+            if (this.targetSelectedType != "CUSTOM") {
+                this.targetCustomPrice = null;
             }
             return;
         },
 
-        disabledConfirmBtn() {
-            return this.selectedType == "CUSTOM" && _.lte(this.customPrice, 0);
+        sourceDisabledConfirmBtn() {
+            return (
+                this.sourceSelectedType == "CUSTOM" &&
+                _.lte(this.sourceCustomPrice, 0)
+            );
         },
 
-        disabledConfirmBtnBSC() {
+        targetDisabledConfirmBtn() {
             return (
-                this.selectedTypeBSC == "CUSTOM" &&
-                _.lte(this.customPriceBSC, 0)
+                this.targetSelectedType == "CUSTOM" &&
+                _.lte(this.targetCustomPrice, 0)
             );
         },
 
@@ -456,26 +529,35 @@ export default {
 
     methods: {
         //获取网络速度
-        async getNetworkSpeeds(both) {
-            //param is need both request
+        async getNetworkSpeeds({
+            sourceNetwork = false,
+            targetNetwork = false
+        } = {}) {
             try {
                 this.speedLoading = true;
-                if (this.gasEditorETHModal || both) {
-                    await getNetworkSpeeds(SUPPORTED_NETWORKS_MAP.MAINNET)
+                let targetNetworkId;
+                targetNetwork &&
+                    (targetNetworkId = getOtherNetworks(
+                        this.walletNetworkId
+                    ).join());
+
+                if (sourceNetwork) {
+                    await getNetworkSpeeds(this.walletNetworkId)
                         .then(res => {
-                            this.networkSpeeds = res;
-                            this.selectedType = this.$store.state?.gasDetailsETH?.type;
+                            console.log(res, "source");
+                            this.sourceNetworkSpeeds = res;
+                            this.sourceSelectedType = this.$store.state?.sourceGasDetails?.type;
                             //判断赋值
                             if (
-                                this.selectedType ==
+                                this.sourceSelectedType ==
                                 NETWORK_SPEEDS_TO_KEY.CUSTOM
                             ) {
-                                this.price = this.customPrice = unFormatGasPrice(
-                                    this.$store.state?.gasDetailsETH?.price
+                                this.sourcePrice = this.sourceCustomPrice = unFormatGasPrice(
+                                    this.$store.state?.sourceGasDetails?.price
                                 );
                             } else {
-                                this.price = this.networkSpeeds[
-                                    this.selectedType
+                                this.sourcePrice = this.sourceNetworkSpeeds[
+                                    this.sourceSelectedType
                                 ].price;
                             }
                         })
@@ -483,22 +565,23 @@ export default {
                             this.speedLoading = false;
                         });
                 }
-                if (this.gasEditorBSCModal || both) {
-                    await getNetworkSpeeds(SUPPORTED_NETWORKS_MAP.BSCMAINNET)
+                if (targetNetwork) {
+                    await getNetworkSpeeds(targetNetworkId)
                         .then(res => {
-                            this.networkSpeedsBSC = res;
-                            this.selectedTypeBSC = this.$store.state?.gasDetailsBSC?.type;
+                            console.log(res, "target");
+                            this.targetNetworkSpeeds = res;
+                            this.targetSelectedType = this.$store.state?.targetGasDetails?.type;
                             //判断赋值
                             if (
-                                this.selectedTypeBSC ==
+                                this.targetSelectedType ==
                                 NETWORK_SPEEDS_TO_KEY.CUSTOM
                             ) {
-                                this.priceBSC = this.customPriceBSC = unFormatGasPrice(
-                                    this.$store.state?.gasDetailsBSC?.price
+                                this.targetPrice = this.targetCustomPrice = unFormatGasPrice(
+                                    this.$store.state?.targetGasDetails?.price
                                 );
                             } else {
-                                this.priceBSC = this.networkSpeedsBSC[
-                                    this.selectedTypeBSC
+                                this.targetPrice = this.targetNetworkSpeeds[
+                                    this.targetSelectedType
                                 ].price;
                             }
                         })
@@ -512,120 +595,129 @@ export default {
         },
 
         //gas设置窗口改变事件
-        async gasEditorETHModalChange(status) {
+        async sourceGasEditorModalChange(status) {
             //每次显示时都重新获取最新的数据
             if (status) {
                 //重新获取选中项
-                this.selectedType = this.$store.state?.gasDetailsETH?.type;
+                this.sourceSelectedType = this.$store.state?.sourceGasDetails?.type;
 
-                await this.getNetworkSpeeds();
+                await this.getNetworkSpeeds({ sourceNetwork: true });
 
                 const gwei = unFormatGasPrice(
-                    this.$store.state?.gasDetailsETH?.price
+                    this.$store.state?.sourceGasDetails?.price
                 );
 
                 //如果price发生变化时,更新数据
-                if (this.price != gwei) {
-                    this.setGasDetails(this.price, this.selectedType);
+                if (this.sourcePrice != gwei) {
+                    this.setSourceGasDetails(
+                        this.sourcePrice,
+                        this.sourceSelectedType
+                    );
                 }
             }
         },
 
         //gas设置窗口改变事件
-        async gasEditorBSCModalChange(status) {
+        async targetGasEditorModalChange(status) {
             //每次显示时都重新获取最新的数据
             if (status) {
                 //重新获取选中项
-                this.selectedTypeBSC = this.$store.state?.gasDetailsBSC?.type;
+                this.targetSelectedType = this.$store.state?.targetGasDetails?.type;
 
-                await this.getNetworkSpeeds();
+                await this.getNetworkSpeeds({ targetNetwork: true });
 
                 const gwei = unFormatGasPrice(
-                    this.$store.state?.gasDetailsBSC?.price
+                    this.$store.state?.targetGasDetails?.price
                 );
 
                 //如果price发生变化时,更新数据
-                if (this.price != gwei) {
-                    this.setGasDetailsBSC(this.price, this.selectedTypeBSC);
+                if (this.targetPrice != gwei) {
+                    this.setTargetGasDetails(
+                        this.targetPrice,
+                        this.targetSelectedType
+                    );
                 }
             }
         },
 
         //选择类型改变
-        selectedTypeChange(type) {
-            this.selectedType = type;
+        sourceSelectedTypeChange(type) {
+            this.sourceSelectedType = type;
         },
         //选择类型改变
-        selectedTypeChangeBSC(type) {
-            this.selectedTypeBSC = type;
+        targetSelectedTypeChange(type) {
+            this.targetSelectedType = type;
         },
 
         //自定义gas输入框获取焦点事件
-        customPriceFocus() {
-            this.selectedTypeChange("CUSTOM");
+        sourceCustomPriceFocus() {
+            this.sourceSelectedTypeChange("CUSTOM");
             this.$nextTick(() => {
-                this.$refs.num.$el.querySelector("input").focus();
+                this.$refs.source.$el.querySelector("input").focus();
             });
         },
 
         //自定义gas输入框获取焦点事件
-        customPriceFocusBSC() {
-            this.selectedTypeChangeBSC("CUSTOM");
+        targetCustomPriceFocus() {
+            this.targetSelectedTypeChange("CUSTOM");
             this.$nextTick(() => {
-                this.$refs.numbsc.$el.querySelector("input").focus();
+                this.$refs.target.$el.querySelector("input").focus();
             });
         },
 
         //确认gas
-        confirmGas(networkType) {
-            if (networkType == this.networkType.ETH) {
-                if (!this.disabledConfirmBtn) {
+        confirmGas(type) {
+            if (type == this.CONFIRM_TYPE.SOURCE) {
+                if (!this.sourceDisabledConfirmBtn) {
                     let price;
                     //获取price
-                    if (this.selectedType == "CUSTOM") {
-                        price = this.customPrice;
+                    if (this.sourceSelectedType == "CUSTOM") {
+                        price = this.sourceCustomPrice;
                     } else {
-                        price = this.networkSpeeds[this.selectedType].price;
+                        price = this.sourceNetworkSpeeds[
+                            this.sourceSelectedType
+                        ].price;
                     }
 
                     //防止为null
                     if (price == null) {
-                        this.customPrice = price = 0;
+                        this.sourceCustomPrice = price = 0;
                     }
 
-                    this.price = price;
+                    this.sourcePrice = price;
 
-                    this.setGasDetails(price, this.selectedType);
+                    this.setSourceGasDetails(price, this.sourceSelectedType);
                 }
-            } else {
-                if (!this.disabledConfirmBtnBSC) {
+            } else if (type == this.CONFIRM_TYPE.TARGET) {
+                if (!this.targetDisabledConfirmBtn) {
                     let price;
 
                     //获取price
-                    if (this.selectedTypeBSC == "CUSTOM") {
-                        price = this.customPriceBSC;
+                    if (this.targetSelectedType == "CUSTOM") {
+                        price = this.targetCustomPrice;
                     } else {
-                        price = this.networkSpeedsBSC[this.selectedTypeBSC]
-                            .price;
+                        price = this.targetNetworkSpeeds[
+                            this.targetSelectedType
+                        ].price;
                     }
 
                     //防止为null
                     if (price == null) {
-                        this.customPriceBSC = price = 0;
+                        this.targetCustomPrice = price = 0;
                     }
 
-                    this.priceBSC = price;
-                    this.setGasDetailsBSC(price, this.selectedTypeBSC);
+                    this.targetPrice = price;
+                    this.setTargetGasDetails(price, this.targetSelectedType);
                 }
             }
 
-            this.gasEditorETHModal = false;
-            this.gasEditorBSCModal = false;
+            this.sourceGasEditorModal = false;
+            this.targetGasEditorModal = false;
         },
 
         //设置gas
-        setGasDetails(price, type) {
-            this.$store.commit("setGasDetailsETH", {
+        setSourceGasDetails(price, type) {
+            this.$store.commit("setSourceGasDetails", {
                 price: formatGasPrice(price),
                 type,
                 status: 1
@@ -633,8 +725,8 @@ export default {
         },
 
         //设置gas
-        setGasDetailsBSC(price, type) {
-            this.$store.commit("setGasDetailsBSC", {
+        setTargetGasDetails(price, type) {
+            this.$store.commit("setTargetGasDetails", {
                 price: formatGasPrice(price),
                 type,
                 status: 1
@@ -647,86 +739,87 @@ export default {
 <style lang="scss">
 #gasEditorSwap {
     width: 100%;
+    display: flex;
+    position: relative;
 
-    .editInfo {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 10px;
+    .source {
+        background-color: #fafafa;
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
 
-        .infoLeft {
+    .target {
+        background-color: #f6f6f6;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .source,
+    .target {
+        flex: 1;
+        .editInfo {
             display: flex;
-            .editTitle {
-                font-family: Gilroy-Regular;
-                font-size: 16px;
-                font-weight: normal;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 10px;
+
+            .editLogo {
+                width: 32px;
+                height: 32px;
+                margin-bottom: 8px;
+            }
+
+            .editNetwork {
+                font-family: Gilroy-Medium;
+                font-size: 12px;
+                font-weight: 500;
                 font-stretch: normal;
                 font-style: normal;
-                line-height: 1.5;
+                line-height: 1.33;
                 letter-spacing: normal;
+                text-align: center;
                 color: #5a575c;
             }
 
-            .editBtn {
-                margin-left: 8px;
-                width: 62px;
-                height: 24px;
-                border-radius: 12px;
-                border: solid 1px #deddde;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                cursor: pointer;
-                color: #1a38f8;
-                text-transform: uppercase;
-                font-family: Gilroy-Bold;
-                font-size: 10px;
-                font-weight: bold;
+            .editFee {
+                font-family: Gilroy-Medium;
+                font-size: 12px;
+                font-weight: 500;
                 font-stretch: normal;
                 font-style: normal;
-                line-height: 1.6;
-                letter-spacing: 1.25px;
-                color: #1a38f8;
+                line-height: 1.33;
+                letter-spacing: normal;
+                text-align: center;
+                color: #99999a;
+                display: flex;
+                align-items: center;
 
-                &,
-                * {
-                    transition: $animete-time linear;
-                }
-
-                &:hover {
-                    // color: #1a38f8;
-                    border-color: #1a38f8;
-
-                    // img {
-                    //     filter: drop-shadow(red 80px 0);
-                    // }
-                }
-
-                svg {
-                        margin-right: 4px;
-                    path {
-                        fill: #1a38f8;
-                    }
+                .editBtn {
+                    width: 16px;
+                    height: 16px;
+                    cursor: pointer;
+                    margin-left: 4px;
                 }
             }
         }
+    }
 
-        .infoRight {
-            display: flex;
-            align-items: center;
+    .arrow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff;
 
-            font-family: Gilroy-Regular;
-            font-size: 16px;
-            font-weight: normal;
-            font-stretch: normal;
-            font-style: normal;
-            line-height: 1.5;
-            letter-spacing: normal;
-            color: #5a575c;
-
-            .price {
-                margin-right: 8px;
-            }
+        img {
+            width: 15px;
+            height: 15px;
         }
     }
 
@@ -909,7 +1002,7 @@ export default {
                                 display: none;
                             }
 
-                              .ivu-input-number-input {
+                            .ivu-input-number-input {
                                 padding: 0;
                                 color: #5a575c;
                                 text-align: right;

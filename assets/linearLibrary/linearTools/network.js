@@ -195,11 +195,8 @@ export async function getBinanceNetwork() {
     }
 }
 
-export const getNetworkSpeeds = async forceNetwork => {
-    const walletNetworkId =
-        forceNetwork == "" || forceNetwork == undefined
-            ? $nuxt.$store.state?.walletNetworkId
-            : forceNetwork;
+export const getNetworkSpeeds = async walletNetworkId => {
+    !walletNetworkId && (walletNetworkId = $nuxt.$store.state?.walletNetworkId);
 
     if (isEthereumNetwork(walletNetworkId)) {
         let result = await fetch(URLS.ETH_GAS_STATION, {
