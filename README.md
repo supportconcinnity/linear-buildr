@@ -23,11 +23,15 @@ Depends on your environment, create the corrsponding files ".env.development" or
 
 ```sh
 NODE_ENV="development or production"
+SERVER_PORT="6111"
 BASE_URL=""
 INFURA_PROJECT_ID=""
+ETHERSCAN_KEY=""
 ALCHEMY_KEY=""
 ETH_GAS_STATION_KEY=""
 DEFI_PULSE_STATION_KEY=""
+GRAPH_BUILDR_ETHEREUM_MAINNET=""
+GRAPH_BUILDR_ETHEREUM_ROPSTEN=""
 ```
 
 #### For development environments:
@@ -35,7 +39,7 @@ DEFI_PULSE_STATION_KEY=""
 ```sh
 $ npm run dev
 ```
-Open in browser http://localhost:6100
+Open in browser http://localhost:6111
 
 ### For production environments:
 
@@ -55,4 +59,4 @@ $ npm run generate
 
 Please refer to [package.json][PKJS] for details.
 
-[PKJS]: <https://github.com/Linear-finance/linear-buildr/blob/master/package.json>
+[PKJS]: <https://github.com/Linear-finance/linear-buildr/blob/main/package.json>

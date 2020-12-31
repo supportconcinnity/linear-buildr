@@ -1,13 +1,26 @@
 <template>
-    <div id="swap">
+    <div id="swap" :class="{ isMobile }">
         <Tabs v-model="actionTabs" class="actionTabs">
             <TabPane name="m0">
                 <div class="swapBox">
                     <div class="actionBody">
-                        <div class="actionTitle">Swap</div>
-                        <div class="actionDesc">
-                            You can select the type of currency and enter the
-                            amount you want to swap
+                        <template v-if="!isMobile">
+                            <div class="actionTitle">Swap</div>
+                            <div class="actionDesc">
+                                You can select the type of liquids and enter the
+                                amount you want to swap to the other chain.
+                            </div>
+                        </template>
+
+                        <div
+                            v-if="isMobile"
+                            v-show="errors.amountMsg"
+                            class="someWrongMobile"
+                        >
+                            <img class="errIcon" src="@/static/error.svg" />
+                            <div class="errMessage">
+                                {{ errors.amountMsg }}
+                            </div>
                         </div>
 
                         <div
@@ -24,45 +37,99 @@
                                 <div class="name">
                                     {{ currentSelectCurrency.name }}
                                 </div>
+
+                                <div v-if="isMobile" class="avaliable">
+                                    Avaliable:
+                                    {{
+                                        formatNumber(
+                                            currentSelectCurrency.avaliable,
+                                            DECIMAL_PRECISION
+                                        )
+                                    }}
+                                    {{ currentSelectCurrency.name }}
+                                </div>
                             </div>
 
                             <div class="divider"></div>
 
                             <div class="inputBox" @click="inputFocus(0)">
-                                <div class="label">
-                                    <div class="amount">
-                                        Amount
+                                <template v-if="isMobile">
+                                    <div class="label">
+                                        <div class="amount">
+                                            Amount
+                                        </div>
+                                        <InputNumber
+                                            class="input"
+                                            ref="itemInput0"
+                                            element-id="transfer_number_input"
+                                            :min="frozenBalance"
+                                            :max="
+                                                floor(
+                                                    currentSelectCurrency.avaliable,
+                                                    DECIMAL_PRECISION
+                                                )
+                                            "
+                                            type="text"
+                                            v-model="swapNumber"
+                                            placeholder="0"
+                                            @on-focus="inputFocus(0)"
+                                            @on-blur="inputBlur(0)"
+                                            :formatter="formatterInput"
+                                        />
                                     </div>
+
                                     <span
                                         class="max"
-                                        :class="{ active: activeItemBtn == 0 }"
+                                        :class="{
+                                            active: activeItemBtn == 0
+                                        }"
                                         @click="clickMaxAmount"
                                     >
                                         MAX
                                     </span>
-                                </div>
-                                <InputNumber
-                                    class="input"
-                                    ref="itemInput0"
-                                    element-id="transfer_number_input"
-                                    :min="frozenBalance"
-                                    :max="
-                                        floor(
-                                            currentSelectCurrency.avaliable,
-                                            DECIMAL_PRECISION
-                                        )
-                                    "
-                                    type="text"
-                                    v-model="swapNumber"
-                                    placeholder="0"
-                                    @on-focus="inputFocus(0)"
-                                    @on-blur="inputBlur(0)"
-                                    :formatter="formatterInput"
-                                />
+                                </template>
+                                <template v-else>
+                                    <div class="label">
+                                        <div class="amount">
+                                            Amount
+                                        </div>
+                                        <span
+                                            class="max"
+                                            :class="{
+                                                active: activeItemBtn == 0
+                                            }"
+                                            @click="clickMaxAmount"
+                                        >
+                                            MAX
+                                        </span>
+                                    </div>
+                                    <InputNumber
+                                        class="input"
+                                        ref="itemInput0"
+                                        element-id="transfer_number_input"
+                                        :min="frozenBalance"
+                                        :max="
+                                            floor(
+                                                currentSelectCurrency.avaliable,
+                                                DECIMAL_PRECISION
+                                            )
+                                        "
+                                        type="text"
+                                        v-model="swapNumber"
+                                        placeholder="0"
+                                        @on-focus="inputFocus(0)"
+                                        @on-blur="inputBlur(0)"
+                                        :formatter="formatterInput"
+                                    />
+                                </template>
                             </div>
                         </div>
 
-                        <div class="someWrong" v-show="errors.amountMsg">
+                        <div
+                            v-if="!isMobile"
+                            class="someWrong"
+                            v-show="errors.amountMsg"
+                        >
                             {{ errors.amountMsg }}
                         </div>
                         <gasEditorSwap
@@ -75,7 +142,7 @@
                         :class="{ disabled: swapDisabled }"
                         @click="clickSwap"
                     >
-                        SWAP NOW
+                        SWAP <template v-if="!isMobile">NOW</template>
                     </div>
 
                     <Spin fix v-if="processing"></Spin>
@@ -131,6 +198,8 @@ import {
     DECIMAL_PRECISION
 } from "@/assets/linearLibrary/linearTools/constants/process";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
+import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
+formatNumber;
 
 export default {
     name: "swap",
@@ -188,7 +257,9 @@ export default {
             walletChangeTokenFromSubscribe: "", //切换钱包地址时间监听id
 
             sourceGasPrice: 0, //原始网络gas
-            targetGasPrice: 0 //目标网络gas
+            targetGasPrice: 0, //目标网络gas
+
+            formatNumber
         };
     },
     async created() {
@@ -227,7 +298,8 @@ export default {
         isEthereumNetwork() {},
         isBinanceNetwork() {},
         walletNetworkId() {},
-        walletType() {}
+        walletType() {},
+        isMobile() {}
     },
     computed: {
         isEthereumNetwork() {
@@ -266,6 +338,10 @@ export default {
 
         walletType() {
             return this.$store.state?.walletType;
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
         }
     },
     methods: {
@@ -384,9 +460,11 @@ export default {
 
                     //记录gas price
                     this.sourceGasPrice =
-                        this.$store.state?.sourceGasDetails?.price || 50000000000;
+                        this.$store.state?.sourceGasDetails?.price ||
+                        50000000000;
                     this.targetGasPrice =
-                        this.$store.state?.targetGasDetails?.price || 50000000000;
+                        this.$store.state?.targetGasDetails?.price ||
+                        50000000000;
 
                     //记录原始钱包地址
                     this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
@@ -1018,137 +1096,140 @@ export default {
                             text-align: center;
                             color: #99999a;
                         }
-                    }
 
-                    .swapInputBox {
-                        width: 400px;
-                        border-radius: 8px;
-                        border: 1px solid #deddde;
-                        transition: $animete-time linear;
-                        box-shadow: 0 0 0 #deddde;
-                        margin-top: 64px;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        position: relative;
-                        margin-bottom: 24px;
-
-                        &:hover,
-                        &.active {
-                            box-shadow: 0 2px 12px #deddde;
-                            border-color: white;
-                        }
-                        &.error {
-                            border-color: #df434c;
-                        }
-
-                        .iconBox {
-                            .icon {
-                                margin: 24px 0 16px;
-                                width: 64px;
-                                height: 64px;
-                                border-radius: 100%;
-                                margin img {
-                                    width: 100%;
-                                    height: 100%;
-                                }
-                            }
-
-                            .name {
-                                font-family: Gilroy-Bold;
-                                text-align: center;
-                                font-size: 24px;
-                                line-height: 32px;
-                                letter-spacing: 0;
-                            }
-                        }
-
-                        .divider {
-                            margin-top: 24px;
-                            width: 100%;
-                            height: 2px;
-                            background-color: #e5e5e5;
-                        }
-
-                        .inputBox {
+                        .swapInputBox {
+                            width: 400px;
+                            border-radius: 8px;
+                            border: 1px solid #deddde;
+                            transition: $animete-time linear;
+                            box-shadow: 0 0 0 #deddde;
+                            margin-top: 64px;
                             display: flex;
-                            padding: 24px;
-                            width: 100%;
+                            flex-direction: column;
                             align-items: center;
+                            position: relative;
+                            margin-bottom: 24px;
 
-                            .label {
-                                .amount {
-                                    font-family: Gilroy-Bold;
-                                    font-size: 16px;
-                                    font-weight: bold;
-                                    font-stretch: normal;
-                                    font-style: normal;
-                                    line-height: 1.5;
-                                    letter-spacing: normal;
-                                    color: #5a575c;
+                            &:hover,
+                            &.active {
+                                box-shadow: 0 2px 12px #deddde;
+                                border-color: white;
+                            }
+                            &.error {
+                                border-color: #df434c;
+                            }
+
+                            .iconBox {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                .icon {
+                                    margin: 24px 0 16px;
+                                    width: 64px;
+                                    height: 64px;
+                                    border-radius: 100%;
+                                    margin img {
+                                        width: 100%;
+                                        height: 100%;
+                                    }
                                 }
 
-                                .max {
+                                .name {
                                     font-family: Gilroy-Bold;
-                                    font-size: 12px;
-                                    font-weight: bold;
-                                    font-stretch: normal;
-                                    font-style: normal;
-                                    line-height: 1.33;
-                                    letter-spacing: 1.5px;
                                     text-align: center;
-                                    color: #1a38f8;
-                                    opacity: 0.2;
-                                    cursor: pointer;
-
-                                    &:hover {
-                                        opacity: 1;
-                                    }
-
-                                    &.active {
-                                        opacity: 1;
-                                    }
+                                    font-size: 24px;
+                                    line-height: 32px;
+                                    letter-spacing: 0;
                                 }
                             }
 
-                            .input {
-                                flex: 1;
-                                border: none;
-                                box-shadow: none;
+                            .divider {
+                                margin-top: 24px;
+                                width: 100%;
+                                height: 1px;
+                                background-color: #e5e5e5;
+                            }
 
-                                .ivu-input-number-handler-wrap {
-                                    display: none;
+                            .inputBox {
+                                display: flex;
+                                padding: 24px;
+                                width: 100%;
+                                align-items: center;
+
+                                .label {
+                                    .amount {
+                                        font-family: Gilroy-Bold;
+                                        font-size: 16px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.5;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
+                                    }
+
+                                    .max {
+                                        font-family: Gilroy-Bold;
+                                        font-size: 12px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.33;
+                                        letter-spacing: 1.5px;
+                                        text-align: center;
+                                        color: #1a38f8;
+                                        opacity: 0.2;
+                                        cursor: pointer;
+
+                                        &:hover {
+                                            opacity: 1;
+                                        }
+
+                                        &.active {
+                                            opacity: 1;
+                                        }
+                                    }
                                 }
 
-                                .ivu-input-number-input {
-                                    text-align: right;
-                                    font-family: Gilroy-bold;
-                                    font-size: 32px;
-                                    font-weight: bold;
-                                    font-stretch: normal;
-                                    font-style: normal;
-                                    line-height: 1.25;
-                                    letter-spacing: normal;
-                                    color: #5a575c;
+                                .input {
+                                    flex: 1;
+                                    border: none;
+                                    box-shadow: none;
 
-                                    &::placeholder {
-                                        color: #99999a;
+                                    .ivu-input-number-handler-wrap {
+                                        display: none;
+                                    }
+
+                                    .ivu-input-number-input {
+                                        text-align: right;
+                                        font-family: Gilroy-bold;
+                                        font-size: 32px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.25;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
+
+                                        &::placeholder {
+                                            color: #99999a;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    .someWrong {
-                        color: #df434c;
-                        font-family: Gilroy;
-                        font-weight: 700;
-                        font-size: 12px;
-                        text-transform: uppercase;
-                    }
+                        .someWrong {
+                            color: #df434c;
+                            font-family: Gilroy;
+                            font-weight: 700;
+                            font-size: 12px;
+                            text-transform: uppercase;
+                        }
 
-                    #gasEditor {
-                        margin-top: 24px;
+                        #gasEditor {
+                            margin-top: 24px;
+                        }
                     }
 
                     .swapBtn {
@@ -1183,6 +1264,127 @@ export default {
 
                         &.swapBtnActivited {
                             opacity: unset;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #swap {
+        height: 100%;
+        .actionTabs {
+            height: 100%;
+            .ivu-tabs-content {
+                height: 100%;
+                .ivu-tabs-tabpane {
+                    width: 100%;
+                    height: 100% !important;
+                    min-height: 516px;
+                    .swapBox {
+                        padding-top: 24px;
+                        .actionBody {
+                            height: calc(100% - 48px);
+                            overflow-y: auto;
+                            padding: 20px 22px 44px;
+                            margin: 0 10px;
+
+                            .someWrongMobile {
+                                border-radius: 8px;
+                                background-color: rgba(#df434c, 0.05);
+                                padding: 12px 16px;
+                                display: flex;
+                                align-items: center;
+                                margin-bottom: 16px;
+                                margin-top: -20px;
+
+                                .errIcon {
+                                    margin-right: 12px;
+                                    width: 24px;
+                                    height: 24px;
+                                }
+
+                                .errMessage {
+                                    font-family: Gilroy-Medium;
+                                    font-size: 12px;
+                                    font-weight: 500;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.33;
+                                    letter-spacing: normal;
+                                    color: #df434c;
+                                }
+                            }
+
+                            .swapInputBox {
+                                width: 100%;
+                                margin-top: 0;
+                                margin-bottom: 16px;
+
+                                .iconBox {
+                                    .avaliable {
+                                        font-family: Gilroy-Medium;
+                                        font-size: 12px;
+                                        font-weight: 500;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.33;
+                                        letter-spacing: normal;
+                                        text-align: center;
+                                        color: #99999a;
+                                    }
+                                }
+
+                                .inputBox {
+                                    padding: 16px;
+
+                                    .label {
+                                        flex: 1;
+                                        .amount {
+                                            font-family: Gilroy-Medium;
+                                            font-size: 12px;
+                                            font-weight: 500;
+                                            line-height: 1.33;
+                                            color: #99999a;
+                                        }
+                                        .input {
+                                            width: 100%;
+                                            .ivu-input-number-input {
+                                                padding: 0;
+                                                text-align: left;
+                                                font-size: 16px;
+                                                line-height: 1.5;
+                                            }
+                                        }
+                                    }
+
+                                    .max {
+                                        margin-left: 16px;
+                                        border-radius: 8px;
+                                        border: solid 1px #e5e5e5;
+                                        padding: 14px 24px;
+                                        font-family: Gilroy-Bold;
+                                        font-size: 10px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.6;
+                                        letter-spacing: 1.25px;
+                                        text-align: center;
+                                        color: #1a38f8;
+                                    }
+                                }
+                            }
+                        }
+                        .swapBtn {
+                            height: 48px;
+                            font-size: 16px;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.5;
+                            letter-spacing: 2px;
                         }
                     }
                 }

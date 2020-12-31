@@ -5,18 +5,21 @@
                 <template v-if="isEthereumNetwork">
                     <img class="editLogo" src="@/static/ETH.svg" />
                     <div class="editNetwork">
-                        Ethereum Network
+                        <template v-if="isMobile">ETH Network</template>
+                        <template v-else>Ethereum Network</template>
                     </div>
                 </template>
                 <template v-if="isBinanceNetwork">
                     <img class="editLogo" src="@/static/binance.svg" />
                     <div class="editNetwork">
-                        Binance Smart Chain
+                        <template v-if="isMobile">BSC Network</template>
+                        <template v-else> Binance Smart Chain</template>
                     </div>
                 </template>
 
                 <div class="editFee">
-                    Network Fee : {{ sourcePrice }} Gwei
+                    <template v-if="!isMobile">Network</template>
+                    Fee : {{ sourcePrice }} Gwei
                     <img
                         class="editBtn"
                         @click="sourceGasEditorModal = true"
@@ -35,18 +38,21 @@
                 <template v-if="isEthereumNetwork">
                     <img class="editLogo" src="@/static/binance.svg" />
                     <div class="editNetwork">
-                        Binance Smart Chain
+                        <template v-if="isMobile">BSC Network</template>
+                        <template v-else> Binance Smart Chain</template>
                     </div>
                 </template>
                 <template v-if="isBinanceNetwork">
                     <img class="editLogo" src="@/static/ETH.svg" />
                     <div class="editNetwork">
-                        Ethereum Network
+                        <template v-if="isMobile">ETH Network</template>
+                        <template v-else>Ethereum Network</template>
                     </div>
                 </template>
 
                 <div class="editFee">
-                    Network Fee : {{ targetPrice }} Gwei
+                    <template v-if="!isMobile">Network</template> Fee :
+                    {{ targetPrice }} Gwei
                     <img
                         class="editBtn"
                         @click="targetGasEditorModal = true"
@@ -481,7 +487,8 @@ export default {
         selectedTargetTypeChangeListener() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
-        walletNetworkId() {}
+        walletNetworkId() {},
+        isMobile() {}
     },
 
     computed: {
@@ -524,6 +531,10 @@ export default {
 
         walletNetworkId() {
             return this.$store.state?.walletNetworkId;
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
         }
     },
 
@@ -1049,6 +1060,20 @@ export default {
                         opacity: 0.1;
                         cursor: not-allowed;
                     }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #gasEditorSwap {
+        .source,
+        .target {
+            .editInfo {
+                .editLogo {
+                    width: 24px;
+                    height: 24px;
                 }
             }
         }

@@ -90,7 +90,7 @@
                         "
                         class="hasBinanceWallet"
                     >
-                        <div class="step" @click="jumpToStep">
+                        <div class="step" @click="jumpToSetup">
                             How to setup
                             <img src="@/static/arrow_right.svg" />
                         </div>
@@ -145,7 +145,7 @@
                     </div>
 
                     <div v-else class="notBinanceWallet">
-                        <div class="step" @click="jumpToStep">
+                        <div class="step" @click="jumpToSetup">
                             How to setup BSC on Metamask
                             <img src="@/static/arrow_right.svg" />
                         </div>
@@ -505,7 +505,7 @@ export default {
             this.$emit("tryAgain");
         },
 
-        jumpToStep() {
+        jumpToSetup() {
             let url =
                 "https://docs.binance.org/smart-chain/wallet/metamask.html";
             window.open(url, "_blank");

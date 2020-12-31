@@ -65,8 +65,8 @@
                     Transfer different currencies to specified wallet address
                 </div>
                 <div class="context" v-if="currentAction == 5">
-                    You can select the type of currency and enter the
-                    amount you want to swap
+                   You can select the type of liquids and enter the
+                            amount you want to swap to the other chain.
                 </div>
             </Modal>
 
