@@ -74,14 +74,16 @@
             class="gasEditorSwapModal"
             @on-visible-change="sourceGasEditorModalChange"
         >
-            <div class="header">
-                <div class="closeBtn" @click="sourceGasEditorModal = false">
-                    <closeSvg></closeSvg>
-                </div>
+            <div class="closeBtn" @click="sourceGasEditorModal = false">
+                <img v-if="isMobile" src="@/static/icon-cancel.svg" />
+                <closeSvg v-else></closeSvg>
             </div>
 
             <div class="content">
-                <div class="contentTitle">Edit</div>
+                <div class="contentTitle">
+                    <template v-if="isMobile">Edit Gas Fee</template>
+                    <template v-else>Edit</template>
+                </div>
                 <div class="contentDesc">
                     Adjust the gas price (GWEI) below to set the transaction
                     speed by recommended ones or entering manually
@@ -167,10 +169,10 @@
                         active:
                             sourceSelectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM
                     }"
-                    source="customPriceFocusSource"
+                    @click="sourceCustomPriceFocus"
                 >
                     <div class="leftRect">
-                        <div class="icon">
+                        <div class="icon" v-if="!isMobile">
                             <img
                                 v-if="isEthereumNetwork"
                                 src="@/static/ETH.svg"
@@ -183,10 +185,26 @@
 
                         <div class="desc">
                             <div class="descTop">
-                                Ethereum Network Fee
+                                <template v-if="isMobile">Customize</template>
+                                <template v-else>
+                                    <template v-if="isEthereumNetwork">
+                                        Ethereum Network Fee
+                                    </template>
+                                    <template v-if="isBinanceNetwork">
+                                        Binance Smart Chain Fee
+                                    </template>
+                                </template>
                             </div>
                             <div class="unit">
-                                GWEI
+                                <template v-if="isMobile">
+                                    <template v-if="isEthereumNetwork">
+                                        Etherum network fee (GWEI)
+                                    </template>
+                                    <template v-if="isBinanceNetwork">
+                                        BSC network fee (GWEI)
+                                    </template>
+                                </template>
+                                <template v-else>GWEI</template>
                             </div>
                         </div>
                     </div>
@@ -226,14 +244,16 @@
             class="gasEditorSwapModal"
             @on-visible-change="targetGasEditorModalChange"
         >
-            <div class="header">
-                <div class="closeBtn" @click="targetGasEditorModal = false">
-                    <closeSvg></closeSvg>
-                </div>
+            <div class="closeBtn" @click="targetGasEditorModal = false">
+                <img v-if="isMobile" src="@/static/icon-cancel.svg" />
+                <closeSvg v-else></closeSvg>
             </div>
 
             <div class="content">
-                <div class="contentTitle">Edit</div>
+                <div class="contentTitle">
+                    <template v-if="isMobile">Edit Gas Fee</template>
+                    <template v-else>Edit</template>
+                </div>
                 <div class="contentDesc">
                     Adjust the gas price (GWEI) below to set the transaction
                     speed by recommended ones or entering manually
@@ -322,7 +342,7 @@
                     @click="targetCustomPriceFocus"
                 >
                     <div class="leftRect">
-                        <div class="icon">
+                        <div class="icon" v-if="!isMobile">
                             <img
                                 v-if="isEthereumNetwork"
                                 src="@/static/bnb.svg"
@@ -335,10 +355,26 @@
 
                         <div class="desc">
                             <div class="descTop">
-                                Binance Smart Chain fee
+                                <template v-if="isMobile">Customize</template>
+                                <template v-else>
+                                    <template v-if="isEthereumNetwork">
+                                        Binance Smart Chain Fee
+                                    </template>
+                                    <template v-if="isBinanceNetwork">
+                                        Ethereum Network Fee
+                                    </template>
+                                </template>
                             </div>
                             <div class="unit">
-                                GWEI
+                                <template v-if="isMobile">
+                                    <template v-if="isEthereumNetwork">
+                                        BSC network fee (GWEI)
+                                    </template>
+                                    <template v-if="isBinanceNetwork">
+                                        Etherum network fee (GWEI)
+                                    </template>
+                                </template>
+                                <template v-else>GWEI</template>
                             </div>
                         </div>
                     </div>
@@ -555,7 +591,7 @@ export default {
                 if (sourceNetwork) {
                     await getNetworkSpeeds(this.walletNetworkId)
                         .then(res => {
-                            console.log(res, "source");
+                            // console.log(res, "source");
                             this.sourceNetworkSpeeds = res;
                             this.sourceSelectedType = this.$store.state?.sourceGasDetails?.type;
                             //判断赋值
@@ -579,7 +615,7 @@ export default {
                 if (targetNetwork) {
                     await getNetworkSpeeds(targetNetworkId)
                         .then(res => {
-                            console.log(res, "target");
+                            // console.log(res, "target");
                             this.targetNetworkSpeeds = res;
                             this.targetSelectedType = this.$store.state?.targetGasDetails?.type;
                             //判断赋值
@@ -841,13 +877,10 @@ export default {
                 padding: 0;
                 height: 100%;
 
-                .header {
+                .closeBtn {
                     position: absolute;
                     top: 24px;
                     right: 24px;
-
-                    .closeBtn {
-                    }
                 }
 
                 .content {
@@ -883,7 +916,7 @@ export default {
 
                     @mixin selectedBox {
                         border-radius: 8px;
-                        border: solid 1px #deddde;
+                        border: solid 1px #e5e5e5;
                         cursor: pointer;
                         transition: $animete-time linear;
 
@@ -1074,6 +1107,96 @@ export default {
                 .editLogo {
                     width: 24px;
                     height: 24px;
+                }
+            }
+        }
+
+        .gasEditorSwapModal {
+            .ivu-modal {
+                .ivu-modal-body {
+                    .closeBtn {
+                        img {
+                            width: 26px;
+                            height: 26px;
+                        }
+                    }
+
+                    .content {
+                        padding: 24px 32px;
+                        align-items: flex-start;
+
+                        .contentTitle {
+                            text-align: left;
+                            font-size: 16px;
+                            line-height: 1.5;
+                            color: #5a575c;
+                        }
+
+                        .contentDesc {
+                            margin-top: 8px;
+                            text-align: left;
+                            font-size: 12px;
+                            line-height: 1.33;
+                            color: #99999a;
+                        }
+
+                        .selections {
+                            margin-top: 64px;
+
+                            .selectionItem {
+                                flex: 1;
+                                padding: 33px 12px;
+
+                                .itemNumBox {
+                                    font-size: 24px;
+                                    line-height: 1.33;
+                                }
+
+                                .itemTime {
+                                    font-size: 12px;
+                                    line-height: 1.33;
+                                }
+                            }
+                        }
+
+                        .custom {
+                            padding: 28px 16px;
+
+                            .leftRect {
+                                .desc {
+                                    .descTop {
+                                        font-size: 14px;
+                                        line-height: 1.29;
+                                    }
+
+                                    .unit {
+                                        font-family: Gilroy-Regular;
+                                        font-weight: normal;
+                                    }
+                                }
+                            }
+
+                            .rightNum {
+                                .ivu-input-number-input {
+                                    line-height: 1.25;
+                                    font-size: 24px;
+                                    line-height: 1.33;
+                                }
+                            }
+                        }
+                    }
+
+                    .confirm {
+                        margin: 0 32px;
+                        width: calc(100% - 64px);
+                        border-radius: 20px;
+                        bottom: 32px;
+                        height: 40px;
+                        line-height: 40px;
+                        font-size: 12px;
+                        font-weight: bold;
+                        letter-spacing: 1.5px;
+                    }
                 }
             }
         }
