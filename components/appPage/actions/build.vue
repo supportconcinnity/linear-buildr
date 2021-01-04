@@ -1212,7 +1212,7 @@ export default {
                     this.waitProcessArray = [];
                     this.confirmTransactionStep = 0;
 
-                    if (this.actionData.needApprove.gt("0")) {
+                    if (this.actionData.needApprove.gt("0")) { 
                         this.waitProcessArray.push(BUILD_PROCESS_SETUP.APPROVE);
                     }
 

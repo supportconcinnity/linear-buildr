@@ -683,7 +683,11 @@ export default {
 
 @media only screen and (max-width: $max-phone-width) {
     #claim {
+        min-height: 550px;
+
         .actionTabs {
+            min-height: 550px;
+
             .ivu-tabs-bar {
                 display: none;
             }
@@ -694,6 +698,7 @@ export default {
                 .ivu-tabs-tabpane {
                     width: 100%;
                     height: 88vh !important;
+                    min-height: 550px;
 
                     .claimBox,
                     .waitingBox,
@@ -701,6 +706,7 @@ export default {
                     .failBox {
                         width: 100%;
                         height: 100%;
+                        min-height: 550px;
                     }
 
                     .claimBox {

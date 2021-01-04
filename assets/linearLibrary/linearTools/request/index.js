@@ -94,9 +94,17 @@ export const getPriceRates = async currency => {
  */
 export const getPriceRatesFromApi = async currency => {
     const rates = {};
+    const {
+        lnrJS: { LnChainLinkPrices },
+        utils
+    } = lnrJSConnector;
     if (_.isString(currency)) {
         if (currency == "lUSD") {
             rates["lUSD"] = n2bn("1");
+        } else if (currency == "LINA") {console.log(1111)
+            rates["LINA"] = await LnChainLinkPrices.getPrice(
+                utils.formatBytes32String(name)
+            );
         } else {
             const id = CRYPTO_CURRENCIES_API[currency]?.id;
             const results = await api.getTokenPrice({
@@ -109,16 +117,21 @@ export const getPriceRatesFromApi = async currency => {
 
         for (const index in currency) {
             const c = currency[index];
-            if (c != "lUSD") {
+            if (!["lUSD", "LINA"].includes(c)) {
                 ids.push(CRYPTO_CURRENCIES_API[c]?.id);
             }
         }
+
         const results = await api.getTokenPrice({ tokenid: ids });
 
         for (const index in currency) {
             const c = currency[index];
             if (c == "lUSD") {
                 rates["lUSD"] = n2bn("1");
+            } else if (c == "LINA") {
+                rates["LINA"] = await LnChainLinkPrices.getPrice(
+                    utils.formatBytes32String("LINA")
+                );
             } else {
                 const id = CRYPTO_CURRENCIES_API[c]?.id;
                 rates[c] = n2bn(results[id]?.usd);
