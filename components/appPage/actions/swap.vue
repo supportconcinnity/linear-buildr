@@ -195,11 +195,11 @@ import lnrJSConnector, {
 import { bn2n, bnSub, bnSub2N, n2bn } from "@/common/bnCalc";
 import {
     BUILD_PROCESS_SETUP,
+    BUILD_PROCESS_SETUP_MOBILE,
     DECIMAL_PRECISION
 } from "@/assets/linearLibrary/linearTools/constants/process";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
-formatNumber;
 
 export default {
     name: "swap",
@@ -225,8 +225,9 @@ export default {
             processing: false, // 处理状态, 防止重复点击
             waitProcessArray: [],
             // waitProcessArray: [
-            //     "Confirm Swapping on BSC",
-            //     "Confirm Swapping on Ethereum"
+            //     "Approve address",
+            //     "Contract on ETH",
+            //     "Contract on BSC"
             // ], //等待交易进度组
             waitProcessFlow: Function, //flow闭包函数
 
@@ -259,7 +260,8 @@ export default {
             sourceGasPrice: 0, //原始网络gas
             targetGasPrice: 0, //目标网络gas
 
-            formatNumber
+            formatNumber,
+            BUILD_PROCESS_SETUP
         };
     },
     async created() {
@@ -268,7 +270,6 @@ export default {
             "onWalletChainChange",
             async () => {
                 if (this.actionTabs == "m0") {
-                    console.log("onWalletChainChange");
                     await this.getFrozenBalance();
                 }
             }
@@ -285,6 +286,12 @@ export default {
         );
 
         await this.getFrozenBalance();
+    },
+
+    mounted() {
+        //移动端更换进度配置
+        this.isMobile &&
+            (this.BUILD_PROCESS_SETUP = BUILD_PROCESS_SETUP_MOBILE);
     },
 
     destroyed() {
@@ -403,21 +410,23 @@ export default {
                     this.confirmTransactionStep = 0;
                     this.waitProcessFlow = null;
 
-                    let LnProxy, LnBridge;
+                    let LnProxy,
+                        LnBridge,
+                        suffixETH = this.isMobile ? " ETH" : " Ethereum";
                     if (this.isEthereumNetwork) {
                         LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
                         LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                        BUILD_PROCESS_SETUP.FREEZE =
-                            BUILD_PROCESS_SETUP.SWAP + " Ethereum";
-                        BUILD_PROCESS_SETUP.UNFREEZE =
-                            BUILD_PROCESS_SETUP.SWAP + " BSC";
+                        this.BUILD_PROCESS_SETUP.FREEZE =
+                            this.BUILD_PROCESS_SETUP.SWAP + suffixETH;
+                        this.BUILD_PROCESS_SETUP.UNFREEZE =
+                            this.BUILD_PROCESS_SETUP.SWAP + " BSC";
                     } else if (this.isBinanceNetwork) {
                         LnProxy = lnrJSConnector.lnrJS.LinearFinance;
                         LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                        BUILD_PROCESS_SETUP.FREEZE =
-                            BUILD_PROCESS_SETUP.SWAP + " BSC";
-                        BUILD_PROCESS_SETUP.UNFREEZE =
-                            BUILD_PROCESS_SETUP.SWAP + " Ethereum";
+                        this.BUILD_PROCESS_SETUP.FREEZE =
+                            this.BUILD_PROCESS_SETUP.SWAP + " BSC";
+                        this.BUILD_PROCESS_SETUP.UNFREEZE =
+                            this.BUILD_PROCESS_SETUP.SWAP + suffixETH;
                     }
 
                     //取合约地址
@@ -438,17 +447,23 @@ export default {
                     );
 
                     if (diffCollateralLINA.gt(approveAmount)) {
-                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.APPROVE);
+                        this.waitProcessArray.push(
+                            this.BUILD_PROCESS_SETUP.APPROVE
+                        );
                     }
 
-                    //  this.waitProcessArray.push(BUILD_PROCESS_SETUP.APPROVE);
+                    //  this.waitProcessArray.push(this.BUILD_PROCESS_SETUP.APPROVE);
 
                     //如果新输入的大于已冻结的
                     if (this.swapNumber > this.frozenBalance) {
-                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.FREEZE);
+                        this.waitProcessArray.push(
+                            this.BUILD_PROCESS_SETUP.FREEZE
+                        );
                     }
 
-                    this.waitProcessArray.push(BUILD_PROCESS_SETUP.UNFREEZE);
+                    this.waitProcessArray.push(
+                        this.BUILD_PROCESS_SETUP.UNFREEZE
+                    );
 
                     //记录原始钱包类型
                     this.sourceWalletType = this.walletType;
@@ -497,7 +512,7 @@ export default {
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.APPROVE
+                        this.BUILD_PROCESS_SETUP.APPROVE
                     ) {
                         await this.startApproveContract(
                             n2bn(Number.MAX_SAFE_INTEGER)
@@ -506,7 +521,7 @@ export default {
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.FREEZE
+                        this.BUILD_PROCESS_SETUP.FREEZE
                     ) {
                         const swapNumber = _.floor(
                             this.swapNumber - this.frozenBalance,
@@ -517,7 +532,7 @@ export default {
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.UNFREEZE
+                        this.BUILD_PROCESS_SETUP.UNFREEZE
                     ) {
                         await this.startUnFreezeContract();
                     }
@@ -595,7 +610,7 @@ export default {
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
-                    type: BUILD_PROCESS_SETUP.APPROVE,
+                    type: this.BUILD_PROCESS_SETUP.APPROVE,
                     networkId: this.walletNetworkId,
                     value: `Approve ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
@@ -648,11 +663,12 @@ export default {
         async startFreezeContract(swapNumber) {
             this.confirmTransactionStatus = false;
 
-            let LnBridge, SETUP;
+            let LnBridge,
+                SETUP,
+                suffixETH = this.isMobile ? " ETH" : " Ethereum";
             if (this.isEthereumNetwork) {
                 LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-
-                SETUP = " Ethereum";
+                SETUP = suffixETH;
             } else if (this.isBinanceNetwork) {
                 LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
                 SETUP = " BSC";
@@ -685,7 +701,7 @@ export default {
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
-                    type: BUILD_PROCESS_SETUP.FREEZE,
+                    type: this.BUILD_PROCESS_SETUP.FREEZE,
                     networkId: this.walletNetworkId,
                     value: `Swapped on ${SETUP} ${this.confirmTransactionStep +
                         1}/${this.waitProcessArray.length}`
@@ -812,10 +828,12 @@ export default {
             }
 
             if (walletStatus) {
-                let LnBridge, SETUP;
+                let LnBridge,
+                    SETUP,
+                    suffixETH = this.isMobile ? " ETH" : " Ethereum";
                 if (this.isEthereumNetwork) {
                     LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                    SETUP = " Ethereum";
+                    SETUP = suffixETH;
                 } else if (this.isBinanceNetwork) {
                     LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
                     SETUP = " BSC";
@@ -862,7 +880,7 @@ export default {
                         // 发起右下角通知
                         this.$pub.publish("notificationQueue", {
                             hash: this.confirmTransactionHash,
-                            type: BUILD_PROCESS_SETUP.UNFREEZE,
+                            type: this.BUILD_PROCESS_SETUP.UNFREEZE,
                             networkId: this.walletNetworkId,
                             value: `Swapped on ${SETUP} ${this
                                 .confirmTransactionStep + 1}/${

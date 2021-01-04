@@ -1,13 +1,16 @@
 <template>
     <div id="transferWatingEnhanceSwap">
         <div class="close" @click.stop="$emit('close')">
-            <closeSvg></closeSvg>
+            <img v-if="isMobile" src="@/static/icon-cancel.svg" />
+            <closeSvg v-else></closeSvg>
         </div>
 
         <div class="waitTitle">
+            <!-- 切链 -->
             <template v-if="waitChainChange">
                 Switch to
 
+                <!-- 原始钱包是BSC -->
                 <template
                     v-if="
                         sourceWalletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
@@ -16,6 +19,7 @@
                     Metamask Wallet
                 </template>
 
+                <!-- 原始钱包和当前钱包是metamask -->
                 <template
                     v-if="
                         sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK &&
@@ -28,8 +32,9 @@
                     <template v-if="isBinanceNetwork(targetNetworkId)"
                         >BSC</template
                     >
-                    Network in Metamask
+                    Network <template v-if="!isMobile">on Metamask</template>
                 </template>
+                <!-- 原始钱包是metamask,当前钱包不是metamask -->
                 <template
                     v-if="
                         sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK &&
@@ -40,13 +45,17 @@
                 </template>
             </template>
 
+            <!-- 不是切链状态 -->
             <template v-else>
+                <!-- 已经完成 -->
                 <span v-if="currentStep > setupArray.length - 1"
                     >Congratulations!</span
                 >
+                <!-- 当前有错误 -->
                 <span v-else-if="currentErrMsg"
                     >Oops! Something went wrong</span
                 >
+                <!-- 没完成,没错误,没确认 -->
                 <span v-else-if="!currentConfirm">
                     Confirm with
                     <template
@@ -66,27 +75,46 @@
                         BSC Wallet
                     </template>
                 </span>
+                <!-- 没完成,没错误,已确认 -->
                 <span v-else>Interacting with the smart contract</span>
             </template>
         </div>
 
         <div class="waitDesc">
-            <span v-if="currentStep > setupArray.length - 1"
-                >Your transaction has been processed already</span
-            ><span class="error" v-else-if="currentErrMsg">{{
+            <!-- 已经完成 -->
+            <span v-if="currentStep > setupArray.length - 1">
+                <!-- 手机端 -->
+                <template v-if="isMobile"
+                    >Swap transaction has been processed.</template
+                >
+                <!-- pc端 -->
+                <template v-else
+                    >Your transaction has been processed already</template
+                >
+            </span>
+            <!-- 有错误 -->
+            <span class="error" v-else-if="currentErrMsg">{{
                 currentErrMsg
             }}</span>
+            <!-- 没完成没错误且是移动端 -->
+            <span v-else-if="isMobile">
+                Swap transaction is in progress
+            </span>
         </div>
 
         <div class="walletRect">
+            <!-- 切链 -->
             <template v-if="waitChainChange">
+                <!-- 原始钱包是metamask -->
                 <template
                     v-if="sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK"
                 >
+                    <!-- 有BSC钱包,不是BSC网络,且不是移动端 -->
                     <div
                         v-if="
                             hasBinanceWallet &&
-                                !isBinanceNetwork(currentNetworkId)
+                                !isBinanceNetwork(currentNetworkId) &&
+                                !isMobile
                         "
                         class="hasBinanceWallet"
                     >
@@ -144,6 +172,7 @@
                         </div>
                     </div>
 
+                    <!-- 没有BSC钱包 -->
                     <div v-else class="notBinanceWallet">
                         <div class="step" @click="jumpToSetup">
                             How to setup BSC on Metamask
@@ -162,6 +191,12 @@
                                 src="@/static/transferProgress/metamask_bsc.svg"
                             />
                             <img
+                                v-if="isMobile"
+                                class="arrow"
+                                src="@/static/transferProgress/arrow_right.svg"
+                            />
+                            <img
+                                v-else
                                 class="arrow"
                                 src="@/static/transferProgress/long_arrow.svg"
                             />
@@ -179,6 +214,7 @@
                     </div>
                 </template>
 
+                <!-- 原始钱包是BSC -->
                 <template
                     v-if="
                         sourceWalletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
@@ -201,10 +237,13 @@
                 </template>
             </template>
 
+            <!-- 不是切链 -->
             <template v-else>
+                <!-- 原始钱包是metamask -->
                 <template
                     v-if="sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK"
                 >
+                    <!-- 当前钱包是metamask -->
                     <div
                         class="walletIcon"
                         v-if="
@@ -222,6 +261,7 @@
                             src="@/static/transferProgress/metamask_bsc.svg"
                         />
                     </div>
+                    <!-- 当前钱包是BSC -->
                     <div
                         class="walletIcon"
                         v-if="
@@ -236,11 +276,13 @@
                     </div>
                 </template>
 
+                <!-- 原始钱包是BSC -->
                 <template
                     v-if="
                         sourceWalletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
                     "
                 >
+                    <!-- 当前钱包是BSC -->
                     <div
                         class="walletIcon"
                         v-if="
@@ -254,6 +296,7 @@
                         />
                     </div>
 
+                    <!-- 当前钱包不是BSC -->
                     <div v-else class="walletIcon">
                         <img
                             v-if="isEthereumNetwork(currentNetworkId)"
@@ -279,7 +322,7 @@
                 >
                     <div class="imgBox">
                         <transition-group name="img-fade">
-                            <!-- 大于进度 -->
+                            <!-- 已经完成的进度 -->
                             <img
                                 class="img"
                                 key="1"
@@ -287,7 +330,7 @@
                                 src="@/static/transferProgress/default.svg"
                             />
 
-                            <!-- 当前进度没错误 -->
+                            <!-- 未完成,没错误,在当前进度 -->
 
                             <template
                                 v-else-if="
@@ -300,47 +343,59 @@
                                     src="@/static/transferProgress/loading.svg"
                                 />
 
-                                <template v-if="waitChainChange">
+                                <!-- 不是移动端 -->
+                                <template v-if="!isMobile">
+                                    <!-- 切链 -->
+                                    <template v-if="waitChainChange">
+                                        <img
+                                            v-if="
+                                                isEthereumNetwork(
+                                                    targetNetworkId
+                                                )
+                                            "
+                                            key="23"
+                                            class="walletType"
+                                            src="@/static/transferProgress/eth_network.svg"
+                                        />
+                                        <img
+                                            v-if="
+                                                isBinanceNetwork(
+                                                    targetNetworkId
+                                                )
+                                            "
+                                            key="24"
+                                            class="walletType"
+                                            src="@/static/transferProgress/bsc_network.svg"
+                                        />
+                                    </template>
 
-                                    <img
-                                        v-if="
-                                            isEthereumNetwork(targetNetworkId)
-                                        "
-                                        key="23"
-                                        class="walletType"
-                                        src="@/static/transferProgress/eth_network.svg"
-                                    />
-                                    <img
-                                        v-if="
-                                            isBinanceNetwork(targetNetworkId)
-                                        "
-                                        key="24"
-                                        class="walletType"
-                                        src="@/static/transferProgress/bsc_network.svg"
-                                    />
-                                </template>
-
-                                <template v-else>
-                                    <img
-                                        v-if="
-                                            isEthereumNetwork(currentNetworkId)
-                                        "
-                                        key="23"
-                                        class="walletType"
-                                        src="@/static/transferProgress/eth_network.svg"
-                                    />
-                                    <img
-                                        v-if="
-                                            isBinanceNetwork(currentNetworkId)
-                                        "
-                                        key="24"
-                                        class="walletType"
-                                        src="@/static/transferProgress/bsc_network.svg"
-                                    />
+                                    <!-- 不是切链 -->
+                                    <template v-else>
+                                        <img
+                                            v-if="
+                                                isEthereumNetwork(
+                                                    currentNetworkId
+                                                )
+                                            "
+                                            key="23"
+                                            class="walletType"
+                                            src="@/static/transferProgress/eth_network.svg"
+                                        />
+                                        <img
+                                            v-if="
+                                                isBinanceNetwork(
+                                                    currentNetworkId
+                                                )
+                                            "
+                                            key="24"
+                                            class="walletType"
+                                            src="@/static/transferProgress/bsc_network.svg"
+                                        />
+                                    </template>
                                 </template>
                             </template>
 
-                            <!-- 当前进度有错误 -->
+                            <!-- 没完成,当前进度有错误 -->
                             <img
                                 key="3"
                                 v-else-if="
@@ -372,35 +427,46 @@
                     >
                         {{ item }}
                     </div>
-                    <div
-                        class="view"
-                        v-if="
-                            currentStep == index &&
-                                currentConfirm &&
-                                !currentErrMsg
-                        "
-                        @click.stop="
-                            openBlockchainBrowser(currentHash, currentNetworkId)
-                        "
-                    >
-                        <template v-if="isEthereumNetwork(currentNetworkId)">
-                            View Etherscan
-                        </template>
-                        <template
-                            v-else-if="isBinanceNetwork(currentNetworkId)"
-                        >
-                            View Bscscan
-                        </template>
 
-                        <img src="@/static/arrow_right.svg" />
-                    </div>
-                    <div
-                        v-else-if="currentStep == index && currentErrMsg"
-                        class="tryAgain"
-                        @click.stop="tryAgain"
-                    >
-                        try again
-                    </div>
+                    <!-- 不是移动端 -->
+                    <template v-if="!isMobile">
+                        <!-- 当前进度,已确认,没有错误 -->
+                        <div
+                            class="view"
+                            v-if="
+                                currentStep == index &&
+                                    currentConfirm &&
+                                    !currentErrMsg
+                            "
+                            @click.stop="
+                                openBlockchainBrowser(
+                                    currentHash,
+                                    currentNetworkId
+                                )
+                            "
+                        >
+                            <template
+                                v-if="isEthereumNetwork(currentNetworkId)"
+                            >
+                                View Etherscan
+                            </template>
+                            <template
+                                v-else-if="isBinanceNetwork(currentNetworkId)"
+                            >
+                                View Bscscan
+                            </template>
+
+                            <img src="@/static/arrow_right.svg" />
+                        </div>
+                        <!-- 当前进度有错误 -->
+                        <div
+                            v-else-if="currentStep == index && currentErrMsg"
+                            class="tryAgain"
+                            @click.stop="tryAgain"
+                        >
+                            try again
+                        </div>
+                    </template>
                 </div>
             </div>
 
@@ -421,6 +487,46 @@
                 </ul>
             </div>
         </div>
+
+        <!-- 不是等待切链状态且是移动端的时候 -->
+        <template v-if="!waitChainChange && isMobile">
+            <!-- 完成 -->
+            <div
+                class="funcMobileBtn"
+                v-if="currentStep > setupArray.length - 1"
+                @click.stop="$emit('close')"
+            >
+                Done
+            </div>
+            <!-- 错误 -->
+            <div
+                class="funcMobileBtn"
+                v-else-if="currentErrMsg"
+                @click.stop="tryAgain"
+            >
+                try again
+            </div>
+            <!-- 未确认交易 -->
+            <!-- <div class="funcMobileBtn" v-else-if="!currentConfirm">
+                Confirm Contract
+            </div> -->
+
+            <div
+                class="viewMobileBtn"
+                v-if="currentConfirm"
+                @click.stop="
+                    openBlockchainBrowser(currentHash, currentNetworkId)
+                "
+            >
+                <template v-if="isEthereumNetwork(currentNetworkId)">
+                    View Etherscan
+                </template>
+                <template v-else-if="isBinanceNetwork(currentNetworkId)">
+                    View Bscscan
+                </template>
+                <img src="@/static/arrow_right.svg" />
+            </div>
+        </template>
     </div>
 </template>
 
@@ -488,7 +594,8 @@ export default {
     },
     watch: {
         currentWalletType() {},
-        hasBinanceWallet() {}
+        hasBinanceWallet() {},
+        isMobile() {}
     },
     computed: {
         currentWalletType() {
@@ -497,6 +604,10 @@ export default {
 
         hasBinanceWallet() {
             return window.BinanceChain;
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
         }
     },
     mounted() {},
@@ -791,6 +902,151 @@ export default {
         position: absolute;
         top: 24px;
         right: 24px;
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #transferWatingEnhanceSwap {
+        padding: 24px 32px;
+        .waitTitle {
+            text-align: left;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-top: 0;
+        }
+
+        .waitDesc {
+            text-align: left;
+            top: 48px;
+            left: 32px;
+            font-size: 12px;
+            line-height: 1.33;
+            color: #99999a;
+        }
+
+        .walletRect {
+            .step {
+                font-size: 10px;
+                line-height: 1.6;
+                letter-spacing: 1.25px;
+                position: absolute;
+                bottom: 32px;
+
+                img {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+            .walletIcon {
+                margin-top: 136px;
+                .wallteLogo {
+                    width: 80px;
+                    height: 80px;
+
+                    &.eth {
+                        margin-left: 13px;
+                    }
+                }
+
+                .arrow {
+                    width: 24px;
+                    height: 24px;
+                    margin: 0 16px;
+                }
+            }
+
+            .notBinanceWallet {
+                .walletIcon {
+                    margin-top: 136px;
+                }
+            }
+        }
+
+        .processBar {
+            position: absolute;
+            bottom: 0;
+            top: 288px;
+            height: 48px;
+            width: calc(100% - 20px);
+
+            .itemBox {
+                .item {
+                    .imgBox {
+                        width: 24px;
+                        height: 24px;
+                    }
+
+                    .text {
+                        margin-bottom: 4px;
+                        font-family: Gilroy;
+                        font-size: 10px;
+                        line-height: 1.2;
+                    }
+                }
+            }
+
+            .dividerBox {
+                ul {
+                    top: 10.5px;
+                    li {
+                        &.has {
+                            height: 3px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .close {
+            img {
+                width: 26px;
+                height: 26px;
+            }
+        }
+
+        .funcMobileBtn {
+            width: calc(100% - 64px);
+            margin: 0 32px;
+            font-family: Gilroy-Bold;
+            font-size: 12px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
+            letter-spacing: 1.5px;
+            text-align: center;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1a38f8;
+            text-transform: uppercase;
+            position: absolute;
+            bottom: 64px;
+        }
+
+        .viewMobileBtn {
+            position: absolute;
+            bottom: 32px;
+            font-family: Gilroy-Bold;
+            font-size: 10px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.6;
+            letter-spacing: 1.25px;
+            color: #1a38f8;
+            display: flex;
+            align-items: center;
+            text-transform: uppercase;
+            img {
+                width: 16px;
+                height: 16px;
+                margin-left: 4px;
+            }
+        }
     }
 }
 

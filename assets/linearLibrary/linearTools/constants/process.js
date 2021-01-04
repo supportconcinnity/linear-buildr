@@ -12,4 +12,11 @@ export const BUILD_PROCESS_SETUP = {
     UNFREEZE: ""
 };
 
+export const BUILD_PROCESS_SETUP_MOBILE = {
+    APPROVE: "Approve Address",
+    SWAP: "Contract on",
+    FREEZE: "",
+    UNFREEZE: ""
+};
+
 export const DECIMAL_PRECISION = 2; //小数保留位数

@@ -617,7 +617,6 @@ export default {
 
         //订阅链改变事件
         this.$pub.subscribe("onWalletChainChange", (msg, params) => {
-            console.log("onWalletChainChange");
             this.walletStatusChange();
         });
     },
