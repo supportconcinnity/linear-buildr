@@ -738,8 +738,6 @@ export default {
             this.$pub.publish("transactionModalChange", this.transactionStatus);
             this.$pub.publish("trackModalChange", this.trackStatus);
 
-            console.log(forceAction, "walletStatusChange");
-
             //不是swap的情况下关闭其他
             if (this.$store.state?.currentAction != 5 || forceAction) {
                 this.$store.commit("setCurrentAction", 0);

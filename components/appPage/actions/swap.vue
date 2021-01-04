@@ -1,55 +1,25 @@
 <template>
-    <div id="swap">
+    <div id="swap" :class="{ isMobile }">
         <Tabs v-model="actionTabs" class="actionTabs">
             <TabPane name="m0">
                 <div class="swapBox">
                     <div class="actionBody">
-                        <div class="actionTitle">Swap</div>
-                        <div class="actionDesc">
-                            You can select the type of currency and enter the
-                            amount you want to swap
-                        </div>
-
-                        <div class="fromToBox">
-                            <div class="box">
-                                <img
-                                    v-if="isEthereumNetwork"
-                                    src="@/static/ETH.svg"
-                                />
-                                <img
-                                    v-else-if="isBinanceNetwork"
-                                    src="@/static/bnb.svg"
-                                />
-                                <div class="title">
-                                    <template v-if="isEthereumNetwork"
-                                        >Ethereum Chain</template
-                                    >
-                                    <template v-else-if="isBinanceNetwork"
-                                        >Binance Smart Chain</template
-                                    >
-                                </div>
+                        <template v-if="!isMobile">
+                            <div class="actionTitle">Swap</div>
+                            <div class="actionDesc">
+                                You can select the type of liquids and enter the
+                                amount you want to swap to the other chain.
                             </div>
-                            <img
-                                class="arrow"
-                                src="@/static/swap_arrow_right.svg"
-                            />
-                            <div class="box">
-                                <img
-                                    v-if="isEthereumNetwork"
-                                    src="@/static/bnb.svg"
-                                />
-                                <img
-                                    v-else-if="isBinanceNetwork"
-                                    src="@/static/ETH.svg"
-                                />
-                                <div class="title">
-                                    <template v-if="isEthereumNetwork"
-                                        >Binance Smart Chain</template
-                                    >
-                                    <template v-else-if="isBinanceNetwork"
-                                        >Ethereum Chain</template
-                                    >
-                                </div>
+                        </template>
+
+                        <div
+                            v-if="isMobile"
+                            v-show="errors.amountMsg"
+                            class="someWrongMobile"
+                        >
+                            <img class="errIcon" src="@/static/error.svg" />
+                            <div class="errMessage">
+                                {{ errors.amountMsg }}
                             </div>
                         </div>
 
@@ -60,57 +30,111 @@
                             }"
                         >
                             <div class="iconBox">
-                                <div class="icon">
-                                    <img
-                                        :src="currentSelectCurrency.img"
-                                        alt=""
-                                    />
-                                </div>
-                            </div>
-                            <div class="midle">
-                                <div class="p_1">
+                                <img
+                                    class="icon"
+                                    :src="currentSelectCurrency.img"
+                                />
+                                <div class="name">
                                     {{ currentSelectCurrency.name }}
                                 </div>
-                                <span
-                                    class="p_2"
-                                    :class="{ active: activeItemBtn == 0 }"
-                                    @click="clickMaxAmount"
-                                >
-                                    MAX
-                                </span>
-                            </div>
-                            <div class="value">
-                                <div class="price">
-                                    <div class="number">
-                                        <div class="inputRect">
-                                            <InputNumber
-                                                class="input"
-                                                ref="itemInput0"
-                                                element-id="transfer_number_input"
-                                                :min="frozenBalance"
-                                                :max="
-                                                    floor(
-                                                        currentSelectCurrency.avaliable,
-                                                        DECIMAL_PRECISION
-                                                    )
-                                                "
-                                                type="text"
-                                                v-model="swapNumber"
-                                                placeholder="0"
-                                                @on-focus="inputFocus(0)"
-                                                @on-blur="inputBlur(0)"
-                                                :formatter="formatterInput"
-                                            />
-                                        </div>
-                                    </div>
+
+                                <div v-if="isMobile" class="avaliable">
+                                    Avaliable:
+                                    {{
+                                        formatNumber(
+                                            currentSelectCurrency.avaliable,
+                                            DECIMAL_PRECISION
+                                        )
+                                    }}
+                                    {{ currentSelectCurrency.name }}
                                 </div>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <div class="inputBox" @click="inputFocus(0)">
+                                <template v-if="isMobile">
+                                    <div class="label">
+                                        <div class="amount">
+                                            Amount
+                                        </div>
+                                        <InputNumber
+                                            class="input"
+                                            ref="itemInput0"
+                                            element-id="transfer_number_input"
+                                            :min="frozenBalance"
+                                            :max="
+                                                floor(
+                                                    currentSelectCurrency.avaliable,
+                                                    DECIMAL_PRECISION
+                                                )
+                                            "
+                                            type="text"
+                                            v-model="swapNumber"
+                                            placeholder="0"
+                                            @on-focus="inputFocus(0)"
+                                            @on-blur="inputBlur(0)"
+                                            :formatter="formatterInput"
+                                        />
+                                    </div>
+
+                                    <span
+                                        class="max"
+                                        :class="{
+                                            active: activeItemBtn == 0
+                                        }"
+                                        @click="clickMaxAmount"
+                                    >
+                                        MAX
+                                    </span>
+                                </template>
+                                <template v-else>
+                                    <div class="label">
+                                        <div class="amount">
+                                            Amount
+                                        </div>
+                                        <span
+                                            class="max"
+                                            :class="{
+                                                active: activeItemBtn == 0
+                                            }"
+                                            @click="clickMaxAmount"
+                                        >
+                                            MAX
+                                        </span>
+                                    </div>
+                                    <InputNumber
+                                        class="input"
+                                        ref="itemInput0"
+                                        element-id="transfer_number_input"
+                                        :min="frozenBalance"
+                                        :max="
+                                            floor(
+                                                currentSelectCurrency.avaliable,
+                                                DECIMAL_PRECISION
+                                            )
+                                        "
+                                        type="text"
+                                        v-model="swapNumber"
+                                        placeholder="0"
+                                        @on-focus="inputFocus(0)"
+                                        @on-blur="inputBlur(0)"
+                                        :formatter="formatterInput"
+                                    />
+                                </template>
                             </div>
                         </div>
 
-                        <div class="someWrong" v-show="errors.amountMsg">
+                        <div
+                            v-if="!isMobile"
+                            class="someWrong"
+                            v-show="errors.amountMsg"
+                        >
                             {{ errors.amountMsg }}
                         </div>
-                        <gasEditorSwap></gasEditorSwap>
+                        <gasEditorSwap
+                            v-if="this.actionTabs == 'm0'"
+                        ></gasEditorSwap>
                     </div>
 
                     <div
@@ -118,7 +142,7 @@
                         :class="{ disabled: swapDisabled }"
                         @click="clickSwap"
                     >
-                        SWAP NOW
+                        SWAP <template v-if="!isMobile">NOW</template>
                     </div>
 
                     <Spin fix v-if="processing"></Spin>
@@ -174,6 +198,8 @@ import {
     DECIMAL_PRECISION
 } from "@/assets/linearLibrary/linearTools/constants/process";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
+import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
+formatNumber;
 
 export default {
     name: "swap",
@@ -228,7 +254,12 @@ export default {
 
             chainChangeTokenFromUnfreeze: "", //解冻切换钱包事件监听id
             chainChangeTokenFromSubscribe: "", //切换钱包事件监听id
-            walletChangeTokenFromSubscribe: "" //切换钱包地址时间监听id
+            walletChangeTokenFromSubscribe: "", //切换钱包地址时间监听id
+
+            sourceGasPrice: 0, //原始网络gas
+            targetGasPrice: 0, //目标网络gas
+
+            formatNumber
         };
     },
     async created() {
@@ -267,7 +298,8 @@ export default {
         isEthereumNetwork() {},
         isBinanceNetwork() {},
         walletNetworkId() {},
-        walletType() {}
+        walletType() {},
+        isMobile() {}
     },
     computed: {
         isEthereumNetwork() {
@@ -306,6 +338,10 @@ export default {
 
         walletType() {
             return this.$store.state?.walletType;
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
         }
     },
     methods: {
@@ -422,6 +458,14 @@ export default {
                         this.walletNetworkId
                     ).join();
 
+                    //记录gas price
+                    this.sourceGasPrice =
+                        this.$store.state?.sourceGasDetails?.price ||
+                        50000000000;
+                    this.targetGasPrice =
+                        this.$store.state?.targetGasDetails?.price ||
+                        50000000000;
+
                     //记录原始钱包地址
                     this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
 
@@ -512,15 +556,13 @@ export default {
         async startApproveContract(approveAmountLINA) {
             this.confirmTransactionStatus = false;
 
-            let LnProxy, LnBridge, gasPrice;
+            let LnProxy, LnBridge;
             if (this.isEthereumNetwork) {
                 LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
                 LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                gasPrice = this.$store.state?.gasDetailsETH?.price;
             } else if (this.isBinanceNetwork) {
                 LnProxy = lnrJSConnector.lnrJS.LinearFinance;
                 LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                gasPrice = this.$store.state?.gasDetailsBSC?.price;
             }
 
             const { utils } = lnrJSConnector;
@@ -529,7 +571,7 @@ export default {
             const LnBridgeAddress = LnBridge.contract.address;
 
             const transactionSettings = {
-                gasPrice,
+                gasPrice: this.sourceGasPrice,
                 gasLimit: this.gasLimit
             };
 
@@ -606,21 +648,20 @@ export default {
         async startFreezeContract(swapNumber) {
             this.confirmTransactionStatus = false;
 
-            let LnBridge, gasPrice, SETUP;
+            let LnBridge, SETUP;
             if (this.isEthereumNetwork) {
                 LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                gasPrice = this.$store.state?.gasDetailsETH?.price;
+
                 SETUP = " Ethereum";
             } else if (this.isBinanceNetwork) {
                 LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                gasPrice = this.$store.state?.gasDetailsBSC?.price;
                 SETUP = " BSC";
             }
 
             const { utils } = lnrJSConnector;
 
             const transactionSettings = {
-                gasPrice,
+                gasPrice: this.sourceGasPrice,
                 gasLimit: DEFAULT_GAS_LIMIT.freeze
             };
 
@@ -771,14 +812,12 @@ export default {
             }
 
             if (walletStatus) {
-                let LnBridge, gasPrice, SETUP;
+                let LnBridge, SETUP;
                 if (this.isEthereumNetwork) {
                     LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                    gasPrice = this.$store.state?.gasDetailsETH?.price;
                     SETUP = " Ethereum";
                 } else if (this.isBinanceNetwork) {
                     LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                    gasPrice = this.$store.state?.gasDetailsBSC?.price;
                     SETUP = " BSC";
                 }
 
@@ -793,7 +832,7 @@ export default {
                 const { utils } = lnrJSConnector;
 
                 const transactionSettings = {
-                    gasPrice,
+                    gasPrice: this.targetGasPrice,
                     gasLimit: DEFAULT_GAS_LIMIT.freeze
                 };
 
@@ -1046,7 +1085,7 @@ export default {
                         }
 
                         .actionDesc {
-                            margin: 8px 55px 100px;
+                            margin: 8px 55px 84px;
                             font-family: Gilroy-Regular;
                             font-size: 14px;
                             font-weight: normal;
@@ -1057,221 +1096,140 @@ export default {
                             text-align: center;
                             color: #99999a;
                         }
-                    }
 
-                    .fromToBox {
-                        padding: 0 46px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-around;
-
-                        .box {
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-
-                            .title {
-                                font-family: Gilroy-Bold;
-                                font-size: 14px;
-                                font-weight: bold;
-                                line-height: 18px;
-                                color: #99999a;
-                                margin-top: 20px;
-                            }
-
-                            img {
-                                width: 48px;
-                            }
-                        }
-
-                        .arrow {
-                            width: 42px;
-                            align-self: flex-start;
-                        }
-                    }
-
-                    .swapInputBox {
-                        width: 400px;
-                        border-radius: 8px;
-                        border: 1px solid #deddde;
-                        transition: $animete-time linear;
-                        box-shadow: 0 0 0 #deddde;
-                        margin-top: 64px;
-                        display: flex;
-                        align-items: center;
-                        position: relative;
-                        padding: 40px 24px;
-                        margin-bottom: 24px;
-
-                        &:hover,
-                        &.active {
-                            box-shadow: 0 2px 12px #deddde;
-                            border-color: white;
-                        }
-                        &.error {
-                            border-color: #df434c;
-                        }
-                        & > div {
-                            height: 100%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                        }
-
-                        .iconBox {
-                            margin-right: 16px;
-                            .icon {
-                                text-align: center;
-                                width: 40px;
-                                height: 40px;
-                                line-height: 40px;
-                                border-radius: 100%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                img {
-                                    width: 100%;
-                                    height: 100%;
-                                }
-                            }
-                        }
-
-                        .midle {
-                            flex-direction: column;
-                            align-items: flex-start;
-                            margin-right: 20px;
-                            > div {
-                                width: 100%;
-                            }
-                            .p_1 {
-                                font-family: Gilroy-Bold;
-                                font-size: 16px;
-                                font-weight: bold;
-                                line-height: 24px;
-                                color: #5a575c;
-                            }
-                            .p_2 {
-                                opacity: 0.2;
-                                cursor: pointer;
-                                transition: $animete-time linear;
-                                font-family: Gilroy-Bold;
-                                font-size: 12px;
-                                font-weight: bold;
-                                line-height: 16px;
-                                letter-spacing: 1.5px;
-                                color: #1a38f8;
-
-                                &:hover {
-                                    opacity: 1;
-                                }
-
-                                &.active {
-                                    opacity: 1;
-                                }
-                            }
-                        }
-                        .arrow {
-                            width: 30px;
-                            cursor: pointer;
+                        .swapInputBox {
+                            width: 400px;
+                            border-radius: 8px;
+                            border: 1px solid #deddde;
                             transition: $animete-time linear;
-
-                            &.perversion {
-                                transform: rotate(180deg);
-                                .blueArrow {
-                                    display: inline !important;
-                                }
-                                .grayArrow {
-                                    display: none !important;
-                                }
-                            }
-                            .grayArrow {
-                                display: inline;
-                            }
-                            .blueArrow {
-                                display: none;
-                                transform: rotate(180deg);
-                            }
-                        }
-                        &:hover {
-                            .blueArrow {
-                                display: inline;
-                            }
-                            .grayArrow {
-                                display: none;
-                            }
-                        }
-                        .value {
-                            flex: 1;
+                            box-shadow: 0 0 0 #deddde;
+                            margin-top: 64px;
+                            display: flex;
                             flex-direction: column;
-                            .price {
-                                width: 100%;
+                            align-items: center;
+                            position: relative;
+                            margin-bottom: 24px;
+
+                            &:hover,
+                            &.active {
+                                box-shadow: 0 2px 12px #deddde;
+                                border-color: white;
+                            }
+                            &.error {
+                                border-color: #df434c;
+                            }
+
+                            .iconBox {
                                 display: flex;
-                                .number {
-                                    flex: 1;
-                                    color: #c6c4c7;
-                                    font-family: Gilroy;
-                                    font-size: 32px;
-                                    text-align: right;
+                                flex-direction: column;
+                                align-items: center;
+                                .icon {
+                                    margin: 24px 0 16px;
+                                    width: 64px;
+                                    height: 64px;
+                                    border-radius: 100%;
+                                    margin img {
+                                        width: 100%;
+                                        height: 100%;
+                                    }
+                                }
 
-                                    .inputRect {
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: flex-end;
-                                        .input {
-                                            width: 100%;
-                                            border: none;
-                                            box-shadow: none;
+                                .name {
+                                    font-family: Gilroy-Bold;
+                                    text-align: center;
+                                    font-size: 24px;
+                                    line-height: 32px;
+                                    letter-spacing: 0;
+                                }
+                            }
 
-                                            .ivu-input-number-handler-wrap {
-                                                display: none;
-                                            }
+                            .divider {
+                                margin-top: 24px;
+                                width: 100%;
+                                height: 1px;
+                                background-color: #e5e5e5;
+                            }
 
-                                            .ivu-input-number-input {
-                                                text-align: right;
-                                                color: #5a575c;
-                                                font-family: Gilroy-Bold;
-                                                font-size: 32px;
-                                                font-weight: bold;
-                                                line-height: 40px;
-                                                padding: 0;
-                                                &::placeholder {
-                                                    color: #99999a;
-                                                }
-                                            }
+                            .inputBox {
+                                display: flex;
+                                padding: 24px;
+                                width: 100%;
+                                align-items: center;
+
+                                .label {
+                                    .amount {
+                                        font-family: Gilroy-Bold;
+                                        font-size: 16px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.5;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
+                                    }
+
+                                    .max {
+                                        font-family: Gilroy-Bold;
+                                        font-size: 12px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.33;
+                                        letter-spacing: 1.5px;
+                                        text-align: center;
+                                        color: #1a38f8;
+                                        opacity: 0.2;
+                                        cursor: pointer;
+
+                                        &:hover {
+                                            opacity: 1;
+                                        }
+
+                                        &.active {
+                                            opacity: 1;
                                         }
                                     }
                                 }
-                                .unit {
-                                    width: 40px;
-                                    color: #5a575c;
-                                    font-family: "PingFangHK-Regular";
-                                    font-size: 16px;
-                                    text-align: right;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
+
+                                .input {
+                                    flex: 1;
+                                    border: none;
+                                    box-shadow: none;
+
+                                    .ivu-input-number-handler-wrap {
+                                        display: none;
+                                    }
+
+                                    .ivu-input-number-input {
+                                        text-align: right;
+                                        font-family: Gilroy-bold;
+                                        font-size: 32px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.25;
+                                        letter-spacing: normal;
+                                        color: #5a575c;
+
+                                        &::placeholder {
+                                            color: #99999a;
+                                        }
+                                    }
                                 }
                             }
-                            .avaliable {
-                                color: #c6c4c7;
-                                font-family: Gilroy;
-                                font-size: 12px;
-                                width: 100%;
-                                text-align: right;
-                            }
                         }
-                    }
 
-                    .someWrong {
-                        color: #df434c;
-                        font-family: Gilroy;
-                        font-weight: 700;
-                        font-size: 12px;
-                        text-transform: uppercase;
-                    }
+                        .someWrong {
+                            color: #df434c;
+                            font-family: Gilroy;
+                            font-weight: 700;
+                            font-size: 12px;
+                            text-transform: uppercase;
+                        }
 
-                    #gasEditor {
-                        margin-top: 24px;
+                        #gasEditor {
+                            margin-top: 24px;
+                        }
                     }
 
                     .swapBtn {
@@ -1306,6 +1264,127 @@ export default {
 
                         &.swapBtnActivited {
                             opacity: unset;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: $max-phone-width) {
+    #swap {
+        height: 100%;
+        .actionTabs {
+            height: 100%;
+            .ivu-tabs-content {
+                height: 100%;
+                .ivu-tabs-tabpane {
+                    width: 100%;
+                    height: 100% !important;
+                    min-height: 516px;
+                    .swapBox {
+                        padding-top: 24px;
+                        .actionBody {
+                            height: calc(100% - 48px);
+                            overflow-y: auto;
+                            padding: 20px 22px 44px;
+                            margin: 0 10px;
+
+                            .someWrongMobile {
+                                border-radius: 8px;
+                                background-color: rgba(#df434c, 0.05);
+                                padding: 12px 16px;
+                                display: flex;
+                                align-items: center;
+                                margin-bottom: 16px;
+                                margin-top: -20px;
+
+                                .errIcon {
+                                    margin-right: 12px;
+                                    width: 24px;
+                                    height: 24px;
+                                }
+
+                                .errMessage {
+                                    font-family: Gilroy-Medium;
+                                    font-size: 12px;
+                                    font-weight: 500;
+                                    font-stretch: normal;
+                                    font-style: normal;
+                                    line-height: 1.33;
+                                    letter-spacing: normal;
+                                    color: #df434c;
+                                }
+                            }
+
+                            .swapInputBox {
+                                width: 100%;
+                                margin-top: 0;
+                                margin-bottom: 16px;
+
+                                .iconBox {
+                                    .avaliable {
+                                        font-family: Gilroy-Medium;
+                                        font-size: 12px;
+                                        font-weight: 500;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.33;
+                                        letter-spacing: normal;
+                                        text-align: center;
+                                        color: #99999a;
+                                    }
+                                }
+
+                                .inputBox {
+                                    padding: 16px;
+
+                                    .label {
+                                        flex: 1;
+                                        .amount {
+                                            font-family: Gilroy-Medium;
+                                            font-size: 12px;
+                                            font-weight: 500;
+                                            line-height: 1.33;
+                                            color: #99999a;
+                                        }
+                                        .input {
+                                            width: 100%;
+                                            .ivu-input-number-input {
+                                                padding: 0;
+                                                text-align: left;
+                                                font-size: 16px;
+                                                line-height: 1.5;
+                                            }
+                                        }
+                                    }
+
+                                    .max {
+                                        margin-left: 16px;
+                                        border-radius: 8px;
+                                        border: solid 1px #e5e5e5;
+                                        padding: 14px 24px;
+                                        font-family: Gilroy-Bold;
+                                        font-size: 10px;
+                                        font-weight: bold;
+                                        font-stretch: normal;
+                                        font-style: normal;
+                                        line-height: 1.6;
+                                        letter-spacing: 1.25px;
+                                        text-align: center;
+                                        color: #1a38f8;
+                                    }
+                                }
+                            }
+                        }
+                        .swapBtn {
+                            height: 48px;
+                            font-size: 16px;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.5;
+                            letter-spacing: 2px;
                         }
                     }
                 }
