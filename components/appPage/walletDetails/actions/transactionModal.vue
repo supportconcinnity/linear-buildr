@@ -1304,7 +1304,7 @@ body {
                                 color: #5a575c;
                                 padding: 5px;
                                 height: 100%;
-                                word-break: break-all;
+                                word-break: keep-all!important;
 
                                 &:first-of-type {
                                     padding-left: 16px;
@@ -1435,7 +1435,8 @@ body {
     #transactionModal {
         .ivu-modal-wrap {
             .ivu-modal-body {
-                padding: 24px 16px 0;
+                overflow-y: auto;
+                padding: 24px 16px;
 
                 .closeBtn {
                     position: absolute;
@@ -1743,7 +1744,7 @@ body {
             }
         }
 
-        /deep/.filterMenuMobileModal {
+        .filterMenuMobileModal {
             .ivu-modal-wrap {
                 display: flex;
                 align-items: center;

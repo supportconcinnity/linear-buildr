@@ -473,6 +473,7 @@ export default {
         .actionsBox {
             width: 100%;
             height: 88vh;
+            min-height: 550px;
             position: relative;
             overflow: hidden;
             box-shadow: 0px 2px 6px #deddde;

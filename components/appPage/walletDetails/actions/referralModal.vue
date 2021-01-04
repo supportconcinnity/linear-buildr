@@ -735,6 +735,8 @@ export default {
 
 @media only screen and (max-width: $max-phone-width) {
     #referralModal {
+        min-height: 550px;
+
         .ivu-modal-wrap {
             .ivu-modal-body {
                 .closeBtn {
@@ -799,6 +801,7 @@ export default {
                             .youCodeBox {
                                 width: 74.6vw;
                                 margin-top: 16px;
+                                padding: 20px;
 
                                 .title {
                                     font-size: 14px;
@@ -811,7 +814,7 @@ export default {
                             }
 
                             .dashLine {
-                                margin: 48px 0;
+                                margin: 30px 0!important;
                                 width: 786px;
                                 display: inline-block;
                                 height: 1px;
@@ -1016,7 +1019,7 @@ export default {
             }
         }
 
-        /deep/.introductActionModal {
+        .introductActionModal {
             .ivu-modal-wrap {
                 display: flex;
                 align-items: center;

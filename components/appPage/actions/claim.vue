@@ -917,7 +917,7 @@ export default {
             }
         }
 
-        /deep/.introductActionModal {
+        .introductActionModal {
             .ivu-modal-wrap {
                 display: flex;
                 align-items: center;

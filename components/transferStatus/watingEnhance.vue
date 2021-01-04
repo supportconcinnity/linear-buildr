@@ -554,7 +554,7 @@ export default {
             height: 26px;
             position: absolute;
             top: 10px;
-            right: -10px;
+            right: 0px;
 
             #closeSvg {
                 width: 26px;

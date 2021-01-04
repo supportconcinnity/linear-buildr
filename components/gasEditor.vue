@@ -722,6 +722,7 @@ export default {
 @media only screen and (max-width: $max-phone-width) {
     #gasEditor {
         width: 74.4vw;
+        min-height: 550px;
 
         .editInfo {
             .infoLeft {
@@ -746,114 +747,120 @@ export default {
 
         .gasEditorModal {
             .ivu-modal {
-                .ivu-modal-body {
-                    padding: 24px 32px 0;
-    
-                    .header {
-                        img {
-                            width: 26px;
-                            left: 7px;
-                            top: -10px;
-                        }
-                    }
-    
-                    .content {
-                        padding: unset;
+                .ivu-modal-content {
+                    min-height: 550px;
 
-                        .contentTitle {
-                            display: none;
+                    .ivu-modal-body {
+                        padding: 24px 32px 0;
+        
+                        .header {
+                            img {
+                                width: 26px;
+                                left: 7px;
+                                top: -10px;
+                            }
                         }
-    
-                        .contentTitleMobile {
-                            display: block;
-                            width: 100%;
-                            font-family: Gilroy-Bold;
-                            font-size: 16px;
-                            font-weight: bold;
-                            font-stretch: normal;
-                            font-style: normal;
-                            line-height: 1.25;
-                            letter-spacing: normal;
-                            text-align: left;
-                            color: #5a575c;
+        
+                        .content {
+                            padding: unset;
+
+                            .contentTitle {
+                                display: none;
+                            }
+        
+                            .contentTitleMobile {
+                                display: block;
+                                width: 100%;
+                                font-family: Gilroy-Bold;
+                                font-size: 16px;
+                                font-weight: bold;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: 1.25;
+                                letter-spacing: normal;
+                                text-align: left;
+                                color: #5a575c;
+                            }
+        
+                            .contentDesc {
+                                width: 100%;
+                                font-size: 12px;
+                                text-align: left;
+                            }
+        
+                            .selections {
+                                margin-top: 63px;
+
+                                .selectionItem {
+                                    padding: 37px 0;
+        
+                                    .itemNumBox {
+                                        font-size: 24px;
+                                    }
+                                }
+                            }
+
+                            .custom {
+                                padding: 15px 16px;
+
+                                .leftRect {
+                                    .icon {
+                                        display: none;
+                                    }
+        
+                                    .desc {
+                                        .descTop {
+                                            display: none;
+                                        }
+        
+                                        .descTopMobile {
+                                            display: block;
+                                            font-family: Gilroy-Bold;
+                                            font-size: 14px;
+                                            font-weight: bold;
+                                            font-stretch: normal;
+                                            font-style: normal;
+                                            line-height: 1.5;
+                                            letter-spacing: normal;
+                                            color: #5a575c;
+                                        }
+        
+                                        .unit {
+                                            display: none;
+                                        }
+        
+                                        .unitMobile {
+                                            display: block;
+                                            font-family: Gilroy-Medium;
+                                            font-size: 12px;
+                                            font-weight: 500;
+                                            font-stretch: normal;
+                                            font-style: normal;
+                                            line-height: 1.33;
+                                            letter-spacing: normal;
+                                            color: #99999a;
+                                        }
+                                    }
+                                }
+        
+                                .rightNum {
+                                    width: 80px;
+
+                                    .ivu-input-number-input {
+                                        font-size: 24px;
+                                    }
+                                }
+                            }
                         }
-    
-                        .contentDesc {
-                            width: 100%;
+        
+                        .confirm {
+                            bottom: 32px;
+                            width: 74.6vw;
+                            height: 40px;
+                            line-height: 40px;
                             font-size: 12px;
-                            text-align: left;
+                            border-radius: 20px;
                         }
-    
-                        .selections {
-                            .selectionItem {
-                                padding: 37px 0;
-    
-                                .itemNumBox {
-                                    font-size: 24px;
-                                }
-                            }
-                        }
-
-                        .custom {
-                            padding: 39px 16px;
-
-                            .leftRect {
-                                .icon {
-                                    display: none;
-                                }
-    
-                                .desc {
-                                    .descTop {
-                                        display: none;
-                                    }
-    
-                                    .descTopMobile {
-                                        display: block;
-                                        font-family: Gilroy-Bold;
-                                        font-size: 14px;
-                                        font-weight: bold;
-                                        font-stretch: normal;
-                                        font-style: normal;
-                                        line-height: 1.5;
-                                        letter-spacing: normal;
-                                        color: #5a575c;
-                                    }
-    
-                                    .unit {
-                                        display: none;
-                                    }
-    
-                                    .unitMobile {
-                                        display: block;
-                                        font-family: Gilroy-Medium;
-                                        font-size: 12px;
-                                        font-weight: 500;
-                                        font-stretch: normal;
-                                        font-style: normal;
-                                        line-height: 1.33;
-                                        letter-spacing: normal;
-                                        color: #99999a;
-                                    }
-                                }
-                            }
-    
-                            .rightNum {
-                                width: 80px;
-
-                                .ivu-input-number-input {
-                                    font-size: 24px;
-                                }
-                            }
-                        }
-                    }
-    
-                    .confirm {
-                        bottom: 32px;
-                        width: 74.6vw;
-                        height: 40px;
-                        line-height: 40px;
-                        font-size: 12px;
-                        border-radius: 20px;
                     }
                 }
             }

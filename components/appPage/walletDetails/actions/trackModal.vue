@@ -657,7 +657,10 @@ export default {
                                             }
                                         }
                                     }
-                                    
+                                }
+
+                                .ivu-table-cell-slot {
+                                    word-break: keep-all!important;
                                 }
                             }
                         }

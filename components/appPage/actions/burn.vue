@@ -2214,21 +2214,24 @@ export default {
     #burn {
         border-radius: 16px;
         box-shadow: 0px 2px 6px #deddde;
+        min-height: 550px;
 
         .actionTabs {
             border-radius: 16px;
             box-shadow: 0px 2px 6px #deddde;
+            min-height: 550px;
 
             .ivu-tabs-bar {
                 display: none;
             }
 
-            /deep/.ivu-tabs-content {
+            .ivu-tabs-content {
                 background: #fff;
 
                 .ivu-tabs-tabpane {
                     width: 100%;
                     height: 88vh !important;
+                    min-height: 550px;
 
                     .burnBox,
                     .waitingBox,
@@ -2236,6 +2239,7 @@ export default {
                     .wrongBox {
                         width: 100%;
                         height: 100%;
+                        min-height: 550px;
                     }
 
                     .burnBox {
@@ -2304,7 +2308,7 @@ export default {
                                     }
 
                                     .inputBox {
-                                        height: 50.1vw;
+                                        height: 52.1vw;
                                         width: 35.2vw;
                                         position: relative;
                                         display: flex;
@@ -2319,7 +2323,7 @@ export default {
 
                                         .logo {
                                             width: 40px;
-                                            margin: 40px 0 16px;
+                                            margin: 24px 0 16px;
                                         }
 
                                         .itemTypeTitle {
@@ -2494,7 +2498,7 @@ export default {
             }
         }
 
-        /deep/.introductActionModal {
+        .introductActionModal {
             .ivu-modal-wrap {
                 display: flex;
                 align-items: center;

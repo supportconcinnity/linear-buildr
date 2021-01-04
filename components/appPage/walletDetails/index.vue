@@ -9,7 +9,8 @@
                     {{ walletAddress }}
                 </div>
                 <Tooltip
-                    class="globalInfoStyle"
+                    transfer-class-name="transferTooltip"
+                    transfer
                     :content="tooltipContent"
                     offset="0 4"
                     placement="bottom"
@@ -99,7 +100,8 @@
                         {{ walletAddress }}
                     </div>
                     <Tooltip
-                        class="globalInfoStyle"
+                        transfer-class-name="transferTooltip"
+                        transfer
                         :content="tooltipContent"
                         offset="0 4"
                         placement="bottom"
@@ -245,7 +247,8 @@
                     Pledge Ratio
                     <Tooltip
                         max-width="200"
-                        class="globalInfoStyle"
+                        transfer-class-name="transferTooltip"
+                        transfer
                         content="Target ratio is the minimum threshold that needs to be maintained to claim rewards or unlock collateral."
                         placement="bottom"
                         offset="0 6"
@@ -395,7 +398,8 @@
                                 Liquids
                                 <Tooltip
                                     max-width="200"
-                                    class="globalInfoStyle"
+                                    transfer-class-name="transferTooltip"
+                                    transfer
                                     content="Total value of synthetic exposure created using Linear.Exchange."
                                     placement="bottom"
                                     offset="0 4"
@@ -422,7 +426,8 @@
                                 Debt
                                 <Tooltip
                                     max-width="200"
-                                    class="globalInfoStyle"
+                                    transfer-class-name="transferTooltip"
+                                    transfer
                                     content="Total value that must be paid off before unlocking collateral. Fluctuates depending on trading activity."
                                     placement="bottom"
                                     offset="0 4"
@@ -748,6 +753,66 @@ export default {
 </script>
 
 <style lang="scss">
+body {
+    .transferTooltip {
+        z-index: 10001!important;
+
+        &[x-placement="top"] {
+            .ivu-tooltip-arrow {
+                border-right: 1px solid #1a38f8;
+                border-bottom: 1px solid #1a38f8;
+            }
+        }
+
+        &[x-placement^="bottom"] {
+            .ivu-tooltip-arrow {
+                border-left: 1px solid #1a38f8;
+                border-top: 1px solid #1a38f8;
+            }
+        }
+
+        &[x-placement="left"] {
+            .ivu-tooltip-arrow {
+                border-top: 1px solid #1a38f8;
+                border-right: 1px solid #1a38f8;
+            }
+        }
+
+        &[x-placement^="right"] {
+            .ivu-tooltip-arrow {
+                border-left: 1px solid #1a38f8;
+                border-bottom: 1px solid #1a38f8;
+            }
+        }
+
+        .ivu-tooltip-arrow {
+            transform: rotate(45deg);
+            width: 10px;
+            height: 10px;
+            background: white;
+            border: none;
+        }
+
+        .ivu-tooltip-inner {
+            width: 100%;
+            background-color: #fff;
+            font-family: Gilroy-Medium;
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: 500;
+            color: #5a575c;
+            padding: 10px 16px;
+            border: 1px solid #1a38f8;
+            box-shadow: 0 2px 12px 0 #deddde;
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: left;
+            word-break: keep-all;
+            white-space: break-spaces;
+        }
+    }
+}
+
 #walletDetails {
     width: 374px;
 
@@ -879,6 +944,21 @@ export default {
     .walletDetailsBox {
         width: 100%;
         height: 840px;
+
+        .ivu-tooltip-rel {
+            transition: $animete-time linear;
+            opacity: 0.2;
+            line-height: 1;
+
+            &:hover {
+                opacity: 1;
+            }
+
+            img {
+                width: 16px;
+                height: 16px;
+            }
+        }
 
         .mWalletHead {
             display: none;

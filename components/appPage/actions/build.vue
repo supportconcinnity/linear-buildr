@@ -1796,6 +1796,7 @@ export default {
             .ivu-tabs-tabpane {
                 width: 786px;
                 height: 840px !important;
+                background: white;
 
                 .buildBox,
                 .waitingBox,
@@ -2078,21 +2079,24 @@ export default {
     #build {
         border-radius: 16px;
         box-shadow: 0px 2px 6px #deddde;
+        min-height: 550px;
 
         .actionTabs {
             border-radius: 16px;
             box-shadow: 0px 2px 6px #deddde;
+            min-height: 550px;
 
             .ivu-tabs-bar {
                 display: none;
             }
 
-            /deep/.ivu-tabs-content {
+            .ivu-tabs-content {
                 background: #fff;
 
                 .ivu-tabs-tabpane {
                     width: 100%;
                     height: 88vh !important;
+                    min-height: 550px;
 
                     .buildBox,
                     .waitingBox,
@@ -2100,6 +2104,7 @@ export default {
                     .wrongBox {
                         width: 100%;
                         height: 88vh !important;
+                        min-height: 550px;
                     }
 
                     .buildBox {
@@ -2170,12 +2175,11 @@ export default {
                                         display: flex;
 
                                         .itemType {
-                                            height: 50.1vw;
+                                            height: 42.5vw;
                                             display: flex;
                                             justify-content: center;
                                             flex-direction: column;
                                             align-items: center;
-                                            height: 50.1vw;
 
                                             img {
                                                 width: 40px;
@@ -2348,7 +2352,7 @@ export default {
             }
         }
 
-        /deep/.introductActionModal {
+        .introductActionModal {
             .ivu-modal-wrap {
                 display: flex;
                 align-items: center;
