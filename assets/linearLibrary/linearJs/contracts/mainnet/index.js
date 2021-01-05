@@ -13,8 +13,9 @@ import LnCollateralSystem from './LnCollateralSystem';
 import LnFeeSystem from './LnFeeSystem';
 import LnRewardLocker from './LnRewardLocker';
 import lUSD from './lUSD';
+import LnRewardSystem from './LnRewardSystem';
   
   export default {
-    LnTokenStorage, LnProxyERC20, LinearFinance, LnAccessControl, LnTokenCliffLocker, LnAssetSystem, LnBuildBurnSystem, LnConfig, LnChainLinkPrices, LnDebtSystem, LnCollateralSystem, LnFeeSystem, LnRewardLocker, lUSD
+    LnTokenStorage, LnProxyERC20, LinearFinance, LnAccessControl, LnTokenCliffLocker, LnAssetSystem, LnBuildBurnSystem, LnConfig, LnChainLinkPrices, LnDebtSystem, LnCollateralSystem, LnFeeSystem, LnRewardLocker, lUSD, LnRewardSystem
   };
     

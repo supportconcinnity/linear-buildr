@@ -19,8 +19,9 @@ import LnErc20Bridge from './LnErc20Bridge';
 import LnCollateralSystem from './LnCollateralSystem';
 import LnBuildBurnSystem from './LnBuildBurnSystem';
 import LnColateralBuildBurnAPI from './LnColateralBuildBurnAPI';
+import LnRewardSystem from './LnRewardSystem';
   
   export default {
-    LnTokenStorage, LnProxyERC20, LinearFinance, LnAccessControl, LnConfig, LnChainLinkPrices, LnTokenCliffLocker, LnRewardLocker, LnAssetSystem, LnDebtSystem, lUSD, LnFeeSystem, lBTC, lETH, lHB10, LnFeeSystemTest, LnErc20Bridge, LnCollateralSystem, LnBuildBurnSystem, LnColateralBuildBurnAPI
+    LnTokenStorage, LnProxyERC20, LinearFinance, LnAccessControl, LnConfig, LnChainLinkPrices, LnTokenCliffLocker, LnRewardLocker, LnAssetSystem, LnDebtSystem, lUSD, LnFeeSystem, lBTC, lETH, lHB10, LnFeeSystemTest, LnErc20Bridge, LnCollateralSystem, LnBuildBurnSystem, LnColateralBuildBurnAPI, LnRewardSystem
   };
     

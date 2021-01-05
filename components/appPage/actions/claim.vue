@@ -162,7 +162,7 @@ import {
     bufferGasLimit,
     DEFAULT_GAS_LIMIT
 } from "@/assets/linearLibrary/linearTools/network";
-import { utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
 
 export default {
@@ -183,7 +183,8 @@ export default {
             stakingRewards: 0, //通胀奖励
             processing: false, //加载状态
             confirmTransactionHash: "", //交易hash
-            hasClaim: true //有没有claim过
+            hasClaim: true, //有没有claim过
+            pendingRewardEntries: undefined
         };
     },
     created() {
@@ -234,7 +235,7 @@ export default {
                     this.actionTabs = "m1"; //进入等待页
 
                     let {
-                        lnrJS: { LnFeeSystemTest, LnFeeSystem }
+                        lnrJS: { LnRewardSystem }
                     } = lnrJSConnector;
 
                     // let transaction = null;
@@ -252,7 +253,16 @@ export default {
                     //     );
                     // }
 
-                    let transaction = await LnFeeSystem.claimFees(
+                    const rewardEntry = this.pendingRewardEntries[0];
+                    const signature = utils.splitSignature(rewardEntry.signatures[0].signature);
+
+                    let transaction = await LnRewardSystem.claimReward(
+                        rewardEntry.periodId, // periodId
+                        BigNumber.from(rewardEntry.stakingReward), // stakingReward
+                        BigNumber.from(rewardEntry.feeReward), // feeReward
+                        signature.v, // v
+                        signature.r, // r
+                        signature.s, // s
                         transactionSettings
                     );
 
@@ -335,38 +345,49 @@ export default {
                 //     contract = lnrJSConnector.lnrJS.LnFeeSystem;
                 // }
 
-                let contract = lnrJSConnector.lnrJS.LnFeeSystem;
+                const rewardSystem = lnrJSConnector.lnrJS.LnRewardSystem;
 
-                let [
-                    feePeriodDuration,
-                    recentFeePeriods,
-                    feesAreClaimable,
-                    feesAvailable,
-                    prePeriod,
-                    lastClaimedId
+                const [
+                    firstPeriodStartTimeRes,
+                    lastClaimPeriodIdRes,
+                    allRewardEntriesRes
                 ] = await Promise.all([
-                    contract.feePeriodDuration(),
-                    contract.recentFeePeriods(FEE_PERIOD),
-                    contract.isFeesClaimable(walletAddress),
-                    contract.feesAvailable(walletAddress),
-                    contract.preRewardPeriod(),
-                    contract.userLastClaimedId(walletAddress)
+                    rewardSystem.firstPeriodStartTime(),
+                    rewardSystem.userLastClaimPeriodIds(walletAddress),
+                    fetch(
+                        this.walletNetworkName == "MAINNET"
+                            ? `https://reward-query.linear-finance.workers.dev/rewards/${walletAddress}`
+                            : `https://reward-query-dev.linear-finance.workers.dev/rewards/${walletAddress}`
+                    )
                 ]);
 
-                this.closeIn = this.getFeePeriodCountdown(
-                    recentFeePeriods,
-                    feePeriodDuration
+                const firstPeriodStartTime = firstPeriodStartTimeRes.toNumber();
+                const lastClaimPeriodId = lastClaimPeriodIdRes.toNumber();
+                const allRewardEntries = await allRewardEntriesRes.json();
+
+                const pendingRewardEntries = allRewardEntries.filter(
+                    entry => entry.periodId > lastClaimPeriodId
                 );
-                this.hasClaim = prePeriod.id.eq(lastClaimedId);
-                this.feesAreClaimable = feesAreClaimable;
-                this.tradingRewards =
-                    feesAvailable && feesAvailable[0] && !this.hasClaim
-                        ? formatNumber(feesAvailable[0] / 1e18)
-                        : 0;
-                this.stakingRewards =
-                    feesAvailable && feesAvailable[1] && !this.hasClaim
-                        ? formatNumber(feesAvailable[1] / 1e18)
-                        : 0;
+
+                this.hasClaim = pendingRewardEntries.length === 0;
+                this.feesAreClaimable = pendingRewardEntries.length > 0;
+                this.pendingRewardEntries = pendingRewardEntries;
+
+                if (pendingRewardEntries.length > 0) {
+                    this.closeIn = "Now";
+                    this.stakingRewards = formatNumber(pendingRewardEntries.reduce(
+                        (prev, curr) => prev.add(BigNumber.from(curr.stakingReward)),
+                        BigNumber.from(0)
+                    ) / 1e18);
+                    this.tradingRewards = formatNumber(pendingRewardEntries.reduce(
+                        (prev, curr) => prev.add(BigNumber.from(curr.feeReward)),
+                        BigNumber.from(0)
+                    ) / 1e18);
+                } else {
+                    this.closeIn = "N/A";
+                    this.stakingRewards = 0;
+                    this.tradingRewards = 0;
+                }
             } catch (e) {
                 console.log(e);
             } finally {
@@ -378,7 +399,7 @@ export default {
         async getGasEstimate() {
             try {
                 const {
-                    lnrJS: { LnFeeSystemTest, LnFeeSystem }
+                    lnrJS: { LnRewardSystem }
                 } = lnrJSConnector;
 
                 // let gasEstimate = null;
@@ -387,7 +408,17 @@ export default {
                 // else
                 //     gasEstimate = await LnFeeSystem.contract.estimateGas.claimFees();
 
-                let gasEstimate = await LnFeeSystem.contract.estimateGas.claimFees();
+                const rewardEntry = this.pendingRewardEntries[0];
+                const signature = utils.splitSignature(rewardEntry.signatures[0].signature);
+
+                let gasEstimate = await LnRewardSystem.contract.estimateGas.claimReward(
+                    rewardEntry.periodId, // periodId
+                    BigNumber.from(rewardEntry.stakingReward), // stakingReward
+                    BigNumber.from(rewardEntry.feeReward), // feeReward
+                    signature.v, // v
+                    signature.r, // r
+                    signature.s // s
+                );
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
