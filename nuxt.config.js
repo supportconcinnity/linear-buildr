@@ -119,13 +119,6 @@ module.exports = {
         postcss: {
             // 添加插件名称作为键，参数作为值
             // 使用npm或yarn安装它们
-            plugins: {
-              // 通过传递 false 来禁用插件
-              'postcss-url': false,
-              'postcss-nested': {},
-              'postcss-responsive-type': {},
-              'postcss-hexrgba': {}
-            },
             preset: {
               autoprefixer: true
             }

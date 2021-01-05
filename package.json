@@ -45,10 +45,6 @@
     "lodash-webpack-plugin": "^0.11.5",
     "node-sass": "^4.13.1",
     "nodemon": "^1.18.9",
-    "postcss-hexrgba": "^2.0.1",
-    "postcss-nested": "^4.2.3",
-    "postcss-responsive-type": "^1.0.0",
-    "postcss-url": "^5.0.0",
     "sass-loader": "^8.0.2"
   },
   "browserslist": [
