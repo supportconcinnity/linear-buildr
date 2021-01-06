@@ -417,7 +417,8 @@ import {
     bnMul2N,
     bnDiv2N,
     MAX_DECIMAL_LENGTH,
-    n2bn
+    n2bn,
+    bn2n
 } from "@/common/bnCalc";
 
 import {

@@ -20,6 +20,7 @@
                     class="logoWhenAction"
                     src="@/static/logo-crypto-linear-colour.svg"
                     alt=""
+                    style="height: 32px;"
                     v-else
                 />
             </a>
