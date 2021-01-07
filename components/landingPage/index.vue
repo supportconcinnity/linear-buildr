@@ -69,7 +69,7 @@
                             Connect MetaMask Wallet
                         </div>
                         <div class="chain">
-                            Etherium Chain
+                            Ethereum Chain
                         </div>
                     </div>
                 </div>

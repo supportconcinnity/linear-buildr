@@ -1312,14 +1312,14 @@ body {
         }
 
         .walletAndAddressBox {
-            width: 130px;
-            height: 32px;
+            width: 142px;
+            height: 44px;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             align-items: center;
-            position: fixed;
-            top: 16px;
-            right: 16px;
+            margin-top: 10px;
+            margin-right: 16px;
+            float: right;
 
             .info {
                 width: 294px;
