@@ -1357,11 +1357,23 @@ export default {
                     )
                 );
 
-                this.inputData.unStake = formatEtherToNumber(needUnstake);
+                if (needUnstake.lte(this.burnData.stakedBN)) {
+                    // <= stake
+                    this.inputData.unStake = formatEtherToNumber(
+                        needUnstake
+                    );
+                    this.actionDatas.unStake = needUnstake;
+                } else {
+                    // > stake
+                    this.inputData.unStake = formatEtherToNumber(
+                        this.burnData.stakedBN
+                    );
+                    this.actionDatas.unStake = this.burnData.stakedBN;
+                }
+
                 this.inputData.amount = formatEtherToNumber(0);
                 this.inputData.ratio = this.burnData.targetRatio;
 
-                this.actionDatas.unStake = needUnstake;
                 this.actionDatas.amount = BigNumber.from("0");
                 this.actionDatas.ratio = this.burnData.targetRatio;
             } else if (
