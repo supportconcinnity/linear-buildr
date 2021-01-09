@@ -235,7 +235,6 @@ export default {
             waitPendingProcess: false, //等待查询
 
             chainChangedStatus: false, //是否已经切换网络或链,false未切换,true已切换
-            autoChainChange: false, //是否自动切换链
 
             floor: _.floor,
 
@@ -243,12 +242,10 @@ export default {
 
             DECIMAL_PRECISION,
 
-            errors: {
-                amountMsg: ""
-            },
+            errors: { amountMsg: "" },
 
             confirmTransactionChainChanging: false, //当前是否在切链步骤
-            sourNetworkId: "", //原始网络ID
+            sourceNetworkId: "", //原始网络ID
             targetNetworkId: "", //目标网络ID
             sourceWalletType: "", //原始钱包类型
             sourceWalletAddress: "", //原始钱包地址
@@ -261,7 +258,8 @@ export default {
             targetGasPrice: 0, //目标网络gas
 
             formatNumber,
-            BUILD_PROCESS_SETUP
+            BUILD_PROCESS_SETUP,
+            swapUnfreezeContinue: false
         };
     },
     async created() {
@@ -279,21 +277,34 @@ export default {
             "onWalletAccountChange",
             async () => {
                 if (this.actionTabs == "m0") {
-                    console.log("onWalletAccountChange");
                     await this.getFrozenBalance();
                 }
             }
         );
+    },
 
+    async mounted() {
         await this.getFrozenBalance();
-    },
+        this.swapUnfreezeContinue = this.$store.state?.swapUnfreezeContinue;
 
-    mounted() {
-        //移动端更换进度配置
-        this.isMobile &&
-            (this.BUILD_PROCESS_SETUP = BUILD_PROCESS_SETUP_MOBILE);
-    },
+        if (this.swapUnfreezeContinue) {
+            const unfreezeDatas = this.$store.state?.swapUnfreezeDatas;
+            this.confirmTransactionStep = unfreezeDatas.confirmTransactionStep;
+            this.freezeSuccessHash = unfreezeDatas.freezeSuccessHash;
+            this.sourceWalletType = unfreezeDatas.sourceWalletType;
+            this.sourceNetworkId = unfreezeDatas.sourceNetworkId;
+            this.confirmTransactionNetworkId = unfreezeDatas.targetNetworkId;
+            this.sourceWalletAddress = unfreezeDatas.sourceWalletAddress;
+            this.targetNetworkId = unfreezeDatas.targetNetworkId;
+            this.waitProcessArray = [...unfreezeDatas.waitProcessArray];
+            this.swapNumber = unfreezeDatas.swapNumber;
+            this.targetGasPrice = unfreezeDatas.targetGasPrice;
+            this.chainChangedStatus = true;
+            this.confirmTransactionChainChanging = false;
 
+            this.clickSwap();
+        }
+    },
     destroyed() {
         //清除事件,防止重复
         this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
@@ -405,84 +416,103 @@ export default {
                 if (!this.swapDisabled) {
                     this.processing = true;
 
-                    //清空之前数据
-                    this.waitProcessArray = [];
-                    this.confirmTransactionStep = 0;
-                    this.waitProcessFlow = null;
+                    //端更换进度设置
+                    this.BUILD_PROCESS_SETUP = this.isMobile
+                        ? BUILD_PROCESS_SETUP_MOBILE
+                        : BUILD_PROCESS_SETUP;
 
-                    let LnProxy,
-                        LnBridge,
-                        suffixETH = this.isMobile ? " ETH" : " Ethereum";
-                    if (this.isEthereumNetwork) {
-                        LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                        LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                        this.BUILD_PROCESS_SETUP.FREEZE =
-                            this.BUILD_PROCESS_SETUP.SWAP + suffixETH;
-                        this.BUILD_PROCESS_SETUP.UNFREEZE =
-                            this.BUILD_PROCESS_SETUP.SWAP + " BSC";
-                    } else if (this.isBinanceNetwork) {
-                        LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                        LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                        this.BUILD_PROCESS_SETUP.FREEZE =
-                            this.BUILD_PROCESS_SETUP.SWAP + " BSC";
-                        this.BUILD_PROCESS_SETUP.UNFREEZE =
-                            this.BUILD_PROCESS_SETUP.SWAP + suffixETH;
-                    }
+                    //如果是继续的流程
+                    if (this.swapUnfreezeContinue && this.isMobile) {
+                        if (isEthereumNetwork(this.targetNetworkId)) {
+                            this.BUILD_PROCESS_SETUP.UNFREEZE =
+                                this.BUILD_PROCESS_SETUP.SWAP + " ETH";
+                        } else if (isBinanceNetwork(this.targetNetworkId)) {
+                            this.BUILD_PROCESS_SETUP.UNFREEZE =
+                                this.BUILD_PROCESS_SETUP.SWAP + " BSC";
+                        }
+                    } else {
+                        //清空之前数据
+                        this.waitProcessArray = [];
+                        this.confirmTransactionStep = 0;
+                        this.waitProcessFlow = null;
 
-                    //取合约地址
-                    const LnBridgeAddress = LnBridge.contract.address;
+                        let LnProxy,
+                            LnBridge,
+                            suffixETH = this.isMobile ? " ETH" : " Ethereum";
+                        if (this.isEthereumNetwork) {
+                            LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                            LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+                            this.BUILD_PROCESS_SETUP.FREEZE =
+                                this.BUILD_PROCESS_SETUP.SWAP + suffixETH;
+                            this.BUILD_PROCESS_SETUP.UNFREEZE =
+                                this.BUILD_PROCESS_SETUP.SWAP + " BSC";
+                        } else if (this.isBinanceNetwork) {
+                            LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                            LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+                            this.BUILD_PROCESS_SETUP.FREEZE =
+                                this.BUILD_PROCESS_SETUP.SWAP + " BSC";
+                            this.BUILD_PROCESS_SETUP.UNFREEZE =
+                                this.BUILD_PROCESS_SETUP.SWAP + suffixETH;
+                        }
 
-                    //获取之前approve的数量
-                    const approveAmount = await LnProxy.allowance(
-                        this.walletAddress,
-                        LnBridgeAddress
-                    );
+                        //取合约地址
+                        const LnBridgeAddress = LnBridge.contract.address;
 
-                    const freezeAmount = n2bn(this.swapNumber);
-
-                    //LINA差值
-                    const diffCollateralLINA = bnSub(
-                        freezeAmount,
-                        approveAmount
-                    );
-
-                    if (diffCollateralLINA.gt(approveAmount)) {
-                        this.waitProcessArray.push(
-                            this.BUILD_PROCESS_SETUP.APPROVE
+                        //获取之前approve的数量
+                        const approveAmount = await LnProxy.allowance(
+                            this.walletAddress,
+                            LnBridgeAddress
                         );
-                    }
 
-                    //  this.waitProcessArray.push(this.BUILD_PROCESS_SETUP.APPROVE);
+                        const freezeAmount = n2bn(this.swapNumber);
 
-                    //如果新输入的大于已冻结的
-                    if (this.swapNumber > this.frozenBalance) {
-                        this.waitProcessArray.push(
-                            this.BUILD_PROCESS_SETUP.FREEZE
+                        //LINA差值
+                        const diffCollateralLINA = bnSub(
+                            freezeAmount,
+                            approveAmount
                         );
+
+                        if (diffCollateralLINA.gt(approveAmount)) {
+                            this.waitProcessArray.push(
+                                this.BUILD_PROCESS_SETUP.APPROVE
+                            );
+                        }
+
+                        //  this.waitProcessArray.push(this.BUILD_PROCESS_SETUP.APPROVE);
+
+                        //如果新输入的大于已冻结的
+                        if (this.swapNumber > this.frozenBalance) {
+                            this.waitProcessArray.push(
+                                this.BUILD_PROCESS_SETUP.FREEZE
+                            );
+                        }
+
+                        this.waitProcessArray.push(
+                            this.BUILD_PROCESS_SETUP.UNFREEZE
+                        );
+
+                        //记录原始钱包类型
+                        this.sourceWalletType = this.walletType;
+
+                        //记录原始网络类型
+                        this.sourceNetworkId = this.walletNetworkId;
+
+                        //记录目标网络id
+                        this.targetNetworkId = getOtherNetworks(
+                            this.walletNetworkId
+                        ).join();
+
+                        //记录原始钱包地址
+                        this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
+
+                        //记录gas price
+                        this.sourceGasPrice =
+                            this.$store.state?.sourceGasDetails?.price ||
+                            50000000000;
+                        this.targetGasPrice =
+                            this.$store.state?.targetGasDetails?.price ||
+                            50000000000;
                     }
-
-                    this.waitProcessArray.push(
-                        this.BUILD_PROCESS_SETUP.UNFREEZE
-                    );
-
-                    //记录原始钱包类型
-                    this.sourceWalletType = this.walletType;
-
-                    //记录目标网络id
-                    this.targetNetworkId = getOtherNetworks(
-                        this.walletNetworkId
-                    ).join();
-
-                    //记录gas price
-                    this.sourceGasPrice =
-                        this.$store.state?.sourceGasDetails?.price ||
-                        50000000000;
-                    this.targetGasPrice =
-                        this.$store.state?.targetGasDetails?.price ||
-                        50000000000;
-
-                    //记录原始钱包地址
-                    this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
 
                     this.actionTabs = "m1"; //进入等待页
 
@@ -557,12 +587,6 @@ export default {
                         this.transactionErrMsg =
                             "Something went wrong, please try again.";
                     }
-                } finally {
-                    // if (this.autoChainChange) {
-                    //     //切换回原始网络
-                    //     await selectedWallet(this.sourceWalletType);
-                    //     this.sourceWalletType = "";
-                    // }
                 }
             };
         },
@@ -745,19 +769,38 @@ export default {
 
         async startUnFreezeContract() {
             this.confirmTransactionStatus = false;
-            let targetWalletType,
-                walletStatus,
-                sourceWallet = this.walletAddress.toLocaleLowerCase();
-            if (this.isEthereumNetwork) {
-                targetWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
-            } else if (this.isBinanceNetwork) {
-                targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+
+            //不是自动进入流程,且是手机端时
+            if (!this.swapUnfreezeContinue && this.isMobile) {
+                const unfreezeDatas = {
+                    confirmTransactionStep: this.confirmTransactionStep,
+                    waitProcessArray: this.waitProcessArray,
+                    freezeSuccessHash: this.freezeSuccessHash,
+                    targetNetworkId: this.targetNetworkId,
+                    sourceWalletType: this.sourceWalletType,
+                    sourceWalletAddress: this.sourceWalletAddress,
+                    swapNumber: this.swapNumber,
+                    sourceNetworkId: this.sourceNetworkId,
+                    targetGasPrice: this.targetGasPrice
+                };
+
+                //保存手机端解冻的数据
+                this.$store.commit("setSwapUnfreezeDatas", unfreezeDatas);
             }
 
-            //原始网络Id,不等于目标网络Id当前情况下,等待用户切换钱包或网络
+            //清除自动进入流程
+            this.swapUnfreezeContinue &&
+                this.$store.commit("setSwapUnfreezeContinue", false);
+
+            let walletStatus;
+
+            /**
+             * 当前网络Id,不等于目标网络Id
+             * 当前钱包类型等于目标钱包类型
+             * 等待用户切换钱包或网络 */
             if (
-                this.walletNetworkId != this.targetNetworkId &&
-                this.walletType == this.sourceWalletType
+                this.walletNetworkId != this.targetNetworkId
+                // && this.walletType == this.sourceWalletType
             ) {
                 this.confirmTransactionChainChanging = true;
                 this.chainChangedStatus = false;
@@ -780,29 +823,6 @@ export default {
             } else {
                 walletStatus = true;
             }
-
-            // let walletStatus;
-            // if (this.autoChainChange) {
-            //     //切换钱包
-            //     console.log("开始自动切换钱包");
-            //     walletStatus = await selectedWallet(targetWalletType);
-            //     console.log("自动切换钱包完成");
-            // } else {
-            //     //监听手动切换事件
-            //     this.chainChangeTokenFromUnfreeze = this.$pub.subscribe(
-            //         "onWalletChainChange",
-            //         () => {
-            //             console.log(
-            //                 "onWalletChainChange startUnFreezeContract"
-            //             );
-            //             this.chainChangedStatus = true;
-            //         }
-            //     );
-
-            //     console.log("开始手动切换metamask链");
-            //     walletStatus = await this.waitChainChange();
-            //     console.log("手动切换metamask链完成");
-            // }
 
             this.confirmTransactionNetworkId = this.walletNetworkId;
 
@@ -839,13 +859,10 @@ export default {
                     SETUP = " BSC";
                 }
 
-                console.log(`等待 [${targetWalletType}] 获取锁定hash`);
+                console.log(`等待获取锁定hash`);
                 this.waitPendingProcess = true;
                 const processArray = await this.getPendingProcess(LnBridge);
-                console.log(
-                    `[${targetWalletType}] 获取锁定hash完成`,
-                    processArray
-                );
+                console.log(`获取锁定hash完成`, processArray);
 
                 const { utils } = lnrJSConnector;
 
@@ -904,6 +921,8 @@ export default {
                 }
 
                 this.confirmTransactionStep += 1;
+
+                this.$store.commit("setSwapUnfreezeDatas", {});
             } else {
                 throw {
                     code: 6100004,
@@ -968,27 +987,50 @@ export default {
                     );
                     count++;
 
-                    console.log(processArray, count, "getPendingProcess");
-
                     //过滤空
                     processArray = processArray.filter(item => item != "");
 
-                    if (this.waitProcessArray.length > 1) {
-                        if (!processArray.includes(this.freezeSuccessHash)) {
-                            this.waitPendingProcess && setTimeout(wait, 3000);
+                    console.log(
+                        processArray,
+                        this.freezeSuccessHash,
+                        count,
+                        "getPendingProcess"
+                    );
+
+                    //有等待数据
+                    if (processArray?.length > 0) {
+                        //有冻结hash
+                        if (this.freezeSuccessHash) {
+                            //冻结hash在解冻组内
+                            if (processArray.includes(this.freezeSuccessHash)) {
+                                resolve(processArray);
+                                return;
+                            }
+                        } else {
+                            resolve(processArray);
                             return;
                         }
-                        resolve(processArray);
-                    } else {
-                        //没有之前的锁定记录
-                        if (!processArray || processArray.length < 1) {
-                            reject({
-                                code: 6100006,
-                                message: "No valid LINA was found"
-                            });
-                        }
-                        resolve(processArray);
                     }
+
+                    this.waitPendingProcess && setTimeout(wait, 3000);
+
+                    // if (this.waitProcessArray.length > 1) {
+                    //     if (!processArray.includes(this.freezeSuccessHash)) {
+                    //         this.waitPendingProcess && setTimeout(wait, 3000);
+                    //     } else {
+                    //         resolve(processArray);
+                    //     }
+                    // } else {
+                    //     //没有之前的锁定记录
+                    //     if (!processArray || processArray.length < 1) {
+                    //         reject({
+                    //             code: 6100006,
+                    //             message: "No valid LINA was found"
+                    //         });
+                    //     } else {
+                    //         resolve(processArray);
+                    //     }
+                    // }
                 };
 
                 wait();
@@ -998,12 +1040,11 @@ export default {
         //回到默认状态
         async setDefaultTab() {
             this.waitProcessArray = [];
-            this.confirmTransactionStep = 0;
+            this.confirmTransactionStep = -1;
             this.swapNumber = null;
             this.waitPendingProcess = false;
             this.freezeSuccessHash = "";
             this.processing = false;
-            this.sourNetworkId = "";
             this.targetNetworkId = "";
             this.sourceWalletType = "";
             this.sourceWalletAddress = "";
@@ -1011,17 +1052,11 @@ export default {
             this.chainChangedStatus = false;
             this.confirmTransactionChainChanging = false;
             this.confirmTransactionHash = "";
-            this.confirmTransactionNetworkId = false;
+            this.confirmTransactionNetworkId = "";
             this.confirmTransactionStatus = false;
             this.actionTabs = "m0";
+            this.sourceNetworkId = "";
             await this.getFrozenBalance();
-
-            // if (this.autoChainChange) {
-            //     //切换回原始网络
-            //     this.sourceWalletType &&
-            //         (await selectedWallet(this.sourceWalletType));
-            //     await this.getFrozenBalance();
-            // }
         },
 
         //点击最大

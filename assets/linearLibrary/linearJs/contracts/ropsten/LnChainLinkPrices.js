@@ -13,19 +13,34 @@
         );
   
         
-      this.LINA = async () => {
-        
-        return await this.contract.LINA();
+      this.LINA = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.LINA(txParams);
       };
     
-      this.LUSD = async () => {
-        
-        return await this.contract.LUSD();
+      this.LUSD = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.LUSD(txParams);
       };
     
-      this.admin = async () => {
-        
-        return await this.contract.admin();
+      this.__LnAdminUpgradeable_init = async (_admin, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.__LnAdminUpgradeable_init(_admin, txParams);
+      };
+    
+      this.__LnDefaultPrices_init = async (_admin, _oracle, _currencyNames, _newPrices, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.__LnDefaultPrices_init(_admin, _oracle, _currencyNames, _newPrices, txParams);
+      };
+    
+      this.addOracle = async (currencyKey, OracleAddress, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.addOracle(currencyKey, OracleAddress, txParams);
+      };
+    
+      this.admin = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.admin(txParams);
       };
     
       this.becomeAdmin = async (txParams) => {
@@ -33,9 +48,9 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
-      this.candidate = async () => {
-        
-        return await this.contract.candidate();
+      this.candidate = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.candidate(txParams);
       };
     
       this.deletePrice = async (currencyName, txParams) => {
@@ -43,54 +58,59 @@
         return await this.contract.deletePrice(currencyName, txParams);
       };
     
-      this.exchange = async (sourceName, sourceAmount, destName) => {
-        
-        return await this.contract.exchange(sourceName, sourceAmount, destName);
+      this.exchange = async (sourceName, sourceAmount, destName, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.exchange(sourceName, sourceAmount, destName, txParams);
       };
     
-      this.exchangeAndPrices = async (sourceName, sourceAmount, destName) => {
-        
-        return await this.contract.exchangeAndPrices(sourceName, sourceAmount, destName);
+      this.exchangeAndPrices = async (sourceName, sourceAmount, destName, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.exchangeAndPrices(sourceName, sourceAmount, destName, txParams);
       };
     
-      this.getCurrentRoundId = async (currencyName) => {
-        
-        return await this.contract.getCurrentRoundId(currencyName);
+      this.getCurrentRoundId = async (currencyName, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.getCurrentRoundId(currencyName, txParams);
       };
     
-      this.getPrice = async (currencyName) => {
-        
-        return await this.contract.getPrice(currencyName);
+      this.getPrice = async (currencyName, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.getPrice(currencyName, txParams);
       };
     
-      this.getPriceAndUpdatedTime = async (currencyName) => {
-        
-        return await this.contract.getPriceAndUpdatedTime(currencyName);
+      this.getPriceAndUpdatedTime = async (currencyName, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.getPriceAndUpdatedTime(currencyName, txParams);
       };
     
-      this.isStale = async (currencyName) => {
-        
-        return await this.contract.isStale(currencyName);
+      this.isStale = async (currencyName, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.isStale(currencyName, txParams);
       };
     
-      this.mOracleArray = async (uint256_1) => {
-        
-        return await this.contract.mOracleArray(uint256_1);
+      this.mOracleArray = async (uint256_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.mOracleArray(uint256_1, txParams);
       };
     
-      this.mOracles = async (bytes32_1) => {
-        
-        return await this.contract.mOracles(bytes32_1);
+      this.mOracles = async (bytes32_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.mOracles(bytes32_1, txParams);
       };
     
-      this.mPricesLastRound = async (bytes32_1) => {
-        
-        return await this.contract.mPricesLastRound(bytes32_1);
+      this.mPricesLastRound = async (bytes32_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.mPricesLastRound(bytes32_1, txParams);
       };
     
-      this.oracle = async () => {
-        
-        return await this.contract.oracle();
+      this.oracle = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.oracle(txParams);
+      };
+    
+      this.removeOracle = async (currencyKey, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.removeOracle(currencyKey, txParams);
       };
     
       this.setCandidate = async (_candidate, txParams) => {
@@ -108,24 +128,14 @@
         return await this.contract.setStalePeriod(_time, txParams);
       };
     
-      this.stalePeriod = async () => {
-        
-        return await this.contract.stalePeriod();
+      this.stalePeriod = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.stalePeriod(txParams);
       };
     
       this.updateAll = async (currencyNames, newPrices, timeSent, txParams) => {
         txParams = txParams || {};
         return await this.contract.updateAll(currencyNames, newPrices, timeSent, txParams);
-      };
-    
-      this.addOracle = async (currencyKey, OracleAddress, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.addOracle(currencyKey, OracleAddress, txParams);
-      };
-    
-      this.removeOracle = async (currencyKey, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.removeOracle(currencyKey, txParams);
       };
     
       }

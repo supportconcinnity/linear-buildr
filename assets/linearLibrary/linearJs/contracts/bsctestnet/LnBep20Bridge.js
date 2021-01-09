@@ -13,6 +13,16 @@
         );
   
         
+      this.__LnAdminUpgradeable_init = async (_admin, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.__LnAdminUpgradeable_init(_admin, txParams);
+      };
+    
+      this.__LnBep20Bridge_init = async (_tokenAddr, _admin, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.__LnBep20Bridge_init(_tokenAddr, _admin, txParams);
+      };
+    
       this.admin = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.admin(txParams);
@@ -28,9 +38,29 @@
         return await this.contract.candidate(txParams);
       };
     
+      this.freeze = async (_amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.freeze(_amount, txParams);
+      };
+    
       this.freezeTxLog = async (address_1, string_1, txParams) => {
         txParams = txParams || {};
         return await this.contract.freezeTxLog(address_1, string_1, txParams);
+      };
+    
+      this.getPendingProcess = async (_account, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.getPendingProcess(_account, txParams);
+      };
+    
+      this.getTotalFrozenToken = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.getTotalFrozenToken(txParams);
+      };
+    
+      this.paused = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.paused(txParams);
       };
     
       this.pendingProcess = async (address_1, uint256_1, txParams) => {
@@ -48,24 +78,14 @@
         return await this.contract.setFreezeTx(_account, _txId, _amount, _timestamp, txParams);
       };
     
-      this.freeze = async (_amount, txParams) => {
+      this.setPaused = async (_paused, txParams) => {
         txParams = txParams || {};
-        return await this.contract.freeze(_amount, txParams);
+        return await this.contract.setPaused(_paused, txParams);
       };
     
       this.unfreeze = async (_txId, txParams) => {
         txParams = txParams || {};
         return await this.contract.unfreeze(_txId, txParams);
-      };
-    
-      this.getTotalFrozenToken = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.getTotalFrozenToken(txParams);
-      };
-    
-      this.getPendingProcess = async (_account, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.getPendingProcess(_account, txParams);
       };
     
       }

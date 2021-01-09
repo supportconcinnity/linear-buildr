@@ -24,13 +24,12 @@ def zip_dirs(dirArray):
 					fpath = root + os.sep + file
 					z.write(fpath) 	
 					count +=1					
-					print ("\r" + str(count) + "/" + str(int(amount))) +"("+(str(round(count / amount * 100,2)))+"%)",
 
 		else :
 			z.write(path)
 			amount +=1
-			count +=1
-			print ("\r" + str(count) + "/" + str(int(amount))) +"("+(str(round(count / amount * 100,2)))+"%)",
+			count +=1   
+		print ("\r" + str(count) + "/" + str(int(amount))) +"("+(str(round(count / amount * 100,2)))+"%)",
 
 
 	z.close()

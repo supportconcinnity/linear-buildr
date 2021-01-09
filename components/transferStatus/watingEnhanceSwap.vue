@@ -1,3 +1,5 @@
+<!-- swap多步 -->
+
 <template>
     <div id="transferWatingEnhanceSwap">
         <div class="close" @click.stop="$emit('close')">
@@ -76,7 +78,14 @@
                     </template>
                 </span>
                 <!-- 没完成,没错误,已确认 -->
-                <span v-else>Interacting with the smart contract</span>
+                <span v-else>
+                    <template v-if="isMobile">
+                        Interacting
+                    </template>
+                    <template v-else>
+                        Interacting with the smart contract
+                    </template>
+                </span>
             </template>
         </div>
 
@@ -324,7 +333,6 @@
                         <transition-group name="img-fade">
                             <!-- 已经完成的进度 -->
                             <img
-                                class="img"
                                 key="1"
                                 v-if="currentStep < index"
                                 src="@/static/transferProgress/default.svg"
@@ -489,7 +497,7 @@
         </div>
 
         <!-- 不是等待切链状态且是移动端的时候 -->
-        <template v-if="!waitChainChange && isMobile">
+        <div v-if="!waitChainChange && isMobile" class="mobileBtns">
             <!-- 完成 -->
             <div
                 class="funcMobileBtn"
@@ -526,7 +534,7 @@
                 </template>
                 <img src="@/static/arrow_right.svg" />
             </div>
-        </template>
+        </div>
     </div>
 </template>
 
@@ -974,6 +982,13 @@ export default {
                     .imgBox {
                         width: 24px;
                         height: 24px;
+
+                        img {
+                            &.walletType {
+                                width: 9.6px;
+                                height: 9.6px;
+                            }
+                        }
                     }
 
                     .text {
@@ -1004,47 +1019,51 @@ export default {
             }
         }
 
-        .funcMobileBtn {
-            width: calc(100% - 64px);
-            margin: 0 32px;
-            font-family: Gilroy-Bold;
-            font-size: 12px;
-            font-weight: bold;
-            font-stretch: normal;
-            font-style: normal;
-            line-height: 1.33;
-            letter-spacing: 1.5px;
-            text-align: center;
-            color: #ffffff;
-            padding: 12px 24px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #1a38f8;
-            text-transform: uppercase;
-            position: absolute;
-            bottom: 64px;
-        }
-
-        .viewMobileBtn {
+        .mobileBtns {
+            padding: 0 32px;
             position: absolute;
             bottom: 32px;
-            font-family: Gilroy-Bold;
-            font-size: 10px;
-            font-weight: bold;
-            font-stretch: normal;
-            font-style: normal;
-            line-height: 1.6;
-            letter-spacing: 1.25px;
-            color: #1a38f8;
-            display: flex;
-            align-items: center;
-            text-transform: uppercase;
-            img {
-                width: 16px;
-                height: 16px;
-                margin-left: 4px;
+            width: 100%;
+
+            .funcMobileBtn {
+                width: 100%;
+                font-family: Gilroy-Bold;
+                font-size: 12px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.33;
+                letter-spacing: 1.5px;
+                text-align: center;
+                color: #ffffff;
+                padding: 12px 24px;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #1a38f8;
+                text-transform: uppercase;
+            }
+
+            .viewMobileBtn {
+                margin-top: 17px;
+                font-family: Gilroy-Bold;
+                font-size: 10px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.6;
+                letter-spacing: 1.25px;
+                color: #1a38f8;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-transform: uppercase;
+                img {
+                    width: 16px;
+                    height: 16px;
+                    margin-left: 4px;
+                }
             }
         }
     }

@@ -7,7 +7,7 @@ class Util {
     async waitForTransaction(transactionHash) {
         return new Promise(resolve => {
             const check = async () => {
-                const transactionInformation = await this.contractSettings.provider.getTransaction(
+                const transactionInformation = await this.contractSettings.provider.waitForTransaction(
                     transactionHash
                 );
                 if (

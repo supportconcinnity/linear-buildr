@@ -4,7 +4,7 @@
             <TabPane name="m0">
                 <div class="burnBox">
                     <div class="actionBodyWeb">
-                        <div class="actionTitle">Burn{{walletNetworkId}}</div>
+                        <div class="actionTitle">Burn</div>
                         <div class="actionDesc">
                             Burn ℓUSD to unlock staked LINA
                         </div>
@@ -778,7 +778,7 @@ export default {
         //burn
         async burnAndUnstake(burnAmount) {
             const {
-                lnrJS: { LnColateralBuildBurnAPI },
+                lnrJS: { LnCollateralSystem },
                 utils
             } = lnrJSConnector;
 
@@ -789,7 +789,7 @@ export default {
                 burnAmount
             );
 
-            let transaction = await LnColateralBuildBurnAPI.burnAndRedeem(
+            let transaction = await LnCollateralSystem.burnAndRedeem(
                 utils.formatBytes32String("LINA"),
                 burnAmount,
                 {
@@ -935,11 +935,11 @@ export default {
         async getBurnAndUnstakeGasEstimate(burnAmount) {
             try {
                 const {
-                    lnrJS: { LnColateralBuildBurnAPI },
+                    lnrJS: { LnCollateralSystem },
                     utils
                 } = lnrJSConnector;
 
-                let gasEstimate = await LnColateralBuildBurnAPI.contract.estimateGas.burnAndRedeem(
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.burnAndRedeem(
                     utils.formatBytes32String("LINA"),
                     burnAmount
                 );

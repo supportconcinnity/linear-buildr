@@ -83,7 +83,7 @@
 				"type": "address"
 			}
 		],
-		"name": "candidateChanged",
+		"name": "CandidateChanged",
 		"type": "event"
 	},
 	{
@@ -102,8 +102,21 @@
 				"type": "address"
 			}
 		],
-		"name": "updateStorageAddress",
+		"name": "StorageAddressUpdated",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "contract IAsset",
+				"name": "asset",
+				"type": "address"
+			}
+		],
+		"name": "addAsset",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -116,8 +129,20 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "assetNumber",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -137,8 +162,7 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -157,8 +181,7 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -182,8 +205,20 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAssetAddresses",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -202,8 +237,7 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -222,8 +256,7 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -242,8 +275,20 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "name",
+				"type": "bytes32"
+			}
+		],
+		"name": "removeAsset",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -256,6 +301,19 @@
 		"name": "setCandidate",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalAssetsInUsd",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "rTotal",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -293,73 +351,5 @@
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract IAsset",
-				"name": "asset",
-				"type": "address"
-			}
-		],
-		"name": "addAsset",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "name",
-				"type": "bytes32"
-			}
-		],
-		"name": "removeAsset",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "assetNumber",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function",
-		"constant": true
-	},
-	{
-		"inputs": [],
-		"name": "totalAssetsInUsd",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "rTotal",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function",
-		"constant": true
-	},
-	{
-		"inputs": [],
-		"name": "getAssetAddresses",
-		"outputs": [
-			{
-				"internalType": "address[]",
-				"name": "",
-				"type": "address[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function",
-		"constant": true
 	}
 ]

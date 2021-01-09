@@ -53,6 +53,25 @@ export default [
     inputs: [
       {
         indexed: false,
+        internalType: 'address',
+        name: 'oldCandidate',
+        type: 'address'
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'newCandidate',
+        type: 'address'
+      }
+    ],
+    name: 'CandidateChanged',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: 'contract LnProxyImpl',
         name: 'newTarget',
         type: 'address'
@@ -84,25 +103,6 @@ export default [
       }
     ],
     name: 'Transfer',
-    type: 'event'
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'oldCandidate',
-        type: 'address'
-      },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'newCandidate',
-        type: 'address'
-      }
-    ],
-    name: 'candidateChanged',
     type: 'event'
   },
   {
@@ -166,6 +166,33 @@ export default [
     type: 'function'
   },
   {
+    inputs: [
+      { internalType: 'address', name: 'owner', type: 'address' },
+      { internalType: 'address', name: 'spender', type: 'address' }
+    ],
+    name: 'allowance',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'spender', type: 'address' },
+      { internalType: 'uint256', name: 'value', type: 'uint256' }
+    ],
+    name: 'approve',
+    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'address', name: 'account', type: 'address' } ],
+    name: 'balanceOf',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
     inputs: [],
     name: 'becomeAdmin',
     outputs: [],
@@ -176,6 +203,20 @@ export default [
     inputs: [],
     name: 'candidate',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'decimals',
+    outputs: [ { internalType: 'uint8', name: '', type: 'uint8' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'name',
+    outputs: [ { internalType: 'string', name: '', type: 'string' } ],
     stateMutability: 'view',
     type: 'function'
   },
@@ -203,6 +244,13 @@ export default [
   },
   {
     inputs: [],
+    name: 'symbol',
+    outputs: [ { internalType: 'string', name: '', type: 'string' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
     name: 'target',
     outputs: [
       {
@@ -214,48 +262,9 @@ export default [
     stateMutability: 'view',
     type: 'function'
   },
-  { stateMutability: 'payable', type: 'receive' },
-  {
-    inputs: [],
-    name: 'name',
-    outputs: [ { internalType: 'string', name: '', type: 'string' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'symbol',
-    outputs: [ { internalType: 'string', name: '', type: 'string' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'decimals',
-    outputs: [ { internalType: 'uint8', name: '', type: 'uint8' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
   {
     inputs: [],
     name: 'totalSupply',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'address', name: 'account', type: 'address' } ],
-    name: 'balanceOf',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: 'owner', type: 'address' },
-      { internalType: 'address', name: 'spender', type: 'address' }
-    ],
-    name: 'allowance',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
     type: 'function'
@@ -272,16 +281,6 @@ export default [
   },
   {
     inputs: [
-      { internalType: 'address', name: 'spender', type: 'address' },
-      { internalType: 'uint256', name: 'value', type: 'uint256' }
-    ],
-    name: 'approve',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
       { internalType: 'address', name: 'from', type: 'address' },
       { internalType: 'address', name: 'to', type: 'address' },
       { internalType: 'uint256', name: 'value', type: 'uint256' }
@@ -290,5 +289,6 @@ export default [
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'nonpayable',
     type: 'function'
-  }
+  },
+  { stateMutability: 'payable', type: 'receive' }
 ];

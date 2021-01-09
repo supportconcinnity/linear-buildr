@@ -11,7 +11,6 @@ import LnDebtSystem from './LnDebtSystem';
 import LnCollateralSystem from './LnCollateralSystem';
 import LnBuildBurnSystem from './LnBuildBurnSystem';
 import LnRewardLocker from './LnRewardLocker';
-import LnFeeSystemTest from './LnFeeSystemTest';
 import lUSD from './lUSD';
 import LnFeeSystem from './LnFeeSystem';
 import lBTC from './lBTC';
@@ -19,6 +18,6 @@ import lETH from './lETH';
 import lHB10 from './lHB10';
   
   export default {
-    LnTokenStorage, LnProxyBEP20, LinearFinance, LnBep20Bridge, LnAssetSystem, LnConfig, LnAccessControl, LnChainLinkPrices, LnDebtSystem, LnCollateralSystem, LnBuildBurnSystem, LnRewardLocker, LnFeeSystemTest, lUSD, LnFeeSystem, lBTC, lETH, lHB10
+    LnTokenStorage, LnProxyBEP20, LinearFinance, LnBep20Bridge, LnAssetSystem, LnConfig, LnAccessControl, LnChainLinkPrices, LnDebtSystem, LnCollateralSystem, LnBuildBurnSystem, LnRewardLocker, lUSD, LnFeeSystem, lBTC, lETH, lHB10
   };
     

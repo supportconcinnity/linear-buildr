@@ -7,9 +7,6 @@ import {
     onBinanceAccountChange,
     onBinanceChainChange,
     onMetamaskChainChange,
-    // BLOCKCHAIN,
-    // isEthereumNetwork,
-    // isBinanceNetwork,
     CHAIN_CHANGE_TYPE
 } from "./network";
 import { LinearJs } from "../linearJs";
@@ -192,15 +189,6 @@ export const selectedWallet = async (walletType, waitStore = true) => {
             store.commit("mergeWallet", {
                 address: walletStatus?.currentWallet
             });
-
-            //子图接口api
-            // let blockChain;
-            // if (isEthereumNetwork(walletStatus.networkId)) {
-            //     blockChain = BLOCKCHAIN.ETHEREUM;
-            // } else if (isBinanceNetwork(walletStatus.networkId)) {
-            //     blockChain = BLOCKCHAIN.BINANCE;
-            // }
-            // store.commit("setCurrentBlockChain", blockChain);
 
             store.commit("setWalletType", walletType);
 

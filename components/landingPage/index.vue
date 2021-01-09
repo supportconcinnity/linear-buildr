@@ -6,7 +6,7 @@
                 src="@/static/linear_buildr_logo.svg"
                 alt=""
             />
-            <div class="mBuyLINA mobileShow" @click="openBuy">
+            <div class="mBuyLINA mobileShow" @click.stop="openBuy">
                 BUY LINA
                 <img src="@/static/arrow_right.svg" alt="" />
             </div>
@@ -52,16 +52,24 @@
                             dapps within the DeFi ecosystem.
                         </p>
                     </Panel>
+
+                    <!-- <Panel name="5">
+                        <div class="line"></div>
+                        ethereum
+                        <p slot="content">
+                            {{ ethereum }}
+                        </p>
+                    </Panel> -->
                 </Collapse>
 
-                <div class="buyLINA" @click="openBuy">
+                <div class="buyLINA" @click.stop="openBuy">
                     Buy LINA
                     <Icon type="ios-arrow-round-forward" />
                 </div>
 
                 <div
                     class="mRect mobileShow"
-                    @click="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
+                    @click.stop="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
                 >
                     <img class="boxLogo" src="@/static/metamask.svg" alt="" />
                     <div class="box">
@@ -78,7 +86,9 @@
                 <div class="box">
                     <div
                         class="boxItem"
-                        @click="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
+                        @click.stop="
+                            selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)
+                        "
                     >
                         <img
                             class="boxLogo"
@@ -102,7 +112,7 @@
 
                     <div
                         class="boxItem"
-                        @click="
+                        @click.stop="
                             selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)
                         "
                     >
@@ -148,13 +158,21 @@ export default {
             selectedWallet
         };
     },
+    watch: {
+        // ethereum() {}
+    },
+    computed: {
+        // ethereum() {
+        //     return window.ethereum;
+        // }
+    },
     mounted() {
         //进入界面的欢迎效果
         setTimeout(() => {
             this.introduct = "1";
         }, 100);
         //调试用,进入指定页,不用时屏蔽
-        // this.$store.commit("setCurrentAction", 5);
+        // this.$store.commit("setCurren    tAction", 5);
         // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
         // setTimeout(
         //     () => selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
@@ -555,6 +573,7 @@ export default {
                     border-radius: 8px;
                     border: solid 1px #deddde;
                     padding: 0 4vw;
+                    cursor: pointer;
 
                     img {
                         width: 10.66vw;

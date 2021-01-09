@@ -2,43 +2,69 @@
 
 <template>
     <div id="transferWatingEnhance">
+        <div class="close" @click.stop="$emit('close')">
+            <img v-if="isMobile" src="@/static/icon-cancel.svg" />
+            <closeSvg v-else></closeSvg>
+        </div>
+
         <div class="waitTitle">
             <span v-if="currentStep > setupArray.length - 1"
                 >Congratulations!</span
             >
             <span v-else-if="currentErrMsg">Oops! Something went wrong</span>
             <span v-else-if="!currentConfirm">Confirm with your wallet</span>
-            <span v-else>Interacting with the smart contract</span>
+            <span v-else>
+                <template v-if="isMobile">
+                    Interacting
+                </template>
+                <template v-else>
+                    Interacting with the smart contract
+                </template>
+            </span>
         </div>
+
         <div class="waitDesc">
             <span v-if="currentStep > setupArray.length - 1"
-                >Your transaction has been processed already</span
+                ><!-- 手机端 -->
+                <template v-if="isMobile"
+                    >Swap transaction has been processed.</template
+                >
+                <!-- pc端 -->
+                <template v-else
+                    >Your transaction has been processed already</template
+                ></span
             ><span class="error" v-else-if="currentErrMsg">{{
                 currentErrMsg
             }}</span>
+            <!-- 没完成没错误且是移动端 -->
+            <span v-else-if="isMobile">
+                Swap transaction is in progress
+            </span>
         </div>
 
-        <template v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK">
-            <img
-                v-if="isEthereumNetwork(currentNetworkId)"
-                class="wallteLogo eth"
-                src="@/static/transferProgress/metamask_eth.svg"
-            />
-            <img
-                v-else-if="isBinanceNetwork(currentNetworkId)"
-                class="wallteLogo eth"
-                src="@/static/transferProgress/metamask_bsc.svg"
-            />
-        </template>
+        <div class="walletRect">
+            <div
+                class="walletIcon"
+                v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
+            >
+                <img
+                    v-if="isEthereumNetwork(currentNetworkId)"
+                    class="wallteLogo eth"
+                    src="@/static/transferProgress/metamask_eth.svg"
+                />
+                <img
+                    v-else-if="isBinanceNetwork(currentNetworkId)"
+                    class="wallteLogo eth"
+                    src="@/static/transferProgress/metamask_bsc.svg"
+                />
+            </div>
 
-        <img
-            v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
-            class="wallteLogo"
-            src="@/static/binance.svg"
-        />
-
-        <div class="close" @click.stop="$emit('close')">
-            <closeSvg></closeSvg>
+            <div
+                class="walletIcon"
+                v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
+            >
+                <img class="wallteLogo" src="@/static/binance.svg" />
+            </div>
         </div>
 
         <div class="processBar">
@@ -52,7 +78,6 @@
                         <transition-group name="img-fade">
                             <!-- 大于进度 -->
                             <img
-                                class="img"
                                 key="1"
                                 v-if="currentStep < index"
                                 src="@/static/transferProgress/default.svg"
@@ -71,25 +96,29 @@
                                     src="@/static/transferProgress/loading.svg"
                                 />
 
-                                <template
-                                    v-if="isEthereumNetwork(currentNetworkId)"
-                                >
-                                    <img
-                                        key="21"
-                                        class="walletType"
-                                        src="@/static/transferProgress/eth_network.svg"
-                                    />
-                                </template>
-                                <template
-                                    v-else-if="
-                                        isBinanceNetwork(currentNetworkId)
-                                    "
-                                >
-                                    <img
-                                        key="22"
-                                        class="walletType"
-                                        src="@/static/transferProgress/bsc_network.svg"
-                                    />
+                                <template v-if="!isMobile">
+                                    <template
+                                        v-if="
+                                            isEthereumNetwork(currentNetworkId)
+                                        "
+                                    >
+                                        <img
+                                            key="21"
+                                            class="walletType"
+                                            src="@/static/transferProgress/eth_network.svg"
+                                        />
+                                    </template>
+                                    <template
+                                        v-else-if="
+                                            isBinanceNetwork(currentNetworkId)
+                                        "
+                                    >
+                                        <img
+                                            key="22"
+                                            class="walletType"
+                                            src="@/static/transferProgress/bsc_network.svg"
+                                        />
+                                    </template>
                                 </template>
                             </template>
 
@@ -149,7 +178,9 @@
                         <img src="@/static/arrow_right.svg" />
                     </div>
                     <div
-                        v-else-if="currentStep == index && currentErrMsg && !isMobile"
+                        v-else-if="
+                            currentStep == index && currentErrMsg && !isMobile
+                        "
                         class="tryAgain"
                         @click.stop="tryAgain"
                     >
@@ -176,18 +207,32 @@
             </div>
         </div>
 
-        <div class="btnBoxMobile" v-if="isMobile">
+        <!-- 不是等待切链状态且是移动端的时候 -->
+        <div v-if="isMobile" class="mobileBtns">
+            <!-- 完成 -->
             <div
-                v-if="currentErrMsg"
-                class="tryAgain"
+                class="funcMobileBtn"
+                v-if="currentStep > setupArray.length - 1"
+                @click.stop="$emit('close')"
+            >
+                Done
+            </div>
+            <!-- 错误 -->
+            <div
+                class="funcMobileBtn"
+                v-else-if="currentErrMsg"
                 @click.stop="tryAgain"
             >
                 try again
             </div>
+            <!-- 未确认交易 -->
+            <!-- <div class="funcMobileBtn" v-else-if="!currentConfirm">
+                Confirm Contract
+            </div> -->
 
             <div
-                class="view"
-                v-if="currentConfirm || currentErrMsg"
+                class="viewMobileBtn"
+                v-if="currentConfirm"
                 @click.stop="
                     openBlockchainBrowser(currentHash, currentNetworkId)
                 "
@@ -195,12 +240,9 @@
                 <template v-if="isEthereumNetwork(currentNetworkId)">
                     View Etherscan
                 </template>
-                <template
-                    v-else-if="isBinanceNetwork(currentNetworkId)"
-                >
+                <template v-else-if="isBinanceNetwork(currentNetworkId)">
                     View Bscscan
                 </template>
-
                 <img src="@/static/arrow_right.svg" />
             </div>
         </div>
@@ -299,7 +341,6 @@ export default {
         max-width: 550px;
         width: 100%;
         margin-top: 228px;
-        margin-bottom: 4px;
     }
 
     .waitDesc {
@@ -325,21 +366,113 @@ export default {
         }
     }
 
-    .wallteLogo {
-        width: 120px;
-        height: 120px;
-        margin-top: 76px;
+    .walletRect {
+        .step {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-family: Gilroy-Bold;
+            font-size: 12px;
+            font-weight: bold;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
+            letter-spacing: 1.5px;
+            text-align: center;
+            color: #1a38f8;
+            text-transform: uppercase;
+            margin-top: 8px;
 
-        &.eth {
-            margin-left: 20px;
+            img {
+                margin-left: 4px;
+            }
+        }
+        .walletIcon {
+            margin-top: 76px;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            width: 100%;
+
+            .wallteLogo {
+                width: 120px;
+                height: 120px;
+
+                &.eth {
+                    margin-left: 20px;
+                }
+            }
+
+            .arrow {
+                width: 148px;
+                height: 20px;
+                margin: 0 25px;
+            }
+        }
+
+        .hasBinanceWallet,
+        .notBinanceWallet {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hasBinanceWallet {
+            .walletIcon {
+                margin-top: 24px;
+
+                .wallteLogo {
+                    width: 60px;
+                    height: 60px;
+                }
+
+                .arrow {
+                    width: 70px;
+                }
+            }
+
+            .divider {
+                border-top: 1px solid #e5e5e5;
+                margin: 40px 0;
+                position: relative;
+                width: 150%;
+
+                span {
+                    font-family: Gilroy-Regular;
+                    font-size: 16px;
+                    font-weight: normal;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.5;
+                    letter-spacing: normal;
+                    text-align: center;
+                    color: #99999a;
+                    position: absolute;
+                    left: 50%;
+                    background: white;
+                    width: 75px;
+                    transform: translate(-50%, -50%);
+                }
+            }
+
+            .waitTitle {
+                margin-top: 0px;
+            }
+        }
+
+        .notBinanceWallet {
+            .walletIcon {
+                margin-top: 52px;
+            }
         }
     }
 
     .processBar {
-        margin-top: 216px;
         width: 100%;
         max-width: 500px;
-        position: relative;
+        position: absolute;
+        bottom: 165px;
 
         .itemBox {
             width: 100%;
@@ -362,7 +495,7 @@ export default {
                     margin-bottom: 8px;
 
                     img {
-                        background-color: #fafafa;
+                        background-color: white;
                         border-radius: 50%;
                         width: 100%;
                         height: 100%;
@@ -468,69 +601,137 @@ export default {
 
 @media only screen and (max-width: $max-phone-width) {
     #transferWatingEnhance {
-        width: 78vw!important;
-        margin: 0 auto;
-
+        padding: 24px 32px;
         .waitTitle {
-            width: 100%;
-            font-size: 16px;
             text-align: left;
-            color: #5a575c;
-            max-width: unset;
-            margin-top: 24px;
-            margin-bottom: 0;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-top: 0;
         }
 
         .waitDesc {
-            width: 100%;
-            max-width: unset;
-            max-height: unset;
-            font-size: 12px;
             text-align: left;
-            position: unset;
-            top: 0;
-
-            .error {
-                color: #df434c;
-            }
+            top: 48px;
+            left: 32px;
+            font-size: 12px;
+            line-height: 1.33;
+            color: #99999a;
         }
 
-        .wallteLogo {
-            width: 80px;
-            height: 80px;
-            margin-top: 76px;
+        .walletRect {
+            .step {
+                font-size: 10px;
+                line-height: 1.6;
+                letter-spacing: 1.25px;
+                position: absolute;
+                bottom: 32px;
 
-            &.eth{
-                margin-left: 0;
+                img {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+            .walletIcon {
+                margin-top: 136px;
+                .wallteLogo {
+                    width: 80px;
+                    height: 80px;
+
+                    &.eth {
+                        margin-left: 13px;
+                    }
+                }
+
+                .arrow {
+                    width: 24px;
+                    height: 24px;
+                    margin: 0 16px;
+                }
+            }
+
+            .notBinanceWallet {
+                .walletIcon {
+                    margin-top: 136px;
+                }
             }
         }
 
         .processBar {
-            margin-top: 24px;
+            position: absolute;
+            bottom: 0;
+            top: 288px;
+            height: 48px;
+            width: calc(100% - 20px);
+
+            .itemBox {
+                .item {
+                    .imgBox {
+                        width: 24px;
+                        height: 24px;
+
+                        img {
+                            &.walletType {
+                                width: 9.6px;
+                                height: 9.6px;
+                            }
+                        }
+                    }
+
+                    .text {
+                        margin-bottom: 4px;
+                        font-family: Gilroy;
+                        font-size: 10px;
+                        line-height: 1.2;
+                    }
+                }
+            }
+
+            .dividerBox {
+                ul {
+                    top: 10.5px;
+                    li {
+                        &.has {
+                            height: 3px;
+                        }
+                    }
+                }
+            }
         }
 
-        .btnBoxMobile {
-            width: 100%;
-            position: relative;
-            top: 100px;
-            text-transform: uppercase;
+        .close {
+            img {
+                width: 26px;
+                height: 26px;
+            }
+        }
 
-            .tryAgain {
+        .mobileBtns {
+            padding: 0 32px;
+            position: absolute;
+            bottom: 32px;
+            width: 100%;
+
+            .funcMobileBtn {
                 width: 100%;
-                height: 40px;
-                border-radius: 20px;
-                background-color: #1a38f8;
                 font-family: Gilroy-Bold;
                 font-size: 12px;
+                font-weight: bold;
                 font-stretch: normal;
                 font-style: normal;
-                line-height: 40px;
+                line-height: 1.33;
                 letter-spacing: 1.5px;
                 text-align: center;
                 color: #ffffff;
+                padding: 12px 24px;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #1a38f8;
+                text-transform: uppercase;
             }
 
-            .view {
+            .viewMobileBtn {
                 margin-top: 17px;
                 font-family: Gilroy-Bold;
                 font-size: 10px;
@@ -539,26 +740,16 @@ export default {
                 font-style: normal;
                 line-height: 1.6;
                 letter-spacing: 1.25px;
-                text-align: center;
                 color: #1a38f8;
-
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-transform: uppercase;
                 img {
-                    position: relative;
-                    top: 5px;
+                    width: 16px;
+                    height: 16px;
+                    margin-left: 4px;
                 }
-            }
-        }
-
-        .close {
-            width: 26px;
-            height: 26px;
-            position: absolute;
-            top: 10px;
-            right: 0px;
-
-            #closeSvg {
-                width: 26px;
-                height: 26px;
             }
         }
     }

@@ -38,11 +38,18 @@ export const getLiquids = async wallet => {
                 let asset = lnrJSConnector.lnrJS[key];
 
                 //上exchange时使用合约内价格
+                // let [balance, price] = await Promise.all([
+                //     asset.balanceOf(wallet),
+                //     exchangeData.exchange.pricesLast({ source: key })
+                // ]);
+                // liquids += formatEtherToNumber(balance) * price[0].currentPrice;
+
+
                 let [balance, price] = await Promise.all([
                     asset.balanceOf(wallet),
-                    exchangeData.exchange.pricesLast({ source: key })
+                    getPriceRatesFromApi(key)
                 ]);
-                liquids += formatEtherToNumber(balance) * price[0].currentPrice;
+                liquids += formatEtherToNumber(balance) * bn2n(price[key]);
             }
         }
     }
@@ -209,10 +216,11 @@ export const storeDetailsData = async () => {
                 liquids,
                 amountDebt
             ] = result.map(formatEtherToNumber);
+            
             //获取货币->USD 兑换率
             // const priceRates = await getPriceRates(CRYPTO_CURRENCIES);
             const priceRates = await getPriceRatesFromApi(CRYPTO_CURRENCIES);
-            const LINA2USDRate = priceRates.LINA / 1e18 || 1;
+            const LINA2USDRate = priceRates.LINA / 1e18 || 0;
             const lUSD2USDRate = priceRates.lUSD / 1e18 || 1;
             const ETH2USDRate =
                 (isEthereum ? priceRates.ETH : isBinance ? priceRates.BNB : 1) /

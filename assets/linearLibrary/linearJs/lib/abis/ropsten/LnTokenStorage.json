@@ -40,19 +40,6 @@
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "operator",
-				"type": "address"
-			}
-		],
-		"name": "OperatorUpdated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
 				"name": "oldCandidate",
 				"type": "address"
 			},
@@ -63,7 +50,20 @@
 				"type": "address"
 			}
 		],
-		"name": "candidateChanged",
+		"name": "CandidateChanged",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "OperatorUpdated",
 		"type": "event"
 	},
 	{
@@ -159,32 +159,6 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "_candidate",
-				"type": "address"
-			}
-		],
-		"name": "setCandidate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_opperator",
-				"type": "address"
-			}
-		],
-		"name": "setOperator",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "tokenOwner",
 				"type": "address"
 			},
@@ -218,6 +192,32 @@
 			}
 		],
 		"name": "setBalanceOf",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_candidate",
+				"type": "address"
+			}
+		],
+		"name": "setCandidate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_opperator",
+				"type": "address"
+			}
+		],
+		"name": "setOperator",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

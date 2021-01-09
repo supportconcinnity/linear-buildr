@@ -1,9 +1,7 @@
+import ropsten from "./ropsten";
+import bsctestnet from "./bsctestnet";
 
-  import mainnet from './mainnet';
-import ropsten from './ropsten';
-import bsctestnet from './bsctestnet';
-  
-  export default {
-    mainnet, ropsten, bsctestnet
-  };
-    
+export default {
+    ropsten,
+    bsctestnet
+};

@@ -13,14 +13,19 @@
         );
   
         
-      this.BUILD_RATIO = async () => {
-        
-        return await this.contract.BUILD_RATIO();
+      this.BUILD_RATIO = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.BUILD_RATIO(txParams);
       };
     
-      this.admin = async () => {
-        
-        return await this.contract.admin();
+      this.admin = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.admin(txParams);
+      };
+    
+      this.batchSet = async (names, values, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.batchSet(names, values, txParams);
       };
     
       this.becomeAdmin = async (txParams) => {
@@ -28,24 +33,9 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
-      this.candidate = async () => {
-        
-        return await this.contract.candidate();
-      };
-    
-      this.setCandidate = async (_candidate, txParams) => {
+      this.candidate = async (txParams) => {
         txParams = txParams || {};
-        return await this.contract.setCandidate(_candidate, txParams);
-      };
-    
-      this.getUint = async (key) => {
-        
-        return await this.contract.getUint(key);
-      };
-    
-      this.setUint = async (key, value, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.setUint(key, value, txParams);
+        return await this.contract.candidate(txParams);
       };
     
       this.deleteUint = async (key, txParams) => {
@@ -53,9 +43,19 @@
         return await this.contract.deleteUint(key, txParams);
       };
     
-      this.batchSet = async (names, values, txParams) => {
+      this.getUint = async (key, txParams) => {
         txParams = txParams || {};
-        return await this.contract.batchSet(names, values, txParams);
+        return await this.contract.getUint(key, txParams);
+      };
+    
+      this.setCandidate = async (_candidate, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.setCandidate(_candidate, txParams);
+      };
+    
+      this.setUint = async (key, value, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.setUint(key, value, txParams);
       };
     
       }

@@ -148,9 +148,10 @@ export const INFURA_JSON_RPC_URLS = {
 // };
 
 export async function getEthereumNetwork() {
-    if (!window.ethereum) {
+    const isMobile = $nuxt.$store.state?.isMobile;
+    if (!window.ethereum && !isMobile) {
         window.open(WALLET_EXTENSIONS.METAMASK);
-        return { name: "MAINNET", networkId: 1 };
+        return {};
     }
     let networkId = 1;
     try {
@@ -167,17 +168,16 @@ export async function getEthereumNetwork() {
                 networkId: networkId
             };
         }
-        return { name: "MAINNET", networkId };
     } catch (e) {
         console.log(e);
-        return { name: "MAINNET", networkId };
     }
 }
 
 export async function getBinanceNetwork() {
-    if (!window.BinanceChain) {
+    const isMobile = $nuxt.$store.state?.isMobile;
+    if (!window.BinanceChain && !isMobile) {
         window.open(WALLET_EXTENSIONS.BINANCE);
-        return { name: "BSCMAINNET", networkId: 1 };
+        return {};
     }
     let networkId = 56;
     try {
@@ -188,10 +188,8 @@ export async function getBinanceNetwork() {
                 networkId: networkId
             };
         }
-        return { name: "BSCMAINNET", networkId };
     } catch (e) {
         console.log(e);
-        return { name: "BSCMAINNET", networkId };
     }
 }
 

@@ -13,9 +13,19 @@
         );
   
         
-      this.admin = async () => {
-        
-        return await this.contract.admin();
+      this.addAsset = async (asset, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.addAsset(asset, txParams);
+      };
+    
+      this.admin = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.admin(txParams);
+      };
+    
+      this.assetNumber = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.assetNumber(txParams);
       };
     
       this.becomeAdmin = async (txParams) => {
@@ -23,39 +33,54 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
-      this.candidate = async () => {
-        
-        return await this.contract.candidate();
+      this.candidate = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.candidate(txParams);
       };
     
-      this.getAddress = async (name) => {
-        
-        return await this.contract.getAddress(name);
+      this.getAddress = async (name, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.getAddress(name, txParams);
       };
     
-      this.getAddressWithRequire = async (name, reason) => {
-        
-        return await this.contract.getAddressWithRequire(name, reason);
+      this.getAddressWithRequire = async (name, reason, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.getAddressWithRequire(name, reason, txParams);
       };
     
-      this.mAddress2Names = async (address_1) => {
-        
-        return await this.contract.mAddress2Names(address_1);
+      this.getAssetAddresses = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.getAssetAddresses(txParams);
       };
     
-      this.mAddrs = async (bytes32_1) => {
-        
-        return await this.contract.mAddrs(bytes32_1);
+      this.mAddress2Names = async (address_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.mAddress2Names(address_1, txParams);
       };
     
-      this.mAssetList = async (uint256_1) => {
-        
-        return await this.contract.mAssetList(uint256_1);
+      this.mAddrs = async (bytes32_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.mAddrs(bytes32_1, txParams);
+      };
+    
+      this.mAssetList = async (uint256_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.mAssetList(uint256_1, txParams);
+      };
+    
+      this.removeAsset = async (name, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.removeAsset(name, txParams);
       };
     
       this.setCandidate = async (_candidate, txParams) => {
         txParams = txParams || {};
         return await this.contract.setCandidate(_candidate, txParams);
+      };
+    
+      this.totalAssetsInUsd = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.totalAssetsInUsd(txParams);
       };
     
       this.update = async (name, dest, txParams) => {
@@ -66,31 +91,6 @@
       this.updateAll = async (names, destinations, txParams) => {
         txParams = txParams || {};
         return await this.contract.updateAll(names, destinations, txParams);
-      };
-    
-      this.addAsset = async (asset, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.addAsset(asset, txParams);
-      };
-    
-      this.removeAsset = async (name, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.removeAsset(name, txParams);
-      };
-    
-      this.assetNumber = async () => {
-        
-        return await this.contract.assetNumber();
-      };
-    
-      this.totalAssetsInUsd = async () => {
-        
-        return await this.contract.totalAssetsInUsd();
-      };
-    
-      this.getAssetAddresses = async () => {
-        
-        return await this.contract.getAssetAddresses();
       };
     
       }

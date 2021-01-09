@@ -732,8 +732,9 @@ export default {
                     }
 
                     this.sourcePrice = price;
-
                     this.setSourceGasDetails(price, this.sourceSelectedType);
+
+                    this.sourceGasEditorModal = false;
                 }
             } else if (type == this.CONFIRM_TYPE.TARGET) {
                 if (!this.targetDisabledConfirmBtn) {
@@ -755,11 +756,10 @@ export default {
 
                     this.targetPrice = price;
                     this.setTargetGasDetails(price, this.targetSelectedType);
+
+                    this.targetGasEditorModal = false;
                 }
             }
-
-            this.sourceGasEditorModal = false;
-            this.targetGasEditorModal = false;
         },
 
         //设置gas

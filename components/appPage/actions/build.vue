@@ -1212,7 +1212,7 @@ export default {
                     this.waitProcessArray = [];
                     this.confirmTransactionStep = 0;
 
-                    if (this.actionData.needApprove.gt("0")) { 
+                    if (this.actionData.needApprove.gt("0")) {
                         this.waitProcessArray.push(BUILD_PROCESS_SETUP.APPROVE);
                     }
 
@@ -1260,6 +1260,14 @@ export default {
                 try {
                     this.transactionErrMsg = "";
 
+                    //合约需要大于1
+                    if (this.actionData.stake.eq(n2bn("1"))) {
+                        this.actionData.stake = bnAdd(
+                            this.actionData.stake,
+                            n2bn("0.000000000000000001")
+                        );
+                    }
+
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.APPROVE
@@ -1292,14 +1300,6 @@ export default {
                             );
                             if (stake.lt(this.buildData.LINABN)) {
                                 this.actionData.stake = stake;
-                            }
-
-                            //合约需要大于1
-                            if (this.actionData.stake.eq(n2bn("1"))) {
-                                this.actionData.stake = bnAdd(
-                                    this.actionData.stake,
-                                    n2bn("0.000000000000000001")
-                                );
                             }
                             await this.startStakingContract(
                                 this.actionData.stake
@@ -1409,7 +1409,7 @@ export default {
             this.confirmTransactionStatus = false;
 
             const {
-                lnrJS: { LnColateralBuildBurnAPI },
+                lnrJS: { LnCollateralSystem },
                 utils
             } = lnrJSConnector;
 
@@ -1424,7 +1424,7 @@ export default {
                 stakeAmountLINA
             );
 
-            let transaction = await LnColateralBuildBurnAPI.collateralAndBuild(
+            let transaction = await LnCollateralSystem.collateralAndBuild(
                 utils.formatBytes32String("LINA"),
                 stakeAmountLINA,
                 transactionSettings
@@ -1479,7 +1479,6 @@ export default {
             );
 
             let transaction = await LnCollateralSystem.Collateral(
-                this.walletAddress,
                 utils.formatBytes32String("LINA"),
                 stakeAmountLINA,
                 transactionSettings
@@ -1537,7 +1536,6 @@ export default {
             );
 
             let transaction = await LnBuildBurnSystem.BuildAsset(
-                this.walletAddress,
                 buildAmountlUSD,
                 transactionSettings
             );
@@ -1604,7 +1602,7 @@ export default {
         async getGasEstimateFromStakingAndBuild(stakeAmountLINA) {
             try {
                 const {
-                    lnrJS: { LnColateralBuildBurnAPI },
+                    lnrJS: { LnCollateralSystem },
                     utils
                 } = lnrJSConnector;
 
@@ -1615,7 +1613,7 @@ export default {
                     throw new Error("invalid stakeAmountLINA");
                 }
 
-                let gasEstimate = await LnColateralBuildBurnAPI.contract.estimateGas.collateralAndBuild(
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.collateralAndBuild(
                     utils.formatBytes32String("LINA"),
                     stakeAmountLINA
                 );
@@ -1643,7 +1641,6 @@ export default {
                 }
 
                 let gasEstimate = await LnCollateralSystem.contract.estimateGas.Collateral(
-                    this.walletAddress,
                     utils.formatBytes32String("LINA"),
                     stakeAmountLINA
                 );
@@ -1669,7 +1666,6 @@ export default {
                 }
 
                 let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BuildAsset(
-                    this.walletAddress,
                     buildAmountlUSD
                 );
 
@@ -1895,7 +1891,6 @@ export default {
                                     img {
                                         width: 100%;
                                         height: 100%;
-                                        
                                     }
                                 }
 
@@ -1937,7 +1932,6 @@ export default {
                                         color: #1a38f8;
 
                                         img {
-                                            
                                             margin-left: 6px;
                                         }
 

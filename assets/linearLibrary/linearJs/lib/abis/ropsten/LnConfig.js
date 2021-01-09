@@ -28,6 +28,25 @@ export default [
     inputs: [
       {
         indexed: false,
+        internalType: 'address',
+        name: 'oldCandidate',
+        type: 'address'
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'newCandidate',
+        type: 'address'
+      }
+    ],
+    name: 'CandidateChanged',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: 'bytes32',
         name: 'key',
         type: 'bytes32'
@@ -43,39 +62,28 @@ export default [
     type: 'event'
   },
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'oldCandidate',
-        type: 'address'
-      },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'newCandidate',
-        type: 'address'
-      }
-    ],
-    name: 'candidateChanged',
-    type: 'event'
-  },
-  {
     inputs: [],
     name: 'BUILD_RATIO',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
     name: 'admin',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32[]', name: 'names', type: 'bytes32[]' },
+      { internalType: 'uint256[]', name: 'values', type: 'uint256[]' }
+    ],
+    name: 'batchSet',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
     inputs: [],
@@ -89,8 +97,21 @@ export default [
     name: 'candidate',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'bytes32', name: 'key', type: 'bytes32' } ],
+    name: 'deleteUint',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'bytes32', name: 'key', type: 'bytes32' } ],
+    name: 'getUint',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
+    stateMutability: 'view',
+    type: 'function'
   },
   {
     inputs: [
@@ -102,36 +123,11 @@ export default [
     type: 'function'
   },
   {
-    inputs: [ { internalType: 'bytes32', name: 'key', type: 'bytes32' } ],
-    name: 'getUint',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
     inputs: [
       { internalType: 'bytes32', name: 'key', type: 'bytes32' },
       { internalType: 'uint256', name: 'value', type: 'uint256' }
     ],
     name: 'setUint',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'bytes32', name: 'key', type: 'bytes32' } ],
-    name: 'deleteUint',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32[]', name: 'names', type: 'bytes32[]' },
-      { internalType: 'uint256[]', name: 'values', type: 'uint256[]' }
-    ],
-    name: 'batchSet',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'

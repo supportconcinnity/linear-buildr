@@ -13,94 +13,74 @@
         );
   
         
-      this.Currency_ETH = async () => {
-        
-        return await this.contract.Currency_ETH();
-      };
-    
-      this.Currency_LINA = async () => {
-        
-        return await this.contract.Currency_LINA();
-      };
-    
-      this.admin = async () => {
-        
-        return await this.contract.admin();
-      };
-    
-      this.becomeAdmin = async (txParams) => {
+      this.Collateral = async (_currency, _amount, txParams) => {
         txParams = txParams || {};
-        return await this.contract.becomeAdmin(txParams);
+        return await this.contract.Collateral(_currency, _amount, txParams);
       };
     
-      this.buildBurnSystem = async () => {
-        
-        return await this.contract.buildBurnSystem();
-      };
-    
-      this.candidate = async () => {
-        
-        return await this.contract.candidate();
-      };
-    
-      this.debtSystem = async () => {
-        
-        return await this.contract.debtSystem();
-      };
-    
-      this.mConfig = async () => {
-        
-        return await this.contract.mConfig();
-      };
-    
-      this.mRewardLocker = async () => {
-        
-        return await this.contract.mRewardLocker();
-      };
-    
-      this.paused = async () => {
-        
-        return await this.contract.paused();
-      };
-    
-      this.priceGetter = async () => {
-        
-        return await this.contract.priceGetter();
-      };
-    
-      this.setCandidate = async (_candidate, txParams) => {
+      this.CollateralEth = async (txParams) => {
         txParams = txParams || {};
-        return await this.contract.setCandidate(_candidate, txParams);
+        return await this.contract.CollateralEth(txParams);
       };
     
-      this.tokenInfos = async (bytes32_1) => {
-        
-        return await this.contract.tokenInfos(bytes32_1);
-      };
-    
-      this.tokenSymbol = async (uint256_1) => {
-        
-        return await this.contract.tokenSymbol(uint256_1);
-      };
-    
-      this.uniqueId = async () => {
-        
-        return await this.contract.uniqueId();
-      };
-    
-      this.userCollateralData = async (address_1, bytes32_1) => {
-        
-        return await this.contract.userCollateralData(address_1, bytes32_1);
-      };
-    
-      this.setPaused = async (_paused, txParams) => {
+      this.Currency_ETH = async (txParams) => {
         txParams = txParams || {};
-        return await this.contract.setPaused(_paused, txParams);
+        return await this.contract.Currency_ETH(txParams);
       };
     
-      this.updateAddressCache = async (_addressStorage, txParams) => {
+      this.Currency_LINA = async (txParams) => {
         txParams = txParams || {};
-        return await this.contract.updateAddressCache(_addressStorage, txParams);
+        return await this.contract.Currency_LINA(txParams);
+      };
+    
+      this.GetSystemTotalCollateralInUsd = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.GetSystemTotalCollateralInUsd(txParams);
+      };
+    
+      this.GetUserCollateral = async (_user, _currency, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.GetUserCollateral(_user, _currency, txParams);
+      };
+    
+      this.GetUserCollaterals = async (_user, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.GetUserCollaterals(_user, txParams);
+      };
+    
+      this.GetUserTotalCollateralInUsd = async (_user, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.GetUserTotalCollateralInUsd(_user, txParams);
+      };
+    
+      this.IsSatisfyTargetRatio = async (_user, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.IsSatisfyTargetRatio(_user, txParams);
+      };
+    
+      this.MaxRedeemable = async (user, _currency, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.MaxRedeemable(user, _currency, txParams);
+      };
+    
+      this.MaxRedeemableInUsd = async (_user, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.MaxRedeemableInUsd(_user, txParams);
+      };
+    
+      this.Redeem = async (_currency, _amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.Redeem(_currency, _amount, txParams);
+      };
+    
+      this.RedeemETH = async (_amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.RedeemETH(_amount, txParams);
+      };
+    
+      this.RedeemMax = async (_currency, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.RedeemMax(_currency, txParams);
       };
     
       this.UpdateTokenInfo = async (_currency, _tokenAddr, _minCollateral, _close, txParams) => {
@@ -113,64 +93,114 @@
         return await this.contract.UpdateTokenInfos(_symbols, _tokenAddrs, _minCollateral, _closes, txParams);
       };
     
-      this.GetSystemTotalCollateralInUsd = async () => {
-        
-        return await this.contract.GetSystemTotalCollateralInUsd();
-      };
-    
-      this.GetUserTotalCollateralInUsd = async (_user) => {
-        
-        return await this.contract.GetUserTotalCollateralInUsd(_user);
-      };
-    
-      this.GetUserCollateral = async (_user, _currency) => {
-        
-        return await this.contract.GetUserCollateral(_user, _currency);
-      };
-    
-      this.GetUserCollaterals = async (_user) => {
-        
-        return await this.contract.GetUserCollaterals(_user);
-      };
-    
-      this.Collateral = async (user, _currency, _amount, txParams) => {
+      this.__LnAdminUpgradeable_init = async (_admin, txParams) => {
         txParams = txParams || {};
-        return await this.contract.Collateral(user, _currency, _amount, txParams);
+        return await this.contract.__LnAdminUpgradeable_init(_admin, txParams);
       };
     
-      this.IsSatisfyTargetRatio = async (_user) => {
-        
-        return await this.contract.IsSatisfyTargetRatio(_user);
-      };
-    
-      this.MaxRedeemableInUsd = async (_user) => {
-        
-        return await this.contract.MaxRedeemableInUsd(_user);
-      };
-    
-      this.MaxRedeemable = async (user, _currency) => {
-        
-        return await this.contract.MaxRedeemable(user, _currency);
-      };
-    
-      this.RedeemMax = async (user, _currency, txParams) => {
+      this.__LnCollateralSystem_init = async (_admin, txParams) => {
         txParams = txParams || {};
-        return await this.contract.RedeemMax(user, _currency, txParams);
+        return await this.contract.__LnCollateralSystem_init(_admin, txParams);
       };
     
-      this.Redeem = async (user, _currency, _amount, txParams) => {
+      this.admin = async (txParams) => {
         txParams = txParams || {};
-        return await this.contract.Redeem(user, _currency, _amount, txParams);
+        return await this.contract.admin(txParams);
       };
     
-      this.CollateralEth = async (user, ethAmount, txParams) => {
+      this.becomeAdmin = async (txParams) => {
         txParams = txParams || {};
-        return await this.contract.CollateralEth(user, ethAmount, txParams);
+        return await this.contract.becomeAdmin(txParams);
       };
     
-      this.RedeemETH = async (user, _amount, txParams) => {
+      this.buildBurnSystem = async (txParams) => {
         txParams = txParams || {};
-        return await this.contract.RedeemETH(user, _amount, txParams);
+        return await this.contract.buildBurnSystem(txParams);
+      };
+    
+      this.burnAndRedeem = async (_currency, _amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.burnAndRedeem(_currency, _amount, txParams);
+      };
+    
+      this.burnAndRedeemMax = async (_currency, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.burnAndRedeemMax(_currency, txParams);
+      };
+    
+      this.candidate = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.candidate(txParams);
+      };
+    
+      this.collateralAndBuild = async (_currency, _amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.collateralAndBuild(_currency, _amount, txParams);
+      };
+    
+      this.debtSystem = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.debtSystem(txParams);
+      };
+    
+      this.mConfig = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.mConfig(txParams);
+      };
+    
+      this.mRewardLocker = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.mRewardLocker(txParams);
+      };
+    
+      this.migrateCollateral = async (_currency, _users, _amounts, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.migrateCollateral(_currency, _users, _amounts, txParams);
+      };
+    
+      this.paused = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.paused(txParams);
+      };
+    
+      this.priceGetter = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.priceGetter(txParams);
+      };
+    
+      this.setCandidate = async (_candidate, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.setCandidate(_candidate, txParams);
+      };
+    
+      this.setPaused = async (_paused, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.setPaused(_paused, txParams);
+      };
+    
+      this.tokenInfos = async (bytes32_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.tokenInfos(bytes32_1, txParams);
+      };
+    
+      this.tokenSymbol = async (uint256_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.tokenSymbol(uint256_1, txParams);
+      };
+    
+      this.uniqueId = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.uniqueId(txParams);
+      };
+    
+      this.updateAddressCache = async (_addressStorage, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.updateAddressCache(_addressStorage, txParams);
+      };
+    
+      this.userCollateralData = async (address_1, bytes32_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.userCollateralData(address_1, bytes32_1, txParams);
       };
     
       }

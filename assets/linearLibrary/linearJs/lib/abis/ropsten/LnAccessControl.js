@@ -84,99 +84,27 @@ export default [
     name: 'BURN_ASSET_ROLE',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
     name: 'DEBT_SYSTEM',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
     name: 'DEFAULT_ADMIN_ROLE',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
     name: 'ISSUE_ASSET_ROLE',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [ { internalType: 'bytes32', name: 'role', type: 'bytes32' } ],
-    name: 'getRoleAdmin',
-    outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'uint256', name: 'index', type: 'uint256' }
-    ],
-    name: 'getRoleMember',
-    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [ { internalType: 'bytes32', name: 'role', type: 'bytes32' } ],
-    name: 'getRoleMemberCount',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'account', type: 'address' }
-    ],
-    name: 'grantRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'account', type: 'address' }
-    ],
-    name: 'hasRole',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'account', type: 'address' }
-    ],
-    name: 'renounceRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'account', type: 'address' }
-    ],
-    name: 'revokeRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -184,38 +112,12 @@ export default [
     name: 'IsAdmin',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [ { internalType: 'address', name: '_address', type: 'address' } ],
     name: 'SetAdmin',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'roleType', type: 'bytes32' },
-      {
-        internalType: 'address[]',
-        name: 'addresses',
-        type: 'address[]'
-      },
-      { internalType: 'bool[]', name: 'setTo', type: 'bool[]' }
-    ],
-    name: 'SetRoles',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address[]', name: 'issuer', type: 'address[]' },
-      { internalType: 'bool[]', name: 'setTo', type: 'bool[]' }
-    ],
-    name: 'SetIssueAssetRole',
-    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
@@ -239,6 +141,95 @@ export default [
       { internalType: 'bool[]', name: '_setTo', type: 'bool[]' }
     ],
     name: 'SetDebtSystemRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address[]', name: 'issuer', type: 'address[]' },
+      { internalType: 'bool[]', name: 'setTo', type: 'bool[]' }
+    ],
+    name: 'SetIssueAssetRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'roleType', type: 'bytes32' },
+      {
+        internalType: 'address[]',
+        name: 'addresses',
+        type: 'address[]'
+      },
+      { internalType: 'bool[]', name: 'setTo', type: 'bool[]' }
+    ],
+    name: 'SetRoles',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'bytes32', name: 'role', type: 'bytes32' } ],
+    name: 'getRoleAdmin',
+    outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+      { internalType: 'uint256', name: 'index', type: 'uint256' }
+    ],
+    name: 'getRoleMember',
+    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'bytes32', name: 'role', type: 'bytes32' } ],
+    name: 'getRoleMemberCount',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+      { internalType: 'address', name: 'account', type: 'address' }
+    ],
+    name: 'grantRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+      { internalType: 'address', name: 'account', type: 'address' }
+    ],
+    name: 'hasRole',
+    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+      { internalType: 'address', name: 'account', type: 'address' }
+    ],
+    name: 'renounceRole',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
+      { internalType: 'address', name: 'account', type: 'address' }
+    ],
+    name: 'revokeRole',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'

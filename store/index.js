@@ -30,7 +30,9 @@ export const state = () => ({
     mWalletState: false, //移动端 显示钱包详情
     isMobile: false, //是否移动端
     registeredMetamaskWalletEvents: false, //是否已经注册metamask钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
-    registeredBinanceWalletEvents: false //是否已经注册binance钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
+    registeredBinanceWalletEvents: false, //是否已经注册binance钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
+    swapUnfreezeDatas:{},//swap等待解冻所需数据,用于页面强制刷新后重载swap逻辑
+    swapUnfreezeContinue:false, //用于判断用户是否点击了继续swap
 });
 
 export const mutations = {
@@ -116,6 +118,14 @@ export const mutations = {
 
     setRegisteredBinanceWalletEvents(state, status) {
         state.registeredBinanceWalletEvents = status;
+    },
+
+    setSwapUnfreezeDatas(state, datas) {
+        state.swapUnfreezeDatas = datas;
+    },
+
+    setSwapUnfreezeContinue(state, status) {
+        state.swapUnfreezeContinue = status;
     }
 };
 
