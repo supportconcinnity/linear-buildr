@@ -424,7 +424,7 @@ import {
 import {
     storeDetailsData,
     getPriceRates,
-    getPriceRatesFromApi,
+    // getPriceRatesFromApi,
     getBuildRatio
 } from "@/assets/linearLibrary/linearTools/request";
 
@@ -597,8 +597,8 @@ export default {
 
                 const targetRatioPercent = 100 / buildRatio; //目标抵押率
 
-                // const priceRates = await getPriceRates(["LINA", "lUSD"]);
-                const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
+                const priceRates = await getPriceRates(["LINA", "lUSD"]);
+                // const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
 
                 const LINAPrice = priceRates.LINA / priceRates.lUSD;
                 const LINAPriceBN = bnDiv(priceRates.LINA, priceRates.lUSD);
@@ -748,7 +748,7 @@ export default {
                             // }
 
                             console.log("单独unstake");
-                             // console.log("单独unstake");
+                            // console.log("单独unstake");
                             this.actionDatas.unStake = n2bn(
                                 _.floor(bn2n(this.actionDatas.unStake), 2)
                             );
@@ -1328,11 +1328,21 @@ export default {
                     )
                 );
 
-                this.inputData.unStake = formatEtherToNumber(needUnstake);
+                if (needUnstake.lte(this.burnData.stakedBN)) {
+                    // <= stake
+                    this.inputData.unStake = formatEtherToNumber(needUnstake);
+                    this.actionDatas.unStake = needUnstake;
+                } else {
+                    // > stake
+                    this.inputData.unStake = formatEtherToNumber(
+                        this.burnData.stakedBN
+                    );
+                    this.actionDatas.unStake = this.burnData.stakedBN;
+                }
+
                 this.inputData.amount = formatEtherToNumber(0);
                 this.inputData.ratio = this.burnData.targetRatio;
 
-                this.actionDatas.unStake = needUnstake;
                 this.actionDatas.amount = BigNumber.from("0");
                 this.actionDatas.ratio = this.burnData.targetRatio;
             } else if (
@@ -2032,7 +2042,6 @@ export default {
                                     img {
                                         width: 100%;
                                         height: 100%;
-                                        
                                     }
                                 }
 
@@ -2073,7 +2082,6 @@ export default {
                                         color: #1a38f8;
 
                                         img {
-                                            
                                             margin-left: 6px;
                                         }
 

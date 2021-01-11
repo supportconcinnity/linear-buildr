@@ -1,7 +1,7 @@
 
       import {Contract} from 'ethers';
       import ContractSettings from '../../contractSettings';
-      import abi from '../../lib/abis/ropsten/LnErc20Bridge';
+      import abi from '../../lib/abis/bsctestnet/LnErc20Bridge';
   
       function LnErc20Bridge(contractSettings) {
         this.contractSettings = contractSettings || new ContractSettings();

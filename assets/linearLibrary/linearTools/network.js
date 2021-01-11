@@ -99,6 +99,22 @@ export const BLOCKCHAIN_BROWSER = {
     97: "https://testnet.bscscan.com/tx/"
 };
 
+export const BLOCKCHAIN_BROWSER_API = {
+    1: "https://api.etherscan.io/api",
+    3: "https://api-ropsten.etherscan.io/api",
+    56: "https://api.bscscan.com/api",
+    97: "https://api-testnet.bscscan.com/api"
+};
+
+export const BINANCE_TOKEN_ADDRESS = {
+    56: {
+        ETH: "0x250632378e573c6be1ac2f97fcdf00515d0aa91b"
+    },
+    97: {
+        ETH: "0xd66c6b4f0be8ce5b39d52e0fd1344c389929b378"
+    }
+};
+
 /**
  * 链切换类型
  * network 钱包内切换网络

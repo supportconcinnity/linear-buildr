@@ -42,24 +42,37 @@ export default [
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'user',
-        type: 'address'
-      },
-      {
-        indexed: false,
-        internalType: 'string',
-        name: '_currency',
-        type: 'string'
+        internalType: 'bytes32',
+        name: 'tokenKey',
+        type: 'bytes32'
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: '_amount',
+        name: 'chainId',
         type: 'uint256'
       }
     ],
-    name: 'FreezeLog',
+    name: 'ChainSupportForTokenAdded',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'tokenKey',
+        type: 'bytes32'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'chainId',
+        type: 'uint256'
+      }
+    ],
+    name: 'ChainSupportForTokenDropped',
     type: 'event'
   },
   {
@@ -68,11 +81,17 @@ export default [
       {
         indexed: false,
         internalType: 'address',
-        name: 'account',
+        name: 'oldRelayer',
+        type: 'address'
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'newRelayer',
         type: 'address'
       }
     ],
-    name: 'Paused',
+    name: 'RelayerChanged',
     type: 'event'
   },
   {
@@ -80,30 +99,24 @@ export default [
     inputs: [
       {
         indexed: false,
+        internalType: 'bytes32',
+        name: 'tokenKey',
+        type: 'bytes32'
+      },
+      {
+        indexed: false,
         internalType: 'address',
-        name: '_account',
+        name: 'tokenAddress',
         type: 'address'
       },
       {
         indexed: false,
-        internalType: 'string',
-        name: '_txId',
-        type: 'string'
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: '_amount',
-        type: 'uint256'
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: '_timestamp',
-        type: 'uint256'
+        internalType: 'uint8',
+        name: 'lockType',
+        type: 'uint8'
       }
     ],
-    name: 'SetFreezeTxLog',
+    name: 'TokenAdded',
     type: 'event'
   },
   {
@@ -111,24 +124,48 @@ export default [
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'user',
-        type: 'address'
-      },
-      {
-        indexed: false,
-        internalType: 'string',
-        name: '_currency',
-        type: 'string'
+        internalType: 'uint256',
+        name: 'srcChainId',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: '_amount',
+        name: 'destChainId',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'depositId',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'depositor',
+        type: 'bytes32'
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'recipient',
+        type: 'bytes32'
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'currency',
+        type: 'bytes32'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
         type: 'uint256'
       }
     ],
-    name: 'UnfreezeLog',
+    name: 'TokenDeposited',
     type: 'event'
   },
   {
@@ -136,13 +173,90 @@ export default [
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'account',
-        type: 'address'
+        internalType: 'bytes32',
+        name: 'tokenKey',
+        type: 'bytes32'
       }
     ],
-    name: 'Unpaused',
+    name: 'TokenRemoved',
     type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'srcChainId',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'destChainId',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'depositId',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'depositor',
+        type: 'bytes32'
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'recipient',
+        type: 'bytes32'
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'currency',
+        type: 'bytes32'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256'
+      }
+    ],
+    name: 'TokenWithdrawn',
+    type: 'event'
+  },
+  {
+    inputs: [],
+    name: 'DEPOSIT_TYPEHASH',
+    outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'DOMAIN_SEPARATOR',
+    outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'TOKEN_LOCK_TYPE_MINT_BURN',
+    outputs: [ { internalType: 'uint8', name: '', type: 'uint8' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'TOKEN_LOCK_TYPE_TRANSFER',
+    outputs: [ { internalType: 'uint8', name: '', type: 'uint8' } ],
+    stateMutability: 'view',
+    type: 'function'
   },
   {
     inputs: [ { internalType: 'address', name: '_admin', type: 'address' } ],
@@ -153,10 +267,35 @@ export default [
   },
   {
     inputs: [
-      { internalType: 'address', name: '_tokenAddr', type: 'address' },
+      { internalType: 'address', name: '_relayer', type: 'address' },
       { internalType: 'address', name: '_admin', type: 'address' }
     ],
     name: '__LnErc20Bridge_init',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' },
+      { internalType: 'uint256', name: 'chainId', type: 'uint256' }
+    ],
+    name: 'addChainSupportForToken',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' },
+      {
+        internalType: 'address',
+        name: 'tokenAddress',
+        type: 'address'
+      },
+      { internalType: 'uint8', name: 'lockType', type: 'uint8' }
+    ],
+    name: 'addToken',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -183,55 +322,77 @@ export default [
     type: 'function'
   },
   {
-    inputs: [ { internalType: 'uint256', name: '_amount', type: 'uint256' } ],
-    name: 'freeze',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '', type: 'address' },
-      { internalType: 'string', name: '', type: 'string' }
-    ],
-    name: 'freezeTxLog',
-    outputs: [
-      { internalType: 'uint256', name: 'amount', type: 'uint256' },
-      { internalType: 'uint256', name: 'timestamp', type: 'uint256' },
-      { internalType: 'bool', name: 'done', type: 'bool' }
-    ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'address', name: '_account', type: 'address' } ],
-    name: 'getPendingProcess',
-    outputs: [ { internalType: 'string[]', name: '', type: 'string[]' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
     inputs: [],
-    name: 'getTotalFrozenToken',
+    name: 'currentChainId',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
     type: 'function'
   },
   {
+    inputs: [
+      { internalType: 'bytes32', name: 'token', type: 'bytes32' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { internalType: 'uint256', name: 'destChainId', type: 'uint256' },
+      { internalType: 'bytes32', name: 'recipient', type: 'bytes32' }
+    ],
+    name: 'deposit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
     inputs: [],
-    name: 'paused',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    name: 'depositCount',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [
-      { internalType: 'address', name: '', type: 'address' },
-      { internalType: 'uint256', name: '', type: 'uint256' }
+      { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' },
+      { internalType: 'uint256', name: 'chainId', type: 'uint256' }
     ],
-    name: 'pendingProcess',
-    outputs: [ { internalType: 'string', name: '', type: 'string' } ],
+    name: 'dropChainSupportForToken',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' } ],
+    name: 'getTokenAddress',
+    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' } ],
+    name: 'getTokenLockType',
+    outputs: [ { internalType: 'uint8', name: '', type: 'uint8' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' },
+      { internalType: 'uint256', name: 'chainId', type: 'uint256' }
+    ],
+    name: 'isTokenSupportedOnChain',
+    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'relayer',
+    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' } ],
+    name: 'removeToken',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -244,29 +405,60 @@ export default [
     type: 'function'
   },
   {
-    inputs: [
-      { internalType: 'address', name: '_account', type: 'address' },
-      { internalType: 'string', name: '_txId', type: 'string' },
-      { internalType: 'uint256', name: '_amount', type: 'uint256' },
-      { internalType: 'uint256', name: '_timestamp', type: 'uint256' }
-    ],
-    name: 'setFreezeTx',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'bool', name: '_paused', type: 'bool' } ],
-    name: 'setPaused',
+    inputs: [ { internalType: 'address', name: '_relayer', type: 'address' } ],
+    name: 'setRelayer',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [ { internalType: 'string', name: '_txId', type: 'string' } ],
-    name: 'unfreeze',
+    inputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
+    name: 'tokenInfos',
+    outputs: [
+      {
+        internalType: 'address',
+        name: 'tokenAddress',
+        type: 'address'
+      },
+      { internalType: 'uint8', name: 'lockType', type: 'uint8' }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: '', type: 'bytes32' },
+      { internalType: 'uint256', name: '', type: 'uint256' }
+    ],
+    name: 'tokenSupportedOnChain',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint256', name: 'srcChainId', type: 'uint256' },
+      { internalType: 'uint256', name: 'destChainId', type: 'uint256' },
+      { internalType: 'uint256', name: 'depositId', type: 'uint256' },
+      { internalType: 'bytes32', name: 'depositor', type: 'bytes32' },
+      { internalType: 'bytes32', name: 'recipient', type: 'bytes32' },
+      { internalType: 'bytes32', name: 'currency', type: 'bytes32' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { internalType: 'bytes', name: 'signature', type: 'bytes' }
+    ],
+    name: 'withdraw',
+    outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint256', name: '', type: 'uint256' },
+      { internalType: 'uint256', name: '', type: 'uint256' }
+    ],
+    name: 'withdrawnDeposits',
+    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    stateMutability: 'view',
     type: 'function'
   }
 ];

@@ -1,63 +1,102 @@
 <template>
     <div id="gasEditorSwap">
-        <div class="source">
-            <div class="editInfo">
-                <template v-if="isEthereumNetwork">
-                    <img class="editLogo" src="@/static/ETH.svg" />
-                    <div class="editNetwork">
-                        <template v-if="isMobile">ETH Network</template>
-                        <template v-else>Ethereum Network</template>
-                    </div>
-                </template>
-                <template v-if="isBinanceNetwork">
-                    <img class="editLogo" src="@/static/binance.svg" />
-                    <div class="editNetwork">
-                        <template v-if="isMobile">BSC Network</template>
-                        <template v-else> Binance Smart Chain</template>
-                    </div>
-                </template>
+        <div class="simple" v-if="simple">
+            <div class="source">
+                <div class="editInfo">
+                    <template v-if="isEthereumNetwork">ETH </template>
+                    <template v-if="isBinanceNetwork">BSC </template>network fee
 
-                <div class="editFee">
-                    <template v-if="!isMobile">Network</template>
-                    Fee : {{ sourcePrice }} Gwei
-                    <img
-                        class="editBtn"
-                        @click="sourceGasEditorModal = true"
-                        src="@/static/edit_pencil.svg"
-                    />
+                    <span class="editBtn" @click="sourceGasEditorModal = true">
+                        <img
+                            @click="sourceGasEditorModal = true"
+                            src="@/static/edit_pencil.svg"
+                        />
+
+                        <template v-if="!isMobile">EDIT</template>
+                    </span>
                 </div>
+
+                <div class="editFee">{{ sourcePrice }} Gwei</div>
+            </div>
+
+            <div class="target">
+                <div class="editInfo">
+                    <template v-if="isEthereumNetwork">BSC </template>
+                    <template v-if="isBinanceNetwork">ETH </template>network fee
+
+                    <span class="editBtn" @click="targetGasEditorModal = true">
+                        <img
+                            @click="targetGasEditorModal = true"
+                            src="@/static/edit_pencil.svg"
+                        />
+                        <template v-if="!isMobile">EDIT</template>
+                    </span>
+                </div>
+
+                <div class="editFee">{{ targetPrice }} Gwei</div>
             </div>
         </div>
 
-        <div class="arrow">
-            <img src="@/static/transferProgress/arrow_right.svg" />
-        </div>
+        <div class="normal" v-else>
+            <div class="source">
+                <div class="editInfo">
+                    <template v-if="isEthereumNetwork">
+                        <img class="editLogo" src="@/static/ETH.svg" />
+                        <div class="editNetwork">
+                            <template v-if="isMobile">ETH Network</template>
+                            <template v-else>Ethereum Network</template>
+                        </div>
+                    </template>
+                    <template v-if="isBinanceNetwork">
+                        <img class="editLogo" src="@/static/binance.svg" />
+                        <div class="editNetwork">
+                            <template v-if="isMobile">BSC Network</template>
+                            <template v-else> Binance Smart Chain</template>
+                        </div>
+                    </template>
 
-        <div class="target">
-            <div class="editInfo">
-                <template v-if="isEthereumNetwork">
-                    <img class="editLogo" src="@/static/binance.svg" />
-                    <div class="editNetwork">
-                        <template v-if="isMobile">BSC Network</template>
-                        <template v-else> Binance Smart Chain</template>
+                    <div class="editFee">
+                        <template v-if="!isMobile">Network</template>
+                        Fee : {{ sourcePrice }} Gwei
+                        <img
+                            class="editBtn"
+                            @click="sourceGasEditorModal = true"
+                            src="@/static/edit_pencil.svg"
+                        />
                     </div>
-                </template>
-                <template v-if="isBinanceNetwork">
-                    <img class="editLogo" src="@/static/ETH.svg" />
-                    <div class="editNetwork">
-                        <template v-if="isMobile">ETH Network</template>
-                        <template v-else>Ethereum Network</template>
-                    </div>
-                </template>
+                </div>
+            </div>
 
-                <div class="editFee">
-                    <template v-if="!isMobile">Network</template> Fee :
-                    {{ targetPrice }} Gwei
-                    <img
-                        class="editBtn"
-                        @click="targetGasEditorModal = true"
-                        src="@/static/edit_pencil.svg"
-                    />
+            <div class="arrow">
+                <img src="@/static/transferProgress/arrow_right.svg" />
+            </div>
+
+            <div class="target">
+                <div class="editInfo">
+                    <template v-if="isEthereumNetwork">
+                        <img class="editLogo" src="@/static/binance.svg" />
+                        <div class="editNetwork">
+                            <template v-if="isMobile">BSC Network</template>
+                            <template v-else> Binance Smart Chain</template>
+                        </div>
+                    </template>
+                    <template v-if="isBinanceNetwork">
+                        <img class="editLogo" src="@/static/ETH.svg" />
+                        <div class="editNetwork">
+                            <template v-if="isMobile">ETH Network</template>
+                            <template v-else>Ethereum Network</template>
+                        </div>
+                    </template>
+
+                    <div class="editFee">
+                        <template v-if="!isMobile">Network</template> Fee :
+                        {{ targetPrice }} Gwei
+                        <img
+                            class="editBtn"
+                            @click="targetGasEditorModal = true"
+                            src="@/static/edit_pencil.svg"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -422,6 +461,12 @@ import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { Logger } from "ethers/lib/utils";
 
 export default {
+    props: {
+        simple: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             sourcePrice: unFormatGasPrice(
@@ -786,87 +831,143 @@ export default {
 <style lang="scss">
 #gasEditorSwap {
     width: 100%;
-    display: flex;
-    position: relative;
 
-    .source {
-        background-color: #fafafa;
-        border-top-left-radius: 8px;
-        border-bottom-left-radius: 8px;
-    }
+    .simple {
+        .target {
+            margin-top: 8px;
+        }
 
-    .target {
-        background-color: #f6f6f6;
-        border-top-right-radius: 8px;
-        border-bottom-right-radius: 8px;
-    }
-
-    .source,
-    .target {
-        flex: 1;
-        .editInfo {
+        .source,
+        .target {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            padding: 24px 10px;
+            justify-content: space-between;
 
-            .editLogo {
-                width: 32px;
-                height: 32px;
-                margin-bottom: 8px;
-            }
+            font-family: Gilroy-Regular;
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: normal;
+            color: #5a575c;
 
-            .editNetwork {
-                font-family: Gilroy-Medium;
-                font-size: 12px;
-                font-weight: 500;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.33;
-                letter-spacing: normal;
-                text-align: center;
-                color: #5a575c;
-            }
-
-            .editFee {
-                font-family: Gilroy-Medium;
-                font-size: 12px;
-                font-weight: 500;
-                font-stretch: normal;
-                font-style: normal;
-                line-height: 1.33;
-                letter-spacing: normal;
-                text-align: center;
-                color: #99999a;
+            .editInfo {
+                flex: 1;
                 display: flex;
                 align-items: center;
 
                 .editBtn {
-                    width: 16px;
-                    height: 16px;
+                    margin-left: 11px;
+                    padding: 3px 7px;
+                    border-radius: 14px;
+                    border: solid 1px #e5e5e5;
+                    font-family: Gilroy-Bold;
+                    font-size: 10px;
+                    font-weight: bold;
+                    font-stretch: normal;
+                    font-style: normal;
+                    letter-spacing: 1.25px;
+                    color: #1a38f8;
                     cursor: pointer;
-                    margin-left: 4px;
+                    transition: border $animete-time linear;
+
+                    img {
+                        width: 16px;
+                        height: 16px;
+                    }
+
+                    &:hover {
+                        border-color: #1a38f8;
+                    }
                 }
             }
         }
     }
 
-    .arrow {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
+    .normal {
         display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #fff;
+        position: relative;
 
-        img {
-            width: 15px;
-            height: 15px;
+        .source {
+            background-color: #fafafa;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        .target {
+            background-color: #f6f6f6;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .source,
+        .target {
+            flex: 1;
+            .editInfo {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 24px 10px;
+
+                .editLogo {
+                    width: 32px;
+                    height: 32px;
+                    margin-bottom: 8px;
+                }
+
+                .editNetwork {
+                    font-family: Gilroy-Medium;
+                    font-size: 12px;
+                    font-weight: 500;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.33;
+                    letter-spacing: normal;
+                    text-align: center;
+                    color: #5a575c;
+                }
+
+                .editFee {
+                    font-family: Gilroy-Medium;
+                    font-size: 12px;
+                    font-weight: 500;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.33;
+                    letter-spacing: normal;
+                    text-align: center;
+                    color: #99999a;
+                    display: flex;
+                    align-items: center;
+
+                    .editBtn {
+                        width: 16px;
+                        height: 16px;
+                        cursor: pointer;
+                        margin-left: 4px;
+                    }
+                }
+            }
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+
+            img {
+                width: 15px;
+                height: 15px;
+            }
         }
     }
 
@@ -1101,12 +1202,31 @@ export default {
 
 @media only screen and (max-width: $max-phone-width) {
     #gasEditorSwap {
-        .source,
-        .target {
-            .editInfo {
-                .editLogo {
-                    width: 24px;
-                    height: 24px;
+        width: 74.4vw;
+
+        .simple {
+            .source,
+            .target {
+                font-size: 12px;
+
+                .editInfo {
+                    .editBtn {
+                        margin-left: 5px;
+                        padding: 0;
+                        border: none;
+                    }
+                }
+            }
+        }
+
+        .normal {
+            .source,
+            .target {
+                .editInfo {
+                    .editLogo {
+                        width: 24px;
+                        height: 24px;
+                    }
                 }
             }
         }

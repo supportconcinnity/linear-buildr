@@ -508,10 +508,10 @@ export default {
                         //记录gas price
                         this.sourceGasPrice =
                             this.$store.state?.sourceGasDetails?.price ||
-                            50000000000;
+                            50 * 1000000000;
                         this.targetGasPrice =
                             this.$store.state?.targetGasDetails?.price ||
-                            50000000000;
+                            50 * 1000000000;
                     }
 
                     this.actionTabs = "m1"; //进入等待页
