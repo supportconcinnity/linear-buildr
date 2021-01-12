@@ -467,31 +467,24 @@ module.exports = {
                     },
                     properties: [
                         "id",
-                        "srcChainId",
-                        "destChainId",
                         "depositId",
                         "depositor",
-                        "recipient",
                         "currency",
                         "amount",
-                        "timestamp",
-                        "index",
+                        "timestamp"
                     ]
                 }
             })
                 .then(results =>
                     results.map(
-                        ({ id, srcChainId, destChainId, depositId, depositor, recipient, currency, amount, timestamp, index }) => ({
+                        ({ id, depositId, depositor, currency, amount, timestamp }) => ({
                             hash: id.split("-")[0],
-                            srcChainId:Number(srcChainId),
-                            destChainId:Number(destChainId),
                             depositId,
                             depositor,
-                            recipient,
-                            currency,
-                            amount,
+                            source: currency,
+                            value: amount / 1e18,
                             timestamp: Number(timestamp * 1000),
-                            index
+                            symbol: "-"
                         })
                     )
                 )
@@ -516,31 +509,24 @@ module.exports = {
                     },
                     properties: [
                         "id",
-                        "srcChainId",
-                        "destChainId",
                         "depositId",
                         "depositor",
-                        "recipient",
                         "currency",
                         "amount",
-                        "timestamp",
-                        "index",
+                        "timestamp"
                     ]
                 }
             })
                 .then(results =>
                     results.map(
-                        ({ id, srcChainId, destChainId, depositId, depositor, recipient, currency, amount, timestamp, index }) => ({
+                        ({ id, depositId, depositor, currency, amount, timestamp }) => ({
                             hash: id.split("-")[0],
-                            srcChainId:Number(srcChainId),
-                            destChainId:Number(destChainId),
                             depositId,
                             depositor,
-                            recipient,
-                            currency,
-                            amount,
+                            source: currency,
+                            value: amount / 1e18,
                             timestamp: Number(timestamp * 1000),
-                            index
+                            symbol: "+"
                         })
                     )
                 )
