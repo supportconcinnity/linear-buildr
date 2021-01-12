@@ -1329,11 +1329,13 @@ export default {
                 );
 
                 if (needUnstake.lte(this.burnData.stakedBN)) {
-                    // <= stake
-                    this.inputData.unStake = formatEtherToNumber(needUnstake);
+                    // <= stake
+                    this.inputData.unStake = formatEtherToNumber(
+                        needUnstake
+                    );
                     this.actionDatas.unStake = needUnstake;
                 } else {
-                    // > stake
+                    // > stake
                     this.inputData.unStake = formatEtherToNumber(
                         this.burnData.stakedBN
                     );
@@ -2241,6 +2243,7 @@ export default {
                     width: 100%;
                     height: 88vh !important;
                     min-height: 550px;
+                    background: white;
 
                     .burnBox,
                     .waitingBox,

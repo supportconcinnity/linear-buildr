@@ -459,29 +459,31 @@ module.exports = {
                 query: {
                     entity: "freeZes",
                     selection: {
-                        orderBy: "timestamp",
+                        orderBy: "index",
                         orderDirection: "desc",
                         where: {
-                            account: account ? `\\"${account}\\"` : undefined
+                            depositor: account ? `\\"${account}\\"` : undefined
                         }
                     },
                     properties: [
                         "id",
-                        "account",
-                        "timestamp",
-                        "value",
-                        "currency"
+                        "depositId",
+                        "depositor",
+                        "currency",
+                        "amount",
+                        "timestamp"
                     ]
                 }
             })
                 .then(results =>
                     results.map(
-                        ({ id, account, timestamp, value, currency }) => ({
+                        ({ id, depositId, depositor, currency, amount, timestamp }) => ({
                             hash: id.split("-")[0],
-                            account,
-                            timestamp: Number(timestamp * 1000),
-                            value: value / 1e18,
+                            depositId,
+                            depositor,
                             source: currency,
+                            value: amount / 1e18,
+                            timestamp: Number(timestamp * 1000),
                             symbol: "-"
                         })
                     )
@@ -499,29 +501,31 @@ module.exports = {
                 query: {
                     entity: "unfreezes",
                     selection: {
-                        orderBy: "timestamp",
+                        orderBy: "index",
                         orderDirection: "desc",
                         where: {
-                            account: account ? `\\"${account}\\"` : undefined
+                            depositor: account ? `\\"${account}\\"` : undefined
                         }
                     },
                     properties: [
                         "id",
-                        "account",
-                        "timestamp",
-                        "value",
-                        "currency"
+                        "depositId",
+                        "depositor",
+                        "currency",
+                        "amount",
+                        "timestamp"
                     ]
                 }
             })
                 .then(results =>
                     results.map(
-                        ({ id, account, timestamp, value, currency }) => ({
+                        ({ id, depositId, depositor, currency, amount, timestamp }) => ({
                             hash: id.split("-")[0],
-                            account,
-                            timestamp: Number(timestamp * 1000),
-                            value: value / 1e18,
+                            depositId,
+                            depositor,
                             source: currency,
+                            value: amount / 1e18,
+                            timestamp: Number(timestamp * 1000),
                             symbol: "+"
                         })
                     )
