@@ -1,3 +1,3 @@
-import lETH from '../bsctestnet/LnProxyBEP20';
+import lETH from '../ropsten/LnProxyERC20';
       export default lETH;
       

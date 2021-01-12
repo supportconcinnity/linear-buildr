@@ -2,41 +2,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
-				"name": "_key",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "address payable",
-				"name": "_proxy",
-				"type": "address"
-			},
-			{
-				"internalType": "contract LnTokenStorage",
-				"name": "_tokenStorage",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_symbol",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_totalSupply",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint8",
-				"name": "_decimals",
-				"type": "uint8"
-			},
-			{
 				"internalType": "address",
 				"name": "_admin",
 				"type": "address"
@@ -95,11 +60,17 @@
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "proxyAddress",
+				"name": "oldCandidate",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "newCandidate",
 				"type": "address"
 			}
 		],
-		"name": "ProxyUpdated",
+		"name": "CandidateChanged",
 		"type": "event"
 	},
 	{
@@ -107,12 +78,12 @@
 		"inputs": [
 			{
 				"indexed": false,
-				"internalType": "address",
-				"name": "newTokenStorage",
+				"internalType": "contract LnProxyImpl",
+				"name": "newTarget",
 				"type": "address"
 			}
 		],
-		"name": "TokenStorageUpdated",
+		"name": "TargetUpdated",
 		"type": "event"
 	},
 	{
@@ -141,42 +112,119 @@
 		"type": "event"
 	},
 	{
-		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "oldCandidate",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "newCandidate",
-				"type": "address"
+				"internalType": "bytes",
+				"name": "callData",
+				"type": "bytes"
 			}
 		],
-		"name": "candidateChanged",
-		"type": "event"
+		"name": "Log0",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
-		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
+				"internalType": "bytes",
+				"name": "callData",
+				"type": "bytes"
+			},
+			{
 				"internalType": "bytes32",
-				"name": "name",
+				"name": "topic1",
+				"type": "bytes32"
+			}
+		],
+		"name": "Log1",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes",
+				"name": "callData",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "topic1",
 				"type": "bytes32"
 			},
 			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "addr",
-				"type": "address"
+				"internalType": "bytes32",
+				"name": "topic2",
+				"type": "bytes32"
 			}
 		],
-		"name": "updateCachedAddress",
-		"type": "event"
+		"name": "Log2",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes",
+				"name": "callData",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "topic1",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "topic2",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "topic3",
+				"type": "bytes32"
+			}
+		],
+		"name": "Log3",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes",
+				"name": "callData",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "topic1",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "topic2",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "topic3",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "topic4",
+				"type": "bytes32"
+			}
+		],
+		"name": "Log4",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -293,51 +341,12 @@
 	},
 	{
 		"inputs": [],
-		"name": "integrationProxy",
-		"outputs": [
-			{
-				"internalType": "contract LnProxyBase",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "messageSender",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "name",
 		"outputs": [
 			{
 				"internalType": "string",
 				"name": "",
 				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "proxy",
-		"outputs": [
-			{
-				"internalType": "contract LnProxyBase",
-				"name": "",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -359,51 +368,12 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address payable",
-				"name": "_integrationProxy",
+				"internalType": "contract LnProxyImpl",
+				"name": "_target",
 				"type": "address"
 			}
 		],
-		"name": "setIntegrationProxy",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "sender",
-				"type": "address"
-			}
-		],
-		"name": "setMessageSender",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address payable",
-				"name": "_proxy",
-				"type": "address"
-			}
-		],
-		"name": "setProxy",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract LnTokenStorage",
-				"name": "_tokenStorage",
-				"type": "address"
-			}
-		],
-		"name": "setTokenStorage",
+		"name": "setTarget",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -423,10 +393,10 @@
 	},
 	{
 		"inputs": [],
-		"name": "tokenStorage",
+		"name": "target",
 		"outputs": [
 			{
-				"internalType": "contract LnTokenStorage",
+				"internalType": "contract LnProxyImpl",
 				"name": "",
 				"type": "address"
 			}
@@ -501,65 +471,7 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "keyName",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract LnAddressStorage",
-				"name": "_addressStorage",
-				"type": "address"
-			}
-		],
-		"name": "updateAddressCache",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "mint",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "burn",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
+		"stateMutability": "payable",
+		"type": "receive"
 	}
 ]

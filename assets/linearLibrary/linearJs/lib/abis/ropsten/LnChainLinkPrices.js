@@ -1,19 +1,5 @@
 export default [
   {
-    inputs: [
-      { internalType: 'address', name: '_admin', type: 'address' },
-      { internalType: 'address', name: '_oracle', type: 'address' },
-      {
-        internalType: 'bytes32[]',
-        name: '_currencies',
-        type: 'bytes32[]'
-      },
-      { internalType: 'uint256[]', name: '_prices', type: 'uint256[]' }
-    ],
-    stateMutability: 'nonpayable',
-    type: 'constructor'
-  },
-  {
     anonymous: false,
     inputs: [
       {
@@ -30,6 +16,25 @@ export default [
       }
     ],
     name: 'AdminChanged',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'oldCandidate',
+        type: 'address'
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'newCandidate',
+        type: 'address'
+      }
+    ],
+    name: 'CandidateChanged',
     type: 'event'
   },
   {
@@ -129,47 +134,66 @@ export default [
     type: 'event'
   },
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'oldCandidate',
-        type: 'address'
-      },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'newCandidate',
-        type: 'address'
-      }
-    ],
-    name: 'candidateChanged',
-    type: 'event'
-  },
-  {
     inputs: [],
     name: 'LINA',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
     name: 'LUSD',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'address', name: '_admin', type: 'address' } ],
+    name: '__LnAdminUpgradeable_init',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: '_admin', type: 'address' },
+      { internalType: 'address', name: '_oracle', type: 'address' },
+      {
+        internalType: 'bytes32[]',
+        name: '_currencyNames',
+        type: 'bytes32[]'
+      },
+      {
+        internalType: 'uint256[]',
+        name: '_newPrices',
+        type: 'uint256[]'
+      }
+    ],
+    name: '__LnDefaultPrices_init',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'currencyKey', type: 'bytes32' },
+      {
+        internalType: 'address',
+        name: 'OracleAddress',
+        type: 'address'
+      }
+    ],
+    name: 'addOracle',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
     inputs: [],
     name: 'admin',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
@@ -183,8 +207,7 @@ export default [
     name: 'candidate',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -212,8 +235,7 @@ export default [
     name: 'exchange',
     outputs: [ { internalType: 'uint256', name: 'value', type: 'uint256' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -232,8 +254,7 @@ export default [
       { internalType: 'uint256', name: 'destPrice', type: 'uint256' }
     ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -246,8 +267,7 @@ export default [
     name: 'getCurrentRoundId',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -260,8 +280,7 @@ export default [
     name: 'getPrice',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -277,8 +296,7 @@ export default [
       { internalType: 'uint256', name: 'time', type: 'uint256' }
     ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -291,16 +309,14 @@ export default [
     name: 'isStale',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     name: 'mOracleArray',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
@@ -313,24 +329,30 @@ export default [
       }
     ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     name: 'mPricesLastRound',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [],
     name: 'oracle',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'currencyKey', type: 'bytes32' }
+    ],
+    name: 'removeOracle',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
     inputs: [
@@ -360,8 +382,7 @@ export default [
     name: 'stalePeriod',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -379,29 +400,6 @@ export default [
     ],
     name: 'updateAll',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'currencyKey', type: 'bytes32' },
-      {
-        internalType: 'address',
-        name: 'OracleAddress',
-        type: 'address'
-      }
-    ],
-    name: 'addOracle',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'currencyKey', type: 'bytes32' }
-    ],
-    name: 'removeOracle',
-    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   }

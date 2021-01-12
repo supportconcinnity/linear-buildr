@@ -722,7 +722,7 @@ export default {
 @media only screen and (max-width: $max-phone-width) {
     #gasEditor {
         width: 74.4vw;
-        min-height: 550px;
+        // min-height: 550px;
 
         .editInfo {
             .infoLeft {

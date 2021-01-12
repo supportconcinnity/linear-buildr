@@ -1,13 +1,5 @@
 export default [
   {
-    inputs: [
-      { internalType: 'address', name: '_admin', type: 'address' },
-      { internalType: 'address', name: '_tokenAddr', type: 'address' }
-    ],
-    stateMutability: 'nonpayable',
-    type: 'constructor'
-  },
-  {
     anonymous: false,
     inputs: [
       {
@@ -42,7 +34,7 @@ export default [
         type: 'address'
       }
     ],
-    name: 'candidateChanged',
+    name: 'CandidateChanged',
     type: 'event'
   },
   {
@@ -67,7 +59,20 @@ export default [
         type: 'uint256'
       }
     ],
-    name: 'freezeLog',
+    name: 'FreezeLog',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'account',
+        type: 'address'
+      }
+    ],
+    name: 'Paused',
     type: 'event'
   },
   {
@@ -98,7 +103,7 @@ export default [
         type: 'uint256'
       }
     ],
-    name: 'setFreezeTxLog',
+    name: 'SetFreezeTxLog',
     type: 'event'
   },
   {
@@ -123,8 +128,38 @@ export default [
         type: 'uint256'
       }
     ],
-    name: 'unfreezeLog',
+    name: 'UnfreezeLog',
     type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'account',
+        type: 'address'
+      }
+    ],
+    name: 'Unpaused',
+    type: 'event'
+  },
+  {
+    inputs: [ { internalType: 'address', name: '_admin', type: 'address' } ],
+    name: '__LnAdminUpgradeable_init',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: '_tokenAddr', type: 'address' },
+      { internalType: 'address', name: '_admin', type: 'address' }
+    ],
+    name: '__LnBep20Bridge_init',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
     inputs: [],
@@ -148,6 +183,13 @@ export default [
     type: 'function'
   },
   {
+    inputs: [ { internalType: 'uint256', name: '_amount', type: 'uint256' } ],
+    name: 'freeze',
+    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
     inputs: [
       { internalType: 'address', name: '', type: 'address' },
       { internalType: 'string', name: '', type: 'string' }
@@ -155,9 +197,30 @@ export default [
     name: 'freezeTxLog',
     outputs: [
       { internalType: 'uint256', name: 'amount', type: 'uint256' },
-      { internalType: 'bool', name: 'done', type: 'bool' },
-      { internalType: 'uint256', name: 'timestamp', type: 'uint256' }
+      { internalType: 'uint256', name: 'timestamp', type: 'uint256' },
+      { internalType: 'bool', name: 'done', type: 'bool' }
     ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'address', name: '_account', type: 'address' } ],
+    name: 'getPendingProcess',
+    outputs: [ { internalType: 'string[]', name: '', type: 'string[]' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'getTotalFrozenToken',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'paused',
+    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'view',
     type: 'function'
   },
@@ -193,9 +256,9 @@ export default [
     type: 'function'
   },
   {
-    inputs: [ { internalType: 'uint256', name: '_amount', type: 'uint256' } ],
-    name: 'freeze',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    inputs: [ { internalType: 'bool', name: '_paused', type: 'bool' } ],
+    name: 'setPaused',
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
@@ -204,20 +267,6 @@ export default [
     name: 'unfreeze',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'getTotalFrozenToken',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'address', name: '_account', type: 'address' } ],
-    name: 'getPendingProcess',
-    outputs: [ { internalType: 'string[]', name: '', type: 'string[]' } ],
-    stateMutability: 'view',
     type: 'function'
   }
 ];

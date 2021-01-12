@@ -6,9 +6,22 @@
                     <div class="actionBodyWeb">
                         <div class="actionTitle">Build</div>
                         <div class="actionDesc">
-                            Build ℓUSD and earn staking rewards by staking LINA.
+                            <template v-if="isEthereumNetwork">
+                                Earn rewards by staking LINA and building ℓUSD.
+                                You will need a Binance Chain wallet for the
+                                transaction &nbsp;<span
+                                    class="step"
+                                    @click="jumpToStep"
+                                    >STEP<img src="@/static/arrow_right.svg"
+                                /></span>
+                                .
+                            </template>
+                            <template v-else>
+                                Build ℓUSD and earn staking rewards by staking
+                                LINA.
+                            </template>
                         </div>
-                        <div class="actionRate">
+                        <div class="actionRate" v-if="isBinanceNetwork">
                             1 LINA =
                             {{
                                 formatNumberFromBigNumber(
@@ -204,7 +217,11 @@
                             </div>
                         </div>
 
-                        <gasEditor v-if="!isMobile"></gasEditor>
+                        <gasEditorSwap
+                            v-if="isEthereumNetwork"
+                            :simple="true"
+                        ></gasEditorSwap>
+                        <gasEditor v-else-if="!isMobile"></gasEditor>
                     </div>
 
                     <div class="actionBodyMobile">
@@ -342,7 +359,11 @@
                             </div>
                         </div>
 
-                        <gasEditor v-if="isMobile"></gasEditor>
+                        <gasEditorSwap
+                            v-if="isEthereumNetwork"
+                            :simple="true"
+                        ></gasEditorSwap>
+                        <gasEditor v-else-if="isMobile"></gasEditor>
                     </div>
 
                     <div
@@ -359,7 +380,7 @@
             <TabPane name="m1">
                 <watingEnhance
                     class="waitingBox"
-                    v-if="this.actionTabs == 'm1'"
+                    v-if="this.actionTabs == 'm1' && isBinanceNetwork"
                     :currentStep="confirmTransactionStep"
                     :currentHash="confirmTransactionHash"
                     :currentNetworkId="confirmTransactionNetworkId"
@@ -369,6 +390,12 @@
                     @tryAgain="waitProcessFlow"
                     @close="setDefaultTab"
                 ></watingEnhance>
+
+                <watingEnhanceSwapNew
+                    :swapNumber="inputData.stake"
+                    v-if="this.actionTabs == 'm1' && isEthereumNetwork"
+                    @close="setDefaultTab"
+                ></watingEnhanceSwapNew>
             </TabPane>
         </Tabs>
 
@@ -398,7 +425,7 @@ import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import {
     storeDetailsData,
     getPriceRates,
-    getPriceRatesFromApi,
+    // getPriceRatesFromApi,
     getBuildRatio
 } from "@/assets/linearLibrary/linearTools/request";
 import { DECIMAL_LENGTH } from "@/assets/linearLibrary/linearTools/constants/flow";
@@ -444,12 +471,13 @@ import {
     DECIMAL_PRECISION
 } from "@/assets/linearLibrary/linearTools/constants/process";
 
+import watingEnhanceSwapNew from "@/components/transferStatus/watingEnhanceSwapNew";
+import gasEditorSwap from "@/components/gasEditorSwap";
+
 export default {
     name: "build",
     data() {
         return {
-            testBox: false, //无用时删除
-
             utils, // ethers工具包
             DECIMAL_PRECISION,
             formatNumber, //千分格式化
@@ -510,7 +538,9 @@ export default {
         };
     },
     components: {
-        gasEditor
+        gasEditor,
+        gasEditorSwap,
+        watingEnhanceSwapNew
     },
     watch: {
         walletAddress() {},
@@ -558,6 +588,13 @@ export default {
         this.getBuildData(this.walletAddress);
     },
     methods: {
+        //跳转到设置
+        jumpToStep() {
+            window.open(
+                "https://docs.binance.org/smart-chain/wallet/binance.html"
+            );
+        },
+
         /**
          * 调整stake最小数为1,小于为0
          */
@@ -591,8 +628,7 @@ export default {
                     lnrJS: {
                         LnCollateralSystem,
                         LnRewardLocker,
-                        LnDebtSystem,
-                        LnChainLinkPrices
+                        LnDebtSystem
                     },
                     utils
                 } = lnrJSConnector;
@@ -638,8 +674,8 @@ export default {
 
                 const targetRatioPercent = 100 / buildRatio; //目标抵押率
 
-                // const priceRates = await getPriceRates(["LINA", "lUSD"]);
-                const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
+                const priceRates = await getPriceRates(["LINA", "lUSD"]);
+                // const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
 
                 const LINAPrice = priceRates.LINA / priceRates.lUSD;
                 const LINAPriceBN = bnDiv(priceRates.LINA, priceRates.lUSD);
@@ -1206,45 +1242,51 @@ export default {
         async clickBuild() {
             try {
                 if (!this.buildDisabled) {
-                    this.processing = true;
+                    if (this.isBinanceNetwork) {
+                        this.processing = true;
 
-                    //清空之前数据
-                    this.waitProcessArray = [];
-                    this.confirmTransactionStep = 0;
+                        //清空之前数据
+                        this.waitProcessArray = [];
+                        this.confirmTransactionStep = 0;
 
-                    if (this.actionData.needApprove.gt("0")) { 
-                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.APPROVE);
-                    }
-
-                    if (
-                        this.actionData.stake.gte(n2bn("1")) &&
-                        this.actionData.amount.gte(n2bn("0.01"))
-                    ) {
-                        //一步调用
-                        this.waitProcessArray.push(
-                            BUILD_PROCESS_SETUP.STAKING_BUILD
-                        );
-                    } else {
-                        //单独调用
-                        if (this.actionData.stake.gte(n2bn("1"))) {
+                        if (this.actionData.needApprove.gt("0")) {
                             this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.STAKING
+                                BUILD_PROCESS_SETUP.APPROVE
                             );
                         }
 
-                        if (this.actionData.amount.gte(n2bn("0.01"))) {
+                        if (
+                            this.actionData.stake.gte(n2bn("1")) &&
+                            this.actionData.amount.gte(n2bn("0.01"))
+                        ) {
+                            //一步调用
                             this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.BUILD
+                                BUILD_PROCESS_SETUP.STAKING_BUILD
                             );
+                        } else {
+                            //单独调用
+                            if (this.actionData.stake.gte(n2bn("1"))) {
+                                this.waitProcessArray.push(
+                                    BUILD_PROCESS_SETUP.STAKING
+                                );
+                            }
+
+                            if (this.actionData.amount.gte(n2bn("0.01"))) {
+                                this.waitProcessArray.push(
+                                    BUILD_PROCESS_SETUP.BUILD
+                                );
+                            }
                         }
+
+                        this.actionTabs = "m1"; //进入等待页
+
+                        this.waitProcessFlow = this.startFlow();
+
+                        //开始逻辑流处理函数
+                        await this.waitProcessFlow();
+                    } else if (this.isEthereumNetwork) {
+                        this.actionTabs = "m1"; //进入swap流程
                     }
-
-                    this.actionTabs = "m1"; //进入等待页
-
-                    this.waitProcessFlow = this.startFlow();
-
-                    //开始逻辑流处理函数
-                    await this.waitProcessFlow();
                 }
             } catch (error) {
                 this.transactionErrMsg =
@@ -1259,6 +1301,14 @@ export default {
             return async () => {
                 try {
                     this.transactionErrMsg = "";
+
+                    //合约需要大于1
+                    if (this.actionData.stake.eq(n2bn("1"))) {
+                        this.actionData.stake = bnAdd(
+                            this.actionData.stake,
+                            n2bn("0.000000000000000001")
+                        );
+                    }
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
@@ -1292,14 +1342,6 @@ export default {
                             );
                             if (stake.lt(this.buildData.LINABN)) {
                                 this.actionData.stake = stake;
-                            }
-
-                            //合约需要大于1
-                            if (this.actionData.stake.eq(n2bn("1"))) {
-                                this.actionData.stake = bnAdd(
-                                    this.actionData.stake,
-                                    n2bn("0.000000000000000001")
-                                );
                             }
                             await this.startStakingContract(
                                 this.actionData.stake
@@ -1409,7 +1451,7 @@ export default {
             this.confirmTransactionStatus = false;
 
             const {
-                lnrJS: { LnColateralBuildBurnAPI },
+                lnrJS: { LnCollateralSystem },
                 utils
             } = lnrJSConnector;
 
@@ -1424,7 +1466,7 @@ export default {
                 stakeAmountLINA
             );
 
-            let transaction = await LnColateralBuildBurnAPI.collateralAndBuild(
+            let transaction = await LnCollateralSystem.collateralAndBuild(
                 utils.formatBytes32String("LINA"),
                 stakeAmountLINA,
                 transactionSettings
@@ -1479,7 +1521,6 @@ export default {
             );
 
             let transaction = await LnCollateralSystem.Collateral(
-                this.walletAddress,
                 utils.formatBytes32String("LINA"),
                 stakeAmountLINA,
                 transactionSettings
@@ -1537,7 +1578,6 @@ export default {
             );
 
             let transaction = await LnBuildBurnSystem.BuildAsset(
-                this.walletAddress,
                 buildAmountlUSD,
                 transactionSettings
             );
@@ -1604,7 +1644,7 @@ export default {
         async getGasEstimateFromStakingAndBuild(stakeAmountLINA) {
             try {
                 const {
-                    lnrJS: { LnColateralBuildBurnAPI },
+                    lnrJS: { LnCollateralSystem },
                     utils
                 } = lnrJSConnector;
 
@@ -1615,7 +1655,7 @@ export default {
                     throw new Error("invalid stakeAmountLINA");
                 }
 
-                let gasEstimate = await LnColateralBuildBurnAPI.contract.estimateGas.collateralAndBuild(
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.collateralAndBuild(
                     utils.formatBytes32String("LINA"),
                     stakeAmountLINA
                 );
@@ -1643,7 +1683,6 @@ export default {
                 }
 
                 let gasEstimate = await LnCollateralSystem.contract.estimateGas.Collateral(
-                    this.walletAddress,
                     utils.formatBytes32String("LINA"),
                     stakeAmountLINA
                 );
@@ -1669,7 +1708,6 @@ export default {
                 }
 
                 let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BuildAsset(
-                    this.walletAddress,
                     buildAmountlUSD
                 );
 
@@ -1829,7 +1867,6 @@ export default {
 
                         .actionDesc {
                             margin-top: 8px;
-                            padding: 0 75px;
                             font-family: Gilroy-Regular;
                             font-size: 14px;
                             font-weight: normal;
@@ -1839,6 +1876,17 @@ export default {
                             letter-spacing: normal;
                             text-align: center;
                             color: #99999a;
+                            margin-bottom: 48px;
+
+                            .step {
+                                text-transform: uppercase;
+                                font-family: Gilroy-Bold;
+                                font-weight: bold;
+                                line-height: 1.6;
+                                letter-spacing: 1.25px;
+                                color: #1a38f8;
+                                cursor: pointer;
+                            }
                         }
 
                         .actionRate {
@@ -1895,7 +1943,6 @@ export default {
                                     img {
                                         width: 100%;
                                         height: 100%;
-                                        
                                     }
                                 }
 
@@ -1937,7 +1984,6 @@ export default {
                                         color: #1a38f8;
 
                                         img {
-                                            
                                             margin-left: 6px;
                                         }
 

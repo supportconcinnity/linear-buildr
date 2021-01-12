@@ -7,7 +7,7 @@
             slippage.
         </div>
         <div class="actionsBox">
-            <div class="boxItem">
+            <div class="boxItem" @click="isMobile && btnClick(1)">
                 <div class="imgBox">
                     <img src="@/static/LINA_logo.svg" alt="" />
                 </div>
@@ -15,11 +15,15 @@
                     Buy LINA <br />
                     on other platform
                 </div>
-                <div class="btn" @click="btnClick(1)">
+                <div
+                    class="btn"
+                    :class="{ isMobile }"
+                    @click="!isMobile && btnClick(1)"
+                >
                     BUY LINA <Icon type="ios-arrow-round-forward" />
                 </div>
             </div>
-            <div class="boxItem">
+            <div class="boxItem" @click="isMobile && btnClick(2)">
                 <div class="imgBox">
                     <img src="@/static/currency/lUSD.svg" alt="" />
                 </div>
@@ -27,7 +31,13 @@
                     Stake LINA <br />
                     Build ℓUSD
                 </div>
-                <div class="btn" @click="btnClick(2)">Build ℓUSD</div>
+                <div
+                    class="btn"
+                    :class="{ isMobile }"
+                    @click="!isMobile && btnClick(2)"
+                >
+                    Build ℓUSD
+                </div>
             </div>
         </div>
     </div>
@@ -40,6 +50,14 @@ export default {
     name: "homePage",
     data() {
         return {};
+    },
+    watch: {
+        isMobile() {}
+    },
+    computed: {
+        isMobile() {
+            return this.$store.state?.isMobile;
+        }
     },
     methods: {
         btnClick(type) {
@@ -162,8 +180,10 @@ export default {
                 font-weight: bold;
             }
 
-            &:hover {
-                background-color: #7eb5ff;
+            &:not(.isMobile) {
+                &:hover {
+                    background-color: #7eb5ff;
+                }
             }
         }
     }
@@ -270,10 +290,6 @@ export default {
                     font-size: 27px;
                     margin-left: 0px;
                     font-weight: bold;
-                }
-
-                &:hover {
-                    background-color: #7eb5ff;
                 }
             }
         }

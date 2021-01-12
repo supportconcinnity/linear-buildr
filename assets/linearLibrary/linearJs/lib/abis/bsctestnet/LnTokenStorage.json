@@ -40,19 +40,6 @@
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "operator",
-				"type": "address"
-			}
-		],
-		"name": "OperatorUpdated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
 				"name": "oldCandidate",
 				"type": "address"
 			},
@@ -63,7 +50,20 @@
 				"type": "address"
 			}
 		],
-		"name": "candidateChanged",
+		"name": "CandidateChanged",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "OperatorUpdated",
 		"type": "event"
 	},
 	{
@@ -77,8 +77,7 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -102,8 +101,7 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -122,8 +120,7 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
+		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -143,8 +140,7 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
+		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -157,33 +153,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function",
-		"constant": true
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_candidate",
-				"type": "address"
-			}
-		],
-		"name": "setCandidate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_opperator",
-				"type": "address"
-			}
-		],
-		"name": "setOperator",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -223,6 +192,32 @@
 			}
 		],
 		"name": "setBalanceOf",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_candidate",
+				"type": "address"
+			}
+		],
+		"name": "setCandidate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_opperator",
+				"type": "address"
+			}
+		],
+		"name": "setOperator",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

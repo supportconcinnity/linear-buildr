@@ -611,7 +611,6 @@ export default {
         });
         //订阅钱包账户改变事件
         this.$pub.subscribe("onWalletAccountChange", (msg, params) => {
-            console.log("onWalletAccountChange");
             this.walletStatusChange(true);
         });
 

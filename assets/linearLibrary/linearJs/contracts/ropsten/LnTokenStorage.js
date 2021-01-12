@@ -43,16 +43,6 @@
         return await this.contract.operator(txParams);
       };
     
-      this.setCandidate = async (_candidate, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.setCandidate(_candidate, txParams);
-      };
-    
-      this.setOperator = async (_opperator, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.setOperator(_opperator, txParams);
-      };
-    
       this.setAllowance = async (tokenOwner, spender, value, txParams) => {
         txParams = txParams || {};
         return await this.contract.setAllowance(tokenOwner, spender, value, txParams);
@@ -61,6 +51,16 @@
       this.setBalanceOf = async (account, value, txParams) => {
         txParams = txParams || {};
         return await this.contract.setBalanceOf(account, value, txParams);
+      };
+    
+      this.setCandidate = async (_candidate, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.setCandidate(_candidate, txParams);
+      };
+    
+      this.setOperator = async (_opperator, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.setOperator(_opperator, txParams);
       };
     
       }

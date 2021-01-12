@@ -10,7 +10,7 @@ import { formatNumber, formatEtherToNumber } from "../format";
 import { isBinanceNetwork, isEthereumNetwork, WALLET_STATUS } from "../network";
 import config from "@/config/common";
 import api from "@/api";
-import { n2bn, bn2n } from "@/common/bnCalc";
+import { n2bn, bn2n, bnMul } from "@/common/bnCalc";
 
 let loopId = 0;
 
@@ -22,32 +22,47 @@ export const getLiquids = async wallet => {
         lnrJS: {
             LnAssetSystem,
             contractSettings: { addressList }
-        },
-        utils
+        }
     } = lnrJSConnector;
 
     //获取资产列表
     const assetAddress = await LnAssetSystem.getAssetAddresses();
 
     let liquids = 0;
+    let assetKeys = [];
+    let assetPromise = [];
 
-    //遍历资产合约
+    //整理数据
     for (let i = 0; i < assetAddress.length; i++) {
         for (const key in addressList) {
+            //获取相同合约地址的数据
             if (addressList[key] == assetAddress[i]) {
                 let asset = lnrJSConnector.lnrJS[key];
-
-                //上exchange时使用合约内价格
-                let [balance, price] = await Promise.all([
-                    asset.balanceOf(wallet),
-                    exchangeData.exchange.pricesLast({ source: key })
-                ]);
-                liquids += formatEtherToNumber(balance) * price[0].currentPrice;
+                //汇总获取price的key
+                assetKeys.push(key);
+                //汇总取余额的token
+                assetPromise.push(asset.balanceOf(wallet));
             }
         }
     }
 
-    return utils.parseEther(liquids.toString());
+    //获取汇总数据
+    const [assetPrices, assetBalances] = await Promise.all([
+        getPriceRates(assetKeys),
+        Promise.all(assetPromise)
+    ]);
+
+    //计算资产总数
+    for (let i = 0; i < assetAddress.length; i++) {
+        for (const key in addressList) {
+            //相同合约地址的数据
+            if (addressList[key] == assetAddress[i]) {
+                liquids += bn2n(bnMul(assetBalances[i], assetPrices[key]));
+            }
+        }
+    }
+    // console.log(liquids, "liquids");
+    return n2bn(liquids);
 };
 
 /**
@@ -67,24 +82,49 @@ export const getBuildRatio = async () => {
  * @param {String} currency 货币名称, 参考CRYPTO_CURRENCIES
  */
 export const getPriceRates = async currency => {
+    const walletNetworkId = $nuxt.$store.state.walletNetworkId;
+    const isEthereum = isEthereumNetwork(walletNetworkId);
+    const isBinance = isBinanceNetwork(walletNetworkId);
+
     const rates = {};
-    const {
-        lnrJS: { LnChainLinkPrices },
-        utils
-    } = lnrJSConnector;
+    const { utils } = lnrJSConnector;
+
+    let contract;
+    if (isEthereum) {
+        contract = lnrJSConnector.lnrJS.LnChainLinkPrices;
+    } else if (isBinance) {
+        contract = lnrJSConnector.lnrJS.LnBandProtocol;
+    }
+
+    let pricesPromise = [];
+
     if (_.isString(currency)) {
-        rates[currency] = await LnChainLinkPrices.getPrice(
+        if (currency == "lUSD") {
+            return n2bn(1);
+        }
+        rates[currency] = await contract.getPrice(
             utils.formatBytes32String(currency)
         );
     } else if (_.isArray(currency)) {
         for (let index = 0; index < currency.length; index++) {
             const name = currency[index];
-            rates[name] = await LnChainLinkPrices.getPrice(
-                utils.formatBytes32String(name)
+            pricesPromise.push(
+                contract.getPrice(utils.formatBytes32String(name))
             );
+        }
+
+        let prices = await Promise.all(pricesPromise);
+        for (let index = 0; index < currency.length; index++) {
+            const name = currency[index];
+            let price = prices[index];
+            if (name == "lUSD") {
+                price = n2bn(1);
+            }
+            rates[name] = price;
         }
     }
 
+    // console.log(rates, "rates");
     return rates;
 };
 
@@ -101,9 +141,9 @@ export const getPriceRatesFromApi = async currency => {
     if (_.isString(currency)) {
         if (currency == "lUSD") {
             rates["lUSD"] = n2bn("1");
-        } else if (currency == "LINA") {console.log(1111)
+        } else if (currency == "LINA") {
             rates["LINA"] = await LnChainLinkPrices.getPrice(
-                utils.formatBytes32String(name)
+                utils.formatBytes32String("LINA")
             );
         } else {
             const id = CRYPTO_CURRENCIES_API[currency]?.id;
@@ -209,10 +249,13 @@ export const storeDetailsData = async () => {
                 liquids,
                 amountDebt
             ] = result.map(formatEtherToNumber);
+
             //获取货币->USD 兑换率
-            // const priceRates = await getPriceRates(CRYPTO_CURRENCIES);
-            const priceRates = await getPriceRatesFromApi(CRYPTO_CURRENCIES);
-            const LINA2USDRate = priceRates.LINA / 1e18 || 1;
+            const priceRates = await getPriceRates(CRYPTO_CURRENCIES);
+            // const priceRates = await getPriceRatesFromApi(CRYPTO_CURRENCIES);
+
+            // console.log(priceRates,'priceRates');
+            const LINA2USDRate = priceRates.LINA / 1e18 || 0;
             const lUSD2USDRate = priceRates.lUSD / 1e18 || 1;
             const ETH2USDRate =
                 (isEthereum ? priceRates.ETH : isBinance ? priceRates.BNB : 1) /

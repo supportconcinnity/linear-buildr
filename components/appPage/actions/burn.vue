@@ -4,7 +4,7 @@
             <TabPane name="m0">
                 <div class="burnBox">
                     <div class="actionBodyWeb">
-                        <div class="actionTitle">Burn{{walletNetworkId}}</div>
+                        <div class="actionTitle">Burn</div>
                         <div class="actionDesc">
                             Burn ℓUSD to unlock staked LINA
                         </div>
@@ -424,7 +424,7 @@ import {
 import {
     storeDetailsData,
     getPriceRates,
-    getPriceRatesFromApi,
+    // getPriceRatesFromApi,
     getBuildRatio
 } from "@/assets/linearLibrary/linearTools/request";
 
@@ -597,8 +597,8 @@ export default {
 
                 const targetRatioPercent = 100 / buildRatio; //目标抵押率
 
-                // const priceRates = await getPriceRates(["LINA", "lUSD"]);
-                const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
+                const priceRates = await getPriceRates(["LINA", "lUSD"]);
+                // const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
 
                 const LINAPrice = priceRates.LINA / priceRates.lUSD;
                 const LINAPriceBN = bnDiv(priceRates.LINA, priceRates.lUSD);
@@ -748,7 +748,7 @@ export default {
                             // }
 
                             console.log("单独unstake");
-                             // console.log("单独unstake");
+                            // console.log("单独unstake");
                             this.actionDatas.unStake = n2bn(
                                 _.floor(bn2n(this.actionDatas.unStake), 2)
                             );
@@ -778,7 +778,7 @@ export default {
         //burn
         async burnAndUnstake(burnAmount) {
             const {
-                lnrJS: { LnColateralBuildBurnAPI },
+                lnrJS: { LnCollateralSystem },
                 utils
             } = lnrJSConnector;
 
@@ -789,7 +789,7 @@ export default {
                 burnAmount
             );
 
-            let transaction = await LnColateralBuildBurnAPI.burnAndRedeem(
+            let transaction = await LnCollateralSystem.burnAndRedeem(
                 utils.formatBytes32String("LINA"),
                 burnAmount,
                 {
@@ -935,11 +935,11 @@ export default {
         async getBurnAndUnstakeGasEstimate(burnAmount) {
             try {
                 const {
-                    lnrJS: { LnColateralBuildBurnAPI },
+                    lnrJS: { LnCollateralSystem },
                     utils
                 } = lnrJSConnector;
 
-                let gasEstimate = await LnColateralBuildBurnAPI.contract.estimateGas.burnAndRedeem(
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.burnAndRedeem(
                     utils.formatBytes32String("LINA"),
                     burnAmount
                 );
@@ -2044,7 +2044,6 @@ export default {
                                     img {
                                         width: 100%;
                                         height: 100%;
-                                        
                                     }
                                 }
 
@@ -2085,7 +2084,6 @@ export default {
                                         color: #1a38f8;
 
                                         img {
-                                            
                                             margin-left: 6px;
                                         }
 

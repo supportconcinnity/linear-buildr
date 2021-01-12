@@ -1,3 +1,3 @@
-import lHB10 from '../bsctestnet/LnProxyBEP20';
+import lHB10 from '../ropsten/LnProxyERC20';
       export default lHB10;
       

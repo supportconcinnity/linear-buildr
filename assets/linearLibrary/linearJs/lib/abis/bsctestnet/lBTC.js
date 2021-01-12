@@ -1,3 +1,3 @@
-import lBTC from '../bsctestnet/LnProxyBEP20';
+import lBTC from '../ropsten/LnProxyERC20';
       export default lBTC;
       

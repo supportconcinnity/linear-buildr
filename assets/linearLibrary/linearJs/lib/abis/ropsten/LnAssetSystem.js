@@ -77,7 +77,7 @@ export default [
         type: 'address'
       }
     ],
-    name: 'candidateChanged',
+    name: 'CandidateChanged',
     type: 'event'
   },
   {
@@ -96,16 +96,35 @@ export default [
         type: 'address'
       }
     ],
-    name: 'updateStorageAddress',
+    name: 'StorageAddressUpdated',
     type: 'event'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract IAsset',
+        name: 'asset',
+        type: 'address'
+      }
+    ],
+    name: 'addAsset',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
     inputs: [],
     name: 'admin',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'assetNumber',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
+    stateMutability: 'view',
+    type: 'function'
   },
   {
     inputs: [],
@@ -119,16 +138,14 @@ export default [
     name: 'candidate',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [ { internalType: 'bytes32', name: 'name', type: 'bytes32' } ],
     name: 'getAddress',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [
@@ -138,32 +155,42 @@ export default [
     name: 'getAddressWithRequire',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'getAssetAddresses',
+    outputs: [ { internalType: 'address[]', name: '', type: 'address[]' } ],
+    stateMutability: 'view',
+    type: 'function'
   },
   {
     inputs: [ { internalType: 'address', name: '', type: 'address' } ],
     name: 'mAddress2Names',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     name: 'mAddrs',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
   },
   {
     inputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     name: 'mAssetList',
     outputs: [ { internalType: 'contract IAsset', name: '', type: 'address' } ],
     stateMutability: 'view',
-    type: 'function',
-    constant: true
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'bytes32', name: 'name', type: 'bytes32' } ],
+    name: 'removeAsset',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   },
   {
     inputs: [
@@ -172,6 +199,13 @@ export default [
     name: 'setCandidate',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'totalAssetsInUsd',
+    outputs: [ { internalType: 'uint256', name: 'rTotal', type: 'uint256' } ],
+    stateMutability: 'view',
     type: 'function'
   },
   {
@@ -197,49 +231,5 @@ export default [
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
-  },
-  {
-    inputs: [
-      {
-        internalType: 'contract IAsset',
-        name: 'asset',
-        type: 'address'
-      }
-    ],
-    name: 'addAsset',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'bytes32', name: 'name', type: 'bytes32' } ],
-    name: 'removeAsset',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'assetNumber',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [],
-    name: 'totalAssetsInUsd',
-    outputs: [ { internalType: 'uint256', name: 'rTotal', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
-  },
-  {
-    inputs: [],
-    name: 'getAssetAddresses',
-    outputs: [ { internalType: 'address[]', name: '', type: 'address[]' } ],
-    stateMutability: 'view',
-    type: 'function',
-    constant: true
   }
 ];

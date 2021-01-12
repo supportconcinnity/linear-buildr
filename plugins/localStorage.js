@@ -21,6 +21,7 @@ export default ({ store }) => {
             return {
                 theme: state.theme,
                 locale: state.locale,
+                swapUnfreezeDatas:state.swapUnfreezeDatas,
             };
         },
     })(store);
