@@ -459,30 +459,39 @@ module.exports = {
                 query: {
                     entity: "freeZes",
                     selection: {
-                        orderBy: "timestamp",
+                        orderBy: "index",
                         orderDirection: "desc",
                         where: {
-                            account: account ? `\\"${account}\\"` : undefined
+                            depositor: account ? `\\"${account}\\"` : undefined
                         }
                     },
                     properties: [
                         "id",
-                        "account",
+                        "srcChainId",
+                        "destChainId",
+                        "depositId",
+                        "depositor",
+                        "recipient",
+                        "currency",
+                        "amount",
                         "timestamp",
-                        "value",
-                        "currency"
+                        "index",
                     ]
                 }
             })
                 .then(results =>
                     results.map(
-                        ({ id, account, timestamp, value, currency }) => ({
+                        ({ id, srcChainId, destChainId, depositId, depositor, recipient, currency, amount, timestamp, index }) => ({
                             hash: id.split("-")[0],
-                            account,
+                            srcChainId:Number(srcChainId),
+                            destChainId:Number(destChainId),
+                            depositId,
+                            depositor,
+                            recipient,
+                            currency,
+                            amount,
                             timestamp: Number(timestamp * 1000),
-                            value: value / 1e18,
-                            source: currency,
-                            symbol: "-"
+                            index
                         })
                     )
                 )
@@ -499,30 +508,39 @@ module.exports = {
                 query: {
                     entity: "unfreezes",
                     selection: {
-                        orderBy: "timestamp",
+                        orderBy: "index",
                         orderDirection: "desc",
                         where: {
-                            account: account ? `\\"${account}\\"` : undefined
+                            depositor: account ? `\\"${account}\\"` : undefined
                         }
                     },
                     properties: [
                         "id",
-                        "account",
+                        "srcChainId",
+                        "destChainId",
+                        "depositId",
+                        "depositor",
+                        "recipient",
+                        "currency",
+                        "amount",
                         "timestamp",
-                        "value",
-                        "currency"
+                        "index",
                     ]
                 }
             })
                 .then(results =>
                     results.map(
-                        ({ id, account, timestamp, value, currency }) => ({
+                        ({ id, srcChainId, destChainId, depositId, depositor, recipient, currency, amount, timestamp, index }) => ({
                             hash: id.split("-")[0],
-                            account,
+                            srcChainId:Number(srcChainId),
+                            destChainId:Number(destChainId),
+                            depositId,
+                            depositor,
+                            recipient,
+                            currency,
+                            amount,
                             timestamp: Number(timestamp * 1000),
-                            value: value / 1e18,
-                            source: currency,
-                            symbol: "+"
+                            index
                         })
                     )
                 )
