@@ -18,7 +18,7 @@ import lBTC from './lBTC';
 import lETH from './lETH';
 import lHB10 from './lHB10';
 import lLINK from './lLINK';
-import lTRON from './lTRON';
+import lTRX from './lTRX';
 import lDOT from './lDOT';
 import lYFI from './lYFI';
 import lBNB from './lBNB';
@@ -28,9 +28,10 @@ import lXBCI from './lXBCI';
 import lADA from './lADA';
 import lXLM from './lXLM';
 import lXCI from './lXCI';
+import lXRP from './lXRP';
 import LnErc20Bridge from './LnErc20Bridge';
   
   export default {
-    LnTokenStorage, LnProxyBEP20, LinearFinance, LnBep20Bridge, LnAssetSystem, LnConfig, LnAccessControl, LnChainLinkPrices, LnBandProtocol, LnDebtSystem, LnCollateralSystem, LnBuildBurnSystem, LnRewardLocker, lUSD, LnFeeSystem, lBTC, lETH, lHB10, lLINK, lTRON, lDOT, lYFI, lBNB, lXAU, lXAG, lXBCI, lADA, lXLM, lXCI, LnErc20Bridge
+    LnTokenStorage, LnProxyBEP20, LinearFinance, LnBep20Bridge, LnAssetSystem, LnConfig, LnAccessControl, LnChainLinkPrices, LnBandProtocol, LnDebtSystem, LnCollateralSystem, LnBuildBurnSystem, LnRewardLocker, lUSD, LnFeeSystem, lBTC, lETH, lHB10, lLINK, lTRX, lDOT, lYFI, lBNB, lXAU, lXAG, lXBCI, lADA, lXLM, lXCI, lXRP, LnErc20Bridge
   };
     

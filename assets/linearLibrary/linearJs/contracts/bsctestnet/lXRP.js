@@ -1,13 +1,13 @@
 
       import {Contract} from 'ethers';
       import ContractSettings from '../../contractSettings';
-      import abi from '../../lib/abis/bsctestnet/lTRON';
+      import abi from '../../lib/abis/bsctestnet/lXRP';
   
-      function lTRON(contractSettings) {
+      function lXRP(contractSettings) {
         this.contractSettings = contractSettings || new ContractSettings();
   
         this.contract = new Contract(
-          this.contractSettings.addressList['lTRON'],
+          this.contractSettings.addressList['lXRP'],
           abi,
           this.contractSettings.signer || this.contractSettings.provider
         );
@@ -115,5 +115,5 @@
     
       }
   
-      export default lTRON;
+      export default lXRP;
     
