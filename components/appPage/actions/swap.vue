@@ -416,7 +416,7 @@ export default {
                 if (!this.swapDisabled) {
                     this.processing = true;
 
-                    //端更换进度设置
+                    //移动端更换进度设置
                     this.BUILD_PROCESS_SETUP = this.isMobile
                         ? BUILD_PROCESS_SETUP_MOBILE
                         : BUILD_PROCESS_SETUP;
@@ -523,7 +523,7 @@ export default {
                 }
             } catch (error) {
                 this.frozenBalance = 0;
-                console.log(error, "getFrozenBalance error");
+                console.log(error, "clickSwap error");
             } finally {
                 this.processing = false;
             }
