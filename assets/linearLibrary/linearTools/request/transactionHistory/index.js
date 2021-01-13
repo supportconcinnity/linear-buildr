@@ -43,8 +43,8 @@ export const fetchTransactionHistory = async (
             }),
             linearData.lnr.transfer({ account: walletAddress, networkId }),
             linearData.lnr.referral({ to: walletAddress, networkId }),
-            linearData.lnr.freeZe({ account: walletAddress, networkId }),
-            linearData.lnr.unfreeze({ account: walletAddress, networkId })
+            linearData.lnr.freeZe({ depositor: walletAddress, networkId }),
+            linearData.lnr.unfreeze({ depositor: walletAddress, networkId })
         ]);
 
         let chain; //链

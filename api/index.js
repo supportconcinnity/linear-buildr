@@ -1,6 +1,7 @@
 import {
     isEthereumNetwork,
-    BLOCKCHAIN_BROWSER_API
+    BLOCKCHAIN_BROWSER_API,
+    DEOSIT_PROOF_API
 } from "@/assets/linearLibrary/linearTools/network";
 
 export default {
@@ -102,6 +103,22 @@ export default {
                     address,
                     contractaddress,
                     apikey
+                }
+            })
+            .then(res => {
+                return Promise.resolve(res);
+            })
+            .catch(err => {
+                return Promise.reject(err.response);
+            });
+    },
+
+    async getDeposits(srcChainId, depositId) {
+        return await $nuxt.$axios
+            .$get(DEOSIT_PROOF_API[srcChainId], {
+                params: {
+                    srcChainId,
+                    depositId
                 }
             })
             .then(res => {

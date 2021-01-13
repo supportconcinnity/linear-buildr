@@ -139,7 +139,9 @@
 
                     <div
                         class="swapBtn"
-                        :class="{ disabled: swapDisabled || isEthereumNetwork || isBinanceNetwork }"
+                        :class="{
+                            disabled: swapDisabled
+                        }"
                         @click="clickSwap"
                     >
                         SWAP <template v-if="!isMobile">NOW</template>
@@ -149,7 +151,7 @@
                 </div>
             </TabPane>
             <TabPane name="m1">
-                <watingEnhanceSwap
+                <!-- <watingEnhanceSwap
                     class="waitingBox"
                     v-if="this.actionTabs == 'm1'"
                     :currentStep="confirmTransactionStep"
@@ -163,7 +165,13 @@
                     :setupArray="waitProcessArray"
                     @tryAgain="waitProcessFlow"
                     @close="setDefaultTab"
-                ></watingEnhanceSwap>
+                ></watingEnhanceSwap> -->
+
+                <watingEnhanceSwapNew
+                    :amount="swapNumber"
+                    v-if="actionTabs == 'm1'"
+                    @close="setDefaultTab"
+                ></watingEnhanceSwapNew>
             </TabPane>
         </Tabs>
     </div>
@@ -173,6 +181,7 @@
 import _ from "lodash";
 import gasEditorSwap from "@/components/gasEditorSwap";
 import watingEnhanceSwap from "@/components/transferStatus/watingEnhanceSwap";
+import watingEnhanceSwapNew from "@/components/transferStatus/watingEnhanceSwapNew";
 import {
     formatterInput,
     setCursorRange,
@@ -205,7 +214,8 @@ export default {
     name: "swap",
     components: {
         gasEditorSwap,
-        watingEnhanceSwap
+        watingEnhanceSwap,
+        watingEnhanceSwapNew
     },
     data() {
         return {
@@ -415,6 +425,10 @@ export default {
             try {
                 if (!this.swapDisabled) {
                     this.processing = true;
+
+                    this.actionTabs = "m1"; //进入等待页
+
+                    return;
 
                     //移动端更换进度设置
                     this.BUILD_PROCESS_SETUP = this.isMobile

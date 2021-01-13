@@ -99,27 +99,46 @@ export const getPriceRates = async currency => {
     let pricesPromise = [];
 
     if (_.isString(currency)) {
-        if (currency == "lUSD") {
-            return n2bn(1);
+        if (isEthereum && ["ETH", "BNB"].includes(currency)) {
+            const id = CRYPTO_CURRENCIES_API[currency]?.id;
+            const results = pricesPromise.push(
+                api.getTokenPrice({
+                    tokenid: [id]
+                })
+            );
+            rates[currency] = n2bn(results[id]?.usd);
+        } else {
+            rates[currency] = await contract.getPrice(
+                utils.formatBytes32String(currency)
+            );
         }
-        rates[currency] = await contract.getPrice(
-            utils.formatBytes32String(currency)
-        );
     } else if (_.isArray(currency)) {
         for (let index = 0; index < currency.length; index++) {
             const name = currency[index];
-            pricesPromise.push(
-                contract.getPrice(utils.formatBytes32String(name))
-            );
+            if (isEthereum && ["ETH", "BNB"].includes(name)) {
+                const id = CRYPTO_CURRENCIES_API[name]?.id;
+                pricesPromise.push(
+                    api.getTokenPrice({
+                        tokenid: [id]
+                    })
+                );
+            } else {
+                pricesPromise.push(
+                    contract.getPrice(utils.formatBytes32String(name))
+                );
+            }
         }
 
         let prices = await Promise.all(pricesPromise);
         for (let index = 0; index < currency.length; index++) {
             const name = currency[index];
             let price = prices[index];
-            if (name == "lUSD") {
-                price = n2bn(1);
+
+            if (isEthereum && ["ETH", "BNB"].includes(name)) {
+                const id = CRYPTO_CURRENCIES_API[name]?.id;
+                price = n2bn(price[id]?.usd);
             }
+
             rates[name] = price;
         }
     }

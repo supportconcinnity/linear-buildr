@@ -736,8 +736,13 @@ export default {
             this.$pub.publish("transactionModalChange", this.transactionStatus);
             this.$pub.publish("trackModalChange", this.trackStatus);
 
+            const currentAction = this.$store.state?.currentAction;
+            
+
+            console.log(forceAction,'forceAction');
+
             //不是swap的情况下关闭其他
-            if (this.$store.state?.currentAction != 5 || forceAction) {
+            if (![1, 2, 3, 5].includes(currentAction) || forceAction) {
                 this.$store.commit("setCurrentAction", 0);
             }
         },
@@ -751,7 +756,7 @@ export default {
 <style lang="scss">
 body {
     .transferTooltip {
-        z-index: 10001!important;
+        z-index: 10001 !important;
 
         &[x-placement="top"] {
             .ivu-tooltip-arrow {

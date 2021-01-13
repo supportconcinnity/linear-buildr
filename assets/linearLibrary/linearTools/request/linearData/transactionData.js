@@ -11,7 +11,6 @@ const graphAPIEndpoints = {
     97: process.env.GRAPH_BUILDR_BINANCE_TESTNET
 };
 
-
 module.exports = {
     pageResults,
     graphAPIEndpoints,
@@ -450,7 +449,8 @@ module.exports = {
         },
         freeZe({
             max = maxRequest,
-            account = undefined,
+            depositor = undefined,
+            recipient = undefined,
             networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
             return pageResults({
@@ -462,13 +462,27 @@ module.exports = {
                         orderBy: "index",
                         orderDirection: "desc",
                         where: {
-                            depositor: account ? `\\"${account}\\"` : undefined
+                            depositor: depositor
+                                ? `\\"${depositor.replace(
+                                      "0x",
+                                      "0x000000000000000000000000"
+                                  )}\\"`
+                                : undefined,
+                            recipient: recipient
+                                ? `\\"${recipient.replace(
+                                      "0x",
+                                      "0x000000000000000000000000"
+                                  )}\\"`
+                                : undefined
                         }
                     },
                     properties: [
                         "id",
+                        "srcChainId",
+                        "destChainId",
                         "depositId",
                         "depositor",
+                        "recipient",
                         "currency",
                         "amount",
                         "timestamp"
@@ -477,10 +491,23 @@ module.exports = {
             })
                 .then(results =>
                     results.map(
-                        ({ id, depositId, depositor, currency, amount, timestamp }) => ({
-                            hash: id.split("-")[0],
+                        ({
+                            id,
+                            srcChainId,
+                            destChainId,
                             depositId,
                             depositor,
+                            recipient,
+                            currency,
+                            amount,
+                            timestamp
+                        }) => ({
+                            hash: id.split("-")[0],
+                            srcChainId,
+                            destChainId,
+                            depositId,
+                            depositor,
+                            recipient,
                             source: currency,
                             value: amount / 1e18,
                             timestamp: Number(timestamp * 1000),
@@ -492,7 +519,8 @@ module.exports = {
         },
         unfreeze({
             max = maxRequest,
-            account = undefined,
+            depositor = undefined,
+            recipient = undefined,
             networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
             return pageResults({
@@ -504,13 +532,27 @@ module.exports = {
                         orderBy: "index",
                         orderDirection: "desc",
                         where: {
-                            depositor: account ? `\\"${account}\\"` : undefined
+                            depositor: depositor
+                                ? `\\"${depositor.replace(
+                                      "0x",
+                                      "0x000000000000000000000000"
+                                  )}\\"`
+                                : undefined,
+                            recipient: recipient
+                                ? `\\"${recipient.replace(
+                                      "0x",
+                                      "0x000000000000000000000000"
+                                  )}\\"`
+                                : undefined
                         }
                     },
                     properties: [
                         "id",
+                        "srcChainId",
+                        "destChainId",
                         "depositId",
                         "depositor",
+                        "recipient",
                         "currency",
                         "amount",
                         "timestamp"
@@ -519,10 +561,23 @@ module.exports = {
             })
                 .then(results =>
                     results.map(
-                        ({ id, depositId, depositor, currency, amount, timestamp }) => ({
-                            hash: id.split("-")[0],
+                        ({
+                            id,
+                            srcChainId,
+                            destChainId,
                             depositId,
                             depositor,
+                            recipient,
+                            currency,
+                            amount,
+                            timestamp
+                        }) => ({
+                            hash: id.split("-")[0],
+                            srcChainId,
+                            destChainId,
+                            depositId,
+                            depositor,
+                            recipient,
                             source: currency,
                             value: amount / 1e18,
                             timestamp: Number(timestamp * 1000),
@@ -544,7 +599,9 @@ module.exports = {
                     entity: "userSwapAssetsCounts",
                     selection: {
                         where: {
-                            id: account ? `\\"${account.toLocaleLowerCase()}\\"` : undefined
+                            id: account
+                                ? `\\"${account.toLocaleLowerCase()}\\"`
+                                : undefined
                         }
                     },
                     properties: ["id", "freeZeTokens", "UnFreeZeTokens"]

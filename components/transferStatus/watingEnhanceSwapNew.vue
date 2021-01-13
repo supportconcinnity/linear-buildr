@@ -67,14 +67,12 @@
 
                                 <!-- index等于当前进度 -->
                                 <template v-else>
-                                    <!-- 最后一步未安装钱包 -->
+                                    <!-- 第二步未安装目标钱包 -->
                                     <img
                                         :key="Math.random()"
                                         class="stepIcon"
                                         v-if="
-                                            checkStatus.stepIndex ==
-                                                checkStatus.stepArray.length -
-                                                    1 &&
+                                            checkStatus.stepIndex == 1 &&
                                                 checkStatus.stepType == 2
                                         "
                                         src="@/static/transferProgress/option.svg"
@@ -105,106 +103,20 @@
                                 >
                                     {{ item }}
 
-                                    <div
-                                        v-if="
-                                            index == checkStatus.bscStepIndx &&
-                                                checkStatus.bscStepIndx ==
-                                                    checkStatus.stepIndex
-                                        "
-                                        class="subStep"
-                                    >
-                                        <div
-                                            class="subItem"
-                                            :class="{
-                                                active:
-                                                    checkStatus.stepIndex ==
-                                                    index
-                                            }"
-                                            v-for="(subitem,
-                                            subIndex) in checkStatus.bscSubStep"
-                                            :key="subIndex"
-                                        >
-                                            <div class="oval"></div>
-                                            <div class="subStepInfo">
-                                                {{ subitem }}
-                                            </div>
-                                        </div>
-
-                                        <div class="subStepErrorBox">
-                                            <div
-                                                v-if="
-                                                    checkStatus.stepType == 3 &&
-                                                        checkStatus.bscstepType ==
-                                                            0
-                                                "
-                                                class="subStepErrorItem"
-                                                @click="subStepClickHandle(0)"
-                                            >
-                                                Get some BNB on your wallet
-                                                <img
-                                                    :key="Math.random()"
-                                                    class="errorIcon"
-                                                    src="@/static/transferProgress/arrow_right_error.svg"
-                                                />
-                                            </div>
-
-                                            <template
-                                                v-if="
-                                                    checkStatus.stepType == 3 &&
-                                                        checkStatus.bscstepType ==
-                                                            1
-                                                "
-                                            >
-                                                <div
-                                                    class="subStepErrorItem"
-                                                    @click="
-                                                        subStepClickHandle(1)
-                                                    "
-                                                >
-                                                    1. Please get some ETH on
-                                                    your wallet
-                                                    <img
-                                                        :key="Math.random()"
-                                                        class="errorIcon"
-                                                        src="@/static/transferProgress/arrow_right_error.svg"
-                                                    />
-                                                </div>
-
-                                                <div
-                                                    class="subStepErrorItem"
-                                                    @click="
-                                                        subStepClickHandle(0)
-                                                    "
-                                                >
-                                                    2. Please get some BNB on
-                                                    your wallet
-                                                    <img
-                                                        :key="Math.random()"
-                                                        class="errorIcon"
-                                                        src="@/static/transferProgress/arrow_right_error.svg"
-                                                    />
-                                                </div>
-                                            </template>
-                                        </div>
-                                    </div>
-
                                     <!-- 检查钱包插件 -->
                                     <div
                                         class="stepJump"
                                         v-if="
                                             index == checkStatus.stepIndex &&
-                                                checkStatus.stepIndex ==
-                                                    checkStatus.stepArray
-                                                        .length -
-                                                        1 &&
+                                                checkStatus.stepIndex == 1 &&
                                                 checkStatus.stepType == 2
                                         "
                                     >
                                         <div
                                             class="jumpInfo"
-                                            @click="actionTabs = 'm1'"
+                                            @click="stepClickHandle"
                                         >
-                                            I have Binance chain on Metamask
+                                            {{ checkStatus.stepInstall }}
                                             <img
                                                 :key="Math.random()"
                                                 class="jumpIcon"
@@ -213,10 +125,16 @@
                                         </div>
 
                                         <div
+                                            v-if="
+                                                isBinanceNetwork(
+                                                    targetNetworkId
+                                                )
+                                            "
                                             class="jumpInfo"
-                                            @click="stepClickHandle"
+                                            @click="changeTargetWalletInfo"
                                         >
-                                            Install Binance chain wallet
+                                            Or I have connected my MetaMask to
+                                            BSC network
                                             <img
                                                 :key="Math.random()"
                                                 class="jumpIcon"
@@ -229,8 +147,7 @@
                                     <div
                                         v-if="
                                             checkStatus.stepIndex == index &&
-                                                checkStatus.stepError &&
-                                                checkStatus.bscStepIndx != index
+                                                checkStatus.stepError
                                         "
                                         class="stepError"
                                         :class="{
@@ -255,7 +172,7 @@
                 </div>
 
                 <div
-                    v-if="checkStatus.stepType == 3"
+                    v-if="checkStatus.stepType != -1"
                     class="refreshBtn"
                     @click="checkPrepare(checkStatus.stepIndex)"
                 >
@@ -549,138 +466,153 @@
                     <!-- 不是切链 -->
                     <div class="walletItem" v-else>
                         <div class="walletIcon">
-                            <!-- 原始钱包是metamask,目标是bsc钱包 -->
+                            <!-- 已完成 -->
                             <template
                                 v-if="
-                                    sourceWalletType ==
-                                        SUPPORTED_WALLETS_MAP.METAMASK &&
-                                        targetWalletType ==
-                                            SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                    confirmTransactionStep >
+                                        waitProcessArray.length - 1
                                 "
                             >
                                 <img
-                                    v-if="
-                                        currentWalletType ==
-                                            SUPPORTED_WALLETS_MAP.METAMASK
-                                    "
-                                    class="leftIcon"
-                                    src="@/static/metamask.svg"
-                                    alt=""
-                                />
-
-                                <img
-                                    v-else-if="
-                                        currentWalletType ==
-                                            SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
-                                    "
-                                    class="leftIcon"
-                                    src="@/static/binance.svg"
-                                    alt=""
-                                />
-
-                                <img
-                                    v-if="
-                                        currentWalletType ==
-                                            SUPPORTED_WALLETS_MAP.METAMASK
-                                    "
-                                    class="rightIcon"
-                                    src="@/static/ETH.svg"
-                                    alt=""
-                                />
-
-                                <img
-                                    v-else-if="
-                                        currentWalletType ==
-                                            SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
-                                    "
-                                    class="rightIcon"
-                                    src="@/static/bnb.svg"
-                                    alt=""
+                                    class="completed"
+                                    src="@/static/transferProgress/transaction_completed.svg"
                                 />
                             </template>
-
-                            <!-- 原始钱包是metamask,目标是metamask钱包 -->
-                            <template
-                                v-else-if="
-                                    sourceWalletType ==
-                                        SUPPORTED_WALLETS_MAP.METAMASK &&
-                                        targetWalletType ==
-                                            SUPPORTED_WALLETS_MAP.METAMASK
-                                "
-                            >
-                                <img
-                                    class="leftIcon"
-                                    src="@/static/metamask.svg"
-                                    alt=""
-                                />
-
-                                <img
+                            <!-- 未完成 -->
+                            <template v-else>
+                                <!-- 原始钱包是metamask,目标是bsc钱包 -->
+                                <template
                                     v-if="
-                                        currentWalletType ==
-                                            SUPPORTED_WALLETS_MAP.METAMASK
+                                        sourceWalletType ==
+                                            SUPPORTED_WALLETS_MAP.METAMASK &&
+                                            targetWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
                                     "
-                                    class="rightIcon"
-                                    src="@/static/ETH.svg"
-                                    alt=""
-                                />
+                                >
+                                    <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                        "
+                                        class="leftIcon"
+                                        src="@/static/metamask.svg"
+                                        alt=""
+                                    />
 
-                                <img
+                                    <img
+                                        v-else-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        "
+                                        class="leftIcon"
+                                        src="@/static/binance.svg"
+                                        alt=""
+                                    />
+
+                                    <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                        alt=""
+                                    />
+
+                                    <img
+                                        v-else-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/bnb.svg"
+                                        alt=""
+                                    />
+                                </template>
+
+                                <!-- 原始钱包是metamask,目标是metamask钱包 -->
+                                <template
                                     v-else-if="
-                                        currentWalletType ==
-                                            SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        sourceWalletType ==
+                                            SUPPORTED_WALLETS_MAP.METAMASK &&
+                                            targetWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
                                     "
-                                    class="rightIcon"
-                                    src="@/static/bnb.svg"
-                                    alt=""
-                                />
-                            </template>
+                                >
+                                    <img
+                                        class="leftIcon"
+                                        src="@/static/metamask.svg"
+                                        alt=""
+                                    />
 
-                            <!-- 原始钱包是BSC -->
-                            <template
-                                v-else-if="
-                                    sourceWalletType ==
-                                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
-                                "
-                            >
-                                <img
-                                    v-if="
-                                        currentWalletType ==
-                                            SUPPORTED_WALLETS_MAP.METAMASK
-                                    "
-                                    class="leftIcon"
-                                    src="@/static/metamask.svg"
-                                    alt=""
-                                />
+                                    <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                        alt=""
+                                    />
 
-                                <img
+                                    <img
+                                        v-else-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/bnb.svg"
+                                        alt=""
+                                    />
+                                </template>
+
+                                <!-- 原始钱包是BSC -->
+                                <template
                                     v-else-if="
-                                        currentWalletType ==
+                                        sourceWalletType ==
                                             SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
                                     "
-                                    class="leftIcon"
-                                    src="@/static/binance.svg"
-                                    alt=""
-                                />
+                                >
+                                    <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                        "
+                                        class="leftIcon"
+                                        src="@/static/metamask.svg"
+                                        alt=""
+                                    />
 
-                                <img
-                                    v-if="
-                                        currentWalletType ==
-                                            SUPPORTED_WALLETS_MAP.METAMASK
-                                    "
-                                    class="rightIcon"
-                                    src="@/static/ETH.svg"
-                                    alt=""
-                                />
+                                    <img
+                                        v-else-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        "
+                                        class="leftIcon"
+                                        src="@/static/binance.svg"
+                                        alt=""
+                                    />
 
-                                <img
-                                    v-if="
-                                        currentWalletType ==
-                                            SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
-                                    "
-                                    class="rightIcon"
-                                    src="@/static/bnb.svg"
-                                    alt=""
-                                />
+                                    <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                        alt=""
+                                    />
+
+                                    <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/bnb.svg"
+                                        alt=""
+                                    />
+                                </template>
                             </template>
                         </div>
 
@@ -705,6 +637,31 @@
                         <div class="walletAddress">
                             {{ abbreviateAddress(walletAddress) }}
                         </div>
+                    </div>
+                </div>
+
+                <div
+                    class="blockCompletedBox"
+                    v-if="
+                        waitProcessArray[confirmTransactionStep] ==
+                            BUILD_PROCESS_SETUP.FREEZE
+                    "
+                >
+                    <div class="blocks">
+                        <span
+                            v-for="(item, index) in tansactionBlocks.total"
+                            :key="index"
+                            class="blockItem"
+                            :class="{
+                                active: tansactionBlocks.confirmations > index
+                            }"
+                        ></span>
+                    </div>
+                    <div class="blocknInfo">
+                        <span class="confirmations">{{
+                            tansactionBlocks.confirmations
+                        }}</span>
+                        / {{ tansactionBlocks.total }} blocks completed
                     </div>
                 </div>
 
@@ -983,12 +940,11 @@ import {
     unFormatGasPrice,
     getBinanceNetwork,
     getEthereumNetwork,
-    BINANCE_TOKEN_ADDRESS,
     isTestnetNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 import api from "@/api";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-import { bn2n, bnSub, n2bn } from "@/common/bnCalc";
+import { bn2n, bnAdd, bnSub, n2bn } from "@/common/bnCalc";
 import { providers } from "ethers";
 import { LinearJs } from "@/assets/linearLibrary/linearJs";
 import {
@@ -1010,9 +966,16 @@ export default {
         closeSvg
     },
     props: {
-        swapNumber: {
+        //需要swap的数量
+        amount: {
             type: Number,
             default: 0
+        },
+
+        //swap类型
+        swapType: {
+            type: Number,
+            default: 0 //0=only swap,1=swap and build
         }
     },
 
@@ -1028,16 +991,14 @@ export default {
 
             actionTabs: "m0", //m0检查页,m1交易页
 
+            swapNumber: 0,
+
             checkStatus: {
                 stepIndex: 0, //当前检查步骤
                 stepError: "", //错误信息
-                stepType: -1, //步骤类型,-1默认,0显示错误文本,1余额不足,2未安装钱包插件,3bsc子步骤
-
-                stepArray: [], //检测进度组
-
-                bscStepIndx: 0, //bsc所在步骤位置
-                bscSubStep: ["BNB Tokens"],
-                bscstepType: -1 //子步骤类型,-1默认,0只需要购买bnb,1需要购买eth再买bnb
+                stepInstall: "", //插件安装信息
+                stepType: -1, //步骤类型,-1默认,0显示错误文本,1余额不足,2未安装钱包插件
+                stepArray: [] //检测进度组
             },
 
             sourceGasPrice: "",
@@ -1048,35 +1009,44 @@ export default {
 
             frozenBalance: 0,
 
-            // waitProcessArray: [],
-            waitProcessArray: [
-                "Approve address",
-                "Contract on ETH",
-                "Contract on BSC"
-            ], //等待交易进度组
+            tansactionBlocks: {
+                blockNumber: 0,
+                confirmations: 0, //当前确认交易块
+                total: 15 //总需确认块数量
+            },
 
+            // waitProcessArray: [
+            //     "Approve address",
+            //     "Contract on ETH",
+            //     "Contract on BSC"
+            // ], //等待交易进度组
+            waitProcessArray: [],
             waitProcessFlow: Function,
             confirmTransactionStep: 0,
             swapUnfreezeContinue: false,
             freezeSuccessHash: "",
-            sourceWalletType: "BinanceChain",
-            targetWalletType: "MetaMask",
-            sourceNetworkId: "3",
-            targetNetworkId: "97",
-            confirmTransactionNetworkId: "3",
-            sourceWalletAddress: "0x9E2661CC2B535339133652e501766518FA475E71",
-            targetWalletAddress: "0x1501794bEB40A9DAff574eEBCFA0049677b5Da32",
+            sourceWalletType: "",
+            targetWalletType: "",
+            sourceNetworkId: "",
+            targetNetworkId: "",
+            confirmTransactionNetworkId: "",
+            sourceWalletAddress: "",
+            targetWalletAddress: "",
             transactionErrMsg: "",
             chainChangedStatus: false,
             confirmTransactionChainChanging: false,
             confirmTransactionStatus: false,
 
+            chainChangeTokenFromUnfreeze: "", //解冻切换钱包事件监听id
+            chainChangeTokenFromSubscribe: "", //切换钱包事件监听id
+            walletChangeTokenFromSubscribe: "" //切换钱包地址时间监听id
+
             //调试
-            currentWalletType: "BinanceChain"
+            // currentWalletType: "MetaMask"
         };
     },
     watch: {
-        // currentWalletType() {},
+        currentWalletType() {},
         hasBinanceWallet() {},
         isMobile() {},
         walletAddress() {},
@@ -1085,9 +1055,9 @@ export default {
         // isBinanceNetwork() {}
     },
     computed: {
-        // currentWalletType() {
-        //     return this.$store.state?.walletType;
-        // },
+        currentWalletType() {
+            return this.$store.state?.walletType;
+        },
 
         hasBinanceWallet() {
             return window.BinanceChain;
@@ -1113,6 +1083,27 @@ export default {
         }
     },
     created() {
+        this.swapNumber = this.amount;
+
+        //监听链切换
+        this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
+            "onWalletChainChange",
+            async () => {
+                if (this.actionTabs == "m0") {
+                    // await this.getFrozenBalance();
+                }
+            }
+        );
+
+        this.walletChangeTokenFromSubscribe = this.$pub.subscribe(
+            "onWalletAccountChange",
+            async () => {
+                if (this.actionTabs == "m0") {
+                    // await this.getFrozenBalance();
+                }
+            }
+        );
+
         this.initStep();
     },
     mounted() {
@@ -1148,28 +1139,24 @@ export default {
             const sourceStep = isEthereumNetwork(this.walletNetworkId)
                 ? "Checking the amount of ETH on Metamask"
                 : isBinanceNetwork(this.walletNetworkId)
-                ? "Checking the amount of BNB on Metamask / Binance Chain Wallet"
+                ? "Checking your BNB balance on BSC"
                 : "";
+
+            const extention = isEthereumNetwork(this.targetNetworkId)
+                ? "Checking your MetaMask Wallet Extention"
+                : isBinanceNetwork(this.targetNetworkId)
+                ? "Checking your Binance Chain Wallet Extension"
+                : "";
+
             const targetStep = isEthereumNetwork(this.targetNetworkId)
                 ? "Checking the amount of ETH on Metamask"
                 : isBinanceNetwork(this.targetNetworkId)
-                ? "Checking the amount of BNB on Metamask / Binance Chain Wallet"
+                ? "Checking your BNB balance on BSC"
                 : "";
-            const extention = isEthereumNetwork(this.targetNetworkId)
-                ? "Checking MetaMask Extention"
-                : isBinanceNetwork(this.targetNetworkId)
-                ? "Checking Binance Chain Wallet Extention"
-                : "";
-
-            this.checkStatus.bscStepIndx = isBinanceNetwork(
-                this.walletNetworkId
-            )
-                ? 0
-                : 1;
 
             this.checkStatus.stepArray.push(sourceStep);
-            this.checkStatus.stepArray.push(targetStep);
             this.checkStatus.stepArray.push(extention);
+            this.checkStatus.stepArray.push(targetStep);
         },
 
         //检查准备工作
@@ -1184,41 +1171,33 @@ export default {
                     50 * 1000000000;
 
                 // this.targetWalletAddress = this.walletAddress;
+                // this.targetWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
                 // await this.checkContract();
-                this.actionTabs = "m1";
+                // this.actionTabs = "m1";
 
-                return;
+                // return;
 
                 this.checkStatus.stepIndex = currentStep;
                 this.checkStatus.stepError = "";
-                this.checkStatus.bscSubStep = ["BNB Tokens"];
-                this.checkStatus.bscstepType = -1;
                 this.checkStatus.stepType = -1;
 
                 if (currentStep < 1) {
                     await this.checkSounrceBalance();
-
-                    if (this.checkStatus.stepType != -1) {
-                        return;
-                    }
+                    if (this.checkStatus.stepType != -1) return;
                 }
 
                 if (currentStep < 2) {
-                    await this.checkTargetBalace();
-
-                    if (this.checkStatus.stepType != -1) {
-                        return;
-                    }
+                    //连接目标钱包
+                    await this.connectToTargetWallet();
+                    if (this.checkStatus.stepType != -1) return;
                 }
 
                 if (currentStep < 3) {
-                    //连接目标钱包
-                    await this.connectToTargetWallet();
+                    await this.checkTargetBalace();
+                    if (this.checkStatus.stepType != -1) return;
 
-                    if (this.checkStatus.stepType == -1) {
-                        this.checkStatus.stepIndex++;
-                        // this.actionTabs = "m1";
-                    }
+                    await this.checkContract();
+                    // this.actionTabs = "m1";
                 }
             } catch (error) {
                 //自定义错误
@@ -1248,11 +1227,9 @@ export default {
                 //如果是继续的流程
                 if (this.swapUnfreezeContinue && this.isMobile) {
                     if (isEthereumNetwork(this.targetNetworkId)) {
-                        this.BUILD_PROCESS_SETUP.UNFREEZE =
-                            this.BUILD_PROCESS_SETUP.SWAP + " ETH";
+                        this.BUILD_PROCESS_SETUP.UNFREEZE += " ETH";
                     } else if (isBinanceNetwork(this.targetNetworkId)) {
-                        this.BUILD_PROCESS_SETUP.UNFREEZE =
-                            this.BUILD_PROCESS_SETUP.SWAP + " BSC";
+                        this.BUILD_PROCESS_SETUP.UNFREEZE += " BSC";
                     }
                 } else {
                     //清空之前数据
@@ -1261,22 +1238,17 @@ export default {
                     this.waitProcessFlow = null;
 
                     let LnProxy,
-                        LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge,
-                        suffixETH = this.isMobile ? " ETH" : " Ethereum";
+                        LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
                     if (isEthereumNetwork(this.walletNetworkId)) {
                         LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                        // LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                        this.BUILD_PROCESS_SETUP.FREEZE =
-                            this.BUILD_PROCESS_SETUP.SWAP + suffixETH;
-                        this.BUILD_PROCESS_SETUP.UNFREEZE =
-                            this.BUILD_PROCESS_SETUP.SWAP + " BSC";
+                        this.BUILD_PROCESS_SETUP.FREEZE += " ETH";
+                        this.BUILD_PROCESS_SETUP.UNFREEZE += " BSC";
+                        this.BUILD_PROCESS_SETUP.STAKING_BUILD + "ETH";
                     } else if (isBinanceNetwork(this.walletNetworkId)) {
                         LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                        // LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                        this.BUILD_PROCESS_SETUP.FREEZE =
-                            this.BUILD_PROCESS_SETUP.SWAP + " BSC";
-                        this.BUILD_PROCESS_SETUP.UNFREEZE =
-                            this.BUILD_PROCESS_SETUP.SWAP + suffixETH;
+                        this.BUILD_PROCESS_SETUP.FREEZE += " BSC";
+                        this.BUILD_PROCESS_SETUP.UNFREEZE = " ETH";
+                        this.BUILD_PROCESS_SETUP.STAKING_BUILD + "BSC";
                     }
 
                     //取合约地址
@@ -1305,15 +1277,23 @@ export default {
                     //  this.waitProcessArray.push(this.BUILD_PROCESS_SETUP.APPROVE);
 
                     //如果新输入的大于已冻结的
-                    if (this.swapNumber > this.frozenBalance) {
-                        this.waitProcessArray.push(
-                            this.BUILD_PROCESS_SETUP.FREEZE
-                        );
-                    }
+                    // if (this.swapNumber > this.frozenBalance) {
+                    //     this.waitProcessArray.push(
+                    //         this.BUILD_PROCESS_SETUP.FREEZE
+                    //     );
+                    // }
+
+                    this.waitProcessArray.push(this.BUILD_PROCESS_SETUP.FREEZE);
 
                     this.waitProcessArray.push(
                         this.BUILD_PROCESS_SETUP.UNFREEZE
                     );
+
+                    if (this.swapType == 1) {
+                        this.waitProcessArray.push(
+                            this.BUILD_PROCESS_SETUP.STAKING_BUILD
+                        );
+                    }
 
                     //记录原始钱包类型
                     this.sourceWalletType = this.currentWalletType;
@@ -1330,7 +1310,9 @@ export default {
                     this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
                 }
 
-                this.actionTabs = "m1"; //进入等待页
+                this.checkStatus.stepIndex++;
+
+                this.actionTabs = "m1";
 
                 this.waitProcessFlow = this.startFlow();
 
@@ -1358,16 +1340,26 @@ export default {
                         );
                     }
 
+                    const swapNumber = n2bn(this.swapNumber);
+
+                    //build合约需要大于1
+                    if (swapNumber.eq(n2bn("1"))) {
+                        this.swapNumber = bnAdd(
+                            swapNumber,
+                            n2bn("0.000000000000000001")
+                        );
+                    }
+
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         this.BUILD_PROCESS_SETUP.FREEZE
                     ) {
-                        const swapNumber = _.floor(
-                            this.swapNumber - this.frozenBalance,
-                            DECIMAL_PRECISION
-                        );
+                        // const swapNumber = _.floor(
+                        //     this.swapNumber - this.frozenBalance,
+                        //     DECIMAL_PRECISION
+                        // );
 
-                        await this.startFreezeContract(n2bn(swapNumber));
+                        await this.startFreezeContract(swapNumber);
                     }
 
                     if (
@@ -1375,6 +1367,14 @@ export default {
                         this.BUILD_PROCESS_SETUP.UNFREEZE
                     ) {
                         await this.startUnFreezeContract();
+                    }
+
+                    if (
+                        this.swapType == 1 &&
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                            this.BUILD_PROCESS_SETUP.STAKING_BUILD
+                    ) {
+                        await this.startStakingAndBuildContract(swapNumber);
                     }
                 } catch (error) {
                     console.log(error, "error");
@@ -1494,16 +1494,20 @@ export default {
         },
 
         async startFreezeContract(swapNumber) {
+            // this.tansactionBlocks.blockNumber = 9393576;
+            // await this.waitingBlockConfirmations(
+            //     "0xf906b9b6f0bdeaecd3079a8e51d88865227cc1a59cb11499b6546e4858c3f2f2"
+            // );
+
+            // return;
+
             this.confirmTransactionStatus = false;
 
             let LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge,
-                SETUP,
-                suffixETH = this.isMobile ? " ETH" : " Ethereum";
+                SETUP;
             if (isEthereumNetwork(this.walletNetworkId)) {
-                // LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                SETUP = suffixETH;
+                SETUP = " ETH";
             } else if (isBinanceNetwork(this.walletNetworkId)) {
-                // LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
                 SETUP = " BSC";
             }
 
@@ -1544,6 +1548,10 @@ export default {
                 });
 
                 let status = await utils.waitForTransaction(transaction.hash);
+
+                //等待交易块确认完毕
+                this.tansactionBlocks.blockNumber = transaction.blockNumber;
+                await this.waitingBlockConfirmations(transaction.hash);
 
                 if (!status) {
                     throw {
@@ -1631,10 +1639,9 @@ export default {
                     }
                 );
 
-                console.log("开始手动切换metamask链");
-                // walletStatus = await this.waitChainChange();
-                walletStatus = true;
-                console.log("手动切换metamask链完成");
+                console.log("开始切链");
+                walletStatus = await this.waitChainChange();
+                console.log("切链完成");
             } else {
                 walletStatus = true;
             }
@@ -1664,44 +1671,44 @@ export default {
 
             if (walletStatus) {
                 let LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge,
-                    SETUP,
-                    suffixETH = this.isMobile ? " ETH" : " Ethereum";
+                    SETUP;
                 if (isEthereumNetwork(this.walletNetworkId)) {
-                    // LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                    SETUP = suffixETH;
+                    SETUP = " ETH";
                 } else if (isBinanceNetwork(this.walletNetworkId)) {
-                    // LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
                     SETUP = " BSC";
                 }
 
                 console.log(`等待获取锁定hash`);
                 this.waitPendingProcess = true;
-                const processArray = await this.getPendingProcess(LnBridge);
-                console.log(`获取锁定hash完成`, processArray);
+                const depositArray = await this.getPendingProcess();
+                console.log(`获取锁定hash完成`, depositArray);
 
                 const { utils } = lnrJSConnector;
 
                 const transactionSettings = {
                     gasPrice: this.targetGasPrice,
-                    gasLimit: DEFAULT_GAS_LIMIT.freeze
+                    gasLimit: DEFAULT_GAS_LIMIT.unfreez
                 };
 
-                for (const index in processArray) {
-                    const txId = processArray[index];
-
-                    if (!txId) {
-                        continue;
-                    }
+                for (const index in depositArray) {
+                    const deposit = depositArray[index];
 
                     this.confirmTransactionStatus = false;
 
                     transactionSettings.gasLimit = await this.getGasEstimateFromUnFreeze(
                         LnBridge,
-                        txId
+                        deposit
                     );
 
-                    let transaction = await LnBridge.unfreeze(
-                        txId,
+                    let transaction = await LnBridge.withdraw(
+                        deposit.srcChainId,
+                        deposit.destChainId,
+                        deposit.depositId,
+                        formatAddressToByte32(deposit.depositor),
+                        formatAddressToByte32(deposit.recipient),
+                        utils.formatBytes32String(deposit.currency),
+                        BigNumber.from(deposit.amount),
+                        deposit.signatures[0].signature,
                         transactionSettings
                     );
 
@@ -1747,6 +1754,130 @@ export default {
             }
         },
 
+        //评估解冻手续费
+        async getGasEstimateFromUnFreeze(LnBridge, deposit) {
+            try {
+                const { utils } = lnrJSConnector;
+
+                if (!deposit) {
+                    throw new Error("invalid data");
+                }
+
+                console.log(
+                    deposit.srcChainId,
+                    deposit.destChainId,
+                    deposit.depositId,
+                    formatAddressToByte32(deposit.depositor),
+                    formatAddressToByte32(deposit.recipient),
+                    utils.formatBytes32String(deposit.currency),
+                    BigNumber.from(deposit.amount),
+                    deposit.signatures[0].signature
+                );
+
+                console.log(LnBridge);
+
+                let gasEstimate = await LnBridge.contract.estimateGas.withdraw(
+                    deposit.srcChainId,
+                    deposit.destChainId,
+                    deposit.depositId,
+                    formatAddressToByte32(deposit.depositor),
+                    formatAddressToByte32(deposit.recipient),
+                    utils.formatBytes32String(deposit.currency),
+                    BigNumber.from(deposit.amount),
+                    deposit.signatures[0].signature
+                );
+
+                console.log(gasEstimate, "gasEstimate");
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                console.log(e, "getGasEstimateFromUnFreeze");
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.unfreeze);
+            }
+        },
+
+        //开始抵押和build合约调用
+        async startStakingAndBuildContract(stakeAmountLINA) {
+            this.confirmTransactionStatus = false;
+
+            const {
+                lnrJS: { LnCollateralSystem },
+                utils
+            } = lnrJSConnector;
+
+            const transactionSettings = {
+                gasPrice: this.targetGasPrice,
+                gasLimit: DEFAULT_GAS_LIMIT.build
+            };
+
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
+            transactionSettings.gasLimit = await this.getGasEstimateFromStakingAndBuild(
+                stakeAmountLINA
+            );
+
+            let transaction = await LnCollateralSystem.collateralAndBuild(
+                utils.formatBytes32String("LINA"),
+                stakeAmountLINA,
+                transactionSettings
+            );
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: BUILD_PROCESS_SETUP.BUILD,
+                    networkId: this.walletNetworkId,
+                    value: `Building ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
+                });
+
+                let status = await utils.waitForTransaction(transaction.hash);
+
+                if (!status) {
+                    throw {
+                        code: 6100003,
+                        message:
+                            "Something went wrong while building your ℓUSD, please try again."
+                    };
+                }
+
+                this.confirmTransactionStep += 1;
+            }
+        },
+
+        //评估StakingAndBuild的gas
+        async getGasEstimateFromStakingAndBuild(stakeAmountLINA) {
+            try {
+                const {
+                    lnrJS: { LnCollateralSystem },
+                    utils
+                } = lnrJSConnector;
+
+                if (
+                    stakeAmountLINA.isZero() ||
+                    stakeAmountLINA.lt("0") //小于等于0
+                ) {
+                    throw new Error("invalid stakeAmountLINA");
+                }
+
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.collateralAndBuild(
+                    utils.formatBytes32String("LINA"),
+                    stakeAmountLINA
+                );
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                console.log(e, "getGasEstimateFromStakingAndBuild");
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
+            }
+        },
+
+        //等待链改变
         waitChainChange() {
             return new Promise(resolve => {
                 const wait = () => {
@@ -1766,7 +1897,37 @@ export default {
             });
         },
 
-        async getPendingProcess(LnBridge) {
+        //等待交易块完成
+        async waitingBlockConfirmations() {
+            return new Promise(resolve => {
+                const wait = async () => {
+                    let currentBlock = await lnrJSConnector.provider.getBlockNumber();
+
+                    const confirmations =
+                        currentBlock - this.tansactionBlocks.blockNumber;
+
+                    console.log(
+                        currentBlock,
+                        this.tansactionBlocks.blockNumber,
+                        confirmations,
+                        "transaction"
+                    );
+
+                    if (confirmations >= this.tansactionBlocks.total) {
+                        resolve(true);
+                        return;
+                    }
+
+                    setTimeout(wait, 3000);
+                };
+
+                wait();
+            });
+
+            wait();
+        },
+
+        async getPendingProcess() {
             let count = 0;
 
             return new Promise((resolve, reject) => {
@@ -1779,49 +1940,132 @@ export default {
                     //     });
                     // }
 
-                    // let processArray = await LnBridge.getPendingProcess(
-                    //     this.walletAddress
-                    // );
+                    //mock data
+                    /*  resolve([
+                        {
+                            srcChainId: 3,
+                            destChainId: 97,
+                            depositId: 1,
+                            depositor:
+                                "0x9e2661cc2b535339133652e501766518fa475e71",
+                            recipient:
+                                "0x9e2661cc2b535339133652e501766518fa475e71",
+                            currency: "LINA",
+                            amount: "1000000000000000000",
+                            signatures: [
+                                {
+                                    signer:
+                                        "0x637709999580cdec12493E1275EB5BfBd254a6dc",
+                                    signature:
+                                        "0x242c3f17f48078c163ecaae1e9e70c44a4c660ba3b888ab52bf5b7354dbcc9c97fd16898db2a159e52fcd6c32ee148033a20c3c9bb628aed657628c56643a66f1c"
+                                }
+                            ]
+                        }
+                    ]);
+                    return; */
 
-                    let processArray = [];
+                    let loopId = this.waitPendingProcess
+                        ? setTimeout(wait, 3000)
+                        : 0;
 
-                    let sourceArray = await lnr.freeZe(
-                        this.sourceWalletAddress
-                    );
-                    let targetArray = await lnr.unfreeze(
-                        this.targetWalletAddress
-                    );
+                    //获取存取数据
+                    let [sourceArray, targetArray] = await Promise.all([
+                        lnr.freeZe({
+                            depositor: this.sourceWalletAddress,
+                            recipient: this.targetWalletAddress,
+                            networkId: this.sourceNetworkId
+                        }),
+                        lnr.unfreeze({
+                            depositor: this.sourceWalletAddress,
+                            recipient: this.targetWalletAddress,
+                            networkId: this.targetNetworkId
+                        })
+                    ]);
 
-                    console.log(sourceArray, targetArray);
+                    console.log(sourceArray, targetArray, ++count);
 
-                    count++;
-
-                    //过滤空
-                    processArray = processArray.filter(item => item != "");
-
-                    console.log(
-                        processArray,
-                        this.freezeSuccessHash,
-                        count,
-                        "getPendingProcess"
-                    );
-
-                    //有等待数据
-                    if (processArray?.length > 0) {
+                    //有存数据
+                    if (sourceArray.length) {
+                        console.log(1);
                         //有冻结hash
                         if (this.freezeSuccessHash) {
-                            //冻结hash在解冻组内
-                            if (processArray.includes(this.freezeSuccessHash)) {
-                                resolve(processArray);
+                            console.log(2);
+                            const findHash = _.find(sourceArray, [
+                                "hash",
+                                this.freezeSuccessHash
+                            ]);
+
+                            console.log(findHash, 3);
+
+                            //没有找到hash
+                            if (!findHash) {
+                                console.log(4);
                                 return;
                             }
-                        } else {
-                            resolve(processArray);
-                            return;
                         }
+
+                        console.log(5);
+
+                        //取不同存储记录
+                        const diffArray = _.xorBy(
+                            sourceArray,
+                            targetArray,
+                            "depositId"
+                        );
+
+                        console.log(diffArray, 6);
+
+                        //没有可解锁的记录
+                        if (!diffArray.length) {
+                            reject({
+                                code: 6100006,
+                                message: "No valid LINA was found"
+                            });
+                            clearTimeout(loopId);
+                        }
+
+                        const depositPromise = diffArray.map(item =>
+                            api.getDeposits(
+                                this.sourceNetworkId,
+                                item.depositId
+                            )
+                        );
+
+                        console.log(depositPromise, 7);
+
+                        //获取签名数据
+                        const depositArray = await Promise.all(depositPromise);
+
+                        console.log(depositArray, 8);
+
+                        resolve(depositArray);
+                        clearTimeout(loopId);
                     }
 
-                    this.waitPendingProcess && setTimeout(wait, 3000);
+                    //过滤空
+                    // processArray = processArray.filter(item => item != "");
+
+                    // console.log(
+                    //     processArray,
+                    //     this.freezeSuccessHash,
+                    //     count,
+                    //     "getPendingProcess"
+                    // );
+
+                    //有等待数据
+                    // if (processArray?.length > 0) {
+                    //     //有冻结hash
+                    //     if (this.freezeSuccessHash) {
+                    //         //冻结hash在解冻组内
+                    //         if (processArray.includes(this.freezeSuccessHash)) {
+                    //             resolve(processArray);
+                    //             return;
+                    //         }
+                    //     } else {
+                    //         resolve(processArray);
+                    //         return;
+                    //     }
+                    // }
 
                     // if (this.waitProcessArray.length > 1) {
                     //     if (!processArray.includes(this.freezeSuccessHash)) {
@@ -1852,6 +2096,10 @@ export default {
                 ? "ETH"
                 : "BNB";
 
+            let sourceNetworkType = isEthereumNetwork(this.walletNetworkId)
+                ? "Ethereum"
+                : "BSC";
+
             const sourceBalance = await lnrJSConnector.provider.getBalance(
                 this.walletAddress
             );
@@ -1861,15 +2109,8 @@ export default {
             console.log(sourceBalance / 1e18, "sourceBalance");
 
             if (sourceBalance.lt(n2bn(freezeFee))) {
-                if (isBinanceNetwork(this.walletNetworkId)) {
-                    await this.checkBinanceBalance(sourceBalance, freezeFee);
-                    if (this.checkStatus.bscstepType != -1) {
-                        return;
-                    }
-                }
-
                 this.checkStatus.stepType = 1;
-                this.checkStatus.stepError = `Get some ${sourceCurrency} on your wallet`;
+                this.checkStatus.stepError = `Deposit some ${sourceCurrency} on ${sourceNetworkType} for transaction fee`;
                 return;
             }
             this.checkStatus.stepIndex++;
@@ -1880,6 +2121,10 @@ export default {
             let targetCurrency = isEthereumNetwork(this.targetNetworkId)
                 ? "ETH"
                 : "BNB";
+
+            let targetNetworkType = isEthereumNetwork(this.targetNetworkId)
+                ? "Ethereum"
+                : "BSC";
 
             const { result } = await api.getWalletBalance(
                 this.walletAddress,
@@ -1895,19 +2140,11 @@ export default {
             console.log(targetBalance / 1e18, "targetBalance");
 
             if (targetBalance.lt(n2bn(unfreezeFee))) {
-                if (isBinanceNetwork(this.targetNetworkId)) {
-                    await this.checkBinanceBalance(targetBalance, unfreezeFee);
-
-                    if (this.checkStatus.bscstepType != -1) {
-                        return;
-                    }
-                }
-
                 this.checkStatus.stepType = 1;
-                this.checkStatus.stepError = `Get some ${targetCurrency} on your wallet`;
+                this.checkStatus.stepError = `Deposit some ${targetCurrency} on ${targetNetworkType} for transaction fee`;
                 return;
             }
-            this.checkStatus.stepIndex++;
+            // this.checkStatus.stepIndex++;
 
             /* const providerObject = this.getProviderObject(
                     this.targetNetworkId
@@ -1928,36 +2165,6 @@ export default {
                 } */
         },
 
-        //检查bsc的eth余额
-        async checkBinanceBalance(preBalance, preFee) {
-            this.checkStatus.bscSubStep.push("ETH Tokens");
-
-            const ethContractAddress =
-                BINANCE_TOKEN_ADDRESS[this.targetNetworkId].ETH;
-            const { result } = await api.getTokenBalance(
-                this.walletAddress,
-                ethContractAddress,
-                this.targetNetworkId
-            );
-            const ethBalance = n2bn(result / 1e18);
-
-            //手续费-余额=相差金额
-            const difference = bnSub(n2bn(preFee), preBalance);
-            console.log(ethBalance / 1e18, "ethBalance");
-            console.log(difference / 1e18, "difference");
-
-            //eth够差额
-            if (ethBalance.gte(difference)) {
-                this.checkStatus.bscstepType = 0;
-            } else {
-                //不够差额
-                this.checkStatus.bscstepType = 1;
-            }
-
-            this.checkStatus.stepType = 3;
-            this.checkStatus.stepError = "error";
-        },
-
         //连接钱包
         async connectToTargetWallet(provider = null) {
             try {
@@ -1969,6 +2176,12 @@ export default {
                 //钱包注入对象
                 if (provider) {
                     const [walletAddress] = await provider.enable();
+                    this.targetWalletAddress = walletAddress.toLowerCase();
+                    this.targetWalletType = isEthereumNetwork(
+                        this.targetNetworkId
+                    )
+                        ? SUPPORTED_WALLETS_MAP.METAMASK
+                        : SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
 
                     let network;
                     if (isBinanceNetwork(this.targetNetworkId)) {
@@ -1979,10 +2192,7 @@ export default {
                     const { networkId } = network;
 
                     //目标网络不一致
-                    if (
-                        this.checkStatus.stepIndex == 2 &&
-                        networkId != this.targetNetworkId
-                    ) {
+                    if (networkId != this.targetNetworkId) {
                         throw {
                             code: 100004,
                             message:
@@ -1990,34 +2200,29 @@ export default {
                         };
                     }
 
-                    //目标钱包不一致
-                    this.targetWalletAddress = walletAddress.toLowerCase();
-                    // if (
-                    //     this.checkStatus.stepIndex == 2 &&
-                    //     this.targetWalletAddress !=
-                    //         this.walletAddress.toLowerCase()
-                    // ) {
-                    //     throw {
-                    //         code: 100003,
-                    //         message:
-                    //             "The destination wallet address is inconsistent"
-                    //     };
-                    // }
+                    this.checkStatus.stepIndex++;
                 } else {
                     //目标为以太网
                     if (isEthereumNetwork(this.targetNetworkId)) {
-                        throw {
-                            code: 100002,
-                            message: "Not Found Wallet Extention"
-                        };
+                        this.checkStatus.stepType = 2;
+                        this.checkStatus.stepInstall =
+                            "Install MetaMask wallet extension here";
                     } else if (isBinanceNetwork(this.targetNetworkId)) {
                         //目标为BSC
                         this.checkStatus.stepType = 2;
+                        this.checkStatus.stepInstall =
+                            "Install Binance chain wallet extension here";
                     }
                 }
             } catch (error) {
                 throw error;
             }
+        },
+
+        changeTargetWalletInfo(type) {
+            this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+            this.targetWalletAddress = this.walletAddress;
+            this.checkPrepare(++this.checkStatus.stepIndex);
         },
 
         //获取钱包
@@ -2076,34 +2281,15 @@ export default {
         //获取解冻手续费
         async getUnfreezeFee() {
             const LnBridge = await this.getTargetContract();
-            const gasLimit = await this.getGasEstimateFromUnFreeze(
-                LnBridge,
-                n2bn(this.swapNumber)
-            );
+            // const gasLimit = await this.getGasEstimateFromUnFreeze(
+            //     LnBridge,
+            //     n2bn(this.swapNumber)
+            // );
 
             const fee =
                 (unFormatGasPrice(this.targetGasPrice) * gasLimit) / 1000000000;
 
             return fee;
-        },
-
-        //评估解冻手续费
-        async getGasEstimateFromUnFreeze(LnBridge, txId) {
-            try {
-                const { utils } = lnrJSConnector;
-
-                if (!txId) {
-                    throw new Error("invalid hash");
-                }
-
-                let gasEstimate = await LnBridge.contract.estimateGas.unfreeze(
-                    txId
-                );
-
-                return bufferGasLimit(gasEstimate);
-            } catch (e) {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.unfreeze);
-            }
         },
 
         //步骤可点击处理
@@ -2118,65 +2304,57 @@ export default {
                 };
                 if (this.checkStatus.stepIndex == 0) {
                     window.open(urls[this.walletNetworkId]);
-                } else if (this.checkStatus.stepIndex == 1) {
+                } else if (this.checkStatus.stepIndex == 2) {
                     window.open(urls[this.targetNetworkId]);
                 }
             } else if (this.checkStatus.stepType == 2) {
+                const url = isEthereumNetwork(this.targetNetworkId)
+                    ? WALLET_EXTENSIONS.METAMASK
+                    : WALLET_EXTENSIONS.BINANCE;
+
                 //打开钱包插件安装路径
-                window.open(WALLET_EXTENSIONS.BINANCE);
-            }
-        },
-
-        //bsc子步骤可点击处理
-        subStepClickHandle(type) {
-            const urls = {
-                56: "https://pancakeswap.finance/", //ETH兑BNB
-                97: "https://testnet.binance.org/faucet-smart" //水龙头
-            };
-
-            const networkId = isBinanceNetwork(this.walletNetworkId)
-                ? this.walletNetworkId
-                : this.targetNetworkId;
-
-            if (type === 0) {
-                window.open(urls[networkId]);
-            } else if (type === 1) {
-                let url;
-                if (isMainnetNetwork(networkId)) {
-                    url = "https://www.binance.org/en/bridge"; //SWAP ETH 到 BSC
-                }
-
-                if (isTestnetNetwork(networkId)) {
-                    url = urls[networkId];
-                }
-
                 window.open(url);
             }
         },
 
         //回到默认状态
         async setDefaultTab() {
-            this.waitProcessArray = [];
-            this.confirmTransactionStep = -1;
-            this.swapNumber = null;
-            this.waitPendingProcess = false;
-            this.freezeSuccessHash = "";
-            this.processing = false;
-            this.targetNetworkId = "";
-            this.sourceWalletType = "";
-            this.sourceWalletAddress = "";
-            this.frozenBalance = null;
-            this.chainChangedStatus = false;
-            this.confirmTransactionChainChanging = false;
-            this.confirmTransactionHash = "";
-            this.confirmTransactionNetworkId = "";
-            this.confirmTransactionStatus = false;
-            this.actionTabs = "m0";
-            this.sourceNetworkId = "";
+            // this.waitProcessArray = [];
+            // this.confirmTransactionStep = -1;
+            // this.swapNumber = null;
+            // this.waitPendingProcess = false;
+            // this.freezeSuccessHash = "";
+            // this.processing = false;
+            // this.sourceWalletType = "";
+            // this.sourceWalletAddress = "";
+            // this.frozenBalance = null;
+            // this.chainChangedStatus = false;
+            // this.confirmTransactionChainChanging = false;
+            // this.confirmTransactionHash = "";
+            // this.confirmTransactionNetworkId = "";
+            // this.confirmTransactionStatus = false;
+            // this.actionTabs = "m0";
+            // this.sourceNetworkId = "";
+            // this.targetNetworkId = "";
+            // this. checkStatus: {
+            //     stepIndex: 0,
+            //     stepError: "",
+            //     stepInstall: "",
+            //     stepType: -1,
+            //     stepArray: []s
+            // };
+            // this.sourceGasPrice = "";
+            // this.targetGasPrice = "";
+
             this.$emit("close");
         }
     },
-    destroyed() {}
+    destroyed() {
+        //清除事件,防止重复
+        this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
+        this.$pub.unsubscribe(this.chainChangeTokenFromSubscribe);
+        this.$pub.unsubscribe(this.walletChangeTokenFromSubscribe);
+    }
 };
 </script>
 
@@ -2228,7 +2406,7 @@ export default {
                         align-items: center;
 
                         .stepBox {
-                            max-width: 270px;
+                            // max-width: 270px;
                             .stepItem {
                                 display: flex;
                                 align-items: flex-start;
@@ -2489,6 +2667,13 @@ export default {
                             .rightIcon {
                                 width: 40px;
                                 height: 40px;
+                                margin-bottom: 34px;
+                            }
+
+                            .completed {
+                                width: 64px;
+                                height: 64px;
+                                margin-bottom: 10px;
                             }
                         }
 
@@ -2501,7 +2686,6 @@ export default {
                             line-height: 1.29;
                             letter-spacing: normal;
                             color: #5a575c;
-                            margin-top: 34px;
                         }
 
                         .walletAddress {
@@ -2515,69 +2699,50 @@ export default {
                             text-align: center;
                             color: #99999a;
                         }
-
-                        .hasBinanceWallet,
-                        .notBinanceWallet {
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: center;
-                            align-items: center;
-                        }
-
-                        .hasBinanceWallet {
-                            .walletIcon {
-                                margin-top: 24px;
-
-                                .wallteLogo {
-                                    width: 60px;
-                                    height: 60px;
-                                }
-
-                                .arrow {
-                                    width: 70px;
-                                }
-                            }
-
-                            .divider {
-                                border-top: 1px solid #e5e5e5;
-                                margin: 40px 0;
-                                position: relative;
-                                width: 150%;
-
-                                span {
-                                    font-family: Gilroy-Regular;
-                                    font-size: 16px;
-                                    font-weight: normal;
-                                    font-stretch: normal;
-                                    font-style: normal;
-                                    line-height: 1.5;
-                                    letter-spacing: normal;
-                                    text-align: center;
-                                    color: #99999a;
-                                    position: absolute;
-                                    left: 50%;
-                                    background: white;
-                                    width: 75px;
-                                    transform: translate(-50%, -50%);
-                                }
-                            }
-
-                            .waitTitle {
-                                margin-top: 0px;
-                            }
-                        }
-
-                        .notBinanceWallet {
-                            .walletIcon {
-                                margin-top: 52px;
-                            }
-                        }
                     }
 
                     .walletArrow {
                         width: 24px;
                         height: 24px;
                         margin: 0 24px;
+                    }
+                }
+
+                .blockCompletedBox {
+                    margin-top: 24px;
+                    text-align: center;
+
+                    .blocks {
+                        display: flex;
+
+                        .blockItem {
+                            background-color: #e5e5e5;
+                            width: 8px;
+                            height: 8px;
+                            margin: 0 3px;
+
+                            &.active {
+                                background-color: #1a38f8;
+                            }
+                        }
+                    }
+
+                    .blocknInfo {
+                        font-family: Gilroy-Medium;
+                        font-size: 12px;
+                        font-weight: 500;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.33;
+                        letter-spacing: normal;
+                        color: #99999a;
+                        margin-top: 8px;
+
+                        .confirmations {
+                            font-family: Gilroy-Bold;
+                            font-weight: bold;
+                            color: #5a575c;
+                        }
                     }
                 }
 

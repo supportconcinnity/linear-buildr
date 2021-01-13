@@ -106,14 +106,13 @@ export const BLOCKCHAIN_BROWSER_API = {
     97: "https://api-testnet.bscscan.com/api"
 };
 
-export const BINANCE_TOKEN_ADDRESS = {
-    56: {
-        ETH: "0x250632378e573c6be1ac2f97fcdf00515d0aa91b"
-    },
-    97: {
-        ETH: "0xd66c6b4f0be8ce5b39d52e0fd1344c389929b378"
-    }
+export const DEOSIT_PROOF_API = {
+    1: process.env.DEOSIT_PROOF_MAINNET_API,
+    3: process.env.DEOSIT_PROOF_TESTNET_API,
+    56: process.env.DEOSIT_PROOF_MAINNET_API,
+    97: process.env.DEOSIT_PROOF_TESTNET_API
 };
+
 
 /**
  * 链切换类型
