@@ -339,7 +339,7 @@
 
                     <div
                         class="burnBtn"
-                        :class="{ disabled: burnDisabled }"
+                        :class="{ disabled: burnDisabled || isEthereumNetwork }"
                         @click="clickBurn"
                     >
                         BURN NOW
@@ -694,7 +694,7 @@ export default {
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.BURN_UNSTAKING
                     ) {
-                        console.log("同时burn和unstake");
+                        //console.log("同时burn和unstake");
                         await this.burnAndUnstake(this.actionDatas.amount);
                     } else {
                         if (
@@ -702,7 +702,7 @@ export default {
                                 this.confirmTransactionStep
                             ] == BUILD_PROCESS_SETUP.BURN
                         ) {
-                            console.log("单独burn");
+                            //console.log("单独burn");
                             await this.burn(this.actionDatas.amount);
                         }
 
@@ -747,8 +747,7 @@ export default {
                             //     }
                             // }
 
-                            console.log("单独unstake");
-                            // console.log("单独unstake");
+                            //console.log("单独unstake");
                             this.actionDatas.unStake = n2bn(
                                 _.floor(bn2n(this.actionDatas.unStake), 2)
                             );
@@ -1329,13 +1328,11 @@ export default {
                 );
 
                 if (needUnstake.lte(this.burnData.stakedBN)) {
-                    // <= stake
-                    this.inputData.unStake = formatEtherToNumber(
-                        needUnstake
-                    );
+                    // <= stake
+                    this.inputData.unStake = formatEtherToNumber(needUnstake);
                     this.actionDatas.unStake = needUnstake;
                 } else {
-                    // > stake
+                    // > stake
                     this.inputData.unStake = formatEtherToNumber(
                         this.burnData.stakedBN
                     );
@@ -2243,7 +2240,6 @@ export default {
                     width: 100%;
                     height: 88vh !important;
                     min-height: 550px;
-                    background: white;
 
                     .burnBox,
                     .waitingBox,

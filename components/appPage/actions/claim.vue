@@ -98,10 +98,10 @@
 
                     <div
                         class="claimBtn"
-                        :class="{ disabled: claimDisabled }"
+                        :class="{ disabled: claimDisabled || isEthereumNetwork }"
                         @click="clickClaim"
                     >
-                        CLAIM NOW
+                        CLAIM NOW{{isEthereumNetwork}} {{isBinanceNetwork}}
                     </div>
 
                     <Spin fix v-if="processing"></Spin>
@@ -160,7 +160,9 @@ import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 import gasEditor from "@/components/gasEditor";
 import {
     bufferGasLimit,
-    DEFAULT_GAS_LIMIT
+    DEFAULT_GAS_LIMIT,
+    isBinanceNetwork,
+    isEthereumNetwork,
 } from "@/assets/linearLibrary/linearTools/network";
 import { BigNumber, utils } from "ethers";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
@@ -193,9 +195,19 @@ export default {
     watch: {
         walletAddress() {},
         walletNetworkName() {},
-        walletNetworkId() {}
+        walletNetworkId() {},
+        isEthereumNetwork() {},
+        isBinanceNetwork() {},
     },
     computed: {
+        isEthereumNetwork() {
+            return isEthereumNetwork(this.walletNetworkId);
+        },
+
+        isBinanceNetwork() {
+            return isBinanceNetwork(this.walletNetworkId);
+        },
+
         walletNetworkName() {
             return this.$store.state?.walletNetworkName;
         },

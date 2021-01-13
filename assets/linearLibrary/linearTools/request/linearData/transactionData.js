@@ -160,7 +160,7 @@ module.exports = {
                         orderDirection: "desc",
                         where: {
                             addressStr_contains: account
-                                ? `\\"${account}\\"`
+                                ? `\\"${account.toLocaleLowerCase()}\\"`
                                 : undefined,
                             block_gte: minBlock || undefined,
                             block_lte: maxBlock || undefined

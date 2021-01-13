@@ -55,7 +55,7 @@ export default {
     mounted() {
         if (this.isMobile) {
             const unfreezeDatas = { ...this.$store.state?.swapUnfreezeDatas };
-            console.log(unfreezeDatas, this.walletNetworkId, "unfreezeDatas");
+            //console.log(unfreezeDatas, this.walletNetworkId, "unfreezeDatas");
 
             //有数据且,钱包地址一致,
             if (

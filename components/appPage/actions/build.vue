@@ -368,7 +368,7 @@
 
                     <div
                         class="buildBtn"
-                        :class="{ disabled: buildDisabled }"
+                        :class="{ disabled: buildDisabled || isEthereumNetwork }"
                         @click="clickBuild"
                     >
                         BUILD NOW
@@ -1323,7 +1323,7 @@ export default {
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.STAKING_BUILD
                     ) {
-                        console.log("同时stake和buid");
+                        //console.log("同时stake和buid");
                         //一步调用
                         await this.startStakingAndBuildContract(
                             this.actionData.stake
@@ -1335,7 +1335,7 @@ export default {
                                 this.confirmTransactionStep
                             ] == BUILD_PROCESS_SETUP.STAKING
                         ) {
-                            console.log("单独stake");
+                            //console.log("单独stake");
                             //多抵押一点,防止build失败
                             const stake = n2bn(
                                 _.ceil(bn2n(this.actionData.stake), 2)
@@ -1352,7 +1352,7 @@ export default {
                                 this.confirmTransactionStep
                             ] == BUILD_PROCESS_SETUP.BUILD
                         ) {
-                            console.log("单独build");
+                            //console.log("单独build");
                             this.actionData.amount = n2bn(
                                 _.floor(bn2n(this.actionData.amount), 2)
                             );

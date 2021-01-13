@@ -298,7 +298,7 @@
 
                     <div
                         class="transferBtn"
-                        :class="{ disabled: transferDisabled || walletError }"
+                        :class="{ disabled: transferDisabled || walletError || isEthereumNetwork }"
                         @click="onSend"
                     >
                         TRANSFER NOW

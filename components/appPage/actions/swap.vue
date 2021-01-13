@@ -139,7 +139,7 @@
 
                     <div
                         class="swapBtn"
-                        :class="{ disabled: swapDisabled }"
+                        :class="{ disabled: swapDisabled || isEthereumNetwork || isBinanceNetwork }"
                         @click="clickSwap"
                     >
                         SWAP <template v-if="!isMobile">NOW</template>
