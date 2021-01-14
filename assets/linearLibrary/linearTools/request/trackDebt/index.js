@@ -83,12 +83,12 @@ export const fetchTrackDebt = async walletAddress => {
 				let temp = ethers.BigNumber.from(globalDebt[0].debtFactor).mul(PUNIT).div(selfDebt[0].debtFactor).mul(selfDebt[0].debtProportion).div(PUNIT);
 				let currentDebt = formatEtherToNumber(ethers.BigNumber.from(globalDebt[0].totalAssetSupplyInUsd).mul(HALF).mul(temp).div(PUNIT).div(HALF));
 				debtSnapshot.push([(timestampArr[2]-86400)*1000, currentDebt]);
-	
-				let tempCurrentDebt = await LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress);
-	
-				tempCurrentDebt = formatEtherToNumber(tempCurrentDebt[0]);
-				debtSnapshot.push([Date.parse(new Date()), _.floor(tempCurrentDebt, 2)]);
 			}
+
+			let tempCurrentDebt = await LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress);
+
+			tempCurrentDebt = formatEtherToNumber(tempCurrentDebt[0]);
+			debtSnapshot.push([Date.parse(new Date()), _.floor(tempCurrentDebt, 2)]);
 		}
 		
 		return {'issuedDebt': issuedDebt, 'currentDebt': debtSnapshot};

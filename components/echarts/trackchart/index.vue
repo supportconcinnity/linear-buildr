@@ -75,7 +75,12 @@ export default {
         title: {
             type: String,
             default: ""
-        }
+        },
+        isMobile: {
+            //是否手机端
+            type: Boolean,
+            default: false
+        },
     },
     watch: {
         //监视data变动
@@ -85,12 +90,6 @@ export default {
                 this.updateData(newData);
             }
         }
-    },
-    computed: {
-        //移动端
-        isMobile() {
-            return this.$store.state?.isMobile;
-        },
     },
     methods: {
         //更新数据
@@ -160,10 +159,10 @@ export default {
             option: {
                 title: {
                     text: this.title,
-                    left: "18%",
+                    left: this.isMobile ? "center" : "18%",
                     textStyle: {
                         fontSize: "12",
-                        color: "#c6c4c7"
+                        color: this.isMobile ? "#5a575c" : "#c6c4c7" 
                     }
                 },
                 textStyle: {

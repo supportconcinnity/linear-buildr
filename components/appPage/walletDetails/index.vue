@@ -1273,15 +1273,16 @@ body {
 
 @media only screen and (max-width: $max-phone-width) {
     #walletDetails {
-        width: 100vw;
+        width: 10vw;
         position: fixed;
-        left: 0;
+        right: 0;
         top: 0;
         z-index: 9999;
 
         &.mScroll {
             overflow-y: scroll;
             height: 100%;
+            width: 100vw;
         }
 
         @-webkit-keyframes spin {

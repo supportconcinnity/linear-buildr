@@ -41,15 +41,26 @@
             </div>
 
             <div class="mobileTabs" v-if="isMobile">
-                <div class="debtChart" :class="{'activated':currentMobileTabs==1}" @click="mobileTabsClick(1)">
+                <div
+                    class="debtChart"
+                    :class="{ activated: currentMobileTabs == 1 }"
+                    @click="mobileTabsClick(1)"
+                >
                     DEBT CHART
                 </div>
-                <div class="debtList" :class="{'activated':currentMobileTabs==2}" @click="mobileTabsClick(2)">
+                <div
+                    class="debtList"
+                    :class="{ activated: currentMobileTabs == 2 }"
+                    @click="mobileTabsClick(2)"
+                >
                     DEBT LIST
                 </div>
             </div>
 
-            <div class="chart" v-if="!isMobile || (isMobile && currentMobileTabs==1)">
+            <div
+                class="chart"
+                v-if="!isMobile || (isMobile && currentMobileTabs == 1)"
+            >
                 <trackchart
                     key="1"
                     v-if="!hasTrackData"
@@ -65,6 +76,7 @@
                     key="2"
                     v-else
                     :data="trackData"
+                    :isMobile="isMobile"
                     tooltip
                     area
                     :color="{
@@ -72,11 +84,18 @@
                         areaColorTop: '#1a38f8'
                     }"
                     :formatter="`ℓUSD : {c0}`"
-                    :title="'Total Current Debt\n(ℓUSD)'"
+                    :title="
+                        !isMobile
+                            ? 'Total Current Debt\n(ℓUSD)'
+                            : 'Total Current Debt (ℓUSD) / Date'
+                    "
                 ></trackchart>
             </div>
 
-            <div class="table" v-if="!isMobile || (isMobile && currentMobileTabs==2)">
+            <div
+                class="table"
+                v-if="!isMobile || (isMobile && currentMobileTabs == 2)"
+            >
                 <Table
                     v-if="trackTableData.length != 0"
                     :columns="trackTableColumn"
@@ -202,7 +221,7 @@ export default {
         //移动端
         isMobile() {
             return this.$store.state?.isMobile;
-        },
+        }
     },
     created() {
         //订阅组件改变事件
@@ -283,23 +302,25 @@ export default {
 
                 let trackData = await fetchTrackDebt(this.walletAddress);
 
+                console.log(trackData,'trackData');
+
                 const results = await Promise.all([
                     lUSD.balanceOf(this.walletAddress),
-                    lBTC.balanceOf(this.walletAddress),
-                    lETH.balanceOf(this.walletAddress),
-                    lHB10.balanceOf(this.walletAddress)
+                    //lBTC.balanceOf(this.walletAddress),
+                    //lETH.balanceOf(this.walletAddress),
+                    //lHB10.balanceOf(this.walletAddress)
                 ]);
 
                 let lUSDBalance = formatEtherToNumber(results[0]);
-                let lBTCBalance = formatEtherToNumber(results[1]);
-                let lETHBalance = formatEtherToNumber(results[2]);
-                let lHB10Balance = formatEtherToNumber(results[3]);
+                //let lBTCBalance = formatEtherToNumber(results[1]);
+                //let lETHBalance = formatEtherToNumber(results[2]);
+                //let lHB10Balance = formatEtherToNumber(results[3]);
 
-                const [lBTCPrice, lETHPrice, lHB10Price] = await Promise.all([
-                    exchangeData.exchange.pricesLast({ source: "lBTC" }),
-                    exchangeData.exchange.pricesLast({ source: "lETH" }),
-                    exchangeData.exchange.pricesLast({ source: "lHB10" })
-                ]);
+                // const [lBTCPrice, lETHPrice, lHB10Price] = await Promise.all([
+                //     exchangeData.exchange.pricesLast({ source: "lBTC" }),
+                //     exchangeData.exchange.pricesLast({ source: "lETH" }),
+                //     exchangeData.exchange.pricesLast({ source: "lHB10" })
+                // ]);
 
                 let tableData = [];
 
@@ -309,33 +330,33 @@ export default {
                         balance: lUSDBalance,
                         valueUSD: lUSDBalance
                     });
-                if (lBTCBalance > 0)
-                    tableData.push({
-                        name: "lBTC",
-                        balance: lBTCBalance,
-                        valueUSD: _.floor(
-                            lBTCBalance * lBTCPrice[0].currentPrice,
-                            2
-                        )
-                    });
-                if (lETHBalance > 0)
-                    tableData.push({
-                        name: "lETH",
-                        balance: lETHBalance,
-                        valueUSD: _.floor(
-                            lETHBalance * lETHPrice[0].currentPrice,
-                            2
-                        )
-                    });
-                if (lHB10Balance > 0)
-                    tableData.push({
-                        name: "lHB10",
-                        balance: lHB10Balance,
-                        valueUSD: _.floor(
-                            lHB10Balance * lHB10Price[0].currentPrice,
-                            2
-                        )
-                    });
+                // if (lBTCBalance > 0)
+                //     tableData.push({
+                //         name: "lBTC",
+                //         balance: lBTCBalance,
+                //         valueUSD: _.floor(
+                //             lBTCBalance * lBTCPrice[0].currentPrice,
+                //             2
+                //         )
+                //     });
+                // if (lETHBalance > 0)
+                //     tableData.push({
+                //         name: "lETH",
+                //         balance: lETHBalance,
+                //         valueUSD: _.floor(
+                //             lETHBalance * lETHPrice[0].currentPrice,
+                //             2
+                //         )
+                //     });
+                // if (lHB10Balance > 0)
+                //     tableData.push({
+                //         name: "lHB10",
+                //         balance: lHB10Balance,
+                //         valueUSD: _.floor(
+                //             lHB10Balance * lHB10Price[0].currentPrice,
+                //             2
+                //         )
+                //     });
 
                 const currentDebt = trackData.currentDebt.length
                     ? trackData.currentDebt[trackData.currentDebt.length - 1][1]
@@ -519,7 +540,7 @@ export default {
                                         img {
                                             width: 32px;
                                             height: 32px;
-                                            
+
                                             margin-right: 8px;
                                         }
                                     }
@@ -543,7 +564,6 @@ export default {
 
                         img {
                             margin-right: 16px;
-                            
                         }
                         .text {
                             color: #5a575c;
@@ -597,10 +617,10 @@ export default {
                         justify-content: center;
 
                         .p_1 {
-                            font-size: 24px!important;
+                            font-size: 24px !important;
                         }
                         .p_2 {
-                            font-size: 12px!important;
+                            font-size: 12px !important;
                         }
                     }
                 }
@@ -619,7 +639,8 @@ export default {
                     border-radius: 20.5px;
                     border: solid 1px #e5e5e5;
 
-                    .debtChart, .debtList {
+                    .debtChart,
+                    .debtList {
                         flex: 1;
                         height: 26px;
                         margin: 0 3px 0;
@@ -628,14 +649,14 @@ export default {
                     }
 
                     .activated {
-                        background-color: rgba(126,181,255,.2);
+                        background-color: rgba(126, 181, 255, 0.2);
                         color: #1a38f8;
                     }
                 }
 
                 .chart {
                     position: relative;
-                    width: 160%!important;
+                    width: 160% !important;
                     height: 270px;
                 }
 
@@ -648,11 +669,11 @@ export default {
                                         padding: 0 0 0 8px;
 
                                         .ivu-table-cell-slot {
-                                            font-size: 14px!important;
+                                            font-size: 14px !important;
 
                                             img {
-                                                width: 24px!important;
-                                                height: 24px!important;
+                                                width: 24px !important;
+                                                height: 24px !important;
                                                 margin-right: 8px;
                                             }
                                         }
@@ -660,7 +681,7 @@ export default {
                                 }
 
                                 .ivu-table-cell-slot {
-                                    word-break: keep-all!important;
+                                    word-break: keep-all !important;
                                 }
                             }
                         }
@@ -677,9 +698,8 @@ export default {
                         align-items: center;
 
                         img {
-                            width: 60px!important;
-                            margin-right: 0px!important;
-                            
+                            width: 60px !important;
+                            margin-right: 0px !important;
                         }
                         .text {
                             color: #5a575c;

@@ -14,18 +14,18 @@
                     class="linearBuildrlogo"
                     src="@/static/linear_buildr_logo.svg"
                     alt=""
-                    v-if="currentAction == 0"
+                    v-show="currentAction == 0 && othersAction == 0"
                 />
                 <img
                     class="logoWhenAction"
                     src="@/static/logo-crypto-linear-colour.svg"
                     alt=""
                     style="height: 32px;"
-                    v-else
+                    v-show="currentAction != 0 || othersAction != 0"
                 />
             </a>
 
-            <div class="introductActionBox" v-if="currentAction != 0">
+            <div class="introductActionBox" v-if="currentAction != 0 || othersAction != 0">
                 <div class="title" v-if="currentAction == 1 && othersAction == 0">Build</div>
                 <div class="title" v-if="currentAction == 2 && othersAction == 0">Burn</div>
                 <div class="title" v-if="currentAction == 3 && othersAction == 0">Claim</div>
@@ -36,7 +36,7 @@
                 <div class="title" v-if="othersAction == 2">Transaction</div>
                 <div class="title" v-if="othersAction == 3">Referral</div>
 
-                <img src="@/static/info.svg" @click="showIntroductActionModal"/>
+                <img v-if="othersAction == 0" src="@/static/info.svg" @click="showIntroductActionModal"/>
             </div>
 
             <Modal
@@ -180,36 +180,36 @@ export default {
     created() {
         //订阅组件改变事件
         this.$pub.subscribe("trackModalChange", (msg, params) => {
-            // console.log("trackModalChange");
+            console.log("trackModalChange", params);
             if (params) {
                 this.othersAction = 1;
             }
         });
         this.$pub.subscribe("transactionModalChange", (msg, params) => {
-            // console.log("transactionModalChange");
+            console.log("transactionModalChange", params);
             if (params) {    
                 this.othersAction = 2;
             }
         });
         this.$pub.subscribe("referralModalChange", (msg, params) => {
-            // console.log("referralModalChange");
-        if (params) {    
+            console.log("referralModalChange", params);
+            if (params) {    
                 this.othersAction = 3;
             }
         });
 
         //订阅历史记录窗口关闭事件
-        this.$pub.subscribe("transactionModalCloseEvent", (msg, params) => {
-            this.othersAction = 0;
-        });
-        //订阅历史记录窗口关闭事件
-        this.$pub.subscribe("trackModalCloseEvent", (msg, params) => {
-            this.othersAction = 0;
-        });
-        //订阅推荐窗口关闭事件
-        this.$pub.subscribe("referralModalCloseEvent", (msg, params) => {
-            this.othersAction = 0;
-        });
+        //this.$pub.subscribe("transactionModalCloseEvent", (msg, params) => {
+        //    this.othersAction = 0;
+        //});
+        ////订阅历史记录窗口关闭事件
+        //this.$pub.subscribe("trackModalCloseEvent", (msg, params) => {
+        //    this.othersAction = 0;
+        //});
+        ////订阅推荐窗口关闭事件
+        //this.$pub.subscribe("referralModalCloseEvent", (msg, params) => {
+        //    this.othersAction = 0;
+        //});
     },
     watch: {
         currentActionComputed(newVal, oldVal) {
@@ -235,6 +235,8 @@ export default {
             this.$pub.publish("referralModalCloseEvent");
             this.$pub.publish("transactionModalCloseEvent");
             this.$pub.publish("trackModalCloseEvent");
+
+            this.othersAction = 0;
 
             this.$pub.publish("referralModalChange", false);
             this.$pub.publish("transactionModalChange", false);
@@ -378,10 +380,15 @@ export default {
             }
 
             /deep/.introductActionModal {
+                .ivu-modal-mask {
+                    z-index: 10000!important;
+                }
+
                 .ivu-modal-wrap {
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    z-index: 10000!important;
 
                     .ivu-modal {
                         width: 74.66vw!important;
