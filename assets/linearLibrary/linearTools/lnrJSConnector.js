@@ -175,7 +175,7 @@ export const selectedWallet = async (walletType, waitStore = true) => {
         const store = $nuxt.$store;
 
         //连接成功
-        if (walletStatus && walletStatus?.currentWallet) {
+        if (walletStatus && walletStatus.currentWallet) {
             store.commit(
                 "setWalletNetworkName",
                 walletStatus?.networkName.toUpperCase()
@@ -221,13 +221,12 @@ export const selectedWallet = async (walletType, waitStore = true) => {
                             signer
                         });
 
-                        $pub.publish("onWalletAccountChange");
-
                         store.commit("mergeWallet", {
                             address: address[0]
                         });
 
                         await storeDetailsData();
+                        $pub.publish("onWalletAccountChange");
                         $nuxt.$Spin.hide();
                     }
                 });
@@ -237,8 +236,8 @@ export const selectedWallet = async (walletType, waitStore = true) => {
                     if (
                         store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
                     ) {
-                        await selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK);
-                        $pub.publish(
+                        const status = await selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK);
+                        status && $pub.publish(
                             "onWalletChainChange",
                             CHAIN_CHANGE_TYPE.NETWORK
                         );
@@ -268,13 +267,14 @@ export const selectedWallet = async (walletType, waitStore = true) => {
                             signer
                         });
 
-                        $pub.publish("onWalletAccountChange");
+                       
 
                         store.commit("mergeWallet", {
                             address: address[0]
                         });
 
                         await storeDetailsData();
+                        $pub.publish("onWalletAccountChange");
                         $nuxt.$Spin.hide();
                     }
                 });

@@ -363,7 +363,7 @@
                         </div>
 
                         <gasEditorSwap
-                            v-if="isEthereumNetwork(walletNetworkId)"
+                            v-if="isEthereumNetwork(walletNetworkId) && isMobile"
                             :simple="true"
                         ></gasEditorSwap>
                         <gasEditor v-else-if="isMobile"></gasEditor>
@@ -397,7 +397,7 @@
                 ></watingEnhance>
 
                 <watingEnhanceSwapNew
-                    :amount="inputData.stake"
+                    :amount="floor(inputData.stake,DECIMAL_PRECISION)"
                     :swapType="1"
                     v-if="
                         actionTabs == 'm1' && isEthereumNetwork(sourceNetworkId)
@@ -1486,8 +1486,6 @@ export default {
                 stakeAmountLINA,
                 transactionSettings
             );
-
-            console.log(transaction, "transaction");
 
             if (transaction) {
                 this.confirmTransactionStatus = true;

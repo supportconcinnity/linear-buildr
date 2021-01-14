@@ -655,8 +655,8 @@ export default {
             if (walletType == this.walletType || this.chainChanging) return;
 
             // this.chainChanging = true;
-            await selectedWallet(walletType);
-            this.$pub.publish("onWalletChainChange", CHAIN_CHANGE_TYPE.WALLET);
+            const staus = await selectedWallet(walletType);
+            staus && this.$pub.publish("onWalletChainChange", CHAIN_CHANGE_TYPE.WALLET);
             // this.chainChanging = false;
         },
 
@@ -737,9 +737,6 @@ export default {
             this.$pub.publish("trackModalChange", this.trackStatus);
 
             const currentAction = this.$store.state?.currentAction;
-            
-
-            console.log(forceAction,'forceAction');
 
             //不是swap的情况下关闭其他
             if (![1, 5].includes(currentAction) || forceAction) {
