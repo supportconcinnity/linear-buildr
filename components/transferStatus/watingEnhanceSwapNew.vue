@@ -2127,7 +2127,7 @@ export default {
                 : "BSC";
 
             const { result } = await api.getWalletBalance(
-                this.walletAddress,
+                this.targetWalletAddress,
                 this.targetNetworkId
             );
             let targetBalance = n2bn(result / 1e18);

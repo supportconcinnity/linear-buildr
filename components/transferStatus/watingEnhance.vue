@@ -9,10 +9,13 @@
 
         <div class="waitTitle">
             <span v-if="currentStep > setupArray.length - 1"
-                >Congratulations!</span
+                >Congratulations!<br></span
             >
             <span v-else-if="currentErrMsg">Oops! Something went wrong</span>
-            <span v-else-if="!currentConfirm">Confirm with your wallet</span>
+            <span v-else-if="!currentConfirm">
+                <template v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK">Confirm with Metmask</template>
+                <template v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN">Confirm with BSC Wallet</template>
+            </span>
             <span v-else>
                 <template v-if="isMobile">
                     Interacting
@@ -47,7 +50,7 @@
                 class="walletIcon"
                 v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
             >
-                <img
+                <!-- <img
                     v-if="isEthereumNetwork(currentNetworkId)"
                     class="wallteLogo eth"
                     src="@/static/transferProgress/metamask_eth.svg"
@@ -56,14 +59,31 @@
                     v-else-if="isBinanceNetwork(currentNetworkId)"
                     class="wallteLogo eth"
                     src="@/static/transferProgress/metamask_bsc.svg"
-                />
+                /> -->
+                <div class="walletBothIcons">
+                    <img
+                        class="wallteLogo eth"
+                        src="@/static/transferProgress/wellet_metamask.svg"
+                    />
+                    <img
+                        class="wallteLogo eth"
+                        src="@/static/transferProgress/wellet_bsc.svg"
+                    />
+                </div>
+                <b>BSC Mainnet</b>
+                <p>{{abbreviateAddress(walletAddress)}}</p>
             </div>
 
             <div
                 class="walletIcon"
                 v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
             >
-                <img class="wallteLogo" src="@/static/binance.svg" />
+                <div class="walletBothIcons">
+                    <img class="wallteLogo" src="@/static/transferProgress/wellet_bnb.svg" />
+                    <img class="wallteLogo" src="@/static/transferProgress/wellet_bsc.svg" />
+                </div>
+                <b>BSC Chain Wallet</b>
+                <p>{{abbreviateAddress(walletAddress)}}</p>
             </div>
         </div>
 
@@ -257,6 +277,9 @@ import {
     isEthereumNetwork,
     isBinanceNetwork
 } from "@/assets/linearLibrary/linearTools/network";
+import {
+    abbreviateAddress
+} from "@/assets/linearLibrary/linearTools/format";
 export default {
     name: "transferWatingEnhance",
     components: {
@@ -292,6 +315,7 @@ export default {
     },
     data() {
         return {
+            abbreviateAddress,
             openBlockchainBrowser,
             SUPPORTED_WALLETS_MAP,
             isEthereumNetwork,
@@ -300,7 +324,9 @@ export default {
     },
     watch: {
         walletType() {},
-        isMobile() {}
+        isMobile() {},
+        walletAddress() {},
+        walletNetworkName() {}
     },
     computed: {
         walletType() {
@@ -308,7 +334,14 @@ export default {
         },
         isMobile() {
             return this.$store.state?.isMobile;
-        }
+        },
+        walletAddress() {
+            return this.$store.state?.wallet?.address;
+        },
+        walletNetworkName() {
+            return this.$store.state?.walletNetworkName;
+        },
+
     },
     mounted() {},
     methods: {
@@ -388,19 +421,39 @@ export default {
             }
         }
         .walletIcon {
-            margin-top: 76px;
-            display: flex;
             justify-content: space-evenly;
             align-items: center;
-            width: 100%;
+            width: 160px;
+            height: 231px;
+            margin: 36px 119px 143px 120px;
+            border-radius: 8px;
+            border: solid 1px #e5e5e5;
+            text-align: center;
 
-            .wallteLogo {
-                width: 120px;
-                height: 120px;
-
-                &.eth {
-                    margin-left: 20px;
+            .walletBothIcons {
+                margin: 67px 0 34px 0;
+                .wallteLogo {
+                    width: 40px;
+                    height: 40px;
+                    &.eth {
+                        margin-left: 20px;
+                    }
                 }
+            }
+            >b {
+            }
+            >p {
+                display: inline-block;
+                width: 100px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-weight: normal;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: 1.29;
+                letter-spacing: normal;
+                color: #99999a;
             }
 
             .arrow {

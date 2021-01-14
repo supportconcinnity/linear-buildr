@@ -742,7 +742,7 @@ export default {
             console.log(forceAction,'forceAction');
 
             //不是swap的情况下关闭其他
-            if (![1, 2, 3, 5].includes(currentAction) || forceAction) {
+            if (![1, 5].includes(currentAction) || forceAction) {
                 this.$store.commit("setCurrentAction", 0);
             }
         },
