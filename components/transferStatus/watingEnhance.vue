@@ -62,11 +62,11 @@
                 /> -->
                 <div class="walletBothIcons">
                     <img
-                        class="wallteLogo eth"
+                        class="wallteLogo"
                         src="@/static/transferProgress/wellet_metamask.svg"
                     />
                     <img
-                        class="wallteLogo eth"
+                        class="wallteLogo"
                         src="@/static/transferProgress/wellet_bsc.svg"
                     />
                 </div>
@@ -435,9 +435,6 @@ export default {
                 .wallteLogo {
                     width: 40px;
                     height: 40px;
-                    &.eth {
-                        margin-left: 20px;
-                    }
                 }
             }
             >b {
