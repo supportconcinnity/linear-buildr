@@ -1,4 +1,5 @@
 "use strict";
+const {utils} = require('ethers')
 
 const pageResults = require("graph-results-pager");
 
@@ -508,7 +509,7 @@ module.exports = {
                             depositId,
                             depositor,
                             recipient,
-                            source: currency,
+                            source: utils.parseBytes32String(currency),
                             value: amount / 1e18,
                             timestamp: Number(timestamp * 1000),
                             symbol: "-"
@@ -578,7 +579,7 @@ module.exports = {
                             depositId,
                             depositor,
                             recipient,
-                            source: currency,
+                            source: utils.parseBytes32String(currency),
                             value: amount / 1e18,
                             timestamp: Number(timestamp * 1000),
                             symbol: "+"
@@ -600,7 +601,12 @@ module.exports = {
                     selection: {
                         where: {
                             id: account
-                                ? `\\"${account.toLocaleLowerCase()}\\"`
+                                ? `\\"${account
+                                      .replace(
+                                          "0x",
+                                          "0x000000000000000000000000"
+                                      )
+                                      .toLocaleLowerCase()}\\"`
                                 : undefined
                         }
                     },

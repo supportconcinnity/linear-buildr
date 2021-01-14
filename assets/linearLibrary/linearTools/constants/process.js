@@ -7,9 +7,8 @@ export const BUILD_PROCESS_SETUP = {
     UNSTAKING: "Confirm Unstaking",
     BURN_UNSTAKING: " Confirm Burning ", //需保留前后空格
     CLAIM: "Claiming Rewards",
-    SWAP: "",
-    FREEZE: "Swapping LINA on",
-    UNFREEZE: "Getting LINA on"
+    FREEZE: "Swapping LINA on ",
+    UNFREEZE: "Getting LINA on "
 };
 
 export const BUILD_PROCESS_SETUP_MOBILE = {

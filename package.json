@@ -30,7 +30,7 @@
     "lodash": "^4.17.15",
     "numbro": "^2.3.1",
     "nuxt": "^2.0.0",
-    "pubsub-js": "^1.8.0",
+    "pubsub-js": "^1.9.2",
     "secure-ls": "^1.2.6",
     "view-design": "^4.2.0-rc.1",
     "vue-echarts": "^5.0.0-beta.0",

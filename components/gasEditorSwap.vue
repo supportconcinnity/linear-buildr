@@ -3,14 +3,17 @@
         <div class="simple" v-if="simple">
             <div class="source">
                 <div class="editInfo">
-                    <template v-if="isEthereumNetwork">ETH </template>
-                    <template v-if="isBinanceNetwork">BSC </template>network fee
+                    <template v-if="isEthereumNetworkFunc(sourceGasNetworkId)"
+                        >ETH
+                    </template>
+                    <template v-else>BSC </template>
+                    network fee
 
-                    <span class="editBtn" @click="sourceGasEditorModal = true">
-                        <img
-                            @click="sourceGasEditorModal = true"
-                            src="@/static/edit_pencil.svg"
-                        />
+                    <span
+                        class="editBtn"
+                        @click.stop="sourceGasEditorModal = true"
+                    >
+                        <img src="@/static/edit_pencil.svg" />
 
                         <template v-if="!isMobile">EDIT</template>
                     </span>
@@ -21,14 +24,16 @@
 
             <div class="target">
                 <div class="editInfo">
-                    <template v-if="isEthereumNetwork">BSC </template>
-                    <template v-if="isBinanceNetwork">ETH </template>network fee
+                    <template v-if="isEthereumNetworkFunc(sourceGasNetworkId)"
+                        >BSC
+                    </template>
+                    <template v-else>ETH </template> network fee
 
-                    <span class="editBtn" @click="targetGasEditorModal = true">
-                        <img
-                            @click="targetGasEditorModal = true"
-                            src="@/static/edit_pencil.svg"
-                        />
+                    <span
+                        class="editBtn"
+                        @click.stop="targetGasEditorModal = true"
+                    >
+                        <img src="@/static/edit_pencil.svg" />
                         <template v-if="!isMobile">EDIT</template>
                     </span>
                 </div>
@@ -213,13 +218,10 @@
                     <div class="leftRect">
                         <div class="icon" v-if="!isMobile">
                             <img
-                                v-if="isEthereumNetwork"
+                                v-if="isEthereumNetworkFunc(sourceGasNetworkId)"
                                 src="@/static/ETH.svg"
                             />
-                            <img
-                                v-if="isBinanceNetwork"
-                                src="@/static/bnb.svg"
-                            />
+                            <img v-else src="@/static/bnb.svg" />
                         </div>
 
                         <div class="desc">
@@ -383,13 +385,10 @@
                     <div class="leftRect">
                         <div class="icon" v-if="!isMobile">
                             <img
-                                v-if="isEthereumNetwork"
-                                src="@/static/bnb.svg"
-                            />
-                            <img
-                                v-if="isBinanceNetwork"
+                                v-if="isEthereumNetworkFunc(targetGasNetworkId)"
                                 src="@/static/ETH.svg"
                             />
+                            <img v-else src="@/static/bnb.svg" />
                         </div>
 
                         <div class="desc">
@@ -489,7 +488,10 @@ export default {
                 SOURCE: "source",
                 TARGET: "target"
             },
-            chainChangeTokenFromSubscribe: null
+            chainChangeTokenFromSubscribe: null,
+
+            isEthereumNetworkFunc: isEthereumNetwork,
+            isBinanceNetworkFunc: isBinanceNetwork
         };
     },
     filters: {
@@ -518,45 +520,49 @@ export default {
         if (sourceStatus == -1) {
             this.setSourceGasDetails(this.sourcePrice, this.sourceSelectedType);
         } else {
-            this.sourceGasEditorModalChange(true);
+            // this.sourceGasEditorModalChange(true);
         }
 
         //初始化当前数据
         if (targetStatus == -1) {
             this.setTargetGasDetails(this.targetPrice, this.targetSelectedType);
         } else {
-            this.targetGasEditorModalChange(true);
+            // this.targetGasEditorModalChange(true);
         }
 
-        //监听链切换
-        this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
-            "onWalletChainChange",
-            async () => {
-                //更换source和target的price和selected
-                let sourcePrice = this.sourcePrice,
-                    sourceSelectedType = this.sourceSelectedType;
+        //简单模式不监听链切换事件
+        if (!this.simple) {
+            //监听链切换
+            this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
+                "onWalletChainChange",
+                async () => {
 
-                this.sourcePrice = this.targetPrice;
-                this.sourceSelectedType = this.targetSelectedType;
+                    //更换source和target的price和selected
+                    let sourcePrice = this.sourcePrice,
+                        sourceSelectedType = this.sourceSelectedType;
 
-                this.targetPrice = sourcePrice;
-                this.targetSelectedType = sourceSelectedType;
+                    this.sourcePrice = this.targetPrice;
+                    this.sourceSelectedType = this.targetSelectedType;
 
-                this.setSourceGasDetails(
-                    this.sourcePrice,
-                    this.sourceSelectedType
-                );
-                this.setTargetGasDetails(
-                    this.targetPrice,
-                    this.targetSelectedType
-                );
+                    this.targetPrice = sourcePrice;
+                    this.targetSelectedType = sourceSelectedType;
 
-                await this.getNetworkSpeeds({
-                    sourceNetwork: true,
-                    targetNetwork: true
-                });
-            }
-        );
+                    this.setSourceGasDetails(
+                        this.sourcePrice,
+                        this.sourceSelectedType
+                    );
+                    this.setTargetGasDetails(
+                        this.targetPrice,
+                        this.targetSelectedType
+                    );
+
+                    await this.getNetworkSpeeds({
+                        sourceNetwork: true,
+                        targetNetwork: true
+                    });
+                }
+            );
+        }
     },
 
     destroyed() {
@@ -616,6 +622,14 @@ export default {
 
         isMobile() {
             return this.$store.state?.isMobile;
+        },
+
+        sourceGasNetworkId() {
+            return this.$store.state?.sourceGasDetails?.networkId;
+        },
+
+        targetGasNetworkId() {
+            return this.$store.state?.targetGasDetails?.networkId;
         }
     },
 
@@ -627,25 +641,46 @@ export default {
         } = {}) {
             try {
                 this.speedLoading = true;
-                let targetNetworkId;
+                let sourceNetworkId = this.walletNetworkId,
+                    targetNetworkId;
+
                 targetNetwork &&
                     (targetNetworkId = getOtherNetworks(
                         this.walletNetworkId
                     ).join());
 
+                let sourceGasDetails = "sourceGasDetails",
+                    targetGasDetails = "targetGasDetails";
+                if (this.simple) {
+                    const networkId = this.$store.state?.sourceGasDetails
+                        ?.networkId;
+
+                    if (isBinanceNetwork(networkId)) {
+                        targetNetworkId = sourceNetworkId;
+                        sourceNetworkId = networkId;
+
+                        //     sourceGasDetails = "targetGasDetails";
+                        //     targetGasDetails = "sourceGasDetails";
+                    }
+                }
+
+                // console.log(sourceGasDetails,targetGasDetails,'111111');
+
                 if (sourceNetwork) {
-                    await getNetworkSpeeds(this.walletNetworkId)
+                    await getNetworkSpeeds(sourceNetworkId)
                         .then(res => {
                             // console.log(res, "source");
                             this.sourceNetworkSpeeds = res;
-                            this.sourceSelectedType = this.$store.state?.sourceGasDetails?.type;
+                            this.sourceSelectedType = this.$store.state[
+                                sourceGasDetails
+                            ]?.type;
                             //判断赋值
                             if (
                                 this.sourceSelectedType ==
                                 NETWORK_SPEEDS_TO_KEY.CUSTOM
                             ) {
                                 this.sourcePrice = this.sourceCustomPrice = unFormatGasPrice(
-                                    this.$store.state?.sourceGasDetails?.price
+                                    this.$store.state[sourceGasDetails]?.price
                                 );
                             } else {
                                 this.sourcePrice = this.sourceNetworkSpeeds[
@@ -662,14 +697,16 @@ export default {
                         .then(res => {
                             // console.log(res, "target");
                             this.targetNetworkSpeeds = res;
-                            this.targetSelectedType = this.$store.state?.targetGasDetails?.type;
+                            this.targetSelectedType = this.$store.state[
+                                targetGasDetails
+                            ]?.type;
                             //判断赋值
                             if (
                                 this.targetSelectedType ==
                                 NETWORK_SPEEDS_TO_KEY.CUSTOM
                             ) {
                                 this.targetPrice = this.targetCustomPrice = unFormatGasPrice(
-                                    this.$store.state?.targetGasDetails?.price
+                                    this.$store.state[targetGasDetails]?.price
                                 );
                             } else {
                                 this.targetPrice = this.targetNetworkSpeeds[
@@ -812,16 +849,21 @@ export default {
             this.$store.commit("setSourceGasDetails", {
                 price: formatGasPrice(price),
                 type,
-                status: 1
+                status: 1,
+                networkId: this.walletNetworkId
             });
         },
 
         //设置gas
         setTargetGasDetails(price, type) {
+            const targetNetworkId = getOtherNetworks(
+                this.walletNetworkId
+            ).join();
             this.$store.commit("setTargetGasDetails", {
                 price: formatGasPrice(price),
                 type,
-                status: 1
+                status: 1,
+                networkId: targetNetworkId
             });
         }
     }

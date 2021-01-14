@@ -168,7 +168,7 @@
                 ></watingEnhanceSwap> -->
 
                 <watingEnhanceSwapNew
-                    :amount="swapNumber"
+                    :amount="diffSwapNumber"
                     v-if="actionTabs == 'm1'"
                     @close="setDefaultTab"
                 ></watingEnhanceSwapNew>
@@ -327,7 +327,8 @@ export default {
         isBinanceNetwork() {},
         walletNetworkId() {},
         walletType() {},
-        isMobile() {}
+        isMobile() {},
+        diffSwapNumber() {}
     },
     computed: {
         isEthereumNetwork() {
@@ -370,6 +371,13 @@ export default {
 
         isMobile() {
             return this.$store.state?.isMobile;
+        },
+
+        diffSwapNumber() {
+            return _.floor(
+                this.swapNumber - this.frozenBalance,
+                DECIMAL_PRECISION
+            );
         }
     },
     methods: {
@@ -432,17 +440,17 @@ export default {
 
                     //移动端更换进度设置
                     this.BUILD_PROCESS_SETUP = this.isMobile
-                        ? BUILD_PROCESS_SETUP_MOBILE
-                        : BUILD_PROCESS_SETUP;
+                        ? { ...BUILD_PROCESS_SETUP_MOBILE }
+                        : { ...BUILD_PROCESS_SETUP };
 
                     //如果是继续的流程
                     if (this.swapUnfreezeContinue && this.isMobile) {
                         if (isEthereumNetwork(this.targetNetworkId)) {
                             this.BUILD_PROCESS_SETUP.UNFREEZE =
-                                this.BUILD_PROCESS_SETUP.SWAP + " ETH";
+                                BUILD_PROCESS_SETUP.UNFREEZE + "ETH";
                         } else if (isBinanceNetwork(this.targetNetworkId)) {
                             this.BUILD_PROCESS_SETUP.UNFREEZE =
-                                this.BUILD_PROCESS_SETUP.SWAP + " BSC";
+                                BUILD_PROCESS_SETUP.UNFREEZE + "BSC";
                         }
                     } else {
                         //清空之前数据
@@ -450,23 +458,21 @@ export default {
                         this.confirmTransactionStep = 0;
                         this.waitProcessFlow = null;
 
-                        let LnProxy,
-                            LnBridge,
-                            suffixETH = this.isMobile ? " ETH" : " Ethereum";
+                        let LnProxy, LnBridge;
                         if (this.isEthereumNetwork) {
                             LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
                             LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
                             this.BUILD_PROCESS_SETUP.FREEZE =
-                                this.BUILD_PROCESS_SETUP.SWAP + suffixETH;
+                                BUILD_PROCESS_SETUP.FREEZE + "ETH";
                             this.BUILD_PROCESS_SETUP.UNFREEZE =
-                                this.BUILD_PROCESS_SETUP.SWAP + " BSC";
+                                BUILD_PROCESS_SETUP.UNFREEZE + "BSC";
                         } else if (this.isBinanceNetwork) {
                             LnProxy = lnrJSConnector.lnrJS.LinearFinance;
                             LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
                             this.BUILD_PROCESS_SETUP.FREEZE =
-                                this.BUILD_PROCESS_SETUP.SWAP + " BSC";
+                                BUILD_PROCESS_SETUP.FREEZE + "BSC";
                             this.BUILD_PROCESS_SETUP.UNFREEZE =
-                                this.BUILD_PROCESS_SETUP.SWAP + suffixETH;
+                                BUILD_PROCESS_SETUP.UNFREEZE + "ETH";
                         }
 
                         //取合约地址
@@ -701,15 +707,13 @@ export default {
         async startFreezeContract(swapNumber) {
             this.confirmTransactionStatus = false;
 
-            let LnBridge,
-                SETUP,
-                suffixETH = this.isMobile ? " ETH" : " Ethereum";
+            let LnBridge, SETUP;
             if (this.isEthereumNetwork) {
                 LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                SETUP = suffixETH;
+                SETUP = "ETH";
             } else if (this.isBinanceNetwork) {
                 LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                SETUP = " BSC";
+                SETUP = "BSC";
             }
 
             const { utils } = lnrJSConnector;
@@ -862,15 +866,13 @@ export default {
             }
 
             if (walletStatus) {
-                let LnBridge,
-                    SETUP,
-                    suffixETH = this.isMobile ? " ETH" : " Ethereum";
+                let LnBridge, SETUP;
                 if (this.isEthereumNetwork) {
                     LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-                    SETUP = suffixETH;
+                    SETUP = "ETH";
                 } else if (this.isBinanceNetwork) {
                     LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-                    SETUP = " BSC";
+                    SETUP = "BSC";
                 }
 
                 console.log(`等待获取锁定hash`);

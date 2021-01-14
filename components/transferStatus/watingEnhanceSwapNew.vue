@@ -1038,8 +1038,11 @@ export default {
             confirmTransactionStatus: false,
 
             chainChangeTokenFromUnfreeze: "", //解冻切换钱包事件监听id
-            chainChangeTokenFromSubscribe: "", //切换钱包事件监听id
-            walletChangeTokenFromSubscribe: "" //切换钱包地址时间监听id
+            chainChangeFromSubscribe: "", //切换钱包事件监听id
+            walletChangeAccountFromSubscribe: "", //切换钱包地址时间监听id
+            waitChainChangeLoopId: "", //等待切链循环id
+            waitingBlockConfirmationsLoopId: "", //等待块确认循环id
+            getPendingProcessLoopId: "" , //等待获取交易数据循环id
 
             //调试
             // currentWalletType: "MetaMask"
@@ -1086,7 +1089,7 @@ export default {
         this.swapNumber = this.amount;
 
         //监听链切换
-        this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
+        this.chainChangeFromSubscribe = this.$pub.subscribe(
             "onWalletChainChange",
             async () => {
                 if (this.actionTabs == "m0") {
@@ -1095,7 +1098,7 @@ export default {
             }
         );
 
-        this.walletChangeTokenFromSubscribe = this.$pub.subscribe(
+        this.walletChangeAccountFromSubscribe = this.$pub.subscribe(
             "onWalletAccountChange",
             async () => {
                 if (this.actionTabs == "m0") {
@@ -1221,15 +1224,17 @@ export default {
             try {
                 //移动端更换进度设置
                 this.BUILD_PROCESS_SETUP = this.isMobile
-                    ? BUILD_PROCESS_SETUP_MOBILE
-                    : BUILD_PROCESS_SETUP;
+                    ? { ...BUILD_PROCESS_SETUP_MOBILE }
+                    : { ...BUILD_PROCESS_SETUP };
 
                 //如果是继续的流程
                 if (this.swapUnfreezeContinue && this.isMobile) {
                     if (isEthereumNetwork(this.targetNetworkId)) {
-                        this.BUILD_PROCESS_SETUP.UNFREEZE += " ETH";
+                        this.BUILD_PROCESS_SETUP.UNFREEZE =
+                            BUILD_PROCESS_SETUP.UNFREEZE + "ETH";
                     } else if (isBinanceNetwork(this.targetNetworkId)) {
-                        this.BUILD_PROCESS_SETUP.UNFREEZE += " BSC";
+                        this.BUILD_PROCESS_SETUP.UNFREEZE =
+                            BUILD_PROCESS_SETUP.UNFREEZE + "BSC";
                     }
                 } else {
                     //清空之前数据
@@ -1241,14 +1246,20 @@ export default {
                         LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
                     if (isEthereumNetwork(this.walletNetworkId)) {
                         LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                        this.BUILD_PROCESS_SETUP.FREEZE += " ETH";
-                        this.BUILD_PROCESS_SETUP.UNFREEZE += " BSC";
-                        this.BUILD_PROCESS_SETUP.STAKING_BUILD + "ETH";
+                        this.BUILD_PROCESS_SETUP.FREEZE =
+                            BUILD_PROCESS_SETUP.FREEZE + "ETH";
+                        this.BUILD_PROCESS_SETUP.UNFREEZE =
+                            BUILD_PROCESS_SETUP.UNFREEZE + "BSC";
+                        // this.BUILD_PROCESS_SETUP.STAKING_BUILD =
+                        //     BUILD_PROCESS_SETUP.STAKING_BUILD + "ETH";
                     } else if (isBinanceNetwork(this.walletNetworkId)) {
                         LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                        this.BUILD_PROCESS_SETUP.FREEZE += " BSC";
-                        this.BUILD_PROCESS_SETUP.UNFREEZE = " ETH";
-                        this.BUILD_PROCESS_SETUP.STAKING_BUILD + "BSC";
+                        this.BUILD_PROCESS_SETUP.FREEZE =
+                            BUILD_PROCESS_SETUP.FREEZE + "BSC";
+                        this.BUILD_PROCESS_SETUP.UNFREEZE =
+                            BUILD_PROCESS_SETUP.UNFREEZE + "ETH";
+                        // this.BUILD_PROCESS_SETUP.STAKING_BUILD =
+                        //     BUILD_PROCESS_SETUP.STAKING_BUILD + "BSC";
                     }
 
                     //取合约地址
@@ -1276,24 +1287,20 @@ export default {
 
                     //  this.waitProcessArray.push(this.BUILD_PROCESS_SETUP.APPROVE);
 
-                    //如果新输入的大于已冻结的
-                    // if (this.swapNumber > this.frozenBalance) {
-                    //     this.waitProcessArray.push(
-                    //         this.BUILD_PROCESS_SETUP.FREEZE
-                    //     );
-                    // }
-
-                    this.waitProcessArray.push(this.BUILD_PROCESS_SETUP.FREEZE);
+                    this.swapNumber > 0 &&
+                        this.waitProcessArray.push(
+                            this.BUILD_PROCESS_SETUP.FREEZE
+                        );
 
                     this.waitProcessArray.push(
                         this.BUILD_PROCESS_SETUP.UNFREEZE
                     );
 
-                    if (this.swapType == 1) {
-                        this.waitProcessArray.push(
-                            this.BUILD_PROCESS_SETUP.STAKING_BUILD
-                        );
-                    }
+                    // if (this.swapType == 1) {
+                    //     this.waitProcessArray.push(
+                    //         this.BUILD_PROCESS_SETUP.STAKING_BUILD
+                    //     );
+                    // }
 
                     //记录原始钱包类型
                     this.sourceWalletType = this.currentWalletType;
@@ -1340,25 +1347,20 @@ export default {
                         );
                     }
 
-                    const swapNumber = n2bn(this.swapNumber);
+                    let swapNumber = n2bn(this.swapNumber);
 
                     //build合约需要大于1
-                    if (swapNumber.eq(n2bn("1"))) {
-                        this.swapNumber = bnAdd(
-                            swapNumber,
-                            n2bn("0.000000000000000001")
-                        );
-                    }
+                    // if (swapNumber.eq(n2bn("1"))) {
+                    //     this.swapNumber = bnAdd(
+                    //         swapNumber,
+                    //         n2bn("0.000000000000000001")
+                    //     );
+                    // }
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         this.BUILD_PROCESS_SETUP.FREEZE
                     ) {
-                        // const swapNumber = _.floor(
-                        //     this.swapNumber - this.frozenBalance,
-                        //     DECIMAL_PRECISION
-                        // );
-
                         await this.startFreezeContract(swapNumber);
                     }
 
@@ -1369,15 +1371,15 @@ export default {
                         await this.startUnFreezeContract();
                     }
 
-                    if (
-                        this.swapType == 1 &&
-                        this.waitProcessArray[this.confirmTransactionStep] ==
-                            this.BUILD_PROCESS_SETUP.STAKING_BUILD
-                    ) {
-                        await this.startStakingAndBuildContract(swapNumber);
-                    }
+                    // if (
+                    //     this.swapType == 1 &&
+                    //     this.waitProcessArray[this.confirmTransactionStep] ==
+                    //         this.BUILD_PROCESS_SETUP.STAKING_BUILD
+                    // ) {
+                    //     await this.startStakingAndBuildContract(swapNumber);
+                    // }
                 } catch (error) {
-                    console.log(error, "error");
+                    console.log(error, "startFlow error");
                     //自定义错误
                     if (
                         _.has(error, "code") &&
@@ -1494,21 +1496,14 @@ export default {
         },
 
         async startFreezeContract(swapNumber) {
-            // this.tansactionBlocks.blockNumber = 9393576;
-            // await this.waitingBlockConfirmations(
-            //     "0xf906b9b6f0bdeaecd3079a8e51d88865227cc1a59cb11499b6546e4858c3f2f2"
-            // );
-
-            // return;
-
             this.confirmTransactionStatus = false;
 
             let LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge,
                 SETUP;
             if (isEthereumNetwork(this.walletNetworkId)) {
-                SETUP = " ETH";
+                SETUP = "ETH";
             } else if (isBinanceNetwork(this.walletNetworkId)) {
-                SETUP = " BSC";
+                SETUP = "BSC";
             }
 
             const { utils } = lnrJSConnector;
@@ -1549,10 +1544,6 @@ export default {
 
                 let status = await utils.waitForTransaction(transaction.hash);
 
-                //等待交易块确认完毕
-                this.tansactionBlocks.blockNumber = transaction.blockNumber;
-                await this.waitingBlockConfirmations(transaction.hash);
-
                 if (!status) {
                     throw {
                         code: 6100002,
@@ -1560,6 +1551,16 @@ export default {
                             "Something went wrong while Freezing your LINA, please try again."
                     };
                 }
+
+                const {
+                    blockNumber
+                } = await lnrJSConnector.provider.getTransaction(
+                    transaction.hash
+                );
+
+                //等待交易块确认完毕
+                this.tansactionBlocks.blockNumber = blockNumber || 0;
+                await this.waitingBlockConfirmations(blockNumber);
 
                 this.confirmTransactionStep += 1;
             }
@@ -1632,7 +1633,7 @@ export default {
                 this.chainChangeTokenFromUnfreeze = this.$pub.subscribe(
                     "onWalletChainChange",
                     async (msg, changeType) => {
-                        console.log(changeType, "startUnFreezeContract");
+                        // console.log(changeType, "startUnFreezeContract");
                         this.chainChangedStatus = true;
                         this.confirmTransactionChainChanging = false;
                         this.confirmTransactionNetworkId = this.walletNetworkId;
@@ -1648,14 +1649,16 @@ export default {
 
             this.confirmTransactionNetworkId = this.walletNetworkId;
 
+            console.log(this.walletNetworkId,this.targetNetworkId);
+
             //验证当前网络id是否目标网络id
-            // if (this.walletNetworkId != this.targetNetworkId) {
-            //     throw {
-            //         code: 6100007,
-            //         message:
-            //             "The network is not correct. Please switch to a valid network"
-            //     };
-            // }
+            if (this.walletNetworkId != this.targetNetworkId) {
+                throw {
+                    code: 6100007,
+                    message:
+                        "The network is not correct. Please switch to a valid network"
+                };
+            }
 
             //验证钱包地址是否相同
             // if (
@@ -1673,10 +1676,49 @@ export default {
                 let LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge,
                     SETUP;
                 if (isEthereumNetwork(this.walletNetworkId)) {
-                    SETUP = " ETH";
+                    SETUP = "ETH";
                 } else if (isBinanceNetwork(this.walletNetworkId)) {
-                    SETUP = " BSC";
+                    SETUP = "BSC";
                 }
+
+                // let gasEstimate = await LnBridge.contract.estimateGas.withdraw(
+                // 3,
+                //     97,
+                //     19,
+                //     "0x0000000000000000000000005534fda58c5885f32ebdf91f060cba9d739cefca",
+                //     "0x0000000000000000000000005534fda58c5885f32ebdf91f060cba9d739cefca",
+                //     "0x4c494e4100000000000000000000000000000000000000000000000000000000",
+                //     BigNumber.from("2941489189480148500000"),
+                //     "0xa92da339c0e66f78e31aed3242240b6eec02efccccccc81d35bbe0cea54cdd86425857531099c518a7c2ee30418c21abf6f3964866537d09311f198a1a32d7601b",
+                // );
+
+                // console.log(gasEstimate);
+
+                // console.log(
+                //     3,
+                //     97,
+                //     19,
+                //     formatAddressToByte32(this.walletAddress),
+                //     formatAddressToByte32(this.targetWalletAddress),
+                //     lnrJSConnector.utils.formatBytes32String("LINA"),
+                //     BigNumber.from("2941489189480148500000"),
+                //     "0xa92da339c0e66f78e31aed3242240b6eec02efccccccc81d35bbe0cea54cdd86425857531099c518a7c2ee30418c21abf6f3964866537d09311f198a1a32d7601b"
+                // );
+
+                // let transaction = await LnBridge.withdraw(
+                //     '3',
+                //     '97',
+                //     '19',
+                //     formatAddressToByte32(this.walletAddress),
+                //     formatAddressToByte32(this.targetWalletAddress),
+                //     lnrJSConnector.utils.formatBytes32String("LINA"),
+                //     BigNumber.from("2941489189480148500000"),
+                //     "0xa92da339c0e66f78e31aed3242240b6eec02efccccccc81d35bbe0cea54cdd86425857531099c518a7c2ee30418c21abf6f3964866537d09311f198a1a32d7601b"
+                // );
+
+                // console.log(transaction);
+
+                // return;
 
                 console.log(`等待获取锁定hash`);
                 this.waitPendingProcess = true;
@@ -1687,7 +1729,7 @@ export default {
 
                 const transactionSettings = {
                     gasPrice: this.targetGasPrice,
-                    gasLimit: DEFAULT_GAS_LIMIT.unfreez
+                    gasLimit: DEFAULT_GAS_LIMIT.unfreeze
                 };
 
                 for (const index in depositArray) {
@@ -1699,6 +1741,7 @@ export default {
                         LnBridge,
                         deposit
                     );
+
 
                     let transaction = await LnBridge.withdraw(
                         deposit.srcChainId,
@@ -1774,8 +1817,7 @@ export default {
                     deposit.signatures[0].signature
                 );
 
-                console.log(LnBridge);
-
+                //如果是bridge里面能提取的lina不足,会报错但无法捕捉异常,导致无限等待
                 let gasEstimate = await LnBridge.contract.estimateGas.withdraw(
                     deposit.srcChainId,
                     deposit.destChainId,
@@ -1786,12 +1828,8 @@ export default {
                     BigNumber.from(deposit.amount),
                     deposit.signatures[0].signature
                 );
-
-                console.log(gasEstimate, "gasEstimate");
-
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
-                console.log(e, "getGasEstimateFromUnFreeze");
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.unfreeze);
             }
         },
@@ -1889,7 +1927,7 @@ export default {
                         this.chainChangedStatus = false;
                         resolve(true);
                     } else {
-                        setTimeout(wait, 1000);
+                        this.waitChainChangeLoopId = setTimeout(wait, 1000);
                     }
                 };
 
@@ -1898,33 +1936,41 @@ export default {
         },
 
         //等待交易块完成
-        async waitingBlockConfirmations() {
+        async waitingBlockConfirmations(blockNumber = 0) {
             return new Promise(resolve => {
                 const wait = async () => {
+                    //获取当前块高度
                     let currentBlock = await lnrJSConnector.provider.getBlockNumber();
 
-                    const confirmations =
-                        currentBlock - this.tansactionBlocks.blockNumber;
+                    //已确认块
+                    const confirmations = currentBlock - blockNumber;
 
                     console.log(
                         currentBlock,
-                        this.tansactionBlocks.blockNumber,
+                        blockNumber,
                         confirmations,
-                        "transaction"
+                        "confirmations"
                     );
 
+                    //1个以上,防止回退
+                    if (confirmations > 0) {
+                        this.tansactionBlocks.confirmations = confirmations;
+                    }
+
+                    //达到条件
                     if (confirmations >= this.tansactionBlocks.total) {
                         resolve(true);
                         return;
                     }
 
-                    setTimeout(wait, 3000);
+                    this.waitingBlockConfirmationsLoopId = setTimeout(
+                        wait,
+                        5000
+                    );
                 };
 
                 wait();
             });
-
-            wait();
         },
 
         async getPendingProcess() {
@@ -1964,7 +2010,7 @@ export default {
                     ]);
                     return; */
 
-                    let loopId = this.waitPendingProcess
+                    this.getPendingProcessLoopId = this.waitPendingProcess
                         ? setTimeout(wait, 3000)
                         : 0;
 
@@ -1986,10 +2032,8 @@ export default {
 
                     //有存数据
                     if (sourceArray.length) {
-                        console.log(1);
                         //有冻结hash
                         if (this.freezeSuccessHash) {
-                            console.log(2);
                             const findHash = _.find(sourceArray, [
                                 "hash",
                                 this.freezeSuccessHash
@@ -2004,8 +2048,6 @@ export default {
                             }
                         }
 
-                        console.log(5);
-
                         //取不同存储记录
                         const diffArray = _.xorBy(
                             sourceArray,
@@ -2013,15 +2055,13 @@ export default {
                             "depositId"
                         );
 
-                        console.log(diffArray, 6);
-
                         //没有可解锁的记录
                         if (!diffArray.length) {
+                            clearTimeout(this.getPendingProcessLoopId);
                             reject({
                                 code: 6100006,
                                 message: "No valid LINA was found"
                             });
-                            clearTimeout(loopId);
                         }
 
                         const depositPromise = diffArray.map(item =>
@@ -2031,59 +2071,12 @@ export default {
                             )
                         );
 
-                        console.log(depositPromise, 7);
-
                         //获取签名数据
                         const depositArray = await Promise.all(depositPromise);
 
-                        console.log(depositArray, 8);
-
+                        clearTimeout(this.getPendingProcessLoopId);
                         resolve(depositArray);
-                        clearTimeout(loopId);
                     }
-
-                    //过滤空
-                    // processArray = processArray.filter(item => item != "");
-
-                    // console.log(
-                    //     processArray,
-                    //     this.freezeSuccessHash,
-                    //     count,
-                    //     "getPendingProcess"
-                    // );
-
-                    //有等待数据
-                    // if (processArray?.length > 0) {
-                    //     //有冻结hash
-                    //     if (this.freezeSuccessHash) {
-                    //         //冻结hash在解冻组内
-                    //         if (processArray.includes(this.freezeSuccessHash)) {
-                    //             resolve(processArray);
-                    //             return;
-                    //         }
-                    //     } else {
-                    //         resolve(processArray);
-                    //         return;
-                    //     }
-                    // }
-
-                    // if (this.waitProcessArray.length > 1) {
-                    //     if (!processArray.includes(this.freezeSuccessHash)) {
-                    //         this.waitPendingProcess && setTimeout(wait, 3000);
-                    //     } else {
-                    //         resolve(processArray);
-                    //     }
-                    // } else {
-                    //     //没有之前的锁定记录
-                    //     if (!processArray || processArray.length < 1) {
-                    //         reject({
-                    //             code: 6100006,
-                    //             message: "No valid LINA was found"
-                    //         });
-                    //     } else {
-                    //         resolve(processArray);
-                    //     }
-                    // }
                 };
 
                 wait();
@@ -2352,8 +2345,12 @@ export default {
     destroyed() {
         //清除事件,防止重复
         this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
-        this.$pub.unsubscribe(this.chainChangeTokenFromSubscribe);
-        this.$pub.unsubscribe(this.walletChangeTokenFromSubscribe);
+        this.$pub.unsubscribe(this.chainChangeFromSubscribe);
+        this.$pub.unsubscribe(this.walletChangeAccountFromSubscribe);
+
+        clearTimeout(this.waitChainChangeLoopId);
+        clearTimeout(this.waitingBlockConfirmationsLoopId);
+        clearTimeout(this.getPendingProcessLoopId);
     }
 };
 </script>
@@ -2720,6 +2717,7 @@ export default {
                             width: 8px;
                             height: 8px;
                             margin: 0 3px;
+                            transition: $animete-time linear;
 
                             &.active {
                                 background-color: #1a38f8;

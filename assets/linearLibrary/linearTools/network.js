@@ -128,15 +128,15 @@ export const CHAIN_CHANGE_TYPE = {
  * 默认gas 限制
  */
 export const DEFAULT_GAS_LIMIT = {
-    approve: 220000,
-    staking: 220000,
+    approve: 300000,
+    staking: 300000,
     build: 500000,
     burn: 500000,
     unstake: 500000,
     claim: 140000,
     exchange: 22000,
-    freeze: 220000,
-    unfreez: 220000
+    freeze: 300000,
+    unfreeze: 300000
 };
 
 /**
