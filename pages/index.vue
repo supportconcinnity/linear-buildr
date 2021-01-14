@@ -15,7 +15,7 @@ import appPage from "@/components/appPage";
 export default {
     components: {
         landingPage,
-        appPage
+        appPage,
     },
     name: "mainPage",
     data() {
@@ -46,13 +46,27 @@ export default {
 
             this.isMobile = this.windowScreen.width <= this.mobileWidth;
             this.$store.commit('setIsMobile', this.isMobile);
-        }, 50)
+        }, 50),
+        copyFun(str) {
+            var that = this;
+            var clipboarda = new Clipboard(str);
+            function success(e) {
+                that.$Notice.success({
+                    title: "Copied",
+                    duration: 1
+                });
+                e.clearSelection();
+                clipboarda.off("success", success)
+            }
+            clipboarda.on("success", success);
+        }
     },
     mounted() {
         this.$store.commit('setIsMobile', this.isMobile);
 
         //监视窗口变化
         window.addEventListener("resize", this.getWindowScreen, false);
+
     },
     destroyed() {
         //window.removeEventListener("resize", this.getWindowScreen, false);
@@ -71,8 +85,8 @@ export default {
         margin: 0 auto;
         width: 1440px;
     }
-}
 
+}
 
 @media only screen and (max-width: $max-phone-width) {
     #mainPage {

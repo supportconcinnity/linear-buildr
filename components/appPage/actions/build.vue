@@ -421,6 +421,8 @@
                 fluctuations in pledge tokens.
             </div>
         </Modal>
+
+        <setupModal ref="setupModal"></setupModal>
     </div>
 </template>
 
@@ -481,6 +483,8 @@ import {
 
 import watingEnhanceSwapNew from "@/components/transferStatus/watingEnhanceSwapNew";
 import gasEditorSwap from "@/components/gasEditorSwap";
+
+import setupModal from "@/components/setupModal"
 
 export default {
     name: "build",
@@ -546,13 +550,14 @@ export default {
 
             sourceNetworkId: "",
             isEthereumNetwork,
-            isBinanceNetwork
+            isBinanceNetwork,
         };
     },
     components: {
         gasEditor,
         gasEditorSwap,
-        watingEnhanceSwapNew
+        watingEnhanceSwapNew,
+        setupModal
     },
     watch: {
         walletAddress() {},
@@ -602,9 +607,10 @@ export default {
     methods: {
         //跳转到设置
         jumpToStep() {
-            window.open(
-                "https://docs.binance.org/smart-chain/wallet/binance.html"
-            );
+            // window.open(
+            //     "https://docs.binance.org/smart-chain/wallet/binance.html"
+            // );
+            this.$refs.setupModal.show()
         },
 
         /**
@@ -2130,6 +2136,7 @@ export default {
             }
         }
     }
+
 }
 
 @media only screen and (max-width: $max-phone-width) {
@@ -2442,6 +2449,7 @@ export default {
                 }
             }
         }
+
     }
 }
 </style>

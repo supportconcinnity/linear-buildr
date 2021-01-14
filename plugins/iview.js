@@ -25,6 +25,7 @@ import {
     Page,
     Table,
     Select,
+    Notice,
     Option
 } from "view-design";
 import "view-design/dist/styles/iview.css";
@@ -69,6 +70,6 @@ Vue.component("Collapse", Collapse);
 Vue.component("Panel", Panel);
 Vue.component("Table", Table);
 
-// Vue.prototype.$Notice = Notice;
+Vue.prototype.$Notice = Notice;
 
 Vue.prototype.$Spin = Spin;
