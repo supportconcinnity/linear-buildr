@@ -147,7 +147,7 @@
             v-model="introductActionModal"
             :footer-hide="true"
             :closable="true"
-            :transfer="false"
+            :transfer="true"
             :mask="true"
             class="introductActionModal"
         >
@@ -734,6 +734,49 @@ export default {
 }
 
 @media only screen and (max-width: $max-phone-width) {
+    body {
+        .introductActionModal {
+            .ivu-modal-mask {
+                z-index: 10000!important;
+            }
+
+            .ivu-modal-wrap {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000!important;
+
+                .ivu-modal {
+                    width: 74.66vw!important;
+                    height: 36.8vw;
+                    top: 0!important;
+
+                    .ivu-modal-content {
+                        height: 100%;
+                        border-radius: 6px;
+
+                        .ivu-modal-body {
+                            height: 100%;
+                            padding: 24px;
+                            box-shadow: unset;
+
+                            .title {
+                                font-family: Gilroy-Bold;
+                                font-size: 16px;
+                                margin-bottom: 9px;
+                            }
+
+                            .context {
+                                font-family: Gilroy;
+                                font-size: 14px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     #referralModal {
         min-height: 550px;
 
@@ -1012,42 +1055,6 @@ export default {
                                     opacity: 0.1;
                                     cursor: not-allowed;
                                 }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        .introductActionModal {
-            .ivu-modal-wrap {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                .ivu-modal {
-                    width: 74.66vw!important;
-                    height: 36.8vw;
-                    top: 0!important;
-
-                    .ivu-modal-content {
-                        height: 100%;
-                        border-radius: 6px;
-
-                        .ivu-modal-body {
-                            height: 100%;
-                            padding: 24px;
-                            box-shadow: unset;
-
-                            .title {
-                                font-family: Gilroy-Bold;
-                                font-size: 16px;
-                                margin-bottom: 9px;
-                            }
-
-                            .context {
-                                font-family: Gilroy;
-                                font-size: 14px;
                             }
                         }
                     }

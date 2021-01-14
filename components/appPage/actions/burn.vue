@@ -2267,6 +2267,7 @@ export default {
                     width: 100%;
                     height: 88vh !important;
                     min-height: 550px;
+                    background: white;
 
                     .burnBox,
                     .waitingBox,
@@ -2534,10 +2535,15 @@ export default {
         }
 
         .introductActionModal {
+            .ivu-modal-mask {
+                z-index: 10000!important;
+            }
+
             .ivu-modal-wrap {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                z-index: 10000!important;
 
                 .ivu-modal {
                     width: 74.66vw !important;
