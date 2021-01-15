@@ -847,7 +847,6 @@ export default {
             const burnGasLimit = await this.getBurnGasEstimate(burnAmount);
 
             let transaction = await LnBuildBurnSystem.BurnAsset(
-                this.walletAddress,
                 burnAmount,
                 {
                     gasPrice: this.$store.state?.gasDetails?.price,
@@ -899,7 +898,6 @@ export default {
             );
 
             let transaction = await LnCollateralSystem.Redeem(
-                this.walletAddress,
                 utils.formatBytes32String("LINA"),
                 unstakeAmount,
                 {
@@ -967,7 +965,6 @@ export default {
                 } = lnrJSConnector;
 
                 let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BurnAsset(
-                    this.walletAddress,
                     burnAmount
                 );
 
@@ -987,7 +984,6 @@ export default {
                 } = lnrJSConnector;
 
                 let gasEstimate = await LnCollateralSystem.contract.estimateGas.Redeem(
-                    this.walletAddress,
                     utils.formatBytes32String("LINA"),
                     unstakeAmount
                 );

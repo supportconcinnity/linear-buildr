@@ -317,9 +317,17 @@ export default {
     },
     destroyed() {
         //清除事件,防止重复
-        this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
-        this.$pub.unsubscribe(this.chainChangeTokenFromSubscribe);
-        this.$pub.unsubscribe(this.walletChangeTokenFromSubscribe);
+        if (this.chainChangeTokenFromUnfreeze != "") {
+            this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
+        }
+        
+        if (this.chainChangeTokenFromSubscribe != "") {
+            this.$pub.unsubscribe(this.chainChangeTokenFromSubscribe);
+        }
+        
+        if (this.walletChangeTokenFromSubscribe != "") {
+            this.$pub.unsubscribe(this.walletChangeTokenFromSubscribe);
+        }
     },
     watch: {
         walletAddress() {},
@@ -952,9 +960,10 @@ export default {
             return new Promise(resolve => {
                 const wait = () => {
                     if (this.chainChangedStatus) {
-                        this.$pub.unsubscribe(
-                            this.chainChangeTokenFromUnfreeze
-                        );
+                        if (this.chainChangeTokenFromUnfreeze != "") {
+                            this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
+                        }
+
                         this.chainChangeTokenFromUnfreeze = "";
                         this.chainChangedStatus = false;
                         resolve(true);

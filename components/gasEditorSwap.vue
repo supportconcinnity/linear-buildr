@@ -567,7 +567,9 @@ export default {
 
     destroyed() {
         //清除事件,防止重复
-        this.$pub.unsubscribe(this.chainChangeTokenFromSubscribe);
+        if (this.chainChangeTokenFromSubscribe != "") {
+            this.$pub.unsubscribe(this.chainChangeTokenFromSubscribe);
+        }
     },
     watch: {
         selectedSourceTypeChangeListener() {},

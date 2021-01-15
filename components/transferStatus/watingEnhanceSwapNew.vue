@@ -1920,9 +1920,10 @@ export default {
             return new Promise(resolve => {
                 const wait = () => {
                     if (this.chainChangedStatus) {
-                        this.$pub.unsubscribe(
-                            this.chainChangeTokenFromUnfreeze
-                        );
+                        if (this.chainChangeTokenFromUnfreeze != "") {
+                            this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
+                        }
+                        
                         this.chainChangeTokenFromUnfreeze = "";
                         this.chainChangedStatus = false;
                         resolve(true);
@@ -2344,9 +2345,17 @@ export default {
     },
     destroyed() {
         //清除事件,防止重复
-        this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
-        this.$pub.unsubscribe(this.chainChangeFromSubscribe);
-        this.$pub.unsubscribe(this.walletChangeAccountFromSubscribe);
+        if (this.chainChangeTokenFromUnfreeze != "") {
+            this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
+        }
+        
+        if (this.chainChangeFromSubscribe != "") {
+            this.$pub.unsubscribe(this.chainChangeFromSubscribe);
+        }
+
+        if (this.walletChangeAccountFromSubscribe) {
+            this.$pub.unsubscribe(this.walletChangeAccountFromSubscribe);
+        }
 
         clearTimeout(this.waitChainChangeLoopId);
         clearTimeout(this.waitingBlockConfirmationsLoopId);
