@@ -1,3 +1,3 @@
-import LnConfig from '../ropsten/LnConfig';
+import LnConfig from '../mainnet/LnConfig';
       export default LnConfig;
       

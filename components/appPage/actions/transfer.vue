@@ -495,9 +495,9 @@ export default {
         }
     },
     async created() {
-        const currency = isEthereumNetwork
+        const currency = this.isEthereumNetwork
             ? "ETH"
-            : isBinanceNetwork
+            : this.isBinanceNetwork
             ? "BNB"
             : "ETH";
         //获取ETH gas limit评估
@@ -605,12 +605,12 @@ export default {
         sendTransaction(currency, amount, destination, settings) {
             if (!currency) return null;
             if (currency === "LINA") {
-                let LnProxy;
-                if (this.isEthereumNetwork) {
-                    LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                } else if (this.isBinanceNetwork) {
-                    LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
-                }
+                let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                // if (this.isEthereumNetwork) {
+                //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                // } else if (this.isBinanceNetwork) {
+                //     LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
+                // }
 
                 return LnProxy.transfer(destination, amount, settings);
             } else if (["ETH", "BNB"].includes(currency)) {
@@ -643,12 +643,12 @@ export default {
                 const amountBN = n2bn(amount);
 
                 if (currency === "LINA") {
-                    let LnProxy;
-                    if (this.isEthereumNetwork) {
-                        LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                    } else if (this.isBinanceNetwork) {
-                        LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
-                    }
+                    let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                    // if (this.isEthereumNetwork) {
+                    //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                    // } else if (this.isBinanceNetwork) {
+                    //     LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
+                    // }
                     gasEstimate = await LnProxy.contract.estimateGas.transfer(
                         destination,
                         amountBN

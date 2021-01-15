@@ -99,17 +99,16 @@
                     <div
                         v-if="!isEthereumNetwork"
                         class="claimBtn"
-                        :class="{ disabled: claimDisabled || isEthereumNetwork }"
+                        :class="{
+                            disabled: claimDisabled || isEthereumNetwork
+                        }"
                         @click="clickClaim"
                     >
                         CLAIM NOW
                     </div>
 
-                    <div
-                        v-else
-                        class="claimBtn switchToBSC"
-                    >
-                        Please switch to BSC wallet to claim your rewards
+                    <div v-else class="claimBtn switchToBSC">
+                       Please switch to BSC network to claim your rewards
                     </div>
 
                     <Spin fix v-if="processing"></Spin>
@@ -170,7 +169,7 @@ import {
     bufferGasLimit,
     DEFAULT_GAS_LIMIT,
     isBinanceNetwork,
-    isEthereumNetwork,
+    isEthereumNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 import { BigNumber, utils } from "ethers";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
@@ -205,7 +204,7 @@ export default {
         walletNetworkName() {},
         walletNetworkId() {},
         isEthereumNetwork() {},
-        isBinanceNetwork() {},
+        isBinanceNetwork() {}
     },
     computed: {
         isEthereumNetwork() {
@@ -243,6 +242,8 @@ export default {
             if (!this.claimDisabled) {
                 this.processing = true;
 
+                if (this.isEthereumNetwork) return;
+
                 this.waitProcessArray = [];
                 this.confirmTransactionStep = 0;
 
@@ -279,7 +280,9 @@ export default {
                     // }
 
                     const rewardEntry = this.pendingRewardEntries[0];
-                    const signature = utils.splitSignature(rewardEntry.signatures[0].signature);
+                    const signature = utils.splitSignature(
+                        rewardEntry.signatures[0].signature
+                    );
 
                     let transaction = await LnRewardSystem.claimReward(
                         rewardEntry.periodId, // periodId
@@ -401,14 +404,20 @@ export default {
 
                 if (pendingRewardEntries.length > 0) {
                     this.closeIn = "Now";
-                    this.stakingRewards = formatNumber(pendingRewardEntries.reduce(
-                        (prev, curr) => prev.add(BigNumber.from(curr.stakingReward)),
-                        BigNumber.from(0)
-                    ) / 1e18);
-                    this.tradingRewards = formatNumber(pendingRewardEntries.reduce(
-                        (prev, curr) => prev.add(BigNumber.from(curr.feeReward)),
-                        BigNumber.from(0)
-                    ) / 1e18);
+                    this.stakingRewards = formatNumber(
+                        pendingRewardEntries.reduce(
+                            (prev, curr) =>
+                                prev.add(BigNumber.from(curr.stakingReward)),
+                            BigNumber.from(0)
+                        ) / 1e18
+                    );
+                    this.tradingRewards = formatNumber(
+                        pendingRewardEntries.reduce(
+                            (prev, curr) =>
+                                prev.add(BigNumber.from(curr.feeReward)),
+                            BigNumber.from(0)
+                        ) / 1e18
+                    );
                 } else {
                     this.closeIn = "N/A";
                     this.stakingRewards = 0;
@@ -435,7 +444,9 @@ export default {
                 //     gasEstimate = await LnFeeSystem.contract.estimateGas.claimFees();
 
                 const rewardEntry = this.pendingRewardEntries[0];
-                const signature = utils.splitSignature(rewardEntry.signatures[0].signature);
+                const signature = utils.splitSignature(
+                    rewardEntry.signatures[0].signature
+                );
 
                 let gasEstimate = await LnRewardSystem.contract.estimateGas.claimReward(
                     rewardEntry.periodId, // periodId
@@ -995,14 +1006,14 @@ export default {
 
         .introductActionModal {
             .ivu-modal-mask {
-                z-index: 10000!important;
+                z-index: 10000 !important;
             }
 
             .ivu-modal-wrap {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                z-index: 10000!important;
+                z-index: 10000 !important;
 
                 .ivu-modal {
                     width: 74.66vw !important;

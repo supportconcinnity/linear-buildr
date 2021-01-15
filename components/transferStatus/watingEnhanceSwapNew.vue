@@ -386,8 +386,17 @@
                                     />
 
                                     <img
+                                        v-if="
+                                            isEthereumNetwork(sourceNetworkId)
+                                        "
                                         class="rightIcon"
                                         src="@/static/ETH.svg"
+                                        alt=""
+                                    />
+                                    <img
+                                        v-else
+                                        class="rightIcon"
+                                        src="@/static/bnb.svg"
                                         alt=""
                                     />
                                 </div>
@@ -414,6 +423,15 @@
                                     />
 
                                     <img
+                                        v-if="
+                                            isEthereumNetwork(targetNetworkId)
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                        alt=""
+                                    />
+                                    <img
+                                        v-else
                                         class="rightIcon"
                                         src="@/static/bnb.svg"
                                         alt=""
@@ -1166,12 +1184,33 @@ export default {
         async checkPrepare(currentStep = 0) {
             try {
                 //记录gas price
-                this.sourceGasPrice =
-                    this.$store.state?.sourceGasDetails?.price ||
-                    50 * 1000000000;
-                this.targetGasPrice =
-                    this.$store.state?.targetGasDetails?.price ||
-                    50 * 1000000000;
+                // this.sourceGasPrice =
+                //     this.$store.state?.sourceGasDetails?.price ||
+                //     50 * 1000000000;
+                // this.targetGasPrice =
+                //     this.$store.state?.targetGasDetails?.price ||
+                //     50 * 1000000000;
+
+                let networkId = this.$store.state?.sourceGasDetails?.networkId;
+
+                //暂时解决因为切链导致的gas位置错位的bug
+                if (isEthereumNetwork(networkId)) {
+                    this.sourceGasPrice =
+                        this.$store.state?.sourceGasDetails?.price ||
+                        60 * 1000000000;
+
+                    this.targetGasPrice =
+                        this.$store.state?.targetGasDetails?.price ||
+                        60 * 1000000000;
+                } else {
+                    this.sourceGasPrice =
+                        this.$store.state?.targetGasDetails?.price ||
+                        60 * 1000000000;
+
+                    this.targetGasPrice =
+                        this.$store.state?.sourceGasDetails?.price ||
+                        60 * 1000000000;
+                }
 
                 // this.targetWalletAddress = this.walletAddress;
                 // this.targetWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
@@ -1191,9 +1230,9 @@ export default {
                 this.sourceNetworkId = this.walletNetworkId;
 
                 //记录目标网络id
-                // this.targetNetworkId = getOtherNetworks(
-                //     this.walletNetworkId
-                // ).join();
+                this.targetNetworkId = getOtherNetworks(
+                    this.walletNetworkId
+                ).join();
 
                 //记录原始钱包地址
                 this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
@@ -1256,10 +1295,10 @@ export default {
                     this.confirmTransactionStep = 0;
                     this.waitProcessFlow = null;
 
-                    let LnProxy,
+                    let LnProxy = lnrJSConnector.lnrJS.LinearFinance,
                         LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
                     if (isEthereumNetwork(this.walletNetworkId)) {
-                        LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                        // LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
                         this.BUILD_PROCESS_SETUP.FREEZE =
                             BUILD_PROCESS_SETUP.FREEZE + "ETH";
                         this.BUILD_PROCESS_SETUP.UNFREEZE =
@@ -1267,7 +1306,7 @@ export default {
                         // this.BUILD_PROCESS_SETUP.STAKING_BUILD =
                         //     BUILD_PROCESS_SETUP.STAKING_BUILD + "ETH";
                     } else if (isBinanceNetwork(this.walletNetworkId)) {
-                        LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                        // LnProxy = lnrJSConnector.lnrJS.LinearFinance;
                         this.BUILD_PROCESS_SETUP.FREEZE =
                             BUILD_PROCESS_SETUP.FREEZE + "BSC";
                         this.BUILD_PROCESS_SETUP.UNFREEZE =
@@ -1421,15 +1460,15 @@ export default {
         async startApproveContract(approveAmountLINA) {
             this.confirmTransactionStatus = false;
 
-            let LnProxy,
+            let LnProxy = lnrJSConnector.lnrJS.LinearFinance,
                 LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-            if (isEthereumNetwork(this.walletNetworkId)) {
-                LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                // LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-            } else if (isBinanceNetwork(this.walletNetworkId)) {
-                LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                // LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-            }
+            // if (isEthereumNetwork(this.walletNetworkId)) {
+            //     // LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+            //     // LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+            // } else if (isBinanceNetwork(this.walletNetworkId)) {
+            //     // LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+            //     // LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+            // }
 
             const { utils } = lnrJSConnector;
 
@@ -1485,12 +1524,12 @@ export default {
         //评估Approve的gas
         async getGasEstimateFromApprove(contractAddress, approveAmountLINA) {
             try {
-                let LnProxy;
-                if (isEthereumNetwork(this.walletNetworkId)) {
-                    LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                } else if (isBinanceNetwork(this.walletNetworkId)) {
-                    LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                }
+                let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                // if (isEthereumNetwork(this.walletNetworkId)) {
+                //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                // } else if (isBinanceNetwork(this.walletNetworkId)) {
+                //     LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                // }
 
                 if (
                     approveAmountLINA.isZero() ||
@@ -1931,9 +1970,11 @@ export default {
                 const wait = () => {
                     if (this.chainChangedStatus) {
                         if (this.chainChangeTokenFromUnfreeze != "") {
-                            this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
+                            this.$pub.unsubscribe(
+                                this.chainChangeTokenFromUnfreeze
+                            );
                         }
-                        
+
                         this.chainChangeTokenFromUnfreeze = "";
                         this.chainChangedStatus = false;
                         resolve(true);
@@ -2301,12 +2342,20 @@ export default {
         stepClickHandle() {
             //余额不足
             if (this.checkStatus.stepType == 1) {
+                if (
+                    isMainnetNetwork(this.walletNetworkId) ||
+                    isMainnetNetwork(this.targetNetworkId)
+                ) {
+                    return;
+                }
+
                 const urls = {
                     1: "",
                     3: "https://faucet.metamask.io/",
                     56: "",
                     97: "https://testnet.binance.org/faucet-smart"
                 };
+
                 if (this.checkStatus.stepIndex == 0) {
                     window.open(urls[this.walletNetworkId]);
                 } else if (this.checkStatus.stepIndex == 2) {
@@ -2359,7 +2408,7 @@ export default {
         if (this.chainChangeTokenFromUnfreeze != "") {
             this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
         }
-        
+
         if (this.chainChangeFromSubscribe != "") {
             this.$pub.unsubscribe(this.chainChangeFromSubscribe);
         }

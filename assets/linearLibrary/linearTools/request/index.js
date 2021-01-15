@@ -40,6 +40,7 @@ export const getLiquids = async wallet => {
                 let asset = lnrJSConnector.lnrJS[key];
                 //汇总获取price的key
                 assetKeys.push(key);
+
                 //汇总取余额的token
                 assetPromise.push(asset.balanceOf(wallet));
             }
@@ -222,13 +223,14 @@ export const storeDetailsData = async () => {
             const isEthereum = isEthereumNetwork(walletNetworkId);
             const isBinance = isBinanceNetwork(walletNetworkId);
 
-            let LnProxy;
+            let LnProxy= lnrJSConnector.lnrJS.LinearFinance;
 
-            if (isEthereum) {
-                LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-            } else if (isBinance) {
-                LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
-            }
+            // if (isEthereum) {
+            //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+            // } else if (isBinance) {
+            //     LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
+            // }
+
 
             const {
                 lnrJS: {

@@ -637,12 +637,12 @@ export default {
             try {
                 this.processing = true;
 
-                let LnProxy;
-                if (isEthereumNetwork(this.walletNetworkId)) {
-                    LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                } else if (isBinanceNetwork(this.walletNetworkId)) {
-                    LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                }
+                let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                // if (isEthereumNetwork(this.walletNetworkId)) {
+                //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                // } else if (isBinanceNetwork(this.walletNetworkId)) {
+                //     LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                // }
 
                 const {
                     lnrJS: { LnCollateralSystem, LnRewardLocker, LnDebtSystem },
@@ -1401,12 +1401,12 @@ export default {
         async startApproveContract(approveAmountLINA) {
             this.confirmTransactionStatus = false;
 
-            let LnProxy;
-            if (isEthereumNetwork(this.walletNetworkId)) {
-                LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-            } else if (isBinanceNetwork(this.walletNetworkId)) {
-                LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-            }
+            let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+            // if (isEthereumNetwork(this.walletNetworkId)) {
+            //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+            // } else if (isBinanceNetwork(this.walletNetworkId)) {
+            //     LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+            // }
 
             const {
                 lnrJS: { LnCollateralSystem },
@@ -1632,12 +1632,12 @@ export default {
             try {
                 const { utils } = lnrJSConnector;
 
-                let LnProxy;
-                if (isEthereumNetwork(this.walletNetworkId)) {
-                    LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                } else if (isBinanceNetwork(this.walletNetworkId)) {
-                    LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                }
+                let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                // if (isEthereumNetwork(this.walletNetworkId)) {
+                //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                // } else if (isBinanceNetwork(this.walletNetworkId)) {
+                //     LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                // }
 
                 if (
                     approveAmountLINA.isZero() ||

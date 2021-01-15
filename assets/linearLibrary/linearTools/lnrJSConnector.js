@@ -34,7 +34,9 @@ export const connectToWallet = async networkType => {
 
         const { name, networkId } = network;
 
-        if (!name) {
+        //  [1, 56].includes(networkId)
+
+        if (!name ) {
             throw new Error("not support network");
         }
 
@@ -236,11 +238,14 @@ export const selectedWallet = async (walletType, waitStore = true) => {
                     if (
                         store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
                     ) {
-                        const status = await selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK);
-                        status && $pub.publish(
-                            "onWalletChainChange",
-                            CHAIN_CHANGE_TYPE.NETWORK
+                        const status = await selectedWallet(
+                            SUPPORTED_WALLETS_MAP.METAMASK
                         );
+                        status &&
+                            $pub.publish(
+                                "onWalletChainChange",
+                                CHAIN_CHANGE_TYPE.NETWORK
+                            );
                     }
                 });
 
@@ -266,8 +271,6 @@ export const selectedWallet = async (walletType, waitStore = true) => {
                             networkId: walletStatus.networkId,
                             signer
                         });
-
-                       
 
                         store.commit("mergeWallet", {
                             address: address[0]

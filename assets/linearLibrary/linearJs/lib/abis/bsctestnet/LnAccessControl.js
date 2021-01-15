@@ -1,3 +1,3 @@
-import LnAccessControl from '../ropsten/LnAccessControl';
+import LnAccessControl from '../mainnet/LnAccessControl';
       export default LnAccessControl;
       

@@ -9,48 +9,61 @@
             class="stepModal"
         >
             <div class="close">
-                <svg @click="stepModal = false" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
-                    <g fill="none" fill-rule="evenodd">
-                        <g>
-                            <g>
-                                <g>
-                                    <g stroke="#E5E5E5" transform="translate(-1149 -160) translate(208 120) translate(941 40)">
-                                        <circle cx="20" cy="20" r="19.5"/>
-                                    </g>
-                                    <g fill="#99999A">
-                                        <path d="M13 4.5c.245 0 .45.177.492.41L13.5 5v7.5H21c.276 0 .5.224.5.5 0 .245-.177.45-.41.492L21 13.5h-7.5V21c0 .276-.224.5-.5.5-.245 0-.45-.177-.492-.41L12.5 21v-7.5H5c-.276 0-.5-.224-.5-.5 0-.245.177-.45.41-.492L5 12.5h7.5V5c0-.276.224-.5.5-.5z" transform="translate(-1149 -160) translate(208 120) translate(941 40) translate(7 7) rotate(45 13 13)"/>
-                                    </g>
-                                </g>
-                            </g>
-                        </g>
-                    </g>
-                </svg>
+                <closeSvg @click.native="stepModal = false"></closeSvg>
             </div>
             <div class="title">Setup MetaMask to connect to BSC Mainnet</div>
             <div class="context">
                 <div class="step step1">
                     <div class="num">01</div>
-                    <div class="text"><p>Click on the MetaMask logo then click on expand view.</p></div>
+                    <div class="text">
+                        <p>
+                            Click on the MetaMask logo then click on expand
+                            view.
+                        </p>
+                    </div>
                     <div class="picture">
-                        <img style="width: 402px; height: 262px;" src="@/static/setupModal/1.png" />
+                        <img
+                            style="width: 402px; height: 262px;"
+                            src="@/static/setupModal/1.png"
+                        />
                     </div>
                 </div>
                 <div class="step step2">
                     <div class="num">02</div>
-                    <div class="text"><p>Click on the Ethereum Mainnet tab to add the Binanne Smart Chain network. Scroll down until you find Custom RPC</p></div>
+                    <div class="text">
+                        <p>
+                            Click on the Ethereum Mainnet tab to add the Binanne
+                            Smart Chain network. Scroll down until you find
+                            Custom RPC
+                        </p>
+                    </div>
                     <div class="picture">
-                        <img style="width: 398px; height: 258px;" src="@/static/setupModal/2.png" />
+                        <img
+                            style="width: 398px; height: 258px;"
+                            src="@/static/setupModal/2.png"
+                        />
                     </div>
                 </div>
                 <div class="step step3">
                     <div class="num">03</div>
-                    <div class="text">Enter in the BSC mainnet details as follows:
+                    <div class="text">
+                        Enter in the BSC mainnet details as follows:
 
                         <div class="table">
-                            <div class="secondTitle">Option 1: Connect BSC Mainnet</div>
+                            <div class="secondTitle">
+                                Option 1: Connect BSC Mainnet
+                            </div>
                             <Row>
                                 <Col span="8">Network Name</Col>
-                                <Col span="16">BSC Mainnet
+                                <Col span="16"
+                                    >BSC Mainnet
+                                    <!-- <copySvg
+                                        @click.native="copyFun('.BSC_Mainnet')"
+                                        class="BSC_Mainnet"
+                                        data-clipboard-action="copy"
+                                        :data-clipboard-text="'BSC Mainnet'"
+                                    /> -->
+
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                         data-clipboard-action="copy" 
                                         @click="copyFun('.BSC_Mainnet')" 
@@ -76,51 +89,77 @@
                             <Row>
                                 <Col span="8">New RPC URL</Col>
                                 <Col span="16">
-                                    https://bsc-dataseed1.binance.org/<svg xmlns="http://www.w3.org/2000/svg"
-                                        data-clipboard-action="copy" 
-                                        @click="copyFun('.RPC_URL1')" 
+                                    https://bsc-dataseed1.binance.org/<svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        data-clipboard-action="copy"
+                                        @click="copyFun('.RPC_URL1')"
                                         class="RPC_URL1"
-                                        :data-clipboard-text="'https://bsc-dataseed1.binance.org/'" 
-                                        width="16" height="16" viewBox="0 0 16 16">
+                                        :data-clipboard-text="
+                                            'https://bsc-dataseed1.binance.org/'
+                                        "
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                    >
                                         <g fill="none" fill-rule="evenodd">
                                             <g fill="#99999A">
                                                 <g>
                                                     <g>
                                                         <g>
                                                             <g>
-                                                                <path d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z" transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"/>
+                                                                <path
+                                                                    d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
+                                                                    transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
+                                                                />
                                                             </g>
                                                         </g>
                                                     </g>
                                                 </g>
                                             </g>
                                         </g>
-                                    </svg> or
-                                    <span>(https://bsc-dataseed2.binance.org/<svg xmlns="http://www.w3.org/2000/svg"
-                                        data-clipboard-action="copy" 
-                                        @click="copyFun('.RPC_URL2')" 
-                                        class="RPC_URL2"
-                                        :data-clipboard-text="'https://bsc-dataseed2.binance.org/'" 
-                                        width="16" height="16" viewBox="0 0 16 16">
-                                        <g fill="none" fill-rule="evenodd">
-                                            <g fill="#99999A">
-                                                <g>
+                                    </svg>
+                                    or
+                                    <span
+                                        >(https://bsc-dataseed2.binance.org/<svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            data-clipboard-action="copy"
+                                            @click="copyFun('.RPC_URL2')"
+                                            class="RPC_URL2"
+                                            :data-clipboard-text="
+                                                'https://bsc-dataseed2.binance.org/'
+                                            "
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 16 16"
+                                        >
+                                            <g fill="none" fill-rule="evenodd">
+                                                <g fill="#99999A">
                                                     <g>
                                                         <g>
                                                             <g>
-                                                                <path d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z" transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"/>
+                                                                <g>
+                                                                    <path
+                                                                        d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
+                                                                        transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
+                                                                    />
+                                                                </g>
                                                             </g>
                                                         </g>
                                                     </g>
                                                 </g>
-                                            </g>
-                                        </g>
-                                    </svg>)</span>
+                                            </g></svg
+                                        >)</span
+                                    >
                                 </Col>
                             </Row>
                             <Row>
                                 <Col span="8">ChainID</Col>
-                                <Col span="16">56 <span>(or 0x38 if 56 doesn’t work)</span></Col>
+                                <Col span="16"
+                                    >56
+                                    <span
+                                        >(or 0x38 if 56 doesn’t work)</span
+                                    ></Col
+                                >
                             </Row>
                             <Row>
                                 <Col span="8">Symbol</Col>
@@ -128,45 +167,65 @@
                             </Row>
                             <Row>
                                 <Col span="8">Block Explorer URL</Col>
-                                <Col span="16">https://bscscan.com/<svg xmlns="http://www.w3.org/2000/svg"
-                                        data-clipboard-action="copy" 
-                                        @click="copyFun('.Block_URL')" 
+                                <Col span="16"
+                                    >https://bscscan.com/<svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        data-clipboard-action="copy"
+                                        @click="copyFun('.Block_URL')"
                                         class="Block_URL"
-                                        :data-clipboard-text="'https://bscscan.com/'" 
-                                        width="16" height="16" viewBox="0 0 16 16">
+                                        :data-clipboard-text="
+                                            'https://bscscan.com/'
+                                        "
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                    >
                                         <g fill="none" fill-rule="evenodd">
                                             <g fill="#99999A">
                                                 <g>
                                                     <g>
                                                         <g>
                                                             <g>
-                                                                <path d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z" transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"/>
+                                                                <path
+                                                                    d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
+                                                                    transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
+                                                                />
                                                             </g>
                                                         </g>
                                                     </g>
                                                 </g>
                                             </g>
-                                        </g>
-                                    </svg></Col>
+                                        </g></svg
+                                ></Col>
                             </Row>
                         </div>
                         <div class="table">
-                            <div class="secondTitle">Option 2: Connect BSC Testnet</div>
+                            <div class="secondTitle">
+                                Option 2: Connect BSC Testnet
+                            </div>
                             <Row>
                                 <Col span="8">Network Name</Col>
-                                <Col span="16">BSC Testnet<svg xmlns="http://www.w3.org/2000/svg"
-                                        data-clipboard-action="copy" 
-                                        @click="copyFun('.BSC_Testnet')" 
+                                <Col span="16"
+                                    >BSC Testnet<svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        data-clipboard-action="copy"
+                                        @click="copyFun('.BSC_Testnet')"
                                         class="BSC_Testnet"
-                                        :data-clipboard-text="'BSC Testnet'" 
-                                        width="16" height="16" viewBox="0 0 16 16">
+                                        :data-clipboard-text="'BSC Testnet'"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                    >
                                         <g fill="none" fill-rule="evenodd">
                                             <g fill="#99999A">
                                                 <g>
                                                     <g>
                                                         <g>
                                                             <g>
-                                                                <path d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z" transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"/>
+                                                                <path
+                                                                    d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
+                                                                    transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
+                                                                />
                                                             </g>
                                                         </g>
                                                     </g>
@@ -179,26 +238,37 @@
                             <Row>
                                 <Col span="8">New RPC URL</Col>
                                 <Col span="16">
-                                    <div>https://data-seed-prebsc-1-s1.binance.org:8545<svg xmlns="http://www.w3.org/2000/svg"
-                                        data-clipboard-action="copy" 
-                                        @click="copyFun('.RPC_URL3')" 
-                                        class="RPC_URL3"
-                                        :data-clipboard-text="'https://data-seed-prebsc-1-s1.binance.org:8545'" 
-                                        width="16" height="16" viewBox="0 0 16 16">
-                                        <g fill="none" fill-rule="evenodd">
-                                            <g fill="#99999A">
-                                                <g>
+                                    <div>
+                                        https://data-seed-prebsc-1-s1.binance.org:8545<svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            data-clipboard-action="copy"
+                                            @click="copyFun('.RPC_URL3')"
+                                            class="RPC_URL3"
+                                            :data-clipboard-text="
+                                                'https://data-seed-prebsc-1-s1.binance.org:8545'
+                                            "
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 16 16"
+                                        >
+                                            <g fill="none" fill-rule="evenodd">
+                                                <g fill="#99999A">
                                                     <g>
                                                         <g>
                                                             <g>
-                                                                <path d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z" transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"/>
+                                                                <g>
+                                                                    <path
+                                                                        d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
+                                                                        transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
+                                                                    />
+                                                                </g>
                                                             </g>
                                                         </g>
                                                     </g>
                                                 </g>
                                             </g>
-                                        </g>
-                                    </svg></div>
+                                        </svg>
+                                    </div>
                                 </Col>
                             </Row>
                             <Row>
@@ -211,38 +281,54 @@
                             </Row>
                             <Row>
                                 <Col span="8">Block Explorer URL</Col>
-                                <Col span="16">https://explorer.binance.org/smart-testnet<svg xmlns="http://www.w3.org/2000/svg"
-                                        data-clipboard-action="copy" 
-                                        @click="copyFun('.Block_Explorer_URL')" 
+                                <Col span="16"
+                                    >https://explorer.binance.org/smart-testnet<svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        data-clipboard-action="copy"
+                                        @click="copyFun('.Block_Explorer_URL')"
                                         class="Block_Explorer_URL"
-                                        :data-clipboard-text="'https://explorer.binance.org/smart-testnet'" 
-                                        width="16" height="16" viewBox="0 0 16 16">
+                                        :data-clipboard-text="
+                                            'https://explorer.binance.org/smart-testnet'
+                                        "
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                    >
                                         <g fill="none" fill-rule="evenodd">
                                             <g fill="#99999A">
                                                 <g>
                                                     <g>
                                                         <g>
                                                             <g>
-                                                                <path d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z" transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"/>
+                                                                <path
+                                                                    d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
+                                                                    transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
+                                                                />
                                                             </g>
                                                         </g>
                                                     </g>
                                                 </g>
                                             </g>
-                                        </g>
-                                    </svg></Col>
+                                        </g></svg
+                                ></Col>
                             </Row>
                         </div>
                     </div>
                     <div class="picture">
-                        <div class="p_1"><img src="@/static/setupModal/3.png" /></div>
-                        <div class="p_2"><img src="@/static/setupModal/4.png" /></div>
+                        <div class="p_1">
+                            <img src="@/static/setupModal/3.png" />
+                        </div>
+                        <div class="p_2">
+                            <img src="@/static/setupModal/4.png" />
+                        </div>
                     </div>
                 </div>
                 <div class="step step4">
                     <div class="num">04</div>
-                    <div class="text">Click Save. The BSC mainnet / BSC Testnet is connected with your Metamask Wallet.</div>
-                    
+                    <div class="text">
+                        Click Save. The BSC mainnet / BSC Testnet is connected
+                        with your Metamask Wallet.
+                    </div>
                 </div>
             </div>
         </Modal>
@@ -252,9 +338,13 @@
 <script>
 import _ from "lodash";
 import Clipboard from "clipboard";
+import closeSvg from "@/components/svg/close";
+import copySvg from "@/components/svg/copy";
 
 export default {
     components: {
+        closeSvg,
+        copySvg
     },
     name: "stepModal",
     data() {
@@ -262,10 +352,8 @@ export default {
             stepModal: false //教程弹窗
         };
     },
-    watch: {
-    },
-    computed: {
-    },
+    watch: {},
+    computed: {},
     methods: {
         copyFun(str) {
             var that = this;
@@ -276,18 +364,16 @@ export default {
                     duration: 1
                 });
                 e.clearSelection();
-                clipboarda.off("success", success)
+                clipboarda.off("success", success);
             }
             clipboarda.on("success", success);
         },
         show() {
-            this.stepModal = true
+            this.stepModal = true;
         }
     },
-    mounted() {
-    },
-    destroyed() {
-    }
+    mounted() {},
+    destroyed() {}
 };
 </script>
 
@@ -355,7 +441,7 @@ export default {
                                         width: 3px;
                                         height: 227px;
                                         border-left: dashed 1px #c3c3c3;
-                                        content: '';
+                                        content: "";
                                         display: block;
                                         transform: translate3d(12px, 31px, 0);
                                     }
@@ -457,7 +543,5 @@ export default {
             }
         }
     }
-
 }
-
 </style>

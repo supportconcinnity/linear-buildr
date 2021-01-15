@@ -340,14 +340,14 @@
                     <div
                         v-if="!isEthereumNetwork"
                         class="burnBtn"
-                        :class="{ disabled: burnDisabled || isEthereumNetwork }"
+                        :class="{ disabled: burnDisabled }"
                         @click="clickBurn"
                     >
                         BURN NOW
                     </div>
 
                     <div v-else class="burnBtn switchToBSC">
-                        Please switch to BSC wallet to burn your ℓusd
+                       Please switch to BSC network to burn your ℓusd
                     </div>
 
                     <Spin fix v-if="processing"></Spin>
@@ -547,12 +547,12 @@ export default {
             try {
                 this.processing = true;
 
-                let LnProxy;
-                if (this.isEthereumNetwork) {
-                    LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                } else if (this.isBinanceNetwork) {
-                    LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
-                }
+                let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                // if (this.isEthereumNetwork) {
+                //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                // } else if (this.isBinanceNetwork) {
+                //     LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
+                // }
 
                 const {
                     lnrJS: {
@@ -646,6 +646,8 @@ export default {
             if (!this.burnDisabled) {
                 try {
                     this.processing = true;
+
+                    if (this.isEthereumNetwork) return;
 
                     //清空之前数据
                     this.waitProcessArray = [];
@@ -812,14 +814,10 @@ export default {
 
             const burnGasLimit = await this.getBurnGasEstimate(burnAmount);
 
-
-            let transaction = await LnBuildBurnSystem.BurnAsset(
-                burnAmount,
-                {
-                    gasPrice: this.$store.state?.gasDetails?.price,
-                    gasLimit: burnGasLimit
-                }
-            );
+            let transaction = await LnBuildBurnSystem.BurnAsset(burnAmount, {
+                gasPrice: this.$store.state?.gasDetails?.price,
+                gasLimit: burnGasLimit
+            });
 
             if (transaction) {
                 this.confirmTransactionStatus = true;

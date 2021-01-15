@@ -320,11 +320,11 @@ export default {
         if (this.chainChangeTokenFromUnfreeze != "") {
             this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
         }
-        
+
         if (this.chainChangeTokenFromSubscribe != "") {
             this.$pub.unsubscribe(this.chainChangeTokenFromSubscribe);
         }
-        
+
         if (this.walletChangeTokenFromSubscribe != "") {
             this.$pub.unsubscribe(this.walletChangeTokenFromSubscribe);
         }
@@ -466,17 +466,18 @@ export default {
                         this.confirmTransactionStep = 0;
                         this.waitProcessFlow = null;
 
-                        let LnProxy, LnBridge;
-                        if (this.isEthereumNetwork) {
-                            LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                        let LnProxy = lnrJSConnector.lnrJS.LinearFinance,
                             LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+                        if (this.isEthereumNetwork) {
+                            // LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                            // LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
                             this.BUILD_PROCESS_SETUP.FREEZE =
                                 BUILD_PROCESS_SETUP.FREEZE + "ETH";
                             this.BUILD_PROCESS_SETUP.UNFREEZE =
                                 BUILD_PROCESS_SETUP.UNFREEZE + "BSC";
                         } else if (this.isBinanceNetwork) {
-                            LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                            LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+                            // LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                            // LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
                             this.BUILD_PROCESS_SETUP.FREEZE =
                                 BUILD_PROCESS_SETUP.FREEZE + "BSC";
                             this.BUILD_PROCESS_SETUP.UNFREEZE =
@@ -623,14 +624,15 @@ export default {
         async startApproveContract(approveAmountLINA) {
             this.confirmTransactionStatus = false;
 
-            let LnProxy, LnBridge;
-            if (this.isEthereumNetwork) {
-                LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+            let LnProxy = lnrJSConnector.lnrJS.LinearFinance,
                 LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-            } else if (this.isBinanceNetwork) {
-                LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-            }
+            // if (this.isEthereumNetwork) {
+            //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+            //     LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+            // } else if (this.isBinanceNetwork) {
+            //     LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+            //     LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+            // }
 
             const { utils } = lnrJSConnector;
 
@@ -688,12 +690,12 @@ export default {
             try {
                 const { utils } = lnrJSConnector;
 
-                let LnProxy;
-                if (this.isEthereumNetwork) {
-                    LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                } else if (this.isBinanceNetwork) {
-                    LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                }
+                let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                // if (this.isEthereumNetwork) {
+                //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+                // } else if (this.isBinanceNetwork) {
+                //     LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                // }
 
                 if (
                     approveAmountLINA.isZero() ||
@@ -715,12 +717,12 @@ export default {
         async startFreezeContract(swapNumber) {
             this.confirmTransactionStatus = false;
 
-            let LnBridge, SETUP;
+            let LnBridge= lnrJSConnector.lnrJS.LnErc20Bridge, SETUP;
             if (this.isEthereumNetwork) {
-                LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+                // LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
                 SETUP = "ETH";
             } else if (this.isBinanceNetwork) {
-                LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+                // LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
                 SETUP = "BSC";
             }
 
@@ -874,12 +876,13 @@ export default {
             }
 
             if (walletStatus) {
-                let LnBridge, SETUP;
+                let LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge,
+                    SETUP;
                 if (this.isEthereumNetwork) {
-                    LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+                    // LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
                     SETUP = "ETH";
                 } else if (this.isBinanceNetwork) {
-                    LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+                    // LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
                     SETUP = "BSC";
                 }
 
@@ -961,7 +964,9 @@ export default {
                 const wait = () => {
                     if (this.chainChangedStatus) {
                         if (this.chainChangeTokenFromUnfreeze != "") {
-                            this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
+                            this.$pub.unsubscribe(
+                                this.chainChangeTokenFromUnfreeze
+                            );
                         }
 
                         this.chainChangeTokenFromUnfreeze = "";

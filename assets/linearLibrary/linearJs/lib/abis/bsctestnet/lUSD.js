@@ -1,3 +1,3 @@
-import lUSD from '../ropsten/LnProxyERC20';
+import lUSD from '../mainnet/lUSD';
       export default lUSD;
       

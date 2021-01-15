@@ -1,3 +1,3 @@
-import LnDebtSystem from '../ropsten/LnDebtSystem';
+import LnDebtSystem from '../mainnet/LnDebtSystem';
       export default LnDebtSystem;
       
