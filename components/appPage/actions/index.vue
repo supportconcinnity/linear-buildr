@@ -180,19 +180,19 @@ export default {
     created() {
         //订阅组件改变事件
         this.$pub.subscribe("trackModalChange", (msg, params) => {
-            console.log("trackModalChange", params);
+            // console.log("trackModalChange", params);
             if (params) {
                 this.othersAction = 1;
             }
         });
         this.$pub.subscribe("transactionModalChange", (msg, params) => {
-            console.log("transactionModalChange", params);
+            // console.log("transactionModalChange", params);
             if (params) {    
                 this.othersAction = 2;
             }
         });
         this.$pub.subscribe("referralModalChange", (msg, params) => {
-            console.log("referralModalChange", params);
+            // console.log("referralModalChange", params);
             if (params) {    
                 this.othersAction = 3;
             }

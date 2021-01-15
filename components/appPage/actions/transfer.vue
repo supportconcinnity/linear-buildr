@@ -160,10 +160,15 @@
                         <div
                             class="errMsg"
                             :style="{
-                                display: errors.amountMsg || (walletError && this.transferToAddress != '') ? 'flex' : 'none'
+                                display:
+                                    errors.amountMsg ||
+                                    (walletError &&
+                                        this.transferToAddress != '')
+                                        ? 'flex'
+                                        : 'none'
                             }"
                         >
-                            <img src="@/static/error.svg" alt="">
+                            <img src="@/static/error.svg" alt="" />
                             <div v-if="errors.amountMsg">
                                 {{ errors.amountMsg }}
                             </div>
@@ -209,11 +214,20 @@
                             </div>
 
                             <div class="currentBalance">
-                                <div v-if="currentSelectCurrency.name == 'ETH' || currentSelectCurrency.name == 'BNB'">
-                                    Avaliable: {{currency[selected].avaliable}} {{ currentSelectCurrency.name }}
+                                <div
+                                    v-if="
+                                        currentSelectCurrency.name == 'ETH' ||
+                                            currentSelectCurrency.name == 'BNB'
+                                    "
+                                >
+                                    Avaliable:
+                                    {{ currency[selected].avaliable }}
+                                    {{ currentSelectCurrency.name }}
                                 </div>
                                 <div v-else>
-                                    Avaliable: {{ currentSelectCurrency.avaliable }} {{ currentSelectCurrency.name }}
+                                    Avaliable:
+                                    {{ currentSelectCurrency.avaliable }}
+                                    {{ currentSelectCurrency.name }}
                                 </div>
                             </div>
 
@@ -225,9 +239,7 @@
                                         ref="itemInput2"
                                         element-id="transfer_number_input"
                                         :min="0"
-                                        :max="
-                                            currency[selected].avaliable
-                                        "
+                                        :max="currency[selected].avaliable"
                                         type="text"
                                         v-model="transferNumber"
                                         placeholder="2"
@@ -298,7 +310,7 @@
 
                     <div
                         class="transferBtn"
-                        :class="{ disabled: transferDisabled || walletError || isEthereumNetwork }"
+                        :class="{ disabled: transferDisabled || walletError }"
                         @click="onSend"
                     >
                         TRANSFER NOW
@@ -561,7 +573,7 @@ export default {
                         this.$pub.publish("notificationQueue", {
                             hash: this.confirmTransactionHash,
                             type: "Transfer",
-                             networkId: this.walletNetworkId,
+                            networkId: this.walletNetworkId,
                             value: `${formatNumber(
                                 lnrJSConnector.utils.formatEther(sendAmount)
                             )} ${this.currentSelectCurrency.name}`
@@ -698,7 +710,7 @@ export default {
                 this.errors.amountMsg = "";
             }
         },
-        
+
         //获取焦点
         inputFocus(index) {
             this.$nextTick(() => {
@@ -724,7 +736,10 @@ export default {
         },
         //交易状态页面回调方法 打开etherscan
         etherscan() {
-            openBlockchainBrowser(this.confirmTransactionHash,this.walletNetworkId);
+            openBlockchainBrowser(
+                this.confirmTransactionHash,
+                this.walletNetworkId
+            );
         },
         //交易状态页面回调方法 回到主页
         homepage() {
@@ -1054,7 +1069,7 @@ export default {
                                         line-height: 40px;
                                         border-radius: 100%;
                                         background-color: #fff;
-                                        
+
                                         img {
                                             width: 100%;
                                             height: 100%;
@@ -1189,7 +1204,7 @@ export default {
 
                 .ivu-tabs-tabpane {
                     width: 100%;
-                    height: 88vh!important;
+                    height: 88vh !important;
                     min-height: 550px;
 
                     .transferBox,
@@ -1220,7 +1235,7 @@ export default {
                                 padding: 12px 16px;
                                 margin-top: 24px;
                                 border-radius: 8px;
-                                background-color: rgba(223,67,76,.05);
+                                background-color: rgba(223, 67, 76, 0.05);
                                 font-size: 12px;
                                 color: #df434c;
 
@@ -1315,7 +1330,12 @@ export default {
                                         width: 74px;
                                         height: 44px;
                                         border-radius: 8px;
-                                        background-color: rgba(126,181,255,.1);
+                                        background-color: rgba(
+                                            126,
+                                            181,
+                                            255,
+                                            0.1
+                                        );
                                         text-align: center;
                                         line-height: 44px;
                                         font-family: Gilroy-Bold;
@@ -1424,7 +1444,8 @@ export default {
                                 }
                             }
 
-                            .from, .to {
+                            .from,
+                            .to {
                                 &:hover,
                                 &.active {
                                     border-color: white;
@@ -1438,7 +1459,7 @@ export default {
                         }
 
                         .transferBtn {
-                            height: 12.8vw!important;
+                            height: 12.8vw !important;
                             font-size: 16px;
                         }
                     }

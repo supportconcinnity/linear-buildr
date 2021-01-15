@@ -363,7 +363,9 @@
                         </div>
 
                         <gasEditorSwap
-                            v-if="isEthereumNetwork(walletNetworkId) && isMobile"
+                            v-if="
+                                isEthereumNetwork(walletNetworkId) && isMobile
+                            "
                             :simple="true"
                         ></gasEditorSwap>
                         <gasEditor v-else-if="isMobile"></gasEditor>
@@ -397,7 +399,7 @@
                 ></watingEnhance>
 
                 <watingEnhanceSwapNew
-                    :amount="floor(inputData.stake,DECIMAL_PRECISION)"
+                    :amount="floor(inputData.stake, DECIMAL_PRECISION)"
                     :swapType="1"
                     v-if="
                         actionTabs == 'm1' && isEthereumNetwork(sourceNetworkId)
@@ -484,7 +486,7 @@ import {
 import watingEnhanceSwapNew from "@/components/transferStatus/watingEnhanceSwapNew";
 import gasEditorSwap from "@/components/gasEditorSwap";
 
-import setupModal from "@/components/setupModal"
+import setupModal from "@/components/setupModal";
 
 export default {
     name: "build",
@@ -550,7 +552,7 @@ export default {
 
             sourceNetworkId: "",
             isEthereumNetwork,
-            isBinanceNetwork,
+            isBinanceNetwork
         };
     },
     components: {
@@ -610,7 +612,7 @@ export default {
             // window.open(
             //     "https://docs.binance.org/smart-chain/wallet/binance.html"
             // );
-            this.$refs.setupModal.show()
+            this.$refs.setupModal.show();
         },
 
         /**
@@ -1270,28 +1272,28 @@ export default {
                             );
                         }
 
-                        if (
-                            this.actionData.stake.gte(n2bn("1")) &&
-                            this.actionData.amount.gte(n2bn("0.01"))
-                        ) {
-                            //一步调用
+                        // if (
+                        //     this.actionData.stake.gte(n2bn("1")) &&
+                        //     this.actionData.amount.gte(n2bn("0.01"))
+                        // ) {
+                        //     //一步调用
+                        //     this.waitProcessArray.push(
+                        //         BUILD_PROCESS_SETUP.STAKING_BUILD + " BSC"
+                        //     );
+                        // } else {
+                        //单独调用
+                        if (this.actionData.stake.gte(n2bn("1"))) {
                             this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.STAKING_BUILD + " BSC"
+                                BUILD_PROCESS_SETUP.STAKING
                             );
-                        } else {
-                            //单独调用
-                            if (this.actionData.stake.gte(n2bn("1"))) {
-                                this.waitProcessArray.push(
-                                    BUILD_PROCESS_SETUP.STAKING
-                                );
-                            }
-
-                            if (this.actionData.amount.gte(n2bn("0.01"))) {
-                                this.waitProcessArray.push(
-                                    BUILD_PROCESS_SETUP.BUILD
-                                );
-                            }
                         }
+
+                        if (this.actionData.amount.gte(n2bn("0.01"))) {
+                            this.waitProcessArray.push(
+                                BUILD_PROCESS_SETUP.BUILD
+                            );
+                        }
+                        // }
 
                         this.actionTabs = "m1"; //进入等待页
 
@@ -1336,7 +1338,7 @@ export default {
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.STAKING_BUILD + " BSC"
+                        BUILD_PROCESS_SETUP.STAKING_BUILD + "BSC"
                     ) {
                         //console.log("同时stake和buid");
                         //一步调用
@@ -2134,7 +2136,6 @@ export default {
             }
         }
     }
-
 }
 
 @media only screen and (max-width: $max-phone-width) {
@@ -2416,14 +2417,14 @@ export default {
 
         .introductActionModal {
             .ivu-modal-mask {
-                z-index: 10000!important;
+                z-index: 10000 !important;
             }
 
             .ivu-modal-wrap {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                z-index: 10000!important;
+                z-index: 10000 !important;
 
                 .ivu-modal {
                     width: 74.66vw !important;
@@ -2452,7 +2453,6 @@ export default {
                 }
             }
         }
-
     }
 }
 </style>

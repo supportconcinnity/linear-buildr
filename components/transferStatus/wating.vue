@@ -13,8 +13,14 @@
             stroke-color="#1a38f8"
         >
             <div>
-                <img v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK" src="@/static/metamask.svg" />
-                <img v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN" src="@/static/binance.svg" />
+                <img
+                    v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
+                    src="@/static/metamask.svg"
+                />
+                <img
+                    v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
+                    src="@/static/binance.svg"
+                />
             </div>
         </i-circle>
 
@@ -24,7 +30,9 @@
 
         <div class="btns">
             <div v-if="value" class="etherscan" @click="$emit('etherscan')">
-                View on Etherscan <span><img src="@/static/arrow_right.svg" alt=""></span>
+                View on <template v-if="isEthereumNetwork">Etherscan</template>
+                <template v-else> BSCscan</template>
+                <span><img src="@/static/arrow_right.svg" alt=""/></span>
             </div>
             <div class="gap">&nbsp;</div>
 
@@ -37,6 +45,7 @@
 
 <script>
 import {
+    isEthereumNetwork,
     SUPPORTED_WALLETS_MAP
 } from "@/assets/linearLibrary/linearTools/network";
 export default {
@@ -51,11 +60,21 @@ export default {
         };
     },
     watch: {
-        walletType() {}
+        walletType() {},
+        isEthereumNetwork() {},
+        walletNetworkId() {}
     },
     computed: {
         walletType() {
             return this.$store.state?.walletType;
+        },
+
+        isEthereumNetwork() {
+            return isEthereumNetwork(this.walletNetworkId);
+        },
+
+        walletNetworkId() {
+            return this.$store.state?.walletNetworkId;
         }
     },
     mounted() {

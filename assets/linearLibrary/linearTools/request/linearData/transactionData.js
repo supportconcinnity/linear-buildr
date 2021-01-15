@@ -12,6 +12,13 @@ const graphAPIEndpoints = {
     97: process.env.GRAPH_BUILDR_BINANCE_TESTNET
 };
 
+const swapGraphAPIEndpoints = {
+    1: process.env.GRAPH_BUILDR_SWAP_ETHEREUM_MAINNET,
+    3: process.env.GRAPH_BUILDR_ETHEREUM_ROPSTEN,
+    56: process.env.GRAPH_BUILDR_BINANCE_MAINNET,
+    97: process.env.GRAPH_BUILDR_BINANCE_TESTNET
+};
+
 module.exports = {
     pageResults,
     graphAPIEndpoints,
@@ -455,7 +462,7 @@ module.exports = {
             networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
             return pageResults({
-                api: graphAPIEndpoints[networkId],
+                api: swapGraphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "freeZes",
@@ -525,7 +532,7 @@ module.exports = {
             networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
             return pageResults({
-                api: graphAPIEndpoints[networkId],
+                api: swapGraphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "unfreezes",
@@ -594,7 +601,7 @@ module.exports = {
             networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
             return pageResults({
-                api: graphAPIEndpoints[networkId],
+                api: swapGraphAPIEndpoints[networkId],
                 max,
                 query: {
                     entity: "userSwapAssetsCounts",

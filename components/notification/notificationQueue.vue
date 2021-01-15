@@ -26,22 +26,29 @@ export default {
     name: "nitificationQueue",
     data() {
         return {
-            queue: []
+            queue: [],
+            subscribeEvent: ""
         };
     },
     components: {
         notification
     },
     created() {
-        this.$pub.subscribe("notificationQueue", async (msg, data) => {
-            let newQueue = _.clone(this.queue);
-            if (newQueue.length > 2) {
-                newQueue.shift();
+        this.subscribeEvent = this.$pub.subscribe(
+            "notificationQueue",
+            async (msg, data) => {
+                let newQueue = _.clone(this.queue);
+                if (newQueue.length > 2) {
+                    newQueue.shift();
+                }
+                data.key = new Date().valueOf(); //用时间戳当做key,防止dom不更新
+                newQueue.push(data);
+                this.queue = _.clone(newQueue);
             }
-            data.key = new Date().valueOf(); //用时间戳当做key,防止dom不更新
-            newQueue.push(data);
-            this.queue = _.clone(newQueue);
-        });
+        );
+    },
+    destroyed() {
+        this.$pub.unsubscribe(this.subscribeEvent);
     },
     watch: {
         isMobile() {}

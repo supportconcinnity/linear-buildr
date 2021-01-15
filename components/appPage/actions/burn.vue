@@ -346,11 +346,8 @@
                         BURN NOW
                     </div>
 
-                    <div
-                        v-else
-                        class="burnBtn switchToBSC"
-                    >
-                        Please switch to BSC wallet to claim your rewards
+                    <div v-else class="burnBtn switchToBSC">
+                        Please switch to BSC wallet to burn your ℓusd
                     </div>
 
                     <Spin fix v-if="processing"></Spin>
@@ -654,27 +651,25 @@ export default {
                     this.waitProcessArray = [];
                     this.confirmTransactionStep = 0;
 
-                    if (
-                        this.actionDatas.amount.gte(n2bn("0.01")) &&
-                        this.actionDatas.unStake.gte(n2bn("0.01"))
-                    ) {
-                        this.waitProcessArray.push(
-                            BUILD_PROCESS_SETUP.BURN_UNSTAKING
-                        );
-                    } else {
-                        if (this.actionDatas.amount.gte(n2bn("0.01"))) {
-                            //需要先burn
-                            this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.BURN
-                            );
-                        }
-
-                        if (this.actionDatas.unStake.gte(n2bn("0.01"))) {
-                            this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.UNSTAKING
-                            );
-                        }
+                    // if (
+                    //     this.actionDatas.amount.gte(n2bn("0.01")) &&
+                    //     this.actionDatas.unStake.gte(n2bn("0.01"))
+                    // ) {
+                    //     this.waitProcessArray.push(
+                    //         BUILD_PROCESS_SETUP.BURN_UNSTAKING
+                    //     );
+                    // } else {
+                    if (this.actionDatas.amount.gte(n2bn("0.01"))) {
+                        //需要先burn
+                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.BURN);
                     }
+
+                    if (this.actionDatas.unStake.gte(n2bn("0.01"))) {
+                        this.waitProcessArray.push(
+                            BUILD_PROCESS_SETUP.UNSTAKING
+                        );
+                    }
+                    // }
 
                     this.actionTabs = "m1"; //进入等待页
 
@@ -711,6 +706,13 @@ export default {
                             ] == BUILD_PROCESS_SETUP.BURN
                         ) {
                             //console.log("单独burn");
+                            const amount = n2bn(
+                                _.ceil(bn2n(this.actionDatas.amount), 2)
+                            );
+                            if (amount.lt(this.burnData.lUSDBN)) {
+                                this.actionDatas.amount = amount;
+                            }
+
                             await this.burn(this.actionDatas.amount);
                         }
 
@@ -719,42 +721,6 @@ export default {
                                 this.confirmTransactionStep
                             ] == BUILD_PROCESS_SETUP.UNSTAKING
                         ) {
-                            // if (this.confirmTransactionStep != 0) {
-                            //     const priceRates = await getPriceRates([
-                            //         "LINA",
-                            //         "lUSD"
-                            //     ]);
-
-                            // const priceRates = await getPriceRatesFromApi(["LINA", "lUSD"]);
-
-                            //     const currentLINAPrice = bnDiv(
-                            //         priceRates.LINA,
-                            //         priceRates.lUSD
-                            //     ); //最新LINA汇率
-
-                            //     if (
-                            //         currentLINAPrice.lt(
-                            //             this.burnData.LINA2USDBN
-                            //         )
-                            //     ) {
-                            //         let fallRate = bnDiv(
-                            //             bnSub(
-                            //                 this.burnData.LINA2USDBN,
-                            //                 currentLINAPrice
-                            //             ),
-                            //             this.burnData.LINA2USDBN
-                            //         );
-
-                            //         this.actionDatas.unStake = bnSub(
-                            //             this.actionDatas.unStake,
-                            //             bnMul(
-                            //                 this.actionDatas.unStake,
-                            //                 fallRate
-                            //             )
-                            //         );
-                            //     }
-                            // }
-
                             //console.log("单独unstake");
                             this.actionDatas.unStake = n2bn(
                                 _.floor(bn2n(this.actionDatas.unStake), 2)
@@ -845,6 +811,7 @@ export default {
             this.confirmTransactionNetworkId = this.walletNetworkId;
 
             const burnGasLimit = await this.getBurnGasEstimate(burnAmount);
+
 
             let transaction = await LnBuildBurnSystem.BurnAsset(
                 burnAmount,
@@ -970,7 +937,6 @@ export default {
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
-                // console.log(e);
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.burn);
             }
         },
@@ -2215,23 +2181,23 @@ export default {
                             cursor: not-allowed;
                             opacity: 0.1;
                         }
-                    }
 
-                    .switchToBSC {
-                        font-family: Gilroy-Bold;
-                        font-size: 16px;
-                        font-weight: bold;
-                        font-stretch: normal;
-                        font-style: normal;
-                        line-height: 1.5;
-                        letter-spacing: normal;
-                        color: #1a38f8;
-                        cursor: not-allowed;
-                        background-color: #eff6ff;
-                        text-transform: none;
-                        &:hover {
-                            &:not(.disabled) {
-                                background-color: #eff6ff;
+                        &.switchToBSC {
+                            font-family: Gilroy-Bold;
+                            font-size: 16px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.5;
+                            letter-spacing: normal;
+                            color: #1a38f8;
+                            cursor: not-allowed;
+                            background-color: #eff6ff;
+                            text-transform: none;
+                            &:hover {
+                                &:not(.disabled) {
+                                    background-color: #eff6ff;
+                                }
                             }
                         }
                     }
@@ -2532,14 +2498,14 @@ export default {
 
         .introductActionModal {
             .ivu-modal-mask {
-                z-index: 10000!important;
+                z-index: 10000 !important;
             }
 
             .ivu-modal-wrap {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                z-index: 10000!important;
+                z-index: 10000 !important;
 
                 .ivu-modal {
                     width: 74.66vw !important;

@@ -2,7 +2,7 @@ export const BUILD_PROCESS_SETUP = {
     APPROVE: "Approve Contract",
     STAKING: "Confirm Staking",
     BUILD: "Confirm Building",
-    STAKING_BUILD: "Building ℓUSD on", //需保留前后空格
+    STAKING_BUILD: "Building ℓUSD on ", //需保留前后空格
     BURN: "Confirm Burning",
     UNSTAKING: "Confirm Unstaking",
     BURN_UNSTAKING: " Confirm Burning ", //需保留前后空格

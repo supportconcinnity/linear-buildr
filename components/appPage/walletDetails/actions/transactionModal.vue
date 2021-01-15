@@ -805,7 +805,8 @@ export default {
             this.gettingData = false;
         },
         //日期范围改变
-        dateRangeChange(dateRange) {console.log(dateRange, "dateRangeChange");
+        dateRangeChange(dateRange) {
+            // console.log(dateRange, "dateRangeChange");
             if (this.isMobile) {
                 this.mobileFilters.dateRange = dateRange;
             } else {

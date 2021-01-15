@@ -425,11 +425,11 @@ export default {
                         ? _.floor(frozenBalance, DECIMAL_PRECISION)
                         : null;
 
-                console.log(
-                    currentFreeZeTokens,
-                    otherUnFreeZeTokens,
-                    frozenBalance
-                );
+                // console.log(
+                //     currentFreeZeTokens,
+                //     otherUnFreeZeTokens,
+                //     frozenBalance
+                // );
             } catch (error) {
                 console.log(error, "getFrozenBalance error");
             } finally {
@@ -843,9 +843,9 @@ export default {
                     }
                 );
 
-                console.log("开始手动切换metamask链");
+                // console.log("开始手动切换metamask链");
                 walletStatus = await this.waitChainChange();
-                console.log("手动切换metamask链完成");
+                // console.log("手动切换metamask链完成");
             } else {
                 walletStatus = true;
             }
@@ -883,10 +883,10 @@ export default {
                     SETUP = "BSC";
                 }
 
-                console.log(`等待获取锁定hash`);
+                // console.log(`等待获取锁定hash`);
                 this.waitPendingProcess = true;
                 const processArray = await this.getPendingProcess(LnBridge);
-                console.log(`获取锁定hash完成`, processArray);
+                // console.log(`获取锁定hash完成`, processArray);
 
                 const { utils } = lnrJSConnector;
 
@@ -1015,12 +1015,12 @@ export default {
                     //过滤空
                     processArray = processArray.filter(item => item != "");
 
-                    console.log(
-                        processArray,
-                        this.freezeSuccessHash,
-                        count,
-                        "getPendingProcess"
-                    );
+                    // console.log(
+                    //     processArray,
+                    //     this.freezeSuccessHash,
+                    //     count,
+                    //     "getPendingProcess"
+                    // );
 
                     //有等待数据
                     if (processArray?.length > 0) {

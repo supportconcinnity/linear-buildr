@@ -1042,7 +1042,7 @@ export default {
             walletChangeAccountFromSubscribe: "", //切换钱包地址时间监听id
             waitChainChangeLoopId: "", //等待切链循环id
             waitingBlockConfirmationsLoopId: "", //等待块确认循环id
-            getPendingProcessLoopId: "" , //等待获取交易数据循环id
+            getPendingProcessLoopId: "" //等待获取交易数据循环id
 
             //调试
             // currentWalletType: "MetaMask"
@@ -1184,6 +1184,20 @@ export default {
                 this.checkStatus.stepError = "";
                 this.checkStatus.stepType = -1;
 
+                //记录原始钱包类型
+                this.sourceWalletType = this.currentWalletType;
+
+                //记录原始网络类型
+                this.sourceNetworkId = this.walletNetworkId;
+
+                //记录目标网络id
+                // this.targetNetworkId = getOtherNetworks(
+                //     this.walletNetworkId
+                // ).join();
+
+                //记录原始钱包地址
+                this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
+
                 if (currentStep < 1) {
                     await this.checkSounrceBalance();
                     if (this.checkStatus.stepType != -1) return;
@@ -1302,19 +1316,19 @@ export default {
                     //     );
                     // }
 
-                    //记录原始钱包类型
-                    this.sourceWalletType = this.currentWalletType;
+                    // //记录原始钱包类型
+                    // this.sourceWalletType = this.currentWalletType;
 
-                    //记录原始网络类型
-                    this.sourceNetworkId = this.walletNetworkId;
+                    // //记录原始网络类型
+                    // this.sourceNetworkId = this.walletNetworkId;
 
-                    //记录目标网络id
-                    this.targetNetworkId = getOtherNetworks(
-                        this.walletNetworkId
-                    ).join();
+                    // //记录目标网络id
+                    // this.targetNetworkId = getOtherNetworks(
+                    //     this.walletNetworkId
+                    // ).join();
 
-                    //记录原始钱包地址
-                    this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
+                    // //记录原始钱包地址
+                    // this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
                 }
 
                 this.checkStatus.stepIndex++;
@@ -1649,8 +1663,6 @@ export default {
 
             this.confirmTransactionNetworkId = this.walletNetworkId;
 
-            console.log(this.walletNetworkId,this.targetNetworkId);
-
             //验证当前网络id是否目标网络id
             if (this.walletNetworkId != this.targetNetworkId) {
                 throw {
@@ -1720,10 +1732,10 @@ export default {
 
                 // return;
 
-                console.log(`等待获取锁定hash`);
+                // console.log(`等待获取锁定hash`);
                 this.waitPendingProcess = true;
                 const depositArray = await this.getPendingProcess();
-                console.log(`获取锁定hash完成`, depositArray);
+                // console.log(`获取锁定hash完成`, depositArray);
 
                 const { utils } = lnrJSConnector;
 
@@ -1741,7 +1753,6 @@ export default {
                         LnBridge,
                         deposit
                     );
-
 
                     let transaction = await LnBridge.withdraw(
                         deposit.srcChainId,
@@ -1806,16 +1817,16 @@ export default {
                     throw new Error("invalid data");
                 }
 
-                console.log(
-                    deposit.srcChainId,
-                    deposit.destChainId,
-                    deposit.depositId,
-                    formatAddressToByte32(deposit.depositor),
-                    formatAddressToByte32(deposit.recipient),
-                    utils.formatBytes32String(deposit.currency),
-                    BigNumber.from(deposit.amount),
-                    deposit.signatures[0].signature
-                );
+                // console.log(
+                //     deposit.srcChainId,
+                //     deposit.destChainId,
+                //     deposit.depositId,
+                //     formatAddressToByte32(deposit.depositor),
+                //     formatAddressToByte32(deposit.recipient),
+                //     utils.formatBytes32String(deposit.currency),
+                //     BigNumber.from(deposit.amount),
+                //     deposit.signatures[0].signature
+                // );
 
                 //如果是bridge里面能提取的lina不足,会报错但无法捕捉异常,导致无限等待
                 let gasEstimate = await LnBridge.contract.estimateGas.withdraw(
@@ -1910,7 +1921,6 @@ export default {
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
-                console.log(e, "getGasEstimateFromStakingAndBuild");
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
             }
         },
@@ -1946,12 +1956,12 @@ export default {
                     //已确认块
                     const confirmations = currentBlock - blockNumber;
 
-                    console.log(
-                        currentBlock,
-                        blockNumber,
-                        confirmations,
-                        "confirmations"
-                    );
+                    // console.log(
+                    //     currentBlock,
+                    //     blockNumber,
+                    //     confirmations,
+                    //     "confirmations"
+                    // );
 
                     //1个以上,防止回退
                     if (confirmations > 0) {
@@ -2029,7 +2039,7 @@ export default {
                         })
                     ]);
 
-                    console.log(sourceArray, targetArray, ++count);
+                    // console.log(sourceArray, targetArray, ++count);
 
                     //有存数据
                     if (sourceArray.length) {
@@ -2040,11 +2050,8 @@ export default {
                                 this.freezeSuccessHash
                             ]);
 
-                            console.log(findHash, 3);
-
                             //没有找到hash
                             if (!findHash) {
-                                console.log(4);
                                 return;
                             }
                         }
@@ -2099,8 +2106,8 @@ export default {
             );
 
             const freezeFee = await this.getFreezeFee();
-            console.log(freezeFee, "freezeFee");
-            console.log(sourceBalance / 1e18, "sourceBalance");
+            // console.log(freezeFee, "freezeFee");
+            // console.log(sourceBalance / 1e18, "sourceBalance");
 
             if (sourceBalance.lt(n2bn(freezeFee))) {
                 this.checkStatus.stepType = 1;
@@ -2130,8 +2137,8 @@ export default {
                 ? 0.1
                 : 0.01;
 
-            console.log(unfreezeFee, "unfreezeFee");
-            console.log(targetBalance / 1e18, "targetBalance");
+            // console.log(unfreezeFee, "unfreezeFee");
+            // console.log(targetBalance / 1e18, "targetBalance");
 
             if (targetBalance.lt(n2bn(unfreezeFee))) {
                 this.checkStatus.stepType = 1;
@@ -2185,8 +2192,12 @@ export default {
                     }
                     const { networkId } = network;
 
-                    //目标网络不一致
-                    if (networkId != this.targetNetworkId) {
+                    //目标为bsc钱包时候检查目标网络id
+                    if (
+                        this.targetWalletType ==
+                            SUPPORTED_WALLETS_MAP.BINANCE_CHAIN &&
+                        networkId != this.targetNetworkId
+                    ) {
                         throw {
                             code: 100004,
                             message:
@@ -2291,9 +2302,9 @@ export default {
             //余额不足
             if (this.checkStatus.stepType == 1) {
                 const urls = {
-                    1: "https://metamask.io/",
+                    1: "",
                     3: "https://faucet.metamask.io/",
-                    56: "https://binance.org/faucet-smart",
+                    56: "",
                     97: "https://testnet.binance.org/faucet-smart"
                 };
                 if (this.checkStatus.stepIndex == 0) {

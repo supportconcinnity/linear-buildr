@@ -302,8 +302,6 @@ export default {
 
                 let trackData = await fetchTrackDebt(this.walletAddress);
 
-                console.log(trackData,'trackData');
-
                 const results = await Promise.all([
                     lUSD.balanceOf(this.walletAddress),
                     //lBTC.balanceOf(this.walletAddress),

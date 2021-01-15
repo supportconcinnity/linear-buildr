@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- <notificationQueue> </notificationQueue> -->
+        <notificationQueue> </notificationQueue>
 
         <!-- <watingEnhance
             :currentStep="confirmTransactionStep"
