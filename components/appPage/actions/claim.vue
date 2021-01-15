@@ -97,11 +97,19 @@
                     </div>
 
                     <div
+                        v-if="!isEthereumNetwork"
                         class="claimBtn"
                         :class="{ disabled: claimDisabled || isEthereumNetwork }"
                         @click="clickClaim"
                     >
-                        CLAIM NOW{{isEthereumNetwork}} {{isBinanceNetwork}}
+                        CLAIM NOW
+                    </div>
+
+                    <div
+                        v-else
+                        class="claimBtn switchToBSC"
+                    >
+                        Please switch to BSC wallet to claim your rewards
                     </div>
 
                     <Spin fix v-if="processing"></Spin>
@@ -716,6 +724,25 @@ export default {
 
                         &.claimBtnActivited {
                             opacity: unset;
+                        }
+
+                        &.switchToBSC {
+                            font-family: Gilroy-Bold;
+                            font-size: 16px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.5;
+                            letter-spacing: normal;
+                            color: #1a38f8;
+                            cursor: not-allowed;
+                            background-color: #eff6ff;
+                            text-transform: none;
+                            &:hover {
+                                &:not(.disabled) {
+                                    background-color: #eff6ff;
+                                }
+                            }
                         }
                     }
                 }
