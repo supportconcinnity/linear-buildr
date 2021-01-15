@@ -1,7 +1,7 @@
 "use strict";
-const {utils} = require('ethers')
-
+const {utils, BigNumber} = require('ethers')
 const pageResults = require("graph-results-pager");
+const { bn2n } = require('@/common/bnCalc');
 
 const maxRequest = 1000;
 
@@ -52,7 +52,7 @@ module.exports = {
                             account,
                             timestamp: Number(timestamp * 1000),
                             block: Number(block),
-                            value: value / 1e18,
+                            value:  bn2n(BigNumber.from(value)),
                             source: source,
                             symbol: "+"
                         })
@@ -96,7 +96,7 @@ module.exports = {
                             account,
                             timestamp: Number(timestamp * 1000),
                             block: Number(block),
-                            value: value / 1e18,
+                            value: bn2n(BigNumber.from(value)),
                             source: source,
                             symbol: "-"
                         })
@@ -194,7 +194,7 @@ module.exports = {
                             hash: id.split("-")[0],
                             from,
                             to,
-                            value: value / 1e18,
+                            value: bn2n(BigNumber.from(value)),
                             source: source,
                             symbol:
                                 account.toUpperCase() == from.toUpperCase()
@@ -246,8 +246,8 @@ module.exports = {
                             account,
                             timestamp: Number(timestamp * 1000),
                             block: Number(block),
-                            rewardslusd: rewardslusd / 1e18,
-                            rewardsLina: rewardsLina / 1e18
+                            rewardslusd: bn2n(BigNumber.from(rewardslusd)),
+                            rewardsLina: bn2n(BigNumber.from(rewardsLina))
                         })
                     )
                 )
@@ -294,7 +294,7 @@ module.exports = {
                             account,
                             timestamp: Number(timestamp * 1000),
                             block: Number(block),
-                            value: value / 1e18,
+                            value: bn2n(BigNumber.from(value)),
                             source: currency,
                             symbol: "-"
                         })
@@ -343,7 +343,7 @@ module.exports = {
                             account,
                             timestamp: Number(timestamp * 1000),
                             block: Number(block),
-                            value: value / 1e18,
+                            value: bn2n(BigNumber.from(value)),
                             source: currency,
                             symbol: "+"
                         })
@@ -400,7 +400,7 @@ module.exports = {
                             hash: id.split("-")[0],
                             from,
                             to,
-                            value: value / 1e18,
+                            value: bn2n(BigNumber.from(value)),
                             source: source,
                             symbol: "+"
                         })
@@ -510,7 +510,7 @@ module.exports = {
                             depositor,
                             recipient,
                             source: utils.parseBytes32String(currency),
-                            value: amount / 1e18,
+                            value:bn2n(BigNumber.from(amount)),
                             timestamp: Number(timestamp * 1000),
                             symbol: "-"
                         })
@@ -580,7 +580,7 @@ module.exports = {
                             depositor,
                             recipient,
                             source: utils.parseBytes32String(currency),
-                            value: amount / 1e18,
+                            value: bn2n(BigNumber.from(amount)),
                             timestamp: Number(timestamp * 1000),
                             symbol: "+"
                         })
@@ -616,8 +616,8 @@ module.exports = {
                 .then(results =>
                     results.map(({ id, freeZeTokens, UnFreeZeTokens }) => ({
                         account: id,
-                        freeZeTokens: freeZeTokens / 1e18,
-                        UnFreeZeTokens: UnFreeZeTokens / 1e18
+                        freeZeTokens: bn2n(BigNumber.from(freeZeTokens)),
+                        UnFreeZeTokens: bn2n(BigNumber.from(UnFreeZeTokens))
                     }))
                 )
                 .catch(err => console.error(err));
