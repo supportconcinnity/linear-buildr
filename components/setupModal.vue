@@ -57,99 +57,129 @@
                                 <Col span="8">Network Name</Col>
                                 <Col span="16"
                                     >BSC Mainnet
-                                    <!-- <copySvg
-                                        @click.native="copyFun('.BSC_Mainnet')"
-                                        class="BSC_Mainnet"
-                                        data-clipboard-action="copy"
-                                        :data-clipboard-text="'BSC Mainnet'"
-                                    /> -->
-
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                        data-clipboard-action="copy" 
-                                        @click="copyFun('.BSC_Mainnet')" 
-                                        class="BSC_Mainnet"
-                                        :data-clipboard-text="'BSC Mainnet'" 
-                                        width="16" height="16" viewBox="0 0 16 16">
-                                        <g fill="none" fill-rule="evenodd">
-                                            <g fill="#99999A">
-                                                <g>
-                                                    <g>
-                                                        <g>
-                                                            <g>
-                                                                <path d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z" transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"/>
-                                                            </g>
-                                                        </g>
-                                                    </g>
-                                                </g>
+                                    <Tooltip
+                                        transfer-class-name="transferTooltip"
+                                        transfer
+                                        :content="tooltipContent"
+                                        offset="0 4"
+                                        placement="bottom"
+                                        @on-popper-hide="resetTooltipContent"
+                                    >
+                                        <svg
+                                            class="copyBtn BSC_Mainnet"
+                                            data-clipboard-text="BSC Mainnet"
+                                            data-clipboard-action="copy"
+                                            @click="copyConfig('.BSC_Mainnet')"
+                                            width="24px"
+                                            height="24px"
+                                            viewBox="0 0 24 24"
+                                            version="1.1"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <desc>Created with Lunacy</desc>
+                                            <g id="Icon/Copy">
+                                                <path
+                                                    d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
+                                                    10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
+                                                    2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
+                                                    2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
+                                                    17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
+                                                    7.67157 7.67157 7 8.5 7Z"
+                                                    transform="translate(2.5 2.5)"
+                                                    id="Combined-Shape"
+                                                    fill="#5a575c"
+                                                    fill-rule="evenodd"
+                                                    stroke="none"
+                                                />
                                             </g>
-                                        </g>
-                                    </svg>
+                                        </svg>
+                                    </Tooltip>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col span="8">New RPC URL</Col>
                                 <Col span="16">
-                                    https://bsc-dataseed1.binance.org/<svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        data-clipboard-action="copy"
-                                        @click="copyFun('.RPC_URL1')"
-                                        class="RPC_URL1"
-                                        :data-clipboard-text="
-                                            'https://bsc-dataseed1.binance.org/'
-                                        "
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 16 16"
+                                    https://bsc-dataseed1.binance.org/
+                                    <Tooltip
+                                        transfer-class-name="transferTooltip"
+                                        transfer
+                                        :content="tooltipContent"
+                                        offset="0 4"
+                                        placement="bottom"
+                                        @on-popper-hide="resetTooltipContent"
                                     >
-                                        <g fill="none" fill-rule="evenodd">
-                                            <g fill="#99999A">
-                                                <g>
-                                                    <g>
-                                                        <g>
-                                                            <g>
-                                                                <path
-                                                                    d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
-                                                                    transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
-                                                                />
-                                                            </g>
-                                                        </g>
-                                                    </g>
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                    or
-                                    <span
-                                        >(https://bsc-dataseed2.binance.org/<svg
-                                            xmlns="http://www.w3.org/2000/svg"
+                                        <svg
+                                            class="copyBtn RPC_URL1"
+                                            data-clipboard-text="https://bsc-dataseed1.binance.org/"
                                             data-clipboard-action="copy"
-                                            @click="copyFun('.RPC_URL2')"
-                                            class="RPC_URL2"
-                                            :data-clipboard-text="
-                                                'https://bsc-dataseed2.binance.org/'
-                                            "
-                                            width="16"
-                                            height="16"
-                                            viewBox="0 0 16 16"
+                                            @click="copyConfig('.RPC_URL1')"
+                                            width="24px"
+                                            height="24px"
+                                            viewBox="0 0 24 24"
+                                            version="1.1"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <g fill="none" fill-rule="evenodd">
-                                                <g fill="#99999A">
-                                                    <g>
-                                                        <g>
-                                                            <g>
-                                                                <g>
-                                                                    <path
-                                                                        d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
-                                                                        transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
-                                                                    />
-                                                                </g>
-                                                            </g>
-                                                        </g>
-                                                    </g>
+                                            <desc>Created with Lunacy</desc>
+                                            <g id="Icon/Copy">
+                                                <path
+                                                    d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
+                                                    10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
+                                                    2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
+                                                    2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
+                                                    17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
+                                                    7.67157 7.67157 7 8.5 7Z"
+                                                    transform="translate(2.5 2.5)"
+                                                    id="Combined-Shape"
+                                                    fill="#5a575c"
+                                                    fill-rule="evenodd"
+                                                    stroke="none"
+                                                />
+                                            </g>
+                                        </svg>
+                                    </Tooltip>
+                                    or
+                                    <span>
+                                        (https://bsc-dataseed2.binance.org/<Tooltip
+                                            transfer-class-name="transferTooltip"
+                                            transfer
+                                            :content="tooltipContent"
+                                            offset="0 4"
+                                            placement="bottom"
+                                            @on-popper-hide="resetTooltipContent"
+                                        >
+                                            <svg
+                                                class="copyBtn RPC_URL2"
+                                                data-clipboard-text="https://bsc-dataseed2.binance.org/"
+                                                data-clipboard-action="copy"
+                                                @click="copyConfig('.RPC_URL2')"
+                                                width="24px"
+                                                height="24px"
+                                                viewBox="0 0 24 24"
+                                                version="1.1"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <desc>Created with Lunacy</desc>
+                                                <g id="Icon/Copy">
+                                                    <path
+                                                        d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
+                                                        10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
+                                                        2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
+                                                        2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
+                                                        17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
+                                                        7.67157 7.67157 7 8.5 7Z"
+                                                        transform="translate(2.5 2.5)"
+                                                        id="Combined-Shape"
+                                                        fill="#5a575c"
+                                                        fill-rule="evenodd"
+                                                        stroke="none"
+                                                    />
                                                 </g>
-                                            </g></svg
-                                        >)</span
-                                    >
+                                            </svg>
+                                        </Tooltip>)
+                                    </span>
                                 </Col>
                             </Row>
                             <Row>
@@ -168,35 +198,45 @@
                             <Row>
                                 <Col span="8">Block Explorer URL</Col>
                                 <Col span="16"
-                                    >https://bscscan.com/<svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        data-clipboard-action="copy"
-                                        @click="copyFun('.Block_URL')"
-                                        class="Block_URL"
-                                        :data-clipboard-text="
-                                            'https://bscscan.com/'
-                                        "
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 16 16"
+                                    >https://bscscan.com/<Tooltip
+                                        transfer-class-name="transferTooltip"
+                                        transfer
+                                        :content="tooltipContent"
+                                        offset="0 4"
+                                        placement="bottom"
+                                        @on-popper-hide="resetTooltipContent"
                                     >
-                                        <g fill="none" fill-rule="evenodd">
-                                            <g fill="#99999A">
-                                                <g>
-                                                    <g>
-                                                        <g>
-                                                            <g>
-                                                                <path
-                                                                    d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
-                                                                    transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
-                                                                />
-                                                            </g>
-                                                        </g>
-                                                    </g>
-                                                </g>
+                                        <svg
+                                            class="copyBtn Block_URL"
+                                            data-clipboard-text="https://bscscan.com/"
+                                            data-clipboard-action="copy"
+                                            @click="copyConfig('.Block_URL')"
+                                            width="24px"
+                                            height="24px"
+                                            viewBox="0 0 24 24"
+                                            version="1.1"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <desc>Created with Lunacy</desc>
+                                            <g id="Icon/Copy">
+                                                <path
+                                                    d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
+                                                    10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
+                                                    2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
+                                                    2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
+                                                    17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
+                                                    7.67157 7.67157 7 8.5 7Z"
+                                                    transform="translate(2.5 2.5)"
+                                                    id="Combined-Shape"
+                                                    fill="#5a575c"
+                                                    fill-rule="evenodd"
+                                                    stroke="none"
+                                                />
                                             </g>
-                                        </g></svg
-                                ></Col>
+                                        </svg>
+                                    </Tooltip>
+                                </Col>
                             </Row>
                         </div>
                         <div class="table">
@@ -206,68 +246,88 @@
                             <Row>
                                 <Col span="8">Network Name</Col>
                                 <Col span="16"
-                                    >BSC Testnet<svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        data-clipboard-action="copy"
-                                        @click="copyFun('.BSC_Testnet')"
-                                        class="BSC_Testnet"
-                                        :data-clipboard-text="'BSC Testnet'"
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 16 16"
+                                    >BSC Testnet<Tooltip
+                                        transfer-class-name="transferTooltip"
+                                        transfer
+                                        :content="tooltipContent"
+                                        offset="0 4"
+                                        placement="bottom"
+                                        @on-popper-hide="resetTooltipContent"
                                     >
-                                        <g fill="none" fill-rule="evenodd">
-                                            <g fill="#99999A">
-                                                <g>
-                                                    <g>
-                                                        <g>
-                                                            <g>
-                                                                <path
-                                                                    d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
-                                                                    transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
-                                                                />
-                                                            </g>
-                                                        </g>
-                                                    </g>
-                                                </g>
+                                        <svg
+                                            class="copyBtn BSC_Testnet"
+                                            data-clipboard-text="BSC Testnet"
+                                            data-clipboard-action="copy"
+                                            @click="copyConfig('.BSC_Testnet')"
+                                            width="24px"
+                                            height="24px"
+                                            viewBox="0 0 24 24"
+                                            version="1.1"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <desc>Created with Lunacy</desc>
+                                            <g id="Icon/Copy">
+                                                <path
+                                                    d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
+                                                    10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
+                                                    2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
+                                                    2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
+                                                    17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
+                                                    7.67157 7.67157 7 8.5 7Z"
+                                                    transform="translate(2.5 2.5)"
+                                                    id="Combined-Shape"
+                                                    fill="#5a575c"
+                                                    fill-rule="evenodd"
+                                                    stroke="none"
+                                                />
                                             </g>
-                                        </g>
-                                    </svg>
+                                        </svg>
+                                    </Tooltip>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col span="8">New RPC URL</Col>
                                 <Col span="16">
                                     <div>
-                                        https://data-seed-prebsc-1-s1.binance.org:8545<svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            data-clipboard-action="copy"
-                                            @click="copyFun('.RPC_URL3')"
-                                            class="RPC_URL3"
-                                            :data-clipboard-text="
-                                                'https://data-seed-prebsc-1-s1.binance.org:8545'
-                                            "
-                                            width="16"
-                                            height="16"
-                                            viewBox="0 0 16 16"
+                                        https://data-seed-prebsc-1-s1.binance.org:8545<Tooltip
+                                            transfer-class-name="transferTooltip"
+                                            transfer
+                                            :content="tooltipContent"
+                                            offset="0 4"
+                                            placement="bottom"
+                                            @on-popper-hide="resetTooltipContent"
                                         >
-                                            <g fill="none" fill-rule="evenodd">
-                                                <g fill="#99999A">
-                                                    <g>
-                                                        <g>
-                                                            <g>
-                                                                <g>
-                                                                    <path
-                                                                        d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
-                                                                        transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
-                                                                    />
-                                                                </g>
-                                                            </g>
-                                                        </g>
-                                                    </g>
+                                            <svg
+                                                class="copyBtn RPC_URL3"
+                                                data-clipboard-text="https://data-seed-prebsc-1-s1.binance.org:8545"
+                                                data-clipboard-action="copy"
+                                                @click="copyConfig('.RPC_URL3')"
+                                                width="24px"
+                                                height="24px"
+                                                viewBox="0 0 24 24"
+                                                version="1.1"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <desc>Created with Lunacy</desc>
+                                                <g id="Icon/Copy">
+                                                    <path
+                                                        d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
+                                                        10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
+                                                        2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
+                                                        2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
+                                                        17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
+                                                        7.67157 7.67157 7 8.5 7Z"
+                                                        transform="translate(2.5 2.5)"
+                                                        id="Combined-Shape"
+                                                        fill="#5a575c"
+                                                        fill-rule="evenodd"
+                                                        stroke="none"
+                                                    />
                                                 </g>
-                                            </g>
-                                        </svg>
+                                            </svg>
+                                        </Tooltip>
                                     </div>
                                 </Col>
                             </Row>
@@ -282,35 +342,45 @@
                             <Row>
                                 <Col span="8">Block Explorer URL</Col>
                                 <Col span="16"
-                                    >https://explorer.binance.org/smart-testnet<svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        data-clipboard-action="copy"
-                                        @click="copyFun('.Block_Explorer_URL')"
-                                        class="Block_Explorer_URL"
-                                        :data-clipboard-text="
-                                            'https://explorer.binance.org/smart-testnet'
-                                        "
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 16 16"
+                                    >https://testnet.bscscan.com/<Tooltip
+                                        transfer-class-name="transferTooltip"
+                                        transfer
+                                        :content="tooltipContent"
+                                        offset="0 4"
+                                        placement="bottom"
+                                        @on-popper-hide="resetTooltipContent"
                                     >
-                                        <g fill="none" fill-rule="evenodd">
-                                            <g fill="#99999A">
-                                                <g>
-                                                    <g>
-                                                        <g>
-                                                            <g>
-                                                                <path
-                                                                    d="M12.667 5.667c.92 0 1.666.746 1.666 1.666v5.334c0 .92-.746 1.666-1.666 1.666H7.333c-.92 0-1.666-.746-1.666-1.666V7.333c0-.92.746-1.666 1.666-1.666zm0 .666H7.333c-.552 0-1 .448-1 1v5.334c0 .552.448 1 1 1h5.334c.552 0 1-.448 1-1V7.333c0-.552-.448-1-1-1zm-4-4.666c.883 0 1.606.687 1.663 1.557l.003.11v1.465h-.666V3.333c0-.52-.397-.947-.904-.995l-.096-.005H3.333c-.52 0-.947.397-.995.904l-.005.096v5.334c0 .52.397.947.904.995l.096.005h1.3v.666h-1.3c-.883 0-1.606-.687-1.663-1.557l-.003-.11V3.334c0-.883.687-1.606 1.557-1.663l.11-.003h5.333z"
-                                                                    transform="translate(-555 -892) translate(208 120) translate(135 770) translate(212 2)"
-                                                                />
-                                                            </g>
-                                                        </g>
-                                                    </g>
-                                                </g>
+                                        <svg
+                                            class="copyBtn Block_Explorer_URL"
+                                            data-clipboard-text="https://testnet.bscscan.com/"
+                                            data-clipboard-action="copy"
+                                            @click="copyConfig('.Block_Explorer_URL')"
+                                            width="24px"
+                                            height="24px"
+                                            viewBox="0 0 24 24"
+                                            version="1.1"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <desc>Created with Lunacy</desc>
+                                            <g id="Icon/Copy">
+                                                <path
+                                                    d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
+                                                    10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
+                                                    2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
+                                                    2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
+                                                    17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
+                                                    7.67157 7.67157 7 8.5 7Z"
+                                                    transform="translate(2.5 2.5)"
+                                                    id="Combined-Shape"
+                                                    fill="#5a575c"
+                                                    fill-rule="evenodd"
+                                                    stroke="none"
+                                                />
                                             </g>
-                                        </g></svg
-                                ></Col>
+                                        </svg>
+                                    </Tooltip>
+                            </Col>
                             </Row>
                         </div>
                     </div>
@@ -339,38 +409,45 @@
 import _ from "lodash";
 import Clipboard from "clipboard";
 import closeSvg from "@/components/svg/close";
-import copySvg from "@/components/svg/copy";
 
 export default {
     components: {
-        closeSvg,
-        copySvg
+        closeSvg
     },
     name: "stepModal",
     data() {
         return {
-            stepModal: false //教程弹窗
+            stepModal: false, //教程弹窗
+            tooltipContent: "Copy to clipboard"
         };
     },
     watch: {},
     computed: {},
     methods: {
-        copyFun(str) {
-            var that = this;
-            var clipboarda = new Clipboard(str);
-            function success(e) {
-                that.$Notice.success({
-                    title: "Copied",
-                    duration: 1
-                });
-                e.clearSelection();
-                clipboarda.off("success", success);
-            }
-            clipboarda.on("success", success);
-        },
         show() {
             this.stepModal = true;
-        }
+        },
+        //测试复制文字
+        copyConfig(str) {
+            var that = this;
+            var clipboarda = new Clipboard(str);
+
+            clipboarda.on("success", function(e) {
+                that.tooltipContent = "Copied";
+                e.clearSelection();
+            });
+
+            clipboarda.on("error", function(e) {
+                that.tooltipContent = "Error";
+            });
+        },
+        //重置复制提示框的文本
+        resetTooltipContent() {
+            var that = this;
+            setTimeout(function() {
+                that.tooltipContent = "Copy to clipboard";
+            }, 300);
+        },
     },
     mounted() {},
     destroyed() {}
@@ -378,6 +455,66 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+body {
+    .transferTooltip {
+        z-index: 10001 !important;
+
+        &[x-placement="top"] {
+            .ivu-tooltip-arrow {
+                border-right: 1px solid #1a38f8;
+                border-bottom: 1px solid #1a38f8;
+            }
+        }
+
+        &[x-placement^="bottom"] {
+            .ivu-tooltip-arrow {
+                border-left: 1px solid #1a38f8;
+                border-top: 1px solid #1a38f8;
+            }
+        }
+
+        &[x-placement="left"] {
+            .ivu-tooltip-arrow {
+                border-top: 1px solid #1a38f8;
+                border-right: 1px solid #1a38f8;
+            }
+        }
+
+        &[x-placement^="right"] {
+            .ivu-tooltip-arrow {
+                border-left: 1px solid #1a38f8;
+                border-bottom: 1px solid #1a38f8;
+            }
+        }
+
+        .ivu-tooltip-arrow {
+            transform: rotate(45deg);
+            width: 10px;
+            height: 10px;
+            background: white;
+            border: none;
+        }
+
+        .ivu-tooltip-inner {
+            width: 100%;
+            background-color: #fff;
+            font-family: Gilroy-Medium;
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: 500;
+            color: #5a575c;
+            padding: 10px 16px;
+            border: 1px solid #1a38f8;
+            box-shadow: 0 2px 12px 0 #deddde;
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: left;
+            word-break: keep-all;
+            white-space: break-spaces;
+        }
+    }
+}
+
 #stepModal {
     .stepModal {
         /deep/.ivu-modal-wrap {
@@ -398,8 +535,8 @@ export default {
 
                     .ivu-modal-body {
                         height: 724px;
-                        overflow-y: scroll;
                         padding: 0 50px;
+                        overflow-y: hidden;
 
                         .close {
                             position: absolute;
@@ -422,6 +559,22 @@ export default {
                         .context {
                             font-family: Gilroy;
                             font-size: 14px;
+                            overflow-y: scroll;
+                            height: 648px;
+
+                            .copyBtn {
+                                cursor: pointer;
+                                width: 16px;
+                                height: 16px;
+                
+                                &:hover {
+                                    #Combined-Shape {
+                                        fill: #1a38f8;
+                                        stroke: #1a38f8;
+                                    }
+                                }
+                            }
+
                             .step {
                                 display: flex;
                                 .num {
