@@ -259,7 +259,12 @@
                 <div class="ratio">
                     <div class="box">
                         <div class="value">
-                            {{ walletDetails.currentRatioPercent || 0 }}
+                            <template v-if="!isEthereumNetwork">
+                                {{ walletDetails.currentRatioPercent || 0 }}
+                            </template>
+                            <template v-if="isEthereumNetwork">
+                                N/A
+                            </template>
                         </div>
                         <div class="context">Current</div>
                     </div>
@@ -436,11 +441,16 @@
                                 </Tooltip>
                             </div>
                             <div class="right">
-                                <div class="top">
-                                    <b>{{ walletDetails.amountDebt || 0 }}</b>
-                                    ℓUSD
+                                <div class="top" :style="{marginTop:(isEthereumNetwork?'9px':'0px')}">
+                                    <template v-if="!isEthereumNetwork">
+                                        <b>{{ walletDetails.amountDebt || 0 }}</b>
+                                        ℓUSD
+                                    </template>
+                                    <template v-if="isEthereumNetwork">
+                                        N/A
+                                    </template>
                                 </div>
-                                <div class="bottom">
+                                <div class="bottom" v-if="!isEthereumNetwork">
                                     ≈ ${{ walletDetails.amountDebt2USD || 0 }}
                                     USD
                                 </div>
