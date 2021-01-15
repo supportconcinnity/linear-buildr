@@ -14,7 +14,7 @@ const graphAPIEndpoints = {
 
 const swapGraphAPIEndpoints = {
     1: process.env.GRAPH_BUILDR_SWAP_ETHEREUM_MAINNET,
-    3: process.env.GRAPH_BUILDR_ETHEREUM_ROPSTEN,
+    3: process.env.GRAPH_BUILDR_SWAP_ETHEREUM_ROPSTEN,
     56: process.env.GRAPH_BUILDR_BINANCE_MAINNET,
     97: process.env.GRAPH_BUILDR_BINANCE_TESTNET
 };
