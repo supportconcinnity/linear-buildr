@@ -193,9 +193,7 @@ export default [
         type: 'uint256'
       },
       { internalType: 'uint256', name: 'feeReward', type: 'uint256' },
-      { internalType: 'uint8', name: 'v', type: 'uint8' },
-      { internalType: 'bytes32', name: 'r', type: 'bytes32' },
-      { internalType: 'bytes32', name: 's', type: 'bytes32' }
+      { internalType: 'bytes', name: 'signature', type: 'bytes' }
     ],
     name: 'claimReward',
     outputs: [],
@@ -212,9 +210,7 @@ export default [
         type: 'uint256'
       },
       { internalType: 'uint256', name: 'feeReward', type: 'uint256' },
-      { internalType: 'uint8', name: 'v', type: 'uint8' },
-      { internalType: 'bytes32', name: 'r', type: 'bytes32' },
-      { internalType: 'bytes32', name: 's', type: 'bytes32' }
+      { internalType: 'bytes', name: 'signature', type: 'bytes' }
     ],
     name: 'claimRewardFor',
     outputs: [],

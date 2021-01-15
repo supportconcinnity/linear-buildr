@@ -108,7 +108,7 @@
                     </div>
 
                     <div v-else class="claimBtn switchToBSC">
-                       Please switch to BSC network to claim your rewards
+                        Please switch to BSC network to claim your rewards
                     </div>
 
                     <Spin fix v-if="processing"></Spin>
@@ -169,7 +169,8 @@ import {
     bufferGasLimit,
     DEFAULT_GAS_LIMIT,
     isBinanceNetwork,
-    isEthereumNetwork
+    isEthereumNetwork,
+    isMainnetNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 import { BigNumber, utils } from "ethers";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
@@ -280,17 +281,15 @@ export default {
                     // }
 
                     const rewardEntry = this.pendingRewardEntries[0];
-                    const signature = utils.splitSignature(
-                        rewardEntry.signatures[0].signature
-                    );
+                    // const signature = utils.splitSignature(
+                    //     rewardEntry.signatures[0].signature
+                    // );
 
                     let transaction = await LnRewardSystem.claimReward(
                         rewardEntry.periodId, // periodId
                         BigNumber.from(rewardEntry.stakingReward), // stakingReward
                         BigNumber.from(rewardEntry.feeReward), // feeReward
-                        signature.v, // v
-                        signature.r, // r
-                        signature.s, // s
+                        rewardEntry.signatures[0].signature, 
                         transactionSettings
                     );
 
@@ -361,6 +360,8 @@ export default {
         async useGetFeeData(walletAddress) {
             const FEE_PERIOD = 0;
 
+           
+
             try {
                 this.processing = true;
 
@@ -384,7 +385,7 @@ export default {
                     rewardSystem.firstPeriodStartTime(),
                     rewardSystem.userLastClaimPeriodIds(walletAddress),
                     fetch(
-                        this.walletNetworkName == "MAINNET"
+                        isMainnetNetwork(this.walletNetworkId)
                             ? `https://reward-query.linear-finance.workers.dev/rewards/${walletAddress}`
                             : `https://reward-query-dev.linear-finance.workers.dev/rewards/${walletAddress}`
                     )
@@ -444,17 +445,15 @@ export default {
                 //     gasEstimate = await LnFeeSystem.contract.estimateGas.claimFees();
 
                 const rewardEntry = this.pendingRewardEntries[0];
-                const signature = utils.splitSignature(
-                    rewardEntry.signatures[0].signature
-                );
+                // const signature = utils.splitSignature(
+                //     rewardEntry.signatures[0].signature
+                // );
 
                 let gasEstimate = await LnRewardSystem.contract.estimateGas.claimReward(
                     rewardEntry.periodId, // periodId
                     BigNumber.from(rewardEntry.stakingReward), // stakingReward
                     BigNumber.from(rewardEntry.feeReward), // feeReward
-                    signature.v, // v
-                    signature.r, // r
-                    signature.s // s
+                    rewardEntry.signatures[0].signature
                 );
 
                 return bufferGasLimit(gasEstimate);

@@ -100,13 +100,11 @@ export const getPriceRates = async currency => {
     let pricesPromise = [];
 
     if (_.isString(currency)) {
-        if (isEthereum && ["ETH", "BNB"].includes(currency)) {
+        if (["ETH", "BNB"].includes(currency)) {
             const id = CRYPTO_CURRENCIES_API[currency]?.id;
-            const results = pricesPromise.push(
-                api.getTokenPrice({
-                    tokenid: [id]
-                })
-            );
+            const results = await api.getTokenPrice({
+                tokenid: [id]
+            });
             rates[currency] = n2bn(results[id]?.usd);
         } else {
             rates[currency] = await contract.getPrice(
@@ -116,7 +114,7 @@ export const getPriceRates = async currency => {
     } else if (_.isArray(currency)) {
         for (let index = 0; index < currency.length; index++) {
             const name = currency[index];
-            if (isEthereum && ["ETH", "BNB"].includes(name)) {
+            if (["ETH", "BNB"].includes(name)) {
                 const id = CRYPTO_CURRENCIES_API[name]?.id;
                 pricesPromise.push(
                     api.getTokenPrice({
@@ -135,7 +133,7 @@ export const getPriceRates = async currency => {
             const name = currency[index];
             let price = prices[index];
 
-            if (isEthereum && ["ETH", "BNB"].includes(name)) {
+            if (["ETH", "BNB"].includes(name)) {
                 const id = CRYPTO_CURRENCIES_API[name]?.id;
                 price = n2bn(price[id]?.usd);
             }
@@ -223,14 +221,13 @@ export const storeDetailsData = async () => {
             const isEthereum = isEthereumNetwork(walletNetworkId);
             const isBinance = isBinanceNetwork(walletNetworkId);
 
-            let LnProxy= lnrJSConnector.lnrJS.LinearFinance;
+            let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
 
             // if (isEthereum) {
             //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
             // } else if (isBinance) {
             //     LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
             // }
-
 
             const {
                 lnrJS: {
