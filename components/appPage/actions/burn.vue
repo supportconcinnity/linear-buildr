@@ -1156,7 +1156,7 @@ export default {
             this.resetErrorsMsg();
             this.resetInputData();
 
-            if (this.burnData.stakedBN.eq("0")) {
+            if (this.burnData.stakedBN.eq("0") && this.burnData.lockBN.eq("0")) {
                 this.errors.amountMsg =
                     "There is no LINA staked on the contract.";
                 return;
