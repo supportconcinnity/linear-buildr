@@ -32,6 +32,13 @@ ETH_GAS_STATION_KEY=""
 DEFI_PULSE_STATION_KEY=""
 GRAPH_BUILDR_ETHEREUM_MAINNET=""
 GRAPH_BUILDR_ETHEREUM_ROPSTEN=""
+GRAPH_BUILDR_SWAP_ETHEREUM_MAINNET=""
+GRAPH_BUILDR_SWAP_ETHEREUM_ROPSTEN=""
+GRAPH_BUILDR_BINANCE_MAINNET=""
+GRAPH_BUILDR_BINANCE_TESTNET=""
+GRAPH_EXCHANGE_BINANCE_MAINNET=""
+DEOSIT_PROOF_MAINNET_API=""
+DEOSIT_PROOF_TESTNET_API=""
 ```
 
 #### For development environments:
@@ -59,4 +66,4 @@ $ npm run generate
 
 Please refer to [package.json][PKJS] for details.
 
-[PKJS]: <https://github.com/Linear-finance/linear-buildr/blob/main/package.json>
+[PKJS]: <https://github.com/Linear-finance/linear-buildr/blob/v2/package.json>
