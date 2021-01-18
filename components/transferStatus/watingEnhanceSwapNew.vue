@@ -2175,7 +2175,7 @@ export default {
             let targetBalance = n2bn(result / 1e18);
 
             let unfreezeFee = isEthereumNetwork(this.targetNetworkId)
-                ? 0.1
+                ? 0.075
                 : 0.01;
 
             // console.log(unfreezeFee, "unfreezeFee");
