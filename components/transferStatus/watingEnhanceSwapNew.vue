@@ -993,7 +993,7 @@ export default {
         //需要swap的token
         currency: {
             type: String,
-            default: "LINA"
+            default: "LINA" //LINA, lUSD
         },
 
         //swap类型
@@ -1166,11 +1166,11 @@ export default {
                 ? "Checking your BNB balance on BSC"
                 : "";
 
-            const extention = isEthereumNetwork(this.targetNetworkId)
-                ? "Checking your MetaMask Wallet Extention"
-                : isBinanceNetwork(this.targetNetworkId)
-                ? "Checking your Binance Chain Wallet Extension"
-                : "";
+            // const extention = isEthereumNetwork(this.targetNetworkId)
+            //     ? "Checking your MetaMask Wallet Extention"
+            //     : isBinanceNetwork(this.targetNetworkId)
+            //     ? "Checking your Binance Chain Wallet Extension"
+            //     : "";
 
             const targetStep = isEthereumNetwork(this.targetNetworkId)
                 ? "Checking the amount of ETH on Metamask"
@@ -1179,7 +1179,7 @@ export default {
                 : "";
 
             this.checkStatus.stepArray.push(sourceStep);
-            this.checkStatus.stepArray.push(extention);
+            // this.checkStatus.stepArray.push(extention);
             this.checkStatus.stepArray.push(targetStep);
         },
 
@@ -1187,33 +1187,32 @@ export default {
         async checkPrepare(currentStep = 0) {
             try {
                 //记录gas price
-                // this.sourceGasPrice =
-                //     this.$store.state?.sourceGasDetails?.price ||
-                //     50 * 1000000000;
-                // this.targetGasPrice =
-                //     this.$store.state?.targetGasDetails?.price ||
-                //     50 * 1000000000;
+                this.sourceGasPrice =
+                    this.$store.state?.sourceGasDetails?.price ||
+                    50 * 1000000000;
+                this.targetGasPrice =
+                    this.$store.state?.targetGasDetails?.price ||
+                    50 * 1000000000;
 
-                let networkId = this.$store.state?.sourceGasDetails?.networkId;
-
+                // let networkId = this.$store.state?.sourceGasDetails?.networkId;
                 //暂时解决因为切链导致的gas位置错位的bug
-                if (isEthereumNetwork(networkId)) {
-                    this.sourceGasPrice =
-                        this.$store.state?.sourceGasDetails?.price ||
-                        60 * 1000000000;
+                // if (isEthereumNetwork(networkId)) {
+                //     this.sourceGasPrice =
+                //         this.$store.state?.sourceGasDetails?.price ||
+                //         60 * 1000000000;
 
-                    this.targetGasPrice =
-                        this.$store.state?.targetGasDetails?.price ||
-                        60 * 1000000000;
-                } else {
-                    this.sourceGasPrice =
-                        this.$store.state?.targetGasDetails?.price ||
-                        60 * 1000000000;
+                //     this.targetGasPrice =
+                //         this.$store.state?.targetGasDetails?.price ||
+                //         60 * 1000000000;
+                // } else {
+                //     this.sourceGasPrice =
+                //         this.$store.state?.targetGasDetails?.price ||
+                //         60 * 1000000000;
 
-                    this.targetGasPrice =
-                        this.$store.state?.sourceGasDetails?.price ||
-                        60 * 1000000000;
-                }
+                //     this.targetGasPrice =
+                //         this.$store.state?.sourceGasDetails?.price ||
+                //         60 * 1000000000;
+                // }
 
                 // this.targetWalletAddress = this.walletAddress;
                 // this.targetWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
@@ -1245,13 +1244,15 @@ export default {
                     if (this.checkStatus.stepType != -1) return;
                 }
 
-                if (currentStep < 2) {
-                    //连接目标钱包
-                    await this.connectToTargetWallet();
-                    if (this.checkStatus.stepType != -1) return;
-                }
+                // if (currentStep < 2) {
+                //     //连接目标钱包
+                //     await this.connectToTargetWallet();
+                //     if (this.checkStatus.stepType != -1) return;
+                // }
+                // this.checkStatus.stepIndex++;
+                this.connectMetamaskWallet();
 
-                if (currentStep < 3) {
+                if (currentStep < 2) {
                     await this.checkTargetBalace();
                     if (this.checkStatus.stepType != -1) return;
 
@@ -1298,7 +1299,7 @@ export default {
                     this.confirmTransactionStep = 0;
                     this.waitProcessFlow = null;
 
-                    let LnProxy = lnrJSConnector.lnrJS.LinearFinance,
+                    let LnProxy,
                         LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
                     if (isEthereumNetwork(this.walletNetworkId)) {
                         // LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
@@ -1317,6 +1318,28 @@ export default {
                         // this.BUILD_PROCESS_SETUP.STAKING_BUILD =
                         //     BUILD_PROCESS_SETUP.STAKING_BUILD + "BSC";
                     }
+
+                    let replaceCurrency = this.currency;
+                    if (this.currency == "LINA") {
+                        LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                    } else if (this.currency == "lUSD") {
+                        LnProxy = lnrJSConnector.lnrJS.lUSD;
+                        replaceCurrency = "ℓUSD";
+                    }
+
+                    //替换货币名称
+                    this.BUILD_PROCESS_SETUP.FREEZE = _.replace(
+                        this.BUILD_PROCESS_SETUP.FREEZE,
+                        "[REPLACE_CURRENCY]",
+                        replaceCurrency
+                    );
+
+                    this.BUILD_PROCESS_SETUP.UNFREEZE = _.replace(
+                        this.BUILD_PROCESS_SETUP.UNFREEZE,
+                        "[REPLACE_CURRENCY]",
+                        replaceCurrency
+                    );
+
 
                     //取合约地址
                     const LnBridgeAddress = LnBridge.contract.address;
@@ -1462,7 +1485,7 @@ export default {
         async startApproveContract(approveAmountLINA) {
             this.confirmTransactionStatus = false;
 
-            let LnProxy = lnrJSConnector.lnrJS.LinearFinance,
+            let LnProxy,
                 LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
             // if (isEthereumNetwork(this.walletNetworkId)) {
             //     // LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
@@ -1471,6 +1494,12 @@ export default {
             //     // LnProxy = lnrJSConnector.lnrJS.LinearFinance;
             //     // LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
             // }
+
+            if (this.currency == "LINA") {
+                LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+            } else if (this.currency == "lUSD") {
+                LnProxy = lnrJSConnector.lnrJS.lUSD;
+            }
 
             const { utils } = lnrJSConnector;
 
@@ -1526,12 +1555,18 @@ export default {
         //评估Approve的gas
         async getGasEstimateFromApprove(contractAddress, approveAmountLINA) {
             try {
-                let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                let LnProxy;
                 // if (isEthereumNetwork(this.walletNetworkId)) {
                 //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
                 // } else if (isBinanceNetwork(this.walletNetworkId)) {
                 //     LnProxy = lnrJSConnector.lnrJS.LinearFinance;
                 // }
+
+                if (this.currency == "LINA") {
+                    LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+                } else if (this.currency == "lUSD") {
+                    LnProxy = lnrJSConnector.lnrJS.lUSD;
+                }
 
                 if (
                     approveAmountLINA.isZero() ||
@@ -1970,7 +2005,7 @@ export default {
             return new Promise(resolve => {
                 const wait = () => {
                     if (this.chainChangedStatus) {
-                        if (this.chainChangeTokenFromUnfreeze != "") {
+                        if (this.chainChangeTokenFromUnfreeze) {
                             this.$pub.unsubscribe(
                                 this.chainChangeTokenFromUnfreeze
                             );
@@ -2072,12 +2107,14 @@ export default {
                         lnr.freeZe({
                             depositor: this.sourceWalletAddress,
                             recipient: this.targetWalletAddress,
-                            networkId: this.sourceNetworkId
+                            networkId: this.sourceNetworkId,
+                            source: this.currency
                         }),
                         lnr.unfreeze({
                             depositor: this.sourceWalletAddress,
                             recipient: this.targetWalletAddress,
-                            networkId: this.targetNetworkId
+                            networkId: this.targetNetworkId,
+                            source: this.currency
                         })
                     ]);
 
@@ -2175,9 +2212,23 @@ export default {
             );
             let targetBalance = n2bn(result / 1e18);
 
-            let unfreezeFee = isEthereumNetwork(this.targetNetworkId)
-                ? 0.075
-                : 0.01;
+            // let unfreezeFee = isEthereumNetwork(this.targetNetworkId)
+            //     ? 0.075
+            //     : 0.01;
+
+            let unfreezeFee;
+            if (isEthereumNetwork(this.targetNetworkId)) {
+                unfreezeFee =
+                    (unFormatGasPrice(this.targetGasPrice) *
+                        DEFAULT_GAS_LIMIT.unfreeze) /
+                    1000000000;
+            } else {
+                unfreezeFee =
+                    (unFormatGasPrice(this.targetGasPrice) *
+                        DEFAULT_GAS_LIMIT.unfreeze) /
+                    2 /
+                    1000000000;
+            }
 
             // console.log(unfreezeFee, "unfreezeFee");
             // console.log(targetBalance / 1e18, "targetBalance");
@@ -2208,6 +2259,11 @@ export default {
                 } */
         },
 
+        async connectMetamaskWallet() {
+            this.targetWalletAddress = this.walletAddress;
+            this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+        },
+
         //连接钱包
         async connectToTargetWallet(provider = null) {
             try {
@@ -2215,6 +2271,8 @@ export default {
                     (provider = await this.getProviderObject(
                         this.targetNetworkId
                     ));
+
+                // console.log(provider);
 
                 //钱包注入对象
                 if (provider) {
@@ -2274,6 +2332,8 @@ export default {
 
         //获取钱包
         getProviderObject(networkId) {
+            return window["ethereum"];
+
             //钱包注入对象名称
             const injection = isEthereumNetwork(networkId)
                 ? "ethereum"
@@ -2406,16 +2466,19 @@ export default {
     },
     destroyed() {
         //清除事件,防止重复
-        if (this.chainChangeTokenFromUnfreeze != "") {
+        if (this.chainChangeTokenFromUnfreeze) {
             this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
+            this.chainChangeTokenFromUnfreeze = "";
         }
 
-        // if (this.chainChangeFromSubscribe != "") {
+        // if (this.chainChangeFromSubscribe) {
         //     this.$pub.unsubscribe(this.chainChangeFromSubscribe);
+        // this.chainChangeFromSubscribe = "";
         // }
 
         // if (this.walletChangeAccountFromSubscribe) {
         //     this.$pub.unsubscribe(this.walletChangeAccountFromSubscribe);
+        // this.walletChangeAccountFromSubscribe="";
         // }
 
         clearTimeout(this.waitChainChangeLoopId);

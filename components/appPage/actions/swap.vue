@@ -31,8 +31,56 @@
                         >
                             <div class="iconBox">
                                 <img class="icon" :src="currency.img" />
-                                <div class="name">
+                                <Poptip
+                                    class="name"
+                                    placement="bottom"
+                                    :width="isMobile ? 318 : 400"
+                                    offset="0px 24px"
+                                    v-model="currencyDropDown"
+                                >
                                     {{ currency.name }}
+                                    <dropdownArrowSvg
+                                        :selected="currencyDropDown"
+                                    />
+                                    <div slot="content">
+                                        <div
+                                            :class="{
+                                                selected:
+                                                    index == selectCurrencyIndex
+                                            }"
+                                            class="currencyItem"
+                                            v-for="(item, index) in currencies"
+                                            :key="index"
+                                            @click="
+                                                changeSelectCurrencyIndex(index)
+                                            "
+                                        >
+                                            <img
+                                                class="itemIcon"
+                                                :src="item.img"
+                                                alt=""
+                                            />
+                                            <div class="itemName">
+                                                {{ item.name }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Poptip>
+                                <div>
+                                    <!-- {{ currency.name }} -->
+
+                                    <!-- <Dropdown trigger="click">
+                                        {{ currency.name }}
+                                        <Icon type="ios-arrow-down"></Icon>
+                                        <DropdownMenu slot="list">
+                                            <DropdownItem
+                                                v-for="(item,
+                                                index) in currencies"
+                                                :key="index"
+                                                >{{ item.name }}</DropdownItem
+                                            >
+                                        </DropdownMenu>
+                                    </Dropdown> -->
                                 </div>
 
                                 <div v-if="isMobile" class="avaliable">
@@ -49,6 +97,10 @@
 
                             <div class="divider"></div>
 
+                            <!-- <div v-if="currencySelectModal" class="currencySelectModal">
+                                    123444
+                            </div> -->
+
                             <div class="inputBox" @click="inputFocus(0)">
                                 <template v-if="isMobile">
                                     <div class="label">
@@ -59,7 +111,7 @@
                                             class="input"
                                             ref="itemInput0"
                                             element-id="transfer_number_input"
-                                            :min="frozenBalance"
+                                            :min="currency.frozenBalance"
                                             :max="
                                                 floor(
                                                     currency.avaliable,
@@ -104,7 +156,7 @@
                                         class="input"
                                         ref="itemInput0"
                                         element-id="transfer_number_input"
-                                        :min="frozenBalance"
+                                        :min="currency.frozenBalance"
                                         :max="
                                             floor(
                                                 currency.avaliable,
@@ -151,6 +203,7 @@
                 <watingEnhanceSwapNew
                     :amount="diffSwapNumber"
                     v-if="actionTabs == 'm1'"
+                    :currency="currency.id"
                     @close="close"
                 ></watingEnhanceSwapNew>
             </TabPane>
@@ -163,6 +216,8 @@ import _ from "lodash";
 import gasEditorSwap from "@/components/gasEditorSwap";
 import watingEnhanceSwap from "@/components/transferStatus/watingEnhanceSwap";
 import watingEnhanceSwapNew from "@/components/transferStatus/watingEnhanceSwapNew";
+import dropdownArrowSvg from "@/components/svg/dropdownArrow";
+
 import {
     formatterInput,
     setCursorRange,
@@ -191,7 +246,8 @@ export default {
     components: {
         gasEditorSwap,
         watingEnhanceSwap,
-        watingEnhanceSwapNew
+        watingEnhanceSwapNew,
+        dropdownArrowSvg
     },
     data() {
         return {
@@ -206,8 +262,6 @@ export default {
 
             floor: _.floor,
 
-            frozenBalance: 0, //已经冻结的数量
-
             DECIMAL_PRECISION,
 
             errors: { amountMsg: "" },
@@ -218,12 +272,83 @@ export default {
 
             formatNumber,
 
-            currency: {
-                name: "LINA",
-                img: require("@/static/LINA_logo.svg"),
-                avaliable: 0
-            }
+            // currency: {
+            //     name: "LINA",
+            //     img: require("@/static/LINA_logo.svg"),
+            //     avaliable: 0
+            // },
+
+            currencyDropDown: false,
+
+            selectCurrencyIndex: 0,
+
+            currencies: [
+                {
+                    name: "LINA",
+                    id: "LINA",
+                    img: require("@/static/LINA_logo.svg"),
+                    avaliable: 0, //最大余额
+                    frozenBalance: 0 //已经冻结的数量
+                },
+                {
+                    name: "ℓUSD",
+                    id: "lUSD",
+                    img: require("@/static/currency/lUSD.svg"),
+                    avaliable: 0,
+                    frozenBalance: 0
+                }
+            ]
         };
+    },
+    watch: {
+        walletAddress() {},
+        isEthereumNetwork() {},
+        isBinanceNetwork() {},
+        walletNetworkId() {},
+        walletType() {},
+        isMobile() {},
+        diffSwapNumber() {},
+        currency() {}
+    },
+    computed: {
+        isEthereumNetwork() {
+            return isEthereumNetwork(this.walletNetworkId);
+        },
+
+        isBinanceNetwork() {
+            return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        walletNetworkId() {
+            return this.$store.state?.walletNetworkId;
+        },
+
+        walletAddress() {
+            return this.$store.state?.wallet?.address;
+        },
+
+        swapDisabled() {
+            return !this.swapNumber || this.processing;
+        },
+
+        walletType() {
+            return this.$store.state?.walletType;
+        },
+
+        isMobile() {
+            return this.$store.state?.isMobile;
+        },
+
+        diffSwapNumber() {
+            return _.floor(
+                this.swapNumber - this.currency.frozenBalance,
+                DECIMAL_PRECISION
+            );
+        },
+
+        currency() {
+            return this.currencies[this.selectCurrencyIndex];
+        }
     },
     async created() {
         //监听链切换
@@ -263,51 +388,7 @@ export default {
             this.$pub.unsubscribe(this.walletChangeTokenFromSubscribe);
         }
     },
-    watch: {
-        walletAddress() {},
-        isEthereumNetwork() {},
-        isBinanceNetwork() {},
-        walletNetworkId() {},
-        walletType() {},
-        isMobile() {},
-        diffSwapNumber() {}
-    },
-    computed: {
-        isEthereumNetwork() {
-            return isEthereumNetwork(this.walletNetworkId);
-        },
 
-        isBinanceNetwork() {
-            return isBinanceNetwork(this.walletNetworkId);
-        },
-
-        walletNetworkId() {
-            return this.$store.state?.walletNetworkId;
-        },
-
-        walletAddress() {
-            return this.$store.state?.wallet?.address;
-        },
-
-        swapDisabled() {
-            return !this.swapNumber || this.processing;
-        },
-
-        walletType() {
-            return this.$store.state?.walletType;
-        },
-
-        isMobile() {
-            return this.$store.state?.isMobile;
-        },
-
-        diffSwapNumber() {
-            return _.floor(
-                this.swapNumber - this.frozenBalance,
-                DECIMAL_PRECISION
-            );
-        }
-    },
     methods: {
         async getFrozenBalance() {
             try {
@@ -318,23 +399,31 @@ export default {
                     this.walletNetworkId
                 ).join();
 
+                let contract;
+
+                if (this.selectCurrencyIndex == 0) {
+                    contract = lnrJSConnector.lnrJS.LinearFinance;
+                } else if (this.selectCurrencyIndex == 1) {
+                    contract = lnrJSConnector.lnrJS.lUSD;
+                }
+
                 //获取当前和其他网络冻结数据
-                const [current, other, avaliableLINA] = await Promise.all([
+                const [current, other, avaliableAmount] = await Promise.all([
                     lnr.userSwapAssetsCount({
                         account: this.walletAddress,
+                        source: this.currency.id,
                         networkId: this.walletNetworkId
                     }),
                     lnr.userSwapAssetsCount({
                         account: this.walletAddress,
+                        source: this.currency.id,
                         networkId: otherNetworkId
                     }),
-                    lnrJSConnector.lnrJS.LinearFinance.balanceOf(
-                        this.walletAddress
-                    )
+                    contract.balanceOf(this.walletAddress)
                 ]);
 
-                this.currency.avaliable = _.floor(
-                    bn2n(avaliableLINA || 0),
+                this.currencies[this.selectCurrencyIndex].avaliable = _.floor(
+                    bn2n(avaliableAmount || 0),
                     DECIMAL_PRECISION
                 );
 
@@ -349,7 +438,9 @@ export default {
                     n2bn(currentFreeZeTokens),
                     n2bn(otherUnFreeZeTokens)
                 );
-                this.frozenBalance = this.swapNumber =
+                this.currencies[
+                    this.selectCurrencyIndex
+                ].frozenBalance = this.swapNumber =
                     frozenBalance > 0
                         ? _.floor(frozenBalance, DECIMAL_PRECISION)
                         : null;
@@ -372,6 +463,12 @@ export default {
             } finally {
                 this.processing = false;
             }
+        },
+
+        async changeSelectCurrencyIndex(index) {
+            this.selectCurrencyIndex = index;
+            this.currencyDropDown = false;
+            await this.getFrozenBalance();
         },
 
         //点击最大
@@ -508,6 +605,66 @@ export default {
                                     font-size: 24px;
                                     line-height: 32px;
                                     letter-spacing: 0;
+                                    cursor: pointer;
+
+                                    .ivu-poptip-rel {
+                                        display: flex;
+                                        align-items: center;
+
+                                        #dropdownArrowSvg {
+                                            margin-left: 8px;
+                                        }
+                                    }
+
+                                    .ivu-poptip-arrow {
+                                        display: none;
+                                    }
+
+                                    .ivu-poptip-body {
+                                        padding: 8px 0;
+
+                                        .currencyItem {
+                                            display: flex;
+                                            align-items: center;
+                                            padding: 16px 24px;
+
+                                            .itemIcon {
+                                                width: 40px;
+                                                height: 40px;
+                                                margin-right: 17px;
+                                            }
+
+                                            .itemName {
+                                                font-family: Gilroy-Bold;
+                                                font-size: 16px;
+                                                font-weight: bold;
+                                                font-stretch: normal;
+                                                font-style: normal;
+                                                line-height: 1.5;
+                                                letter-spacing: normal;
+                                                color: #5a575c;
+                                            }
+
+                                            &.selected {
+                                                background-color: rgba(
+                                                    #7eb5ff,
+                                                    0.1
+                                                );
+
+                                                .itemName {
+                                                    color: #1a38f8;
+                                                }
+                                            }
+
+                                            &:hover {
+                                                &:not(.selected) {
+                                                    .itemName {
+                                                        color: #1a38f8;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
 

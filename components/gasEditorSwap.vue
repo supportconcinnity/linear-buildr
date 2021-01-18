@@ -491,7 +491,9 @@ export default {
             chainChangeTokenFromSubscribe: null,
 
             isEthereumNetworkFunc: isEthereumNetwork,
-            isBinanceNetworkFunc: isBinanceNetwork
+            isBinanceNetworkFunc: isBinanceNetwork,
+
+            lastNetworkId: 0
         };
     },
     filters: {
@@ -536,6 +538,15 @@ export default {
             this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
                 "onWalletChainChange",
                 async () => {
+                    //如果切换的链和上次链相同,则不切换
+                    if (
+                        (isEthereumNetwork(this.lastNetworkId) &&
+                            isEthereumNetwork(this.walletNetworkId)) ||
+                        (isBinanceNetwork(this.lastNetworkId) &&
+                            isBinanceNetwork(this.walletNetworkId))
+                    ) {
+                        return;
+                    }
 
                     //更换source和target的price和selected
                     let sourcePrice = this.sourcePrice,
@@ -560,6 +571,8 @@ export default {
                         sourceNetwork: true,
                         targetNetwork: true
                     });
+
+                    this.lastNetworkId = this.walletNetworkId;
                 }
             );
         }

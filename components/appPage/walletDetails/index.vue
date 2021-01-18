@@ -756,8 +756,8 @@ export default {
 
             const currentAction = this.$store.state?.currentAction;
 
-            //不是swap的情况下关闭其他
-            if (![1, 5].includes(currentAction) || forceAction) {
+            //build,burn,swap
+            if (![1, 2, 5].includes(currentAction) || forceAction) {
                 this.$store.commit("setCurrentAction", 0);
             }
         },
