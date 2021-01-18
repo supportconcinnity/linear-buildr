@@ -182,7 +182,7 @@ export default {
     },
     methods: {
         openBuy() {
-            // openBuyLINA()
+            openBuyLINA()
         }
     }
 };

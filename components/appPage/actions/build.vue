@@ -1800,7 +1800,7 @@ export default {
 
         //点击购买
         clickBuy() {
-            // openBuyLINA()
+            openBuyLINA()
             this.activeItemBtn = 0;
         },
 

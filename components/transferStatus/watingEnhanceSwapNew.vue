@@ -2379,6 +2379,7 @@ export default {
 
         //回到默认状态
         async setDefaultTab() {
+            // 上层用v-if,来销毁组件
             // this.waitProcessArray = [];
             // this.confirmTransactionStep = -1;
             // this.swapNumber = null;

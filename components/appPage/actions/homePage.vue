@@ -62,7 +62,7 @@ export default {
     methods: {
         btnClick(type) {
             if (type == 1) {
-                // openBuyLINA();
+                openBuyLINA();
             } else {
                 this.$store.commit("setCurrentAction", 1);
             }
