@@ -32,21 +32,21 @@
                             <div class="iconBox">
                                 <img
                                     class="icon"
-                                    :src="currentSelectCurrency.img"
+                                    :src="currency.img"
                                 />
                                 <div class="name">
-                                    {{ currentSelectCurrency.name }}
+                                    {{ currency.name }}
                                 </div>
 
                                 <div v-if="isMobile" class="avaliable">
                                     Avaliable:
                                     {{
                                         formatNumber(
-                                            currentSelectCurrency.avaliable,
+                                            currency.avaliable,
                                             DECIMAL_PRECISION
                                         )
                                     }}
-                                    {{ currentSelectCurrency.name }}
+                                    {{ currency.name }}
                                 </div>
                             </div>
 
@@ -65,7 +65,7 @@
                                             :min="frozenBalance"
                                             :max="
                                                 floor(
-                                                    currentSelectCurrency.avaliable,
+                                                    currency.avaliable,
                                                     DECIMAL_PRECISION
                                                 )
                                             "
@@ -110,7 +110,7 @@
                                         :min="frozenBalance"
                                         :max="
                                             floor(
-                                                currentSelectCurrency.avaliable,
+                                                currency.avaliable,
                                                 DECIMAL_PRECISION
                                             )
                                         "
@@ -269,7 +269,13 @@ export default {
 
             formatNumber,
             BUILD_PROCESS_SETUP,
-            swapUnfreezeContinue: false
+            swapUnfreezeContinue: false,
+
+            currency: {
+                name: "LINA",
+                img: require("@/static/LINA_logo.svg"),
+                avaliable: 0
+            }
         };
     },
     async created() {
@@ -355,20 +361,6 @@ export default {
             return this.$store.state?.wallet?.address;
         },
 
-        transferableAssets() {
-            return this.$store.state?.walletDetails?.transferableAssets;
-        },
-
-        currentSelectCurrency() {
-            return {
-                name: "LINA",
-                img: require("@/static/LINA_logo.svg"),
-                avaliable: this.transferableAssets
-                    ? this.transferableAssets["LINA"]
-                    : 0
-            };
-        },
-
         swapDisabled() {
             return !this.swapNumber || this.processing;
         },
@@ -399,7 +391,7 @@ export default {
                 ).join();
 
                 //获取当前和其他网络冻结数据
-                const [current, other] = await Promise.all([
+                const [current, other, avaliableLINA] = await Promise.all([
                     lnr.userSwapAssetsCount({
                         account: this.walletAddress,
                         networkId: this.walletNetworkId
@@ -407,8 +399,17 @@ export default {
                     lnr.userSwapAssetsCount({
                         account: this.walletAddress,
                         networkId: otherNetworkId
-                    })
+                    }),
+                    lnrJSConnector.lnrJS.LinearFinance.balanceOf(
+                        this.walletAddress
+                    )
                 ]);
+
+                this.currency.avaliable = _.floor(
+                    bn2n(avaliableLINA || 0),
+                    DECIMAL_PRECISION
+                );
+
                 let currentFreeZeTokens = 0,
                     otherUnFreeZeTokens = 0;
                 current.length &&
@@ -717,7 +718,8 @@ export default {
         async startFreezeContract(swapNumber) {
             this.confirmTransactionStatus = false;
 
-            let LnBridge= lnrJSConnector.lnrJS.LnErc20Bridge, SETUP;
+            let LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge,
+                SETUP;
             if (this.isEthereumNetwork) {
                 // LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
                 SETUP = "ETH";
@@ -1093,7 +1095,7 @@ export default {
         clickMaxAmount() {
             this.activeItemBtn = 0;
             this.swapNumber = _.floor(
-                this.currentSelectCurrency.avaliable,
+                this.currency.avaliable,
                 DECIMAL_PRECISION
             );
 

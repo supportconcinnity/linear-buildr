@@ -990,6 +990,12 @@ export default {
             default: 0
         },
 
+        //需要swap的token
+        currency: {
+            type: String,
+            default: "LINA"
+        },
+
         //swap类型
         swapType: {
             type: Number,
@@ -1574,7 +1580,7 @@ export default {
             );
 
             let transaction = await LnBridge.deposit(
-                utils.formatBytes32String("LINA"),
+                utils.formatBytes32String(this.currency),
                 swapNumber,
                 this.targetNetworkId,
                 formatAddressToByte32(this.targetWalletAddress),
@@ -1601,7 +1607,7 @@ export default {
                     throw {
                         code: 6100002,
                         message:
-                            "Something went wrong while Freezing your LINA, please try again."
+                            `Something went wrong while Freezing your ${this.currency}, please try again.`
                     };
                 }
 
@@ -1631,7 +1637,7 @@ export default {
                 const { utils } = lnrJSConnector;
 
                 let gasEstimate = await LnBridge.contract.estimateGas.deposit(
-                    utils.formatBytes32String("LINA"),
+                    utils.formatBytes32String(this.currency),
                     swapNumber,
                     this.targetNetworkId,
                     formatAddressToByte32(this.targetWalletAddress)
@@ -1751,7 +1757,7 @@ export default {
                 //     19,
                 //     formatAddressToByte32(this.walletAddress),
                 //     formatAddressToByte32(this.targetWalletAddress),
-                //     lnrJSConnector.utils.formatBytes32String("LINA"),
+                //     lnrJSConnector.utils.formatBytes32String(this.currency),
                 //     BigNumber.from("2941489189480148500000"),
                 //     "0xa92da339c0e66f78e31aed3242240b6eec02efccccccc81d35bbe0cea54cdd86425857531099c518a7c2ee30418c21abf6f3964866537d09311f198a1a32d7601b"
                 // );
@@ -1762,7 +1768,7 @@ export default {
                 //     '19',
                 //     formatAddressToByte32(this.walletAddress),
                 //     formatAddressToByte32(this.targetWalletAddress),
-                //     lnrJSConnector.utils.formatBytes32String("LINA"),
+                //     lnrJSConnector.utils.formatBytes32String(this.currency),
                 //     BigNumber.from("2941489189480148500000"),
                 //     "0xa92da339c0e66f78e31aed3242240b6eec02efccccccc81d35bbe0cea54cdd86425857531099c518a7c2ee30418c21abf6f3964866537d09311f198a1a32d7601b"
                 // );
@@ -1828,7 +1834,7 @@ export default {
                             throw {
                                 code: 6100003,
                                 message:
-                                    "Something went wrong while Freezing your LINA, please try again."
+                                    `Something went wrong while Freezing your ${this.currency}, please try again.`
                             };
                             break;
                         }
@@ -1905,7 +1911,7 @@ export default {
             );
 
             let transaction = await LnCollateralSystem.collateralAndBuild(
-                utils.formatBytes32String("LINA"),
+                utils.formatBytes32String(this.currency),
                 stakeAmountLINA,
                 transactionSettings
             );
@@ -1954,7 +1960,7 @@ export default {
                 }
 
                 let gasEstimate = await LnCollateralSystem.contract.estimateGas.collateralAndBuild(
-                    utils.formatBytes32String("LINA"),
+                    utils.formatBytes32String(this.currency),
                     stakeAmountLINA
                 );
 
@@ -2034,7 +2040,7 @@ export default {
                     // if (count > 60) {
                     //     reject({
                     //         code: 6100006,
-                    //         message: "No valid LINA was found"
+                    //         message: `No valid ${this.currency} was found`
                     //     });
                     // }
 
@@ -2048,7 +2054,7 @@ export default {
                                 "0x9e2661cc2b535339133652e501766518fa475e71",
                             recipient:
                                 "0x9e2661cc2b535339133652e501766518fa475e71",
-                            currency: "LINA",
+                            currency,
                             amount: "1000000000000000000",
                             signatures: [
                                 {
@@ -2109,7 +2115,7 @@ export default {
                             clearTimeout(this.getPendingProcessLoopId);
                             reject({
                                 code: 6100006,
-                                message: "No valid LINA was found"
+                                message: `No valid ${this.currency} was found`
                             });
                         }
 

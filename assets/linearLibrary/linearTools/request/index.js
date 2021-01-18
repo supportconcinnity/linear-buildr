@@ -1,6 +1,5 @@
 import _ from "lodash";
 import lnrJSConnector from "../lnrJSConnector";
-import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/exchangeData";
 
 import {
     CRYPTO_CURRENCIES,
@@ -100,7 +99,10 @@ export const getPriceRates = async currency => {
     let pricesPromise = [];
 
     if (_.isString(currency)) {
-        if (["ETH", "BNB"].includes(currency)) {
+        if (
+            ["ETH", "BNB"].includes(currency) ||
+            (isEthereum && currency == "LINA")
+        ) {
             const id = CRYPTO_CURRENCIES_API[currency]?.id;
             const results = await api.getTokenPrice({
                 tokenid: [id]
@@ -114,7 +116,10 @@ export const getPriceRates = async currency => {
     } else if (_.isArray(currency)) {
         for (let index = 0; index < currency.length; index++) {
             const name = currency[index];
-            if (["ETH", "BNB"].includes(name)) {
+            if (
+                ["ETH", "BNB"].includes(name) ||
+                (isEthereum && name == "LINA")
+            ) {
                 const id = CRYPTO_CURRENCIES_API[name]?.id;
                 pricesPromise.push(
                     api.getTokenPrice({
@@ -133,7 +138,10 @@ export const getPriceRates = async currency => {
             const name = currency[index];
             let price = prices[index];
 
-            if (["ETH", "BNB"].includes(name)) {
+            if (
+                ["ETH", "BNB"].includes(name) ||
+                (isEthereum && name == "LINA")
+            ) {
                 const id = CRYPTO_CURRENCIES_API[name]?.id;
                 price = n2bn(price[id]?.usd);
             }
