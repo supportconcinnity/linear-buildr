@@ -1028,10 +1028,8 @@ export default {
             sourceGasPrice: "",
             targetGasPrice: "",
 
-            freezeFee: "", //
-            unfreezeFee: "", //
-
-            frozenBalance: 0,
+            freezeFee: "", //冻结费用
+            unfreezeFee: "", //解锁费用
 
             tansactionBlocks: {
                 blockNumber: 0,
@@ -1067,9 +1065,6 @@ export default {
             waitChainChangeLoopId: "", //等待切链循环id
             waitingBlockConfirmationsLoopId: "", //等待块确认循环id
             getPendingProcessLoopId: "" //等待获取交易数据循环id
-
-            //调试
-            // currentWalletType: "MetaMask"
         };
     },
     watch: {
@@ -1113,23 +1108,25 @@ export default {
         this.swapNumber = this.amount;
 
         //监听链切换
-        this.chainChangeFromSubscribe = this.$pub.subscribe(
-            "onWalletChainChange",
-            async () => {
-                if (this.actionTabs == "m0") {
-                    // await this.getFrozenBalance();
-                }
-            }
-        );
+        // this.chainChangeFromSubscribe = this.$pub.subscribe(
+        //     "onWalletChainChange",
+        //     async () => {
+        //         if (this.actionTabs == "m0") {
+        //             // this.$emit("close");
+        //             // await this.getFrozenBalance();
+        //         }
+        //     }
+        // );
 
-        this.walletChangeAccountFromSubscribe = this.$pub.subscribe(
-            "onWalletAccountChange",
-            async () => {
-                if (this.actionTabs == "m0") {
-                    // await this.getFrozenBalance();
-                }
-            }
-        );
+        // this.walletChangeAccountFromSubscribe = this.$pub.subscribe(
+        //     "onWalletAccountChange",
+        //     async () => {
+        //         if (this.actionTabs == "m0") {
+        //             // this.$emit("close");
+        //             // await this.getFrozenBalance();
+        //         }
+        //     }
+        // );
 
         this.initStep();
     },
@@ -1385,8 +1382,7 @@ export default {
                 // //开始逻辑流处理函数
                 await this.waitProcessFlow();
             } catch (error) {
-                this.frozenBalance = 0;
-                console.log(error, "getFrozenBalance error");
+                console.log(error, "checkContract error");
             } finally {
                 this.processing = false;
             }
@@ -1606,8 +1602,7 @@ export default {
                 if (!status) {
                     throw {
                         code: 6100002,
-                        message:
-                            `Something went wrong while Freezing your ${this.currency}, please try again.`
+                        message: `Something went wrong while Freezing your ${this.currency}, please try again.`
                     };
                 }
 
@@ -1677,10 +1672,11 @@ export default {
             let walletStatus;
 
             /**
+             * 当前网络是原始网络
              * 当前网络Id,不等于目标网络Id
-             * 当前钱包类型等于目标钱包类型
              * 等待用户切换钱包或网络 */
             if (
+                this.walletNetworkId == this.sourceNetworkId &&
                 this.walletNetworkId != this.targetNetworkId
                 // && this.walletType == this.sourceWalletType
             ) {
@@ -1833,8 +1829,7 @@ export default {
                         if (!status) {
                             throw {
                                 code: 6100003,
-                                message:
-                                    `Something went wrong while Freezing your ${this.currency}, please try again.`
+                                message: `Something went wrong while Freezing your ${this.currency}, please try again.`
                             };
                             break;
                         }
@@ -2388,7 +2383,6 @@ export default {
             // this.processing = false;
             // this.sourceWalletType = "";
             // this.sourceWalletAddress = "";
-            // this.frozenBalance = null;
             // this.chainChangedStatus = false;
             // this.confirmTransactionChainChanging = false;
             // this.confirmTransactionHash = "";
@@ -2416,13 +2410,13 @@ export default {
             this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
         }
 
-        if (this.chainChangeFromSubscribe != "") {
-            this.$pub.unsubscribe(this.chainChangeFromSubscribe);
-        }
+        // if (this.chainChangeFromSubscribe != "") {
+        //     this.$pub.unsubscribe(this.chainChangeFromSubscribe);
+        // }
 
-        if (this.walletChangeAccountFromSubscribe) {
-            this.$pub.unsubscribe(this.walletChangeAccountFromSubscribe);
-        }
+        // if (this.walletChangeAccountFromSubscribe) {
+        //     this.$pub.unsubscribe(this.walletChangeAccountFromSubscribe);
+        // }
 
         clearTimeout(this.waitChainChangeLoopId);
         clearTimeout(this.waitingBlockConfirmationsLoopId);

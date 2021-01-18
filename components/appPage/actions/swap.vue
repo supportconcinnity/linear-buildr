@@ -179,15 +179,10 @@ import {
     SUPPORTED_WALLETS_MAP
 } from "@/assets/linearLibrary/linearTools/network";
 import lnrJSConnector, {
-    connectToWallet,
     selectedWallet
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { bn2n, bnSub, bnSub2N, n2bn } from "@/common/bnCalc";
-import {
-    BUILD_PROCESS_SETUP,
-    BUILD_PROCESS_SETUP_MOBILE,
-    DECIMAL_PRECISION
-} from "@/assets/linearLibrary/linearTools/constants/process";
+import { DECIMAL_PRECISION } from "@/assets/linearLibrary/linearTools/constants/process";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
 
@@ -207,25 +202,7 @@ export default {
 
             activeItemBtn: -1,
 
-            confirmTransactionStep: -1, //当前交易进度
-            confirmTransactionStatus: false, //当前交易确认状态
-            confirmTransactionNetworkId: "", //当前交易确认网络id
-            confirmTransactionHash: "", //当前交易hash
-
-            transactionErrMsg: "", //交易错误信息
             processing: false, // 处理状态, 防止重复点击
-            waitProcessArray: [],
-            // waitProcessArray: [
-            //     "Approve address",
-            //     "Contract on ETH",
-            //     "Contract on BSC"
-            // ], //等待交易进度组
-            waitProcessFlow: Function, //flow闭包函数
-
-            freezeSuccessHash: "", //冻结hash
-            waitPendingProcess: false, //等待查询
-
-            chainChangedStatus: false, //是否已经切换网络或链,false未切换,true已切换
 
             floor: _.floor,
 
@@ -235,22 +212,11 @@ export default {
 
             errors: { amountMsg: "" },
 
-            confirmTransactionChainChanging: false, //当前是否在切链步骤
-            sourceNetworkId: "", //原始网络ID
-            targetNetworkId: "", //目标网络ID
-            sourceWalletType: "", //原始钱包类型
-            sourceWalletAddress: "", //原始钱包地址
-
             chainChangeTokenFromUnfreeze: "", //解冻切换钱包事件监听id
             chainChangeTokenFromSubscribe: "", //切换钱包事件监听id
             walletChangeTokenFromSubscribe: "", //切换钱包地址时间监听id
 
-            sourceGasPrice: 0, //原始网络gas
-            targetGasPrice: 0, //目标网络gas
-
             formatNumber,
-            BUILD_PROCESS_SETUP,
-            swapUnfreezeContinue: false,
 
             currency: {
                 name: "LINA",
@@ -399,7 +365,7 @@ export default {
                 if (!this.swapDisabled) {
                     this.processing = true;
 
-                    this.actionTabs = "m1"; //进入等待页
+                    this.actionTabs = "m1"; //进入swap页
                 }
             } catch (error) {
                 console.log(error, "clickSwap error");
@@ -438,8 +404,9 @@ export default {
             });
         },
 
-        close() {
+        async close() {
             this.actionTabs = "m0";
+            await this.getFrozenBalance();
         }
     }
 };

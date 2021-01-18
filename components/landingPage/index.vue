@@ -6,7 +6,7 @@
                 src="@/static/linear_buildr_logo.svg"
                 alt=""
             />
-            <div class="mBuyLINA mobileShow" @click.stop="openBuy">
+            <div class="mBuyLINA mobileShow" @click.stop="openBuyLINA">
                 BUY LINA
                 <img src="@/static/arrow_right.svg" alt="" />
             </div>
@@ -61,11 +61,11 @@
                         </p>
                     </Panel> -->
                 </Collapse>
-
-                <div class="buyLINA" @click.stop="openBuy">
+<!-- 
+                <div class="buyLINA" @click.stop="openBuyLINA">
                     Buy LINA
                     <Icon type="ios-arrow-round-forward" />
-                </div>
+                </div> -->
 
                 <div
                     class="mRect mobileShow"
@@ -110,7 +110,28 @@
                         </div>
                     </div>
 
-                    <div
+                    <div class="boxItem" @click.stop="openBuyLINA">
+                        <img
+                            class="boxLogo"
+                            src="@/static/LINA_logo.svg"
+                            alt=""
+                        />
+
+                        <div class="boxTitle">
+                            Buy LINA<br />
+                            <img
+                                class="buy_right"
+                                src="@/static/arrow_right.svg"
+                                alt=""
+                            />
+                        </div>
+
+                        <div class="boxDesc">
+                            via Uniswap
+                        </div>
+                    </div>
+
+                    <!-- <div
                         class="boxItem"
                         @click.stop="
                             selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)
@@ -135,7 +156,7 @@
                         <div class="boxDesc">
                             via Binance Chain Wallet
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -155,7 +176,8 @@ export default {
         return {
             SUPPORTED_WALLETS_MAP,
             introduct: "0",
-            selectedWallet
+            selectedWallet,
+            openBuyLINA
         };
     },
     watch: {
@@ -179,12 +201,8 @@ export default {
         //     1000
         // ); //自动连接BINANCE
         //调试用,进入指定页,不用时屏蔽
-    },
-    methods: {
-        openBuy() {
-            openBuyLINA()
-        }
     }
+
 };
 </script>
 
