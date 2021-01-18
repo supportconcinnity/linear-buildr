@@ -459,6 +459,7 @@ module.exports = {
             max = maxRequest,
             depositor = undefined,
             recipient = undefined,
+            source = undefined,
             networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
             return pageResults({
@@ -481,7 +482,8 @@ module.exports = {
                                       "0x",
                                       "0x000000000000000000000000"
                                   )}\\"`
-                                : undefined
+                                : undefined,
+                            currency: source ? `\\"${source}\\"` : undefined
                         }
                     },
                     properties: [
@@ -516,7 +518,7 @@ module.exports = {
                             depositId,
                             depositor,
                             recipient,
-                            source: utils.parseBytes32String(currency),
+                            source: currency,
                             value:bn2n(BigNumber.from(amount)),
                             timestamp: Number(timestamp * 1000),
                             symbol: "-"
@@ -529,6 +531,7 @@ module.exports = {
             max = maxRequest,
             depositor = undefined,
             recipient = undefined,
+            source = undefined,
             networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
             return pageResults({
@@ -551,7 +554,8 @@ module.exports = {
                                       "0x",
                                       "0x000000000000000000000000"
                                   )}\\"`
-                                : undefined
+                                : undefined,
+                            currency: source ? `\\"${source}\\"` : undefined
                         }
                     },
                     properties: [
@@ -586,7 +590,7 @@ module.exports = {
                             depositId,
                             depositor,
                             recipient,
-                            source: utils.parseBytes32String(currency),
+                            source: currency,
                             value: bn2n(BigNumber.from(amount)),
                             timestamp: Number(timestamp * 1000),
                             symbol: "+"
@@ -598,6 +602,7 @@ module.exports = {
         userSwapAssetsCount({
             max = maxRequest,
             account = undefined,
+            source = "LINA",
             networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
             return pageResults({
@@ -613,7 +618,7 @@ module.exports = {
                                           "0x",
                                           "0x000000000000000000000000"
                                       )
-                                      .toLocaleLowerCase()}\\"`
+                                      .toLocaleLowerCase()+"-"+source}\\"`
                                 : undefined
                         }
                     },
