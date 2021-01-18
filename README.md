@@ -59,4 +59,4 @@ $ npm run generate
 
 Please refer to [package.json][PKJS] for details.
 
-[PKJS]: <https://github.com/Linear-finance/linear-buildr/blob/main/package.json>
+[PKJS]: <https://github.com/Linear-finance/linear-buildr/blob/v1/package.json>
