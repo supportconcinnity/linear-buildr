@@ -538,7 +538,7 @@ export default {
             this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
                 "onWalletChainChange",
                 async () => {
-                    //如果切换的链和上次链相同,则不切换
+                    //如果切换的网络和上次网络是相同的链,则不切换
                     if (
                         (isEthereumNetwork(this.lastNetworkId) &&
                             isEthereumNetwork(this.walletNetworkId)) ||

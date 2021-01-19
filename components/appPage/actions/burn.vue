@@ -188,11 +188,8 @@
                             </div>
                         </div>
 
-                        <gasEditorSwap
-                            v-if="isEthereumNetwork"
-                            :simple="true"
-                        ></gasEditorSwap>
-                        <gasEditor v-else-if="!isMobile"></gasEditor>
+                        
+                        <gasEditor v-if="!isMobile"></gasEditor>
                     </div>
 
                     <div class="actionBodyMobile">
@@ -349,19 +346,21 @@
                             </div>
                         </div>
 
-                        <gasEditorSwap
-                            v-if="isEthereumNetwork && isMobile"
-                            :simple="true"
-                        ></gasEditorSwap>
-                        <gasEditor v-else-if="isMobile"></gasEditor>
+                      
+                        <gasEditor v-if="isMobile"></gasEditor>
                     </div>
 
                     <div
+                        v-if="isBinanceNetwork"
                         class="burnBtn"
                         :class="{ disabled: burnDisabled }"
                         @click="clickBurn"
                     >
                         BURN NOW
+                    </div>
+
+                    <div v-else class="burnBtn switchToBSC">
+                        Please switch to BSC network to burn your ℓusd
                     </div>
 
                     <Spin fix v-if="processing"></Spin>
@@ -380,14 +379,6 @@
                     @tryAgain="waitTryAgain"
                     @close="setDefaultTab"
                 ></watingEnhance>
-
-                <watingEnhanceSwapNew
-                    :amount="floor(inputData.amount, DECIMAL_PRECISION)"
-                    :swapType="1"
-                    :currency="'lUSD'"
-                    v-if="actionTabs == 'm1' && isEthereumNetwork"
-                    @close="setDefaultTab"
-                ></watingEnhanceSwapNew>
             </TabPane>
         </Tabs>
 
@@ -462,8 +453,6 @@ import {
     DECIMAL_PRECISION
 } from "@/assets/linearLibrary/linearTools/constants/process";
 
-import watingEnhanceSwapNew from "@/components/transferStatus/watingEnhanceSwapNew";
-import gasEditorSwap from "@/components/gasEditorSwap";
 import setupModal from "@/components/setupModal";
 
 export default {
@@ -525,8 +514,6 @@ export default {
     },
     components: {
         gasEditor,
-        watingEnhanceSwapNew,
-        gasEditorSwap,
         setupModal
     },
 
@@ -695,7 +682,8 @@ export default {
             if (!this.burnDisabled) {
                 try {
                     if (this.isEthereumNetwork) {
-                        this.actionTabs = "m1"; //进入swap流程
+                        return;
+                        // this.actionTabs = "m1"; //进入swap流程
                     } else if (this.isBinanceNetwork) {
                         this.processing = true;
 
