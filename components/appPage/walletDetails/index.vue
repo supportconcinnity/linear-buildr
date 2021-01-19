@@ -51,27 +51,20 @@
                 <div
                     class="ethBox"
                     :class="{
-                        selected: walletType == SUPPORTED_WALLETS_MAP.METAMASK
+                        selected: isEthereumNetwork
                     }"
                     @click="changeChain(SUPPORTED_WALLETS_MAP.METAMASK)"
                 >
-                    <metamaskSvg
-                        :selected="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
-                    />
+                    <ethereumSvg :selected="isEthereumNetwork" />
                 </div>
                 <div
                     class="bscBox"
                     :class="{
-                        selected:
-                            walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                        selected: isBinanceNetwork
                     }"
                     @click="changeChain(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)"
                 >
-                    <binanceSvg
-                        :selected="
-                            walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
-                        "
-                    />
+                    <binanceSvg :selected="isBinanceNetwork" />
                 </div>
                 <div class="mNetworkName" @click="mShowWallet = true">
                     {{ walletNetworkName }}
@@ -88,7 +81,7 @@
             :class="{ mShowWalletClass: mShowWallet }"
         >
             <div class="mWalletHead">
-                <metamaskSvg
+                <ethereumSvg
                     class="metamaskIcon"
                     :selected="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
                 />
@@ -441,9 +434,18 @@
                                 </Tooltip>
                             </div>
                             <div class="right">
-                                <div class="top" :style="{marginTop:(isEthereumNetwork?'9px':'0px')}">
+                                <div
+                                    class="top"
+                                    :style="{
+                                        marginTop: isEthereumNetwork
+                                            ? '9px'
+                                            : '0px'
+                                    }"
+                                >
                                     <template v-if="!isEthereumNetwork">
-                                        <b>{{ walletDetails.amountDebt || 0 }}</b>
+                                        <b>{{
+                                            walletDetails.amountDebt || 0
+                                        }}</b>
                                         ℓUSD
                                     </template>
                                     <template v-if="isEthereumNetwork">
@@ -520,7 +522,7 @@ import {
 import lnrJSConnector, {
     selectedWallet
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-import metamaskSvg from "@/components/svg/metamask";
+import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
 
 export default {
@@ -551,7 +553,7 @@ export default {
         };
     },
     components: {
-        metamaskSvg,
+        ethereumSvg,
         binanceSvg
     },
     watch: {
@@ -661,12 +663,18 @@ export default {
         },
 
         async changeChain(walletType) {
+            return;
+
             //不重复连接
             if (walletType == this.walletType || this.chainChanging) return;
 
             // this.chainChanging = true;
             const staus = await selectedWallet(walletType);
-            staus && this.$pub.publish("onWalletChainChange", CHAIN_CHANGE_TYPE.WALLET);
+            staus &&
+                this.$pub.publish(
+                    "onWalletChainChange",
+                    CHAIN_CHANGE_TYPE.WALLET
+                );
             // this.chainChanging = false;
         },
 
@@ -748,8 +756,8 @@ export default {
 
             const currentAction = this.$store.state?.currentAction;
 
-            //不是swap的情况下关闭其他
-            if (![1, 5].includes(currentAction) || forceAction) {
+            //build,burn,swap
+            if (![1, 2, 5].includes(currentAction) || forceAction) {
                 this.$store.commit("setCurrentAction", 0);
             }
         },
@@ -932,7 +940,6 @@ body {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                cursor: pointer;
                 transition: $animete-time linear;
 
                 &.selected {
@@ -1412,7 +1419,6 @@ body {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    cursor: pointer;
                     transition: $animete-time linear;
 
                     &.selected {

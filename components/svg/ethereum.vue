@@ -1,16 +1,16 @@
 <template>
-    <div id="metamaskSvg">
+    <div id="ethereumSvg">
         <!-- @mouseenter="hover = 1" @mouseleave="hover = 0" -->
         <transition-group name="img-fade">
             <img
                 key="1"
                 v-show="!hover && !selected"
-                src="@/static/metamask_inactive.svg"
+                src="@/static/ETH_inactive.svg"
             />
             <img
                 key="2"
                 v-show="hover || selected"
-                src="@/static/metamask.svg"
+                src="@/static/ETH.svg"
             />
         </transition-group>
     </div>
@@ -18,7 +18,7 @@
 
 <script>
 export default {
-    name: "metamaskSvg",
+    name: "ethereumSvg",
     props: {
         selected: {
             type: Boolean,
@@ -41,9 +41,9 @@ export default {
 .img-fade-leave-to {
     opacity: 0;
 }
-#metamaskSvg {
-    width: 16px;
-    height: 16px;
+#ethereumSvg {
+    width: 20px;
+    height: 20px;
     position: relative;
     // cursor: pointer;
     img {

@@ -1,5 +1,6 @@
 <template>
-    <div id="binanceSvg" @mouseenter="hover = 1" @mouseleave="hover = 0">
+    <div id="binanceSvg" >
+        <!-- @mouseenter="hover = 1" @mouseleave="hover = 0" -->
         <transition-group name="img-fade">
             <img key="1" v-show="!hover && !selected" src="@/static/binance_inactive.svg" />
             <img key="2" v-show="hover || selected" src="@/static/binance.svg" />
@@ -36,7 +37,7 @@ export default {
     width: 20px;
     height: 20px;
     position: relative;
-    cursor: pointer;
+    // cursor: pointer;
     img {
         left: 0;
         position: absolute;

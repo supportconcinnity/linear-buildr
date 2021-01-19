@@ -6,9 +6,20 @@
                     <div class="actionBodyWeb">
                         <div class="actionTitle">Burn</div>
                         <div class="actionDesc">
-                            Burn ℓUSD to unlock staked LINA
+                            <template v-if="isEthereumNetwork">
+                                Burn ℓUSD to unlock staked LINA. You can perform
+                                this on Binance Smart Chain network. &nbsp;<span
+                                    class="step"
+                                    @click="jumpToStep"
+                                    >STEP<img src="@/static/arrow_right.svg"
+                                /></span>
+                                .
+                            </template>
+                            <template v-else>
+                                Burn ℓUSD to unlock staked LINA
+                            </template>
                         </div>
-                        <div class="actionRate">
+                        <div class="actionRate" v-if="isBinanceNetwork">
                             1 LINA = {{ floor(burnData.LINA2USD, 4) }} ℓUSD
                         </div>
                         <div
@@ -177,6 +188,7 @@
                             </div>
                         </div>
 
+                        
                         <gasEditor v-if="!isMobile"></gasEditor>
                     </div>
 
@@ -334,11 +346,12 @@
                             </div>
                         </div>
 
+                      
                         <gasEditor v-if="isMobile"></gasEditor>
                     </div>
 
                     <div
-                        v-if="!isEthereumNetwork"
+                        v-if="isBinanceNetwork"
                         class="burnBtn"
                         :class="{ disabled: burnDisabled }"
                         @click="clickBurn"
@@ -347,7 +360,7 @@
                     </div>
 
                     <div v-else class="burnBtn switchToBSC">
-                       Please switch to BSC network to burn your ℓusd
+                        Please switch to BSC network to burn your ℓusd
                     </div>
 
                     <Spin fix v-if="processing"></Spin>
@@ -356,7 +369,7 @@
             <TabPane name="m1">
                 <watingEnhance
                     class="waitingBox"
-                    v-if="this.actionTabs == 'm1'"
+                    v-if="this.actionTabs == 'm1' && isBinanceNetwork"
                     :currentStep="confirmTransactionStep"
                     :currentHash="confirmTransactionHash"
                     :currentNetworkId="confirmTransactionNetworkId"
@@ -383,6 +396,8 @@
                 fluctuations in pledge tokens.
             </div>
         </Modal>
+
+        <setupModal ref="setupModal"></setupModal>
     </div>
 </template>
 
@@ -438,6 +453,8 @@ import {
     DECIMAL_PRECISION
 } from "@/assets/linearLibrary/linearTools/constants/process";
 
+import setupModal from "@/components/setupModal";
+
 export default {
     name: "burn",
     data() {
@@ -491,15 +508,15 @@ export default {
                 currentRatio: 0
             },
 
-            formatterInput
+            formatterInput,
+            chainChangeFromSubscribe: ""
         };
     },
     components: {
-        gasEditor
+        gasEditor,
+        setupModal
     },
-    async created() {
-        this.getBurnData(this.walletAddress);
-    },
+
     watch: {
         walletAddress() {},
         isEthereumNetwork() {},
@@ -539,6 +556,25 @@ export default {
 
         isMobile() {
             return this.$store.state?.isMobile;
+        }
+    },
+    async created() {
+        this.getBurnData(this.walletAddress);
+
+        //监听链切换
+        this.chainChangeFromSubscribe = this.$pub.subscribe(
+            "onWalletChainChange",
+            async () => {
+                if (this.actionTabs == "m0") {
+                    await this.getBurnData(this.walletAddress);
+                }
+            }
+        );
+    },
+    destroyed() {
+        if (this.chainChangeFromSubscribe) {
+            this.$pub.unsubscribe(this.chainChangeFromSubscribe);
+            this.chainChangeFromSubscribe = "";
         }
     },
     methods: {
@@ -645,43 +681,49 @@ export default {
         async clickBurn() {
             if (!this.burnDisabled) {
                 try {
-                    this.processing = true;
+                    if (this.isEthereumNetwork) {
+                        return;
+                        // this.actionTabs = "m1"; //进入swap流程
+                    } else if (this.isBinanceNetwork) {
+                        this.processing = true;
 
-                    if (this.isEthereumNetwork) return;
+                        //清空之前数据
+                        this.waitProcessArray = [];
+                        this.confirmTransactionStep = 0;
 
-                    //清空之前数据
-                    this.waitProcessArray = [];
-                    this.confirmTransactionStep = 0;
+                        // if (
+                        //     this.actionDatas.amount.gte(n2bn("0.01")) &&
+                        //     this.actionDatas.unStake.gte(n2bn("0.01"))
+                        // ) {
+                        //     this.waitProcessArray.push(
+                        //         BUILD_PROCESS_SETUP.BURN_UNSTAKING
+                        //     );
+                        // } else {
+                        if (this.actionDatas.amount.gte(n2bn("0.01"))) {
+                            //需要先burn
+                            this.waitProcessArray.push(
+                                BUILD_PROCESS_SETUP.BURN
+                            );
+                        }
 
-                    // if (
-                    //     this.actionDatas.amount.gte(n2bn("0.01")) &&
-                    //     this.actionDatas.unStake.gte(n2bn("0.01"))
-                    // ) {
-                    //     this.waitProcessArray.push(
-                    //         BUILD_PROCESS_SETUP.BURN_UNSTAKING
-                    //     );
-                    // } else {
-                    if (this.actionDatas.amount.gte(n2bn("0.01"))) {
-                        //需要先burn
-                        this.waitProcessArray.push(BUILD_PROCESS_SETUP.BURN);
+                        if (this.actionDatas.unStake.gte(n2bn("0.01"))) {
+                            this.waitProcessArray.push(
+                                BUILD_PROCESS_SETUP.UNSTAKING
+                            );
+                        }
+                        // }
+
+                        this.actionTabs = "m1"; //进入等待页
+
+                        this.waitProcessFlow = this.startFlow();
+
+                        //开始逻辑流处理函数
+                        await this.waitProcessFlow();
                     }
-
-                    if (this.actionDatas.unStake.gte(n2bn("0.01"))) {
-                        this.waitProcessArray.push(
-                            BUILD_PROCESS_SETUP.UNSTAKING
-                        );
-                    }
-                    // }
-
-                    this.actionTabs = "m1"; //进入等待页
-
-                    this.waitProcessFlow = this.startFlow();
-
-                    //开始逻辑流处理函数
-                    await this.waitProcessFlow();
                 } catch (e) {
-                    console.log(e);
-                    this.actionTabs = "m3"; //进入错误页
+                    this.transactionErrMsg =
+                        "Something went wrong, please try again.";
+                } finally {
                     this.processing = false;
                 }
             }
@@ -1156,7 +1198,10 @@ export default {
             this.resetErrorsMsg();
             this.resetInputData();
 
-            if (this.burnData.stakedBN.eq("0") && this.burnData.lockBN.eq("0")) {
+            if (
+                this.burnData.stakedBN.eq("0") &&
+                this.burnData.lockBN.eq("0")
+            ) {
                 this.errors.amountMsg =
                     "There is no LINA staked on the contract.";
                 return;
@@ -1890,6 +1935,11 @@ export default {
         //重试
         tryAgain() {
             this.actionTabs = "m0";
+        },
+
+        //跳转到设置
+        jumpToStep() {
+            this.$refs.setupModal.show();
         }
     }
 };
@@ -1943,7 +1993,6 @@ export default {
 
                         .actionDesc {
                             margin-top: 8px;
-                            padding: 0 75px;
                             font-family: Gilroy-Regular;
                             font-size: 14px;
                             font-weight: normal;
@@ -1953,6 +2002,17 @@ export default {
                             letter-spacing: normal;
                             text-align: center;
                             color: #99999a;
+                            margin-bottom: 48px;
+
+                            .step {
+                                text-transform: uppercase;
+                                font-family: Gilroy-Bold;
+                                font-weight: bold;
+                                line-height: 1.6;
+                                letter-spacing: 1.25px;
+                                color: #1a38f8;
+                                cursor: pointer;
+                            }
                         }
 
                         .actionRate {

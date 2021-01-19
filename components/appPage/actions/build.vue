@@ -6,7 +6,7 @@
                     <div class="actionBodyWeb">
                         <div class="actionTitle">Build</div>
                         <div class="actionDesc">
-                            <template v-if="isEthereumNetwork(walletNetworkId)">
+                            <template v-if="isEthereumNetwork">
                                 Earn rewards by staking LINA and building ℓUSD.
                                 You will need a Binance Chain wallet for the
                                 transaction &nbsp;<span
@@ -21,10 +21,7 @@
                                 LINA.
                             </template>
                         </div>
-                        <div
-                            class="actionRate"
-                            v-if="isBinanceNetwork(walletNetworkId)"
-                        >
+                        <div class="actionRate" v-if="isBinanceNetwork">
                             1 LINA =
                             {{
                                 formatNumberFromBigNumber(
@@ -221,7 +218,7 @@
                         </div>
 
                         <gasEditorSwap
-                            v-if="isEthereumNetwork(walletNetworkId)"
+                            v-if="isEthereumNetwork"
                             :simple="true"
                         ></gasEditorSwap>
                         <gasEditor v-else-if="!isMobile"></gasEditor>
@@ -363,9 +360,7 @@
                         </div>
 
                         <gasEditorSwap
-                            v-if="
-                                isEthereumNetwork(walletNetworkId) && isMobile
-                            "
+                            v-if="isEthereumNetwork && isMobile"
                             :simple="true"
                         ></gasEditorSwap>
                         <gasEditor v-else-if="isMobile"></gasEditor>
@@ -385,9 +380,7 @@
             <TabPane name="m1">
                 <watingEnhance
                     class="waitingBox"
-                    v-if="
-                        actionTabs == 'm1' && isBinanceNetwork(sourceNetworkId)
-                    "
+                    v-if="actionTabs == 'm1' && isBinanceNetwork"
                     :currentStep="confirmTransactionStep"
                     :currentHash="confirmTransactionHash"
                     :currentNetworkId="confirmTransactionNetworkId"
@@ -401,9 +394,7 @@
                 <watingEnhanceSwapNew
                     :amount="floor(inputData.stake, DECIMAL_PRECISION)"
                     :swapType="1"
-                    v-if="
-                        actionTabs == 'm1' && isEthereumNetwork(sourceNetworkId)
-                    "
+                    v-if="actionTabs == 'm1' && isEthereumNetwork"
                     @close="setDefaultTab"
                 ></watingEnhanceSwapNew>
             </TabPane>
@@ -550,9 +541,7 @@ export default {
 
             formatterInput,
 
-            sourceNetworkId: "",
-            isEthereumNetwork,
-            isBinanceNetwork
+            chainChangeFromSubscribe: ""
         };
     },
     components: {
@@ -564,8 +553,8 @@ export default {
     watch: {
         walletAddress() {},
         errorHandle() {},
-        // isEthereumNetwork() {},
-        // isBinanceNetwork() {},
+        isEthereumNetwork() {},
+        isBinanceNetwork() {},
         walletNetworkId() {},
         isMobile() {}
     },
@@ -587,13 +576,13 @@ export default {
             return this.$store.state?.wallet?.address;
         },
 
-        // isEthereumNetwork() {
-        //     return isEthereumNetwork(this.walletNetworkId);
-        // },
+        isEthereumNetwork() {
+            return isEthereumNetwork(this.walletNetworkId);
+        },
 
-        // isBinanceNetwork() {
-        //     return isBinanceNetwork(this.walletNetworkId);
-        // },
+        isBinanceNetwork() {
+            return isBinanceNetwork(this.walletNetworkId);
+        },
 
         walletNetworkId() {
             return this.$store.state?.walletNetworkId;
@@ -605,13 +594,26 @@ export default {
     },
     created() {
         this.getBuildData(this.walletAddress);
+
+        //监听链切换
+        this.chainChangeFromSubscribe = this.$pub.subscribe(
+            "onWalletChainChange",
+            async () => {
+                if (this.actionTabs == "m0") {
+                    await this.getBuildData(this.walletAddress);
+                }
+            }
+        );
+    },
+    destroyed() {
+        if (this.chainChangeFromSubscribe) {
+            this.$pub.unsubscribe(this.chainChangeFromSubscribe);
+            this.chainChangeFromSubscribe = "";
+        }
     },
     methods: {
         //跳转到设置
         jumpToStep() {
-            // window.open(
-            //     "https://docs.binance.org/smart-chain/wallet/binance.html"
-            // );
             this.$refs.setupModal.show();
         },
 
@@ -638,11 +640,6 @@ export default {
                 this.processing = true;
 
                 let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                // if (isEthereumNetwork(this.walletNetworkId)) {
-                //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                // } else if (isBinanceNetwork(this.walletNetworkId)) {
-                //     LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                // }
 
                 const {
                     lnrJS: { LnCollateralSystem, LnRewardLocker, LnDebtSystem },
@@ -1258,8 +1255,9 @@ export default {
         async clickBuild() {
             try {
                 if (!this.buildDisabled) {
-                    this.sourceNetworkId = this.walletNetworkId;
-                    if (isBinanceNetwork(this.walletNetworkId)) {
+                    if (this.isEthereumNetwork) {
+                        this.actionTabs = "m1"; //进入swap流程
+                    } else if (this.isBinanceNetwork) {
                         this.processing = true;
 
                         //清空之前数据
@@ -1301,8 +1299,6 @@ export default {
 
                         //开始逻辑流处理函数
                         await this.waitProcessFlow();
-                    } else if (isEthereumNetwork(this.walletNetworkId)) {
-                        this.actionTabs = "m1"; //进入swap流程
                     }
                 }
             } catch (error) {
@@ -1402,11 +1398,6 @@ export default {
             this.confirmTransactionStatus = false;
 
             let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-            // if (isEthereumNetwork(this.walletNetworkId)) {
-            //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-            // } else if (isBinanceNetwork(this.walletNetworkId)) {
-            //     LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-            // }
 
             const {
                 lnrJS: { LnCollateralSystem },
@@ -1633,11 +1624,6 @@ export default {
                 const { utils } = lnrJSConnector;
 
                 let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                // if (isEthereumNetwork(this.walletNetworkId)) {
-                //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                // } else if (isBinanceNetwork(this.walletNetworkId)) {
-                //     LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                // }
 
                 if (
                     approveAmountLINA.isZero() ||
@@ -1800,7 +1786,7 @@ export default {
 
         //点击购买
         clickBuy() {
-            // openBuyLINA()
+            openBuyLINA();
             this.activeItemBtn = 0;
         },
 

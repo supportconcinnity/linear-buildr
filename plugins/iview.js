@@ -8,6 +8,7 @@ import {
     Dropdown,
     DropdownMenu,
     DropdownItem,
+    Poptip ,
     Tabs,
     TabPane,
     Progress,
@@ -45,6 +46,7 @@ Vue.component("Icon", Icon);
 Vue.component("Dropdown", Dropdown);
 Vue.component("DropdownMenu", DropdownMenu);
 Vue.component("DropdownItem", DropdownItem);
+Vue.component("Poptip", Poptip);
 Vue.component("Tabs", Tabs);
 Vue.component("TabPane", TabPane);
 Vue.component("Progress", Progress);

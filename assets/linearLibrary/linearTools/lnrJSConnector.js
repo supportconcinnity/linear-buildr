@@ -27,6 +27,7 @@ export const connectToWallet = async networkType => {
     try {
         let network;
         if (networkType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN) {
+            return {};
             network = await getBinanceNetwork();
         } else if (networkType == SUPPORTED_WALLETS_MAP.METAMASK) {
             network = await getEthereumNetwork();
@@ -54,7 +55,7 @@ export const connectToWallet = async networkType => {
         }
     } catch (error) {
         console.log(error, "connectToWallet error");
-        return false;
+        return {};
     }
 };
 

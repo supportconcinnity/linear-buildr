@@ -3,6 +3,7 @@ import {
     BLOCKCHAIN_BROWSER,
     isBinanceNetwork,
     isEthereumNetwork,
+    isMainnetNetwork,
     SUPPORTED_NETWORKS_MAP
 } from "@/assets/linearLibrary/linearTools/network";
 import { URLS } from "@/assets/linearLibrary/linearTools/constants/urls";
@@ -208,40 +209,6 @@ export const addClass = ($el, $className) => {
     }
 };
 
-/**
- * 根据HASH打开网站
- * @param {String} hash  交易hash
- */
-export const openBlockchainScan2 = ($hash, blockChain) => {
-    try {
-        let href;
-        let walletNetworkId = $nuxt.$store.state?.walletNetworkId;
-        let walletNetworkName = $nuxt.$store.state?.walletNetworkName;
-
-        if (isEthereumNetwork(walletNetworkId)) {
-            if (walletNetworkName) {
-                href = `https://${
-                    walletNetworkName === SUPPORTED_NETWORKS_MAP.MAINNET
-                        ? ""
-                        : walletNetworkName + "."
-                }etherscan.io/tx/${$hash}`;
-            }
-        } else if (isBinanceNetwork(walletNetworkId)) {
-            ("BSCTESTNET");
-            if (walletNetworkName) {
-                href = `https://${
-                    walletNetworkName === SUPPORTED_NETWORKS_MAP.BSCMAINNET
-                        ? ""
-                        : "testnet."
-                }bscscan.com/tx/${$hash}`;
-            }
-        }
-
-        window.open(href, "_blank");
-    } catch (error) {
-        console.log(error, "openBlockchainBrowser");
-    }
-};
 
 /**
  * 根据HASH打开网站
@@ -261,7 +228,11 @@ export const openBlockchainBrowser = (hash, networdId) => {
  * 打开购买LINA站点
  */
 export const openBuyLINA = () => {
-    window.open(URLS.BUY_LINA);
+    const walletNetworkId = $nuxt.$store.state?.walletNetworkId;
+    //主网时打开购买LINA
+    if (isMainnetNetwork(walletNetworkId)) {
+        window.open(URLS.BUY_LINA);
+    }
 };
 
 //设置输入框的光标位置，会选中 selectionStart 到 selectionEnd 间的内容

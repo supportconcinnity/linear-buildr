@@ -7,15 +7,15 @@ export const BUILD_PROCESS_SETUP = {
     UNSTAKING: "Confirm Unstaking",
     BURN_UNSTAKING: " Confirm Burning ", //需保留前后空格
     CLAIM: "Claiming Rewards",
-    FREEZE: "Swapping LINA on ",
-    UNFREEZE: "Getting LINA on "
+    FREEZE: "Swapping [REPLACE_CURRENCY] on ",
+    UNFREEZE: "Getting [REPLACE_CURRENCY] on "
 };
 
 export const BUILD_PROCESS_SETUP_MOBILE = {
     APPROVE: "Approve Address",
     SWAP: "Contract on",
-    FREEZE: "",
-    UNFREEZE: ""
+    FREEZE: "Swapping [REPLACE_CURRENCY] on ",
+    UNFREEZE: "Getting [REPLACE_CURRENCY] on "
 };
 
 export const DECIMAL_PRECISION = 2; //小数保留位数
