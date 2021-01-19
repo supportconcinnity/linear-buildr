@@ -5,6 +5,7 @@ import {
     CRYPTO_CURRENCIES,
     CRYPTO_CURRENCIES_API
 } from "../constants/currency";
+import currencies from "@/common/currency";
 import { formatNumber, formatEtherToNumber } from "../format";
 import { isBinanceNetwork, isEthereumNetwork, WALLET_STATUS } from "../network";
 import config from "@/config/common";
@@ -14,7 +15,7 @@ import { n2bn, bn2n, bnMul } from "@/common/bnCalc";
 let loopId = 0;
 
 /**
- * 获取Liquids总数
+ * 获取所有合成资产余额/汇率列表，所有合成资产换算成lusd的总价值
  */
 export const getLiquids = async wallet => {
     const {
@@ -30,8 +31,9 @@ export const getLiquids = async wallet => {
     let liquids = 0;
     let assetKeys = [];
     let assetPromise = [];
+    let liquidsData = {liquids: 0, liquidsList: []};
 
-    //整理数据
+    //整理数据,判断前端库中是否有该资产的合约
     for (let i = 0; i < assetAddress.length; i++) {
         for (const key in addressList) {
             //获取相同合约地址的数据
@@ -56,13 +58,21 @@ export const getLiquids = async wallet => {
     for (let i = 0; i < assetAddress.length; i++) {
         for (const key in addressList) {
             //相同合约地址的数据
-            if (addressList[key] == assetAddress[i]) {
+            if (addressList[key] == assetAddress[i] && bn2n(assetBalances[i]) > 0) {
+                liquidsData.liquidsList.push({
+                    name: key,
+                    balance: bn2n(assetBalances[i]),
+                    valueUSD: bn2n(bnMul(assetBalances[i], assetPrices[key])),
+                    img: currencies[key].icon
+                });
+
                 liquids += bn2n(bnMul(assetBalances[i], assetPrices[key]));
             }
         }
     }
-    // console.log(liquids, "liquids");
-    return n2bn(liquids);
+
+    liquidsData.liquids = n2bn(liquids);
+    return liquidsData;
 };
 
 /**
@@ -260,7 +270,6 @@ export const storeDetailsData = async () => {
                 LnRewardLocker.balanceOf(walletAddress),
                 lUSD.balanceOf(walletAddress),
                 provider.getBalance(walletAddress),
-                getLiquids(walletAddress),
                 LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress)
             ]);
 
@@ -272,9 +281,10 @@ export const storeDetailsData = async () => {
                 lockLINA,
                 amountlUSD,
                 amountETH,
-                liquids,
                 amountDebt
             ] = result.map(formatEtherToNumber);
+
+            let liquidsData = await getLiquids(walletAddress);
 
             //获取货币->USD 兑换率
             const priceRates = await getPriceRates(CRYPTO_CURRENCIES);
@@ -296,24 +306,38 @@ export const storeDetailsData = async () => {
             const amountLINA2USD = amountLINA * LINA2USDRate;
             const amountlUSD2USD = amountlUSD * lUSD2USDRate;
             const amountETH2USD = amountETH * ETH2USDRate;
-            const liquids2USD = liquids;
+            const liquids2USD = formatEtherToNumber(liquidsData.liquids);
             const amountDebt2USD = amountDebt[0] * lUSD2USDRate;
             const totalCryptoBalanceInUSD =
                 amountLINA2USD + amountETH2USD + liquids2USD;
 
             //所有资产余额
-            const transferableAssets = {
-                LINA: avaliableLINA,
-                lUSD: amountlUSD
-            };
+            let transferableAssets = [
+                {
+                    name: "LINA",
+                    balance: avaliableLINA,
+                    valueUSD: 0,
+                    img: require("@/static/LINA_logo.svg")
+                }
+            ];
 
-            let keyName;
             if (isEthereum) {
-                keyName = "ETH";
+                transferableAssets.push({
+                    name: "ETH",
+                    balance: amountETH,
+                    valueUSD: 0,
+                    img: require("@/static/ETH_logo.svg")
+                })
             } else if (isBinance) {
-                keyName = "BNB";
+                transferableAssets.push({
+                    name: "BNB",
+                    balance: amountETH,
+                    valueUSD: 0,
+                    img: require("@/static/currency/lBNB.svg")
+                });
             }
-            transferableAssets[keyName] = amountETH;
+
+            transferableAssets = transferableAssets.concat(liquidsData.liquidsList);
 
             let formatData = {
                 currentRatioPercent,
@@ -346,7 +370,7 @@ export const storeDetailsData = async () => {
             formatData.priceRates = priceRates;
             //不需要格式化
             formatData.transferableAssets = transferableAssets;
-            formatData.liquids = formatNumber(liquids);
+            formatData.liquids = formatNumber(formatEtherToNumber(liquidsData.liquids));
             formatData.liquids2USD = formatNumber(liquids2USD);
 
             // console.log(formatData,'storeDetailsData');

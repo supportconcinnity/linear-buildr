@@ -20,7 +20,7 @@
                         >
                             <div class="iconBox">
                                 <div class="icon">
-                                    <img :src="currency[selected].img" alt="" />
+                                    <img :src="currencyList[selected].img" alt="" />
                                 </div>
                             </div>
                             <div class="midle">
@@ -63,7 +63,7 @@
                                                 element-id="transfer_number_input"
                                                 :min="0"
                                                 :max="
-                                                    currency[selected].avaliable
+                                                currencyList[selected].balance
                                                 "
                                                 type="text"
                                                 v-model="transferNumber"
@@ -81,7 +81,7 @@
                             <div class="dropdown" v-if="showDropdown">
                                 <div
                                     class="dropdownItem"
-                                    v-for="(item, index) in currency"
+                                    v-for="(item, index) in currencyList"
                                     @click="selectCurrencyFun(index)"
                                     :key="index"
                                     :class="{
@@ -185,7 +185,7 @@
                         >
                             <div class="iconBox">
                                 <div class="icon">
-                                    <img :src="currency[selected].img" alt="" />
+                                    <img :src="currencyList[selected].img" alt="" />
                                 </div>
                             </div>
 
@@ -221,12 +221,12 @@
                                     "
                                 >
                                     Avaliable:
-                                    {{ currency[selected].avaliable }}
+                                    {{ currencyList[selected].balance }}
                                     {{ currentSelectCurrency.name }}
                                 </div>
                                 <div v-else>
                                     Avaliable:
-                                    {{ currentSelectCurrency.avaliable }}
+                                    {{ currentSelectCurrency.balance }}
                                     {{ currentSelectCurrency.name }}
                                 </div>
                             </div>
@@ -239,7 +239,7 @@
                                         ref="itemInput2"
                                         element-id="transfer_number_input"
                                         :min="0"
-                                        :max="currency[selected].avaliable"
+                                        :max="currencyList[selected].balance"
                                         type="text"
                                         v-model="transferNumber"
                                         placeholder="2"
@@ -262,7 +262,7 @@
                             <div class="dropdown" v-if="showDropdown">
                                 <div
                                     class="dropdownItem"
-                                    v-for="(item, index) in currency"
+                                    v-for="(item, index) in currencyList"
                                     @click="selectCurrencyFun(index)"
                                     :key="index"
                                     :class="{
@@ -402,7 +402,12 @@ export default {
         isEthereumNetwork() {},
         isBinanceNetwork() {},
         walletNetworkId() {},
-        isMobile() {}
+        isMobile() {},
+        currencyList() { //切换钱包时 this.currencyList 会清空
+            if (this.currencyList.length - 1 < this.selected) {
+                this.selected = 0;
+            }
+        }
     },
     computed: {
         //transfer按钮禁止状态
@@ -428,49 +433,36 @@ export default {
             return this.$store.state?.wallet?.address;
         },
         //所有资产余额
-        currency() {
+        currencyList() {
             var tempData = [];
 
-            if (this.$store.state?.walletDetails?.transferableAssets) {
-                for (let key in this.$store.state.walletDetails
-                    .transferableAssets) {
-                    var img = "";
-                    if (key == "ETH") img = require("@/static/ETH_logo.svg");
-                    if (key == "BNB")
-                        img = require("@/static/currency/lBNB.svg");
-                    if (key == "lUSD")
-                        img = require("@/static/currency/lUSD.svg");
-                    if (key == "LINA") img = require("@/static/LINA_logo.svg");
-                    tempData.push({
-                        name: key,
-                        img: img,
-                        avaliable: this.$store.state.walletDetails
-                            .transferableAssets[key]
-                    });
-                }
-            }
-
-            if (tempData.length == 0) {
+            if (this.$store.state?.walletDetails?.transferableAssets.length > 0) {
+                tempData = this.$store.state?.walletDetails?.transferableAssets;
+            } else {
                 tempData = [
                     {
                         name: "LINA",
                         img: require("@/static/LINA_logo.svg"),
-                        avaliable: 0
+                        balance: 0,
+                        valueUSD: 0
                     }
                 ];
-                return tempData;
-            } else {
-                return tempData;
             }
+
+            return tempData;
         },
 
         currentSelectCurrency() {
-            return this.currency[this.selected];
+            if (this.currencyList.length < this.selected) { //切换钱包时 this.currencyList 会清空
+                return this.currencyList[0];
+            } else {
+                return this.currencyList[this.selected];
+            }
         },
 
         canSendEthAmount() {
             return (
-                this.currentSelectCurrency.avaliable -
+                this.currentSelectCurrency.balance -
                 lnrJSConnector.utils.formatEther(
                     this.$store.state?.gasDetails?.price.toString()
                 ) *
@@ -532,7 +524,7 @@ export default {
 
             let selectedAssetKind = this.currentSelectCurrency.name,
                 sendAmount = this.transferNumber,
-                selectedAssetMaxValue = this.currentSelectCurrency.avaliable,
+                selectedAssetMaxValue = this.currentSelectCurrency.balance,
                 recieveAddress = this.transferToAddress;
 
             if (
@@ -686,9 +678,9 @@ export default {
             this.activeItemBtn = 0;
             if (["ETH", "BNB"].includes(this.currentSelectCurrency.name)) {
                 if (this.canSendEthAmount <= 0) {
-                    this.transferNumber = this.currency[
+                    this.transferNumber = this.currencyList[
                         this.selected
-                    ].avaliable;
+                    ].balance;
                     this.errors.amountMsg = `You don\`t have enought balance of ${this.currentSelectCurrency.name}.`;
                     return;
                 }
@@ -696,7 +688,7 @@ export default {
                 this.errors.amountMsg = "";
                 this.transferNumber = this.canSendEthAmount;
             } else {
-                this.transferNumber = this.currentSelectCurrency.avaliable;
+                this.transferNumber = this.currentSelectCurrency.balance;
             }
         },
 
@@ -991,6 +983,8 @@ export default {
                                 left: 0;
                                 top: calc(100% + 4px);
                                 width: 400px;
+                                max-height: 230px;
+                                overflow-y: auto;
                                 background: #fff;
                                 box-shadow: 0 2px 12px 0 #deddde;
                                 z-index: 1;
