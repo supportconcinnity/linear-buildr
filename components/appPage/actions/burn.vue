@@ -188,7 +188,6 @@
                             </div>
                         </div>
 
-                        
                         <gasEditor v-if="!isMobile"></gasEditor>
                     </div>
 
@@ -346,7 +345,6 @@
                             </div>
                         </div>
 
-                      
                         <gasEditor v-if="isMobile"></gasEditor>
                     </div>
 
@@ -1433,7 +1431,8 @@ export default {
                     this.burnData.lUSDBN.eq("0") &&
                     this.burnData.currentRatioBN.lte(
                         n2bn(this.burnData.targetRatio.toString())
-                    )
+                    ) &&
+                    this.burnData.currentRatioBN.gt(BigNumber.from("0"))
                 ) {
                     this.inputData.unStake = unstakedAmount;
                     this.errors.unStakeMsg =
@@ -2002,7 +2001,7 @@ export default {
                             letter-spacing: normal;
                             text-align: center;
                             color: #99999a;
-                            margin-bottom: 48px;
+                            margin-bottom: 40px;
 
                             .step {
                                 text-transform: uppercase;
@@ -2016,9 +2015,8 @@ export default {
                         }
 
                         .actionRate {
-                            margin: 16px 0 58px;
+                            margin: 0 0 16px;
                             border-radius: 12px;
-                            background: #f6f5f6;
                             display: flex;
                             justify-content: center;
                             align-items: center;
@@ -2031,11 +2029,13 @@ export default {
                             line-height: 1.33;
                             letter-spacing: normal;
                             text-align: center;
-                            color: #99999a;
+                            width: 100%;
+                            background-color: rgba(#7eb5ff, 0.1);
+                            color: #1a38f8;
                         }
 
                         .actionInputItem {
-                            margin-bottom: 24px;
+                            margin-bottom: 16px;
                             border-radius: 8px;
                             border: solid 1px #deddde;
                             padding: 39px 24px;
@@ -2044,6 +2044,10 @@ export default {
                             width: 100%;
                             transition: $animete-time linear;
                             position: relative;
+
+                            &:nth-last-of-type(2) {
+                                margin-bottom: 48px;
+                            }
 
                             &:hover,
                             &.active {
@@ -2330,7 +2334,6 @@ export default {
                                 width: 74.4vw;
                                 margin: 32px 0 28px;
                                 border-radius: 12px;
-                                background: #f6f5f6;
                                 display: flex;
                                 justify-content: center;
                                 align-items: center;
@@ -2343,7 +2346,8 @@ export default {
                                 line-height: 1.33;
                                 letter-spacing: normal;
                                 text-align: center;
-                                color: #99999a;
+                                background-color: rgba(#7eb5ff, 0.1);
+                                color: #1a38f8;
                             }
 
                             .inputGroupBox {

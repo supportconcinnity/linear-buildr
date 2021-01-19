@@ -194,7 +194,7 @@ export default {
             this.introduct = "1";
         }, 100);
         //调试用,进入指定页,不用时屏蔽
-        // this.$store.commit("setCurrentAction",5);
+        // this.$store.commit("setCurrentAction",1);
         // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
         // setTimeout(
         //     () => selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),

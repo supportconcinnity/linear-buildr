@@ -304,6 +304,7 @@ export const storeDetailsData = async () => {
 
             const amountLINA = avaliableLINA + stakedLINA + lockLINA;
             const amountLINA2USD = amountLINA * LINA2USDRate;
+            const avaliableLINA2USD = avaliableLINA * LINA2USDRate;
             const amountlUSD2USD = amountlUSD * lUSD2USDRate;
             const amountETH2USD = amountETH * ETH2USDRate;
             const liquids2USD = formatEtherToNumber(liquidsData.liquids);
@@ -345,6 +346,7 @@ export const storeDetailsData = async () => {
                 amountLINA,
                 amountLINA2USD,
                 avaliableLINA,
+                avaliableLINA2USD,
                 stakedLINA,
                 lockLINA,
                 amountlUSD,

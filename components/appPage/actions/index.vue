@@ -87,7 +87,7 @@
                 {{ item }}
             </div>
 
-            <div class="mNavigate" v-if="mMenuState">
+            <div class="mNavigate" v-if="mMenuState && isMobile">
                 <div class="mHead">
                     <div class="mLogo">
                         <img
@@ -214,7 +214,8 @@ export default {
     watch: {
         currentActionComputed(newVal, oldVal) {
             this.currentAction = this.currentActionComputed;
-        }
+        },
+        isMobile(){},
     },
     computed: {
         currentActionComputed() {
@@ -222,6 +223,10 @@ export default {
         },
         mMenuState() {
             return this.$store.state.mMenuState
+        },
+
+        isMobile(){
+            return this.$store.state.isMobile
         }
     },
     methods: {
