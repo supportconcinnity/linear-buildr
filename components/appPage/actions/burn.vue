@@ -188,7 +188,9 @@
                             </div>
                         </div>
 
-                        <gasEditor v-if="!isMobile"></gasEditor>
+                        <gasEditor
+                            v-if="!isMobile && isBinanceNetwork"
+                        ></gasEditor>
                     </div>
 
                     <div class="actionBodyMobile">
@@ -345,7 +347,9 @@
                             </div>
                         </div>
 
-                        <gasEditor v-if="isMobile"></gasEditor>
+                        <gasEditor
+                            v-if="isMobile && isBinanceNetwork"
+                        ></gasEditor>
                     </div>
 
                     <div
@@ -2045,10 +2049,6 @@ export default {
                             transition: $animete-time linear;
                             position: relative;
 
-                            &:nth-last-of-type(2) {
-                                margin-bottom: 48px;
-                            }
-
                             &:hover,
                             &.active {
                                 border-color: white;
@@ -2205,6 +2205,10 @@ export default {
                             &.error {
                                 border-color: #df434c;
                             }
+                        }
+
+                        #gasEditor {
+                            margin-top: 36px;
                         }
                     }
 

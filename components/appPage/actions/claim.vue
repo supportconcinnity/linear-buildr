@@ -92,7 +92,7 @@
                                     <span>{{ closeIn }}</span>
                                 </div>
                             </div>
-                            <gasEditor></gasEditor>
+                            <gasEditor v-if="isBinanceNetwork"></gasEditor>
                         </div>
                     </div>
 
@@ -194,7 +194,8 @@ export default {
             processing: false, //加载状态
             confirmTransactionHash: "", //交易hash
             hasClaim: true, //有没有claim过
-            pendingRewardEntries: undefined
+            pendingRewardEntries: undefined,
+            currentRatioPercent: 0 //当前P ratio
         };
     },
     created() {
@@ -229,7 +230,8 @@ export default {
             return (
                 !this.feesAreClaimable ||
                 this.processing ||
-                (this.tradingRewards == 0 && this.stakingRewards == 0)
+                (this.tradingRewards == 0 && this.stakingRewards == 0) ||
+                this.currentRatioPercent < 500
             );
         },
 
@@ -248,15 +250,15 @@ export default {
                 this.waitProcessArray = [];
                 this.confirmTransactionStep = 0;
 
-                //获取gas评估
-                const gasLimit = await this.getGasEstimate();
-
                 this.waitProcessArray.push(BUILD_PROCESS_SETUP.CLAIM);
 
                 const transactionSettings = {
                     gasPrice: this.$store.state?.gasDetails?.price,
-                    gasLimit: gasLimit
+                    gasLimit: DEFAULT_GAS_LIMIT.claim
                 };
+
+                //获取gas评估
+                transactionSettings.gasLimit = await this.getGasEstimate();
 
                 try {
                     this.actionTabs = "m1"; //进入等待页
@@ -264,21 +266,6 @@ export default {
                     let {
                         lnrJS: { LnRewardSystem }
                     } = lnrJSConnector;
-
-                    // let transaction = null;
-                    // if (
-                    //     ["ROPSTEN", "BSCTESTNET"].includes(
-                    //         this.walletNetworkName
-                    //     )
-                    // ) {
-                    //     transaction = await LnFeeSystemTest.claimFees(
-                    //         transactionSettings
-                    //     );
-                    // } else {
-                    //     transaction = await LnFeeSystem.claimFees(
-                    //         transactionSettings
-                    //     );
-                    // }
 
                     const rewardEntry = this.pendingRewardEntries[0];
                     // const signature = utils.splitSignature(
@@ -289,7 +276,7 @@ export default {
                         rewardEntry.periodId, // periodId
                         BigNumber.from(rewardEntry.stakingReward), // stakingReward
                         BigNumber.from(rewardEntry.feeReward), // feeReward
-                        rewardEntry.signatures[0].signature, 
+                        rewardEntry.signatures[0].signature,
                         transactionSettings
                     );
 
@@ -358,38 +345,41 @@ export default {
         },
 
         async useGetFeeData(walletAddress) {
-            const FEE_PERIOD = 0;
-
-           
-
             try {
                 this.processing = true;
 
-                // let contract = null;
-                // if (
-                //     ["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName)
-                // ) {
-                //     //测试合约, 较短时间
-                //     contract = lnrJSConnector.lnrJS.LnFeeSystemTest;
-                // } else {
-                //     contract = lnrJSConnector.lnrJS.LnFeeSystem;
-                // }
+                const {
+                    lnrJS: { LnRewardSystem, LnCollateralSystem, LnDebtSystem }
+                } = lnrJSConnector;
 
-                const rewardSystem = lnrJSConnector.lnrJS.LnRewardSystem;
+                const apiUrl = isMainnetNetwork(this.walletNetworkId)
+                    ? `https://reward-query.linear-finance.workers.dev/rewards/${walletAddress}`
+                    : `https://reward-query-dev.linear-finance.workers.dev/rewards/${walletAddress}`;
 
                 const [
                     firstPeriodStartTimeRes,
                     lastClaimPeriodIdRes,
-                    allRewardEntriesRes
+                    allRewardEntriesRes,
+
+                    totalCollateralInUsd,
+                    amountDebt
                 ] = await Promise.all([
-                    rewardSystem.firstPeriodStartTime(),
-                    rewardSystem.userLastClaimPeriodIds(walletAddress),
-                    fetch(
-                        isMainnetNetwork(this.walletNetworkId)
-                            ? `https://reward-query.linear-finance.workers.dev/rewards/${walletAddress}`
-                            : `https://reward-query-dev.linear-finance.workers.dev/rewards/${walletAddress}`
-                    )
+                    LnRewardSystem.firstPeriodStartTime(),
+                    LnRewardSystem.userLastClaimPeriodIds(walletAddress),
+                    fetch(apiUrl),
+
+                    //p ratio
+                    LnCollateralSystem.GetUserTotalCollateralInUsd(
+                        walletAddress
+                    ),
+                    LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress)
                 ]);
+
+                //当前P Ratio
+                this.currentRatioPercent =
+                    totalCollateralInUsd != 0 && amountDebt[0] != 0
+                        ? (totalCollateralInUsd / amountDebt[0]) * 100
+                        : 0;
 
                 const firstPeriodStartTime = firstPeriodStartTimeRes.toNumber();
                 const lastClaimPeriodId = lastClaimPeriodIdRes.toNumber();
@@ -437,12 +427,6 @@ export default {
                 const {
                     lnrJS: { LnRewardSystem }
                 } = lnrJSConnector;
-
-                // let gasEstimate = null;
-                // if (["ROPSTEN", "BSCTESTNET"].includes(this.walletNetworkName))
-                //     gasEstimate = await LnFeeSystemTest.contract.estimateGas.claimFees();
-                // else
-                //     gasEstimate = await LnFeeSystem.contract.estimateGas.claimFees();
 
                 const rewardEntry = this.pendingRewardEntries[0];
                 // const signature = utils.splitSignature(
