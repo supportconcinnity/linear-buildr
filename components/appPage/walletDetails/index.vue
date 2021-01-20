@@ -284,7 +284,12 @@
                         <div class="tokenItems obtrusive">
                             <div class="left">LINA</div>
                             <div class="right">
-                                <b>{{ walletDetails.amountLINA || 0 }}</b> LINA
+                                <b>{{
+                                    isEthereumNetwork
+                                        ? walletDetails.avaliableLINA || 0
+                                        : walletDetails.amountLINA || 0
+                                }}</b>
+                                LINA
                             </div>
                         </div>
                         <div class="tokenItems">
@@ -293,7 +298,12 @@
                                 USD
                             </div>
                             <div class="right">
-                                ≈ ${{ walletDetails.amountLINA2USD || 0 }} USD
+                                ≈ ${{
+                                    isEthereumNetwork
+                                        ? walletDetails.avaliableLINA2USD || 0
+                                        : walletDetails.amountLINA2USD || 0
+                                }}
+                                USD
                             </div>
                         </div>
                         <div class="tokenItems unobtrusive">
@@ -305,13 +315,23 @@
                         <div class="tokenItems unobtrusive">
                             <div class="left">Staked</div>
                             <div class="right">
-                                {{ walletDetails.stakedLINA || 0 }} LINA
+                                <template v-if="isEthereumNetwork">
+                                    N/A
+                                </template>
+                                <template v-else>
+                                    {{ walletDetails.stakedLINA || 0 }} LINA
+                                </template>
                             </div>
                         </div>
                         <div class="tokenItems unobtrusive">
                             <div class="left ">Locked</div>
                             <div class="right">
-                                {{ walletDetails.lockLINA || 0 }} LINA
+                                <template v-if="isEthereumNetwork">
+                                    N/A
+                                </template>
+                                <template v-else>
+                                    {{ walletDetails.lockLINA || 0 }} LINA
+                                </template>
                             </div>
                         </div>
                     </div>

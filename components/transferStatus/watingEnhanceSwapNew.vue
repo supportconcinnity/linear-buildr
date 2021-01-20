@@ -1730,9 +1730,9 @@ export default {
                     }
                 );
 
-                console.log("开始切链");
+                // console.log("开始切链");
                 walletStatus = await this.waitChainChange();
-                console.log("切链完成");
+                // console.log("切链完成");
             } else {
                 walletStatus = true;
             }

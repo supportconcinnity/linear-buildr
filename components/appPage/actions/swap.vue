@@ -181,9 +181,8 @@
                         >
                             {{ errors.amountMsg }}
                         </div>
-                        <gasEditorSwap
-                            v-if="this.actionTabs == 'm0'"
-                        ></gasEditorSwap>
+                        <gasEditorSwap></gasEditorSwap>
+                        <!-- v-if="actionTabs == 'm0'" -->
                     </div>
 
                     <div
@@ -253,7 +252,7 @@ export default {
         return {
             formatterInput,
             setCursorRange,
-            actionTabs: "m0", //子页(m0默认,m1等待)
+            actionTabs: "m0", //子页(m0输入页,m1交易页)
             swapNumber: null,
 
             activeItemBtn: -1,
@@ -288,7 +287,7 @@ export default {
                     id: "LINA",
                     img: require("@/static/LINA_logo.svg"),
                     avaliable: 0, //最大余额
-                    frozenBalance: 0 //已经冻结的数量
+                    frozenBalance: 0 //已经存但未提取的数量
                 },
                 {
                     name: "ℓUSD",
@@ -468,6 +467,7 @@ export default {
         async changeSelectCurrencyIndex(index) {
             this.selectCurrencyIndex = index;
             this.currencyDropDown = false;
+            this.activeItemBtn = -1;
             await this.getFrozenBalance();
         },
 

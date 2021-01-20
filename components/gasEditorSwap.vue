@@ -3,9 +3,7 @@
         <div class="simple" v-if="simple">
             <div class="source">
                 <div class="editInfo">
-                    <template v-if="isEthereumNetworkFunc(sourceGasNetworkId)"
-                        >ETH
-                    </template>
+                    <template v-if="isEthereumNetwork">ETH </template>
                     <template v-else>BSC </template>
                     network fee
 
@@ -24,9 +22,7 @@
 
             <div class="target">
                 <div class="editInfo">
-                    <template v-if="isEthereumNetworkFunc(sourceGasNetworkId)"
-                        >BSC
-                    </template>
+                    <template v-if="isEthereumNetwork">BSC </template>
                     <template v-else>ETH </template> network fee
 
                     <span
@@ -218,7 +214,7 @@
                     <div class="leftRect">
                         <div class="icon" v-if="!isMobile">
                             <img
-                                v-if="isEthereumNetworkFunc(sourceGasNetworkId)"
+                                v-if="isEthereumNetwork"
                                 src="@/static/ETH.svg"
                             />
                             <img v-else src="@/static/bnb.svg" />
@@ -385,10 +381,10 @@
                     <div class="leftRect">
                         <div class="icon" v-if="!isMobile">
                             <img
-                                v-if="isEthereumNetworkFunc(targetGasNetworkId)"
-                                src="@/static/ETH.svg"
+                                v-if="isEthereumNetwork"
+                                src="@/static/bnb.svg"
                             />
-                            <img v-else src="@/static/bnb.svg" />
+                            <img v-else src="@/static/ETH.svg" />
                         </div>
 
                         <div class="desc">
@@ -490,10 +486,9 @@ export default {
             },
             chainChangeTokenFromSubscribe: null,
 
-            isEthereumNetworkFunc: isEthereumNetwork,
-            isBinanceNetworkFunc: isBinanceNetwork,
+            // isEthereumNetworkFunc: isEthereumNetwork,
+            // isBinanceNetworkFunc: isBinanceNetwork,
 
-            lastNetworkId: 0
         };
     },
     filters: {
@@ -509,79 +504,36 @@ export default {
         closeSvg
     },
     async created() {
-        //获取数据
-        await this.getNetworkSpeeds({
-            sourceNetwork: true,
-            targetNetwork: true
-        });
-
         let sourceStatus = this.$store.state?.sourceGasDetails.status;
         let targetStatus = this.$store.state?.targetGasDetails.status;
 
         //初始化当前数据
-        if (sourceStatus == -1) {
+        if (sourceStatus == -1 && targetStatus == -1) {
+            //获取数据
+            await this.getNetworkSpeeds({
+                sourceNetwork: true,
+                targetNetwork: true
+            });
             this.setSourceGasDetails(this.sourcePrice, this.sourceSelectedType);
-        } else {
-            // this.sourceGasEditorModalChange(true);
-        }
-
-        //初始化当前数据
-        if (targetStatus == -1) {
             this.setTargetGasDetails(this.targetPrice, this.targetSelectedType);
         } else {
-            // this.targetGasEditorModalChange(true);
+            this.checkGasDetails();
         }
 
-        //简单模式不监听链切换事件
-        if (!this.simple) {
-            //监听链切换
-            this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
-                "onWalletChainChange",
-                async () => {
-                    //如果切换的网络和上次网络是相同的链,则不切换
-                    if (
-                        (isEthereumNetwork(this.lastNetworkId) &&
-                            isEthereumNetwork(this.walletNetworkId)) ||
-                        (isBinanceNetwork(this.lastNetworkId) &&
-                            isBinanceNetwork(this.walletNetworkId))
-                    ) {
-                        return;
-                    }
-
-                    //更换source和target的price和selected
-                    let sourcePrice = this.sourcePrice,
-                        sourceSelectedType = this.sourceSelectedType;
-
-                    this.sourcePrice = this.targetPrice;
-                    this.sourceSelectedType = this.targetSelectedType;
-
-                    this.targetPrice = sourcePrice;
-                    this.targetSelectedType = sourceSelectedType;
-
-                    this.setSourceGasDetails(
-                        this.sourcePrice,
-                        this.sourceSelectedType
-                    );
-                    this.setTargetGasDetails(
-                        this.targetPrice,
-                        this.targetSelectedType
-                    );
-
-                    await this.getNetworkSpeeds({
-                        sourceNetwork: true,
-                        targetNetwork: true
-                    });
-
-                    this.lastNetworkId = this.walletNetworkId;
-                }
-            );
-        }
+        this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
+            "onWalletChainChange",
+            async () => {
+                //当前和上一次不是相同网络时,交换gas
+                this.checkGasDetails();
+            }
+        );
     },
 
     destroyed() {
         //清除事件,防止重复
-        if (this.chainChangeTokenFromSubscribe != "") {
+        if (this.chainChangeTokenFromSubscribe) {
             this.$pub.unsubscribe(this.chainChangeTokenFromSubscribe);
+            this.chainChangeTokenFromSubscribe = "";
         }
     },
     watch: {
@@ -590,7 +542,8 @@ export default {
         isEthereumNetwork() {},
         isBinanceNetwork() {},
         walletNetworkId() {},
-        isMobile() {}
+        isMobile() {},
+        sourceGasNetworkId() {}
     },
 
     computed: {
@@ -641,14 +594,47 @@ export default {
 
         sourceGasNetworkId() {
             return this.$store.state?.sourceGasDetails?.networkId;
-        },
-
-        targetGasNetworkId() {
-            return this.$store.state?.targetGasDetails?.networkId;
         }
     },
 
     methods: {
+        checkGasDetails() {
+            if (
+                (isEthereumNetwork(this.walletNetworkId) &&
+                    !isEthereumNetwork(this.sourceGasNetworkId)) ||
+                (isBinanceNetwork(this.walletNetworkId) &&
+                    !isBinanceNetwork(this.sourceGasNetworkId))
+            ) {
+                this.reverseGas();
+            }
+        },
+
+        //交换gas数据
+        reverseGas() {
+            let sourceGasDetails = { ...this.$store.state?.sourceGasDetails },
+                targetGasDetails = { ...this.$store.state?.targetGasDetails };
+
+            this.sourceSelectedType = targetGasDetails.type;
+            this.targetSelectedType = sourceGasDetails.type;
+            this.sourcePrice = unFormatGasPrice(targetGasDetails.price);
+            this.targetPrice = unFormatGasPrice(sourceGasDetails.price);
+
+            if (this.sourceSelectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
+                this.sourceCustomPrice = this.sourcePrice;
+            }
+
+            if (this.targetSelectedType == NETWORK_SPEEDS_TO_KEY.CUSTOM) {
+                this.targetCustomPrice = this.targetPrice;
+            }
+
+            const tempSpeeds = { ...this.sourceNetworkSpeeds };
+            this.sourceNetworkSpeeds = { ...this.targetNetworkSpeeds };
+            this.targetNetworkSpeeds = { ...tempSpeeds };
+
+            this.$store.commit("setSourceGasDetails", targetGasDetails);
+            this.$store.commit("setTargetGasDetails", sourceGasDetails);
+        },
+
         //获取网络速度
         async getNetworkSpeeds({
             sourceNetwork = false,
@@ -664,38 +650,19 @@ export default {
                         this.walletNetworkId
                     ).join());
 
-                let sourceGasDetails = "sourceGasDetails",
-                    targetGasDetails = "targetGasDetails";
-                if (this.simple) {
-                    const networkId = this.$store.state?.sourceGasDetails
-                        ?.networkId;
-
-                    if (isBinanceNetwork(networkId)) {
-                        targetNetworkId = sourceNetworkId;
-                        sourceNetworkId = networkId;
-
-                        //     sourceGasDetails = "targetGasDetails";
-                        //     targetGasDetails = "sourceGasDetails";
-                    }
-                }
-
-                // console.log(sourceGasDetails,targetGasDetails,'111111');
-
                 if (sourceNetwork) {
                     await getNetworkSpeeds(sourceNetworkId)
                         .then(res => {
                             // console.log(res, "source");
                             this.sourceNetworkSpeeds = res;
-                            this.sourceSelectedType = this.$store.state[
-                                sourceGasDetails
-                            ]?.type;
+                            this.sourceSelectedType = this.$store.state.sourceGasDetails?.type;
                             //判断赋值
                             if (
                                 this.sourceSelectedType ==
                                 NETWORK_SPEEDS_TO_KEY.CUSTOM
                             ) {
                                 this.sourcePrice = this.sourceCustomPrice = unFormatGasPrice(
-                                    this.$store.state[sourceGasDetails]?.price
+                                    this.$store.state.sourceGasDetails?.price
                                 );
                             } else {
                                 this.sourcePrice = this.sourceNetworkSpeeds[
@@ -712,16 +679,14 @@ export default {
                         .then(res => {
                             // console.log(res, "target");
                             this.targetNetworkSpeeds = res;
-                            this.targetSelectedType = this.$store.state[
-                                targetGasDetails
-                            ]?.type;
+                            this.targetSelectedType = this.$store.state.targetGasDetails?.type;
                             //判断赋值
                             if (
                                 this.targetSelectedType ==
                                 NETWORK_SPEEDS_TO_KEY.CUSTOM
                             ) {
                                 this.targetPrice = this.targetCustomPrice = unFormatGasPrice(
-                                    this.$store.state[targetGasDetails]?.price
+                                    this.$store.state.targetGasDetails?.price
                                 );
                             } else {
                                 this.targetPrice = this.targetNetworkSpeeds[
