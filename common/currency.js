@@ -145,8 +145,13 @@ const currencies = {
         type: "index"
     },
     lXBCI: {
-        name: "ℓlXBCI",
+        name: "ℓXBCI",
         fullName: "Xangle Large Cap index",
+        type: "index"
+    },
+    lXCI: {
+        name: "ℓXCI",
+        fullName: "Xangle Cap index",
         type: "index"
     },
 };
