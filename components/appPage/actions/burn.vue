@@ -536,7 +536,7 @@ export default {
                 this.errors.amountMsg ||
                 this.errors.ratioMsg ||
                 this.processing ||
-                !this.burnData.staked
+                (!this.burnData.staked && !this.burnData.lock)
             );
         },
 
