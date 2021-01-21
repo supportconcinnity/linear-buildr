@@ -380,7 +380,10 @@
             <TabPane name="m1">
                 <watingEnhance
                     class="waitingBox"
-                    v-if="actionTabs == 'm1' && isBinanceNetwork"
+                    v-if="
+                        actionTabs == 'm1' &&
+                            !isEthereumNetworkFunc(sourceNetworkId)
+                    "
                     :currentStep="confirmTransactionStep"
                     :currentHash="confirmTransactionHash"
                     :currentNetworkId="confirmTransactionNetworkId"
@@ -394,7 +397,10 @@
                 <watingEnhanceSwapNew
                     :amount="floor(inputData.stake, DECIMAL_PRECISION)"
                     :swapType="1"
-                    v-if="actionTabs == 'm1' && isEthereumNetwork"
+                    v-if="
+                        actionTabs == 'm1' &&
+                            isEthereumNetworkFunc(sourceNetworkId)
+                    "
                     @close="setDefaultTab"
                 ></watingEnhanceSwapNew>
             </TabPane>
@@ -541,7 +547,10 @@ export default {
 
             formatterInput,
 
-            chainChangeFromSubscribe: ""
+            chainChangeFromSubscribe: "",
+
+            isEthereumNetworkFunc: isEthereumNetwork,
+            sourceNetworkId: ""
         };
     },
     components: {
@@ -595,11 +604,14 @@ export default {
     created() {
         this.getBuildData(this.walletAddress);
 
+        this.sourceNetworkId = this.walletNetworkId;
+
         //监听链切换
         this.chainChangeFromSubscribe = this.$pub.subscribe(
             "onWalletChainChange",
             async () => {
                 if (this.actionTabs == "m0") {
+                    this.sourceNetworkId = this.walletNetworkId;
                     await this.getBuildData(this.walletAddress);
                 }
             }
@@ -1809,6 +1821,8 @@ export default {
             this.confirmTransactionStep = 0;
             this.getBuildData(this.walletAddress);
 
+            this.sourceNetworkId = this.walletNetworkId;
+
             this.resetInputData();
         },
 
@@ -1922,10 +1936,6 @@ export default {
                             width: 100%;
                             transition: $animete-time linear;
                             position: relative;
-
-                            &:nth-last-of-type(2) {
-                                margin-bottom: 48px;
-                            }
 
                             &:hover,
                             &.active {
@@ -2084,6 +2094,11 @@ export default {
                             &.error {
                                 border-color: #df434c;
                             }
+                        }
+
+                        #gasEditor,
+                        #gasEditorSwap {
+                            margin-top: 36px;
                         }
                     }
 
