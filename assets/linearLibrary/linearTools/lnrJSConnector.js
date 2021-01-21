@@ -228,6 +228,7 @@ export const selectedWallet = async (walletType, waitStore = true) => {
                             address: address[0]
                         });
 
+                        store.commit("setWalletDetails",{}); //清理数据
                         await storeDetailsData();
                         $pub.publish("onWalletAccountChange");
                         $nuxt.$Spin.hide();
@@ -239,6 +240,7 @@ export const selectedWallet = async (walletType, waitStore = true) => {
                     if (
                         store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
                     ) {
+                        store.commit("setWalletDetails",{}); //清理数据
                         const status = await selectedWallet(
                             SUPPORTED_WALLETS_MAP.METAMASK
                         );

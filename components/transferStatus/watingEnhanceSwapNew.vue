@@ -17,7 +17,6 @@
                     <div class="contentIcon">
                         <img
                             src="@/static/transferProgress/swap_check_icon.svg"
-                            alt=""
                         />
                     </div>
 
@@ -177,7 +176,7 @@
                     @click="checkPrepare(checkStatus.stepIndex)"
                 >
                     refresh
-                    <img src="@/static/transferProgress/refresh.svg" alt="" />
+                    <img src="@/static/transferProgress/refresh.svg" />
                 </div>
             </TabPane>
 
@@ -320,13 +319,11 @@
                                     <img
                                         class="leftIcon"
                                         src="@/static/transferProgress/wallet_icon.svg"
-                                        alt=""
                                     />
 
                                     <img
                                         class="rightIcon"
                                         src="@/static/metamask.svg"
-                                        alt=""
                                     />
                                 </div>
 
@@ -341,20 +338,17 @@
                             <img
                                 class="walletArrow"
                                 src="@/static/transferProgress/arrow_right.svg"
-                                alt=""
                             />
                             <div class="walletItem">
                                 <div class="walletIcon">
                                     <img
                                         class="leftIcon"
                                         src="@/static/transferProgress/wallet_icon.svg"
-                                        alt=""
                                     />
 
                                     <img
                                         class="rightIcon"
                                         src="@/static/binance.svg"
-                                        alt=""
                                     />
                                 </div>
 
@@ -382,7 +376,6 @@
                                     <img
                                         class="leftIcon"
                                         src="@/static/metamask.svg"
-                                        alt=""
                                     />
 
                                     <img
@@ -391,18 +384,25 @@
                                         "
                                         class="rightIcon"
                                         src="@/static/ETH.svg"
-                                        alt=""
                                     />
                                     <img
                                         v-else
                                         class="rightIcon"
                                         src="@/static/bnb.svg"
-                                        alt=""
                                     />
                                 </div>
 
                                 <div class="walletNetwork">
-                                    Metamask
+                                    <template
+                                        v-if="
+                                            isEthereumNetwork(sourceNetworkId)
+                                        "
+                                    >
+                                        Ethereum Network
+                                    </template>
+                                    <template v-else>
+                                        BSC Network
+                                    </template>
                                 </div>
 
                                 <div class="walletAddress">
@@ -412,14 +412,12 @@
                             <img
                                 class="walletArrow"
                                 src="@/static/transferProgress/arrow_right.svg"
-                                alt=""
                             />
                             <div class="walletItem">
                                 <div class="walletIcon">
                                     <img
                                         class="leftIcon"
                                         src="@/static/metamask.svg"
-                                        alt=""
                                     />
 
                                     <img
@@ -428,18 +426,25 @@
                                         "
                                         class="rightIcon"
                                         src="@/static/ETH.svg"
-                                        alt=""
                                     />
                                     <img
                                         v-else
                                         class="rightIcon"
                                         src="@/static/bnb.svg"
-                                        alt=""
                                     />
                                 </div>
 
                                 <div class="walletNetwork">
-                                    BSC Network
+                                    <template
+                                        v-if="
+                                            isEthereumNetwork(targetNetworkId)
+                                        "
+                                    >
+                                        Ethereum Network
+                                    </template>
+                                    <template v-else>
+                                        BSC Network
+                                    </template>
                                 </div>
 
                                 <div class="walletAddress">
@@ -460,13 +465,11 @@
                                     <img
                                         class="leftIcon"
                                         src="@/static/metamask.svg"
-                                        alt=""
                                     />
 
                                     <img
                                         class="rightIcon"
                                         src="@/static/ETH.svg"
-                                        alt=""
                                     />
                                 </div>
 
@@ -514,7 +517,6 @@
                                         "
                                         class="leftIcon"
                                         src="@/static/metamask.svg"
-                                        alt=""
                                     />
 
                                     <img
@@ -524,7 +526,6 @@
                                         "
                                         class="leftIcon"
                                         src="@/static/binance.svg"
-                                        alt=""
                                     />
 
                                     <img
@@ -534,7 +535,6 @@
                                         "
                                         class="rightIcon"
                                         src="@/static/ETH.svg"
-                                        alt=""
                                     />
 
                                     <img
@@ -544,7 +544,6 @@
                                         "
                                         class="rightIcon"
                                         src="@/static/bnb.svg"
-                                        alt=""
                                     />
                                 </template>
 
@@ -560,17 +559,40 @@
                                     <img
                                         class="leftIcon"
                                         src="@/static/metamask.svg"
-                                        alt=""
                                     />
+                                    <!-- 
+                                    <template
+                                        v-if="
+                                            isEthereumNetwork(walletNetworkId)
+                                        "
+                                    >
+                                        Ethereum Network
+                                    </template>
+                                    <template v-else>
+                                        BSC Network
+                                    </template> -->
 
                                     <img
+                                        v-if="
+                                            isEthereumNetwork(walletNetworkId)
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                    />
+                                    <img
+                                        v-else
+                                        class="rightIcon"
+                                        src="@/static/bnb.svg"
+                                    />
+
+                                    <!-- <img
                                         v-if="
                                             currentWalletType ==
                                                 SUPPORTED_WALLETS_MAP.METAMASK
                                         "
                                         class="rightIcon"
                                         src="@/static/ETH.svg"
-                                        alt=""
+                                        
                                     />
 
                                     <img
@@ -580,8 +602,8 @@
                                         "
                                         class="rightIcon"
                                         src="@/static/bnb.svg"
-                                        alt=""
-                                    />
+                                        
+                                    /> -->
                                 </template>
 
                                 <!-- 原始钱包是BSC -->
@@ -598,7 +620,6 @@
                                         "
                                         class="leftIcon"
                                         src="@/static/metamask.svg"
-                                        alt=""
                                     />
 
                                     <img
@@ -608,7 +629,6 @@
                                         "
                                         class="leftIcon"
                                         src="@/static/binance.svg"
-                                        alt=""
                                     />
 
                                     <img
@@ -618,7 +638,6 @@
                                         "
                                         class="rightIcon"
                                         src="@/static/ETH.svg"
-                                        alt=""
                                     />
 
                                     <img
@@ -628,7 +647,6 @@
                                         "
                                         class="rightIcon"
                                         src="@/static/bnb.svg"
-                                        alt=""
                                     />
                                 </template>
                             </template>
@@ -640,8 +658,16 @@
                                     currentWalletType ==
                                         SUPPORTED_WALLETS_MAP.METAMASK
                                 "
-                                >Metamask</template
                             >
+                                <template
+                                    v-if="isEthereumNetwork(walletNetworkId)"
+                                >
+                                    Ethereum Network
+                                </template>
+                                <template v-else>
+                                    BSC Network
+                                </template>
+                            </template>
 
                             <template
                                 v-else-if="
@@ -1339,7 +1365,6 @@ export default {
                         "[REPLACE_CURRENCY]",
                         replaceCurrency
                     );
-
 
                     //取合约地址
                     const LnBridgeAddress = LnBridge.contract.address;

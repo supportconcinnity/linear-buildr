@@ -347,7 +347,10 @@
                         </div>
                         <div class="tokenItems">
                             <div class="left">
-                                1 ℓUSD = ${{ walletDetails.lUSD2USDRate }} USD
+                                1 ℓUSD = ${{
+                                    walletDetails.lUSD2USDRate || 1
+                                }}
+                                USD
                             </div>
                             <div class="right">
                                 ≈ ${{ walletDetails.amountlUSD2USD || 0 }} USD
@@ -485,7 +488,7 @@
                 <div class="box">
                     <div class="title">Total Crypto Balance in USD</div>
                     <div class="amount">
-                        ${{ walletDetails.totalCryptoBalanceInUSD }}
+                        ${{ walletDetails.totalCryptoBalanceInUSD || 0 }}
                     </div>
                 </div>
 
