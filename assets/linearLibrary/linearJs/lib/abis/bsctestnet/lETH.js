@@ -1,3 +1,3 @@
-import lETH from '../mainnet/lUSD';
+import lETH from '../bscmainnet/lUSD';
       export default lETH;
       

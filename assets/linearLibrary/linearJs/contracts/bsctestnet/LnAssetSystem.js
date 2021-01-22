@@ -13,6 +13,21 @@
         );
   
         
+      this.__LnAddressStorage_init = async (_admin, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.__LnAddressStorage_init(_admin, txParams);
+      };
+    
+      this.__LnAdminUpgradeable_init = async (_admin, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.__LnAdminUpgradeable_init(_admin, txParams);
+      };
+    
+      this.__LnAssetSystem_init = async (_admin, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.__LnAssetSystem_init(_admin, txParams);
+      };
+    
       this.addAsset = async (asset, txParams) => {
         txParams = txParams || {};
         return await this.contract.addAsset(asset, txParams);

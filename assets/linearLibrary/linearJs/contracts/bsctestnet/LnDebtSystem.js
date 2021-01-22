@@ -88,9 +88,9 @@
         return await this.contract.debtCurrentIndex(txParams);
       };
     
-      this.feeSystem = async (txParams) => {
+      this.importDebtData = async (users, debtProportions, debtFactors, timestamps, txParams) => {
         txParams = txParams || {};
-        return await this.contract.feeSystem(txParams);
+        return await this.contract.importDebtData(users, debtProportions, debtFactors, timestamps, txParams);
       };
     
       this.lastCloseAt = async (txParams) => {

@@ -48,14 +48,14 @@
 			},
 			{
 				"indexed": false,
-				"internalType": "bytes32",
-				"name": "currencyAliasKey",
-				"type": "bytes32"
+				"internalType": "string",
+				"name": "bandCurrencyKey",
+				"type": "string"
 			},
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "Oracle",
+				"name": "oracle",
 				"type": "address"
 			}
 		],
@@ -74,7 +74,7 @@
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "Oracle",
+				"name": "oracle",
 				"type": "address"
 			}
 		],
@@ -242,13 +242,13 @@
 				"type": "bytes32"
 			},
 			{
-				"internalType": "bytes32",
-				"name": "currencyAliasKey",
-				"type": "bytes32"
+				"internalType": "string",
+				"name": "bandCurrencyKey",
+				"type": "string"
 			},
 			{
 				"internalType": "address",
-				"name": "OracleAddress",
+				"name": "oracleAddress",
 				"type": "address"
 			}
 		],
@@ -265,6 +265,63 @@
 				"internalType": "address",
 				"name": "",
 				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "bandCurrencyKeys",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "bandOracleMap",
+		"outputs": [
+			{
+				"internalType": "contract IBandProtocolOracle",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "bandOracleMapKeys",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
 			}
 		],
 		"stateMutability": "view",
@@ -447,44 +504,6 @@
 				"internalType": "bool",
 				"name": "",
 				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "mOracleArray",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"name": "mOracles",
-		"outputs": [
-			{
-				"internalType": "contract IStdReference",
-				"name": "",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",

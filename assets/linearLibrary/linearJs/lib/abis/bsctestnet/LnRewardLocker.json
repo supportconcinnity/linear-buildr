@@ -261,7 +261,7 @@
 		"name": "linaToken",
 		"outputs": [
 			{
-				"internalType": "contract IBEP20",
+				"internalType": "contract IERC20",
 				"name": "",
 				"type": "address"
 			}

@@ -18,6 +18,16 @@
         return await this.contract.BUILD_RATIO(txParams);
       };
     
+      this.__LnAdminUpgradeable_init = async (_admin, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.__LnAdminUpgradeable_init(_admin, txParams);
+      };
+    
+      this.__LnConfig_init = async (_admin, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.__LnConfig_init(_admin, txParams);
+      };
+    
       this.admin = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.admin(txParams);

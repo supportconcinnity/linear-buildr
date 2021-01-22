@@ -1,3 +1,3 @@
-import LnConfig from '../mainnet/LnConfig';
+import LnConfig from '../bscmainnet/LnConfig';
       export default LnConfig;
       

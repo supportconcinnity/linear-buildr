@@ -201,19 +201,6 @@
 	},
 	{
 		"inputs": [],
-		"name": "CollateralEth",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "Currency_ETH",
 		"outputs": [
 			{
@@ -407,25 +394,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "_amount",
-				"type": "uint256"
-			}
-		],
-		"name": "RedeemETH",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "bytes32",
 				"name": "_currency",
 				"type": "bytes32"
@@ -552,56 +520,6 @@
 	},
 	{
 		"inputs": [],
-		"name": "buildBurnSystem",
-		"outputs": [
-			{
-				"internalType": "contract LnBuildBurnSystem",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "_currency",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_amount",
-				"type": "uint256"
-			}
-		],
-		"name": "burnAndRedeem",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "_currency",
-				"type": "bytes32"
-			}
-		],
-		"name": "burnAndRedeemMax",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "candidate",
 		"outputs": [
 			{
@@ -614,35 +532,11 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "_currency",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_amount",
-				"type": "uint256"
-			}
-		],
-		"name": "collateralAndBuild",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "debtSystem",
 		"outputs": [
 			{
-				"internalType": "contract LnDebtSystem",
+				"internalType": "contract ILnDebtSystem",
 				"name": "",
 				"type": "address"
 			}
@@ -655,7 +549,7 @@
 		"name": "mConfig",
 		"outputs": [
 			{
-				"internalType": "contract LnConfig",
+				"internalType": "contract ILnConfig",
 				"name": "",
 				"type": "address"
 			}
@@ -668,7 +562,7 @@
 		"name": "mRewardLocker",
 		"outputs": [
 			{
-				"internalType": "contract LnRewardLocker",
+				"internalType": "contract ILnRewardLocker",
 				"name": "",
 				"type": "address"
 			}
@@ -723,7 +617,7 @@
 		"name": "priceGetter",
 		"outputs": [
 			{
-				"internalType": "contract LnPrices",
+				"internalType": "contract ILnPrices",
 				"name": "",
 				"type": "address"
 			}
@@ -826,7 +720,7 @@
 	{
 		"inputs": [
 			{
-				"internalType": "contract LnAddressStorage",
+				"internalType": "contract ILnAddressStorage",
 				"name": "_addressStorage",
 				"type": "address"
 			}
@@ -859,9 +753,5 @@
 		],
 		"stateMutability": "view",
 		"type": "function"
-	},
-	{
-		"stateMutability": "payable",
-		"type": "receive"
 	}
 ]

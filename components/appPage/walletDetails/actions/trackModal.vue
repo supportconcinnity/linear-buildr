@@ -108,7 +108,7 @@
                     </template>
 
                     <template slot-scope="{ row }" slot="balance">
-                        {{ formatNumber(row.balance) }} ℓUSD
+                        {{ formatNumber(row.balance) }}
                     </template>
 
                     <template slot-scope="{ row }" slot="valueUSD">

@@ -1,3 +1,3 @@
-import lXAU from '../mainnet/lUSD';
+import lXAU from '../bscmainnet/lUSD';
       export default lXAU;
       

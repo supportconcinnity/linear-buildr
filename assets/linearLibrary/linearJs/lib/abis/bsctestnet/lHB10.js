@@ -1,3 +1,3 @@
-import lHB10 from '../mainnet/lUSD';
+import lHB10 from '../bscmainnet/lUSD';
       export default lHB10;
       

@@ -1,3 +1,3 @@
-import LnAccessControl from '../mainnet/LnAccessControl';
+import LnAccessControl from '../bscmainnet/LnAccessControl';
       export default LnAccessControl;
       

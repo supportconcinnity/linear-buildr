@@ -1,3 +1,3 @@
-import lXRP from '../mainnet/lUSD';
+import lXRP from '../bscmainnet/lUSD';
       export default lXRP;
       

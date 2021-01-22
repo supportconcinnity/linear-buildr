@@ -465,7 +465,7 @@
 	{
 		"inputs": [
 			{
-				"internalType": "contract LnAddressStorage",
+				"internalType": "contract ILnAddressStorage",
 				"name": "_addressStorage",
 				"type": "address"
 			}

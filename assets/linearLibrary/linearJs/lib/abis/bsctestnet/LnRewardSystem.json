@@ -23,25 +23,6 @@
 		"inputs": [
 			{
 				"indexed": false,
-				"internalType": "bytes32",
-				"name": "name",
-				"type": "bytes32"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "addr",
-				"type": "address"
-			}
-		],
-		"name": "CachedAddressUpdated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
 				"internalType": "address",
 				"name": "oldCandidate",
 				"type": "address"
@@ -61,24 +42,30 @@
 		"inputs": [
 			{
 				"indexed": false,
+				"internalType": "address",
+				"name": "recipient",
+				"type": "address"
+			},
+			{
+				"indexed": false,
 				"internalType": "uint256",
-				"name": "index",
+				"name": "periodId",
 				"type": "uint256"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "newFactor",
+				"name": "stakingReward",
 				"type": "uint256"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "timestamp",
+				"name": "feeReward",
 				"type": "uint256"
 			}
 		],
-		"name": "PushDebtLog",
+		"name": "RewardClaimed",
 		"type": "event"
 	},
 	{
@@ -87,120 +74,22 @@
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "oldAddr",
+				"name": "oldSigner",
 				"type": "address"
 			},
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "newAddr",
+				"name": "newSigner",
 				"type": "address"
 			}
 		],
-		"name": "UpdateAddressStorage",
+		"name": "RewardSignerChanged",
 		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "addr",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "debtProportion",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "debtFactor",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "timestamp",
-				"type": "uint256"
-			}
-		],
-		"name": "UpdateUserDebtLog",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_user",
-				"type": "address"
-			}
-		],
-		"name": "GetUserCurrentDebtProportion",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_user",
-				"type": "address"
-			}
-		],
-		"name": "GetUserDebtBalanceInUsd",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_user",
-				"type": "address"
-			}
-		],
-		"name": "GetUserDebtData",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "debtProportion",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "debtFactor",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "LastSystemDebtFactor",
+		"name": "CLAIM_WINDOW_PERIOD_COUNT",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -213,7 +102,20 @@
 	},
 	{
 		"inputs": [],
-		"name": "MAX_DEL_PER_TIME",
+		"name": "DOMAIN_SEPARATOR",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "PERIOD_LENGTH",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -225,70 +127,29 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
+		"inputs": [],
+		"name": "REWARD_TYPEHASH",
+		"outputs": [
 			{
-				"internalType": "uint256",
-				"name": "_factor",
-				"type": "uint256"
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
 			}
 		],
-		"name": "PushDebtFactor",
-		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"inputs": [
+		"inputs": [],
+		"name": "STAKING_REWARD_LOCK_PERIOD",
+		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "index",
+				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "SetLastCloseFeePeriodAt",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_user",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_debtProportion",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_factor",
-				"type": "uint256"
-			}
-		],
-		"name": "UpdateDebt",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_user",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_debtProportion",
-				"type": "uint256"
-			}
-		],
-		"name": "UpdateUserDebt",
-		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -307,12 +168,37 @@
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "_firstPeriodStartTime",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_rewardSigner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_lusdAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_collateralSystemAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_rewardLockerAddress",
+				"type": "address"
+			},
+			{
 				"internalType": "address",
 				"name": "_admin",
 				"type": "address"
 			}
 		],
-		"name": "__LnDebtSystem_init",
+		"name": "__LnRewardSystem_init",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -351,49 +237,95 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "debtCurrentIndex",
-		"outputs": [
+		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "periodId",
 				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "stakingReward",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "feeReward",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes",
+				"name": "signature",
+				"type": "bytes"
 			}
 		],
-		"stateMutability": "view",
+		"name": "claimReward",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [
 			{
-				"internalType": "address[]",
-				"name": "users",
-				"type": "address[]"
+				"internalType": "uint256",
+				"name": "periodId",
+				"type": "uint256"
 			},
 			{
-				"internalType": "uint256[]",
-				"name": "debtProportions",
-				"type": "uint256[]"
+				"internalType": "address",
+				"name": "recipient",
+				"type": "address"
 			},
 			{
-				"internalType": "uint256[]",
-				"name": "debtFactors",
-				"type": "uint256[]"
+				"internalType": "uint256",
+				"name": "stakingReward",
+				"type": "uint256"
 			},
 			{
-				"internalType": "uint256[]",
-				"name": "timestamps",
-				"type": "uint256[]"
+				"internalType": "uint256",
+				"name": "feeReward",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes",
+				"name": "signature",
+				"type": "bytes"
 			}
 		],
-		"name": "importDebtData",
+		"name": "claimRewardFor",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "lastCloseAt",
+		"name": "collateralSystem",
+		"outputs": [
+			{
+				"internalType": "contract ILnCollateralSystem",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "firstPeriodStartTime",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getCurrentPeriodId",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -408,11 +340,30 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
+				"name": "periodId",
+				"type": "uint256"
+			}
+		],
+		"name": "getPeriodEndTime",
+		"outputs": [
+			{
+				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "lastDebtFactors",
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "periodId",
+				"type": "uint256"
+			}
+		],
+		"name": "getPeriodStartTime",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -425,12 +376,38 @@
 	},
 	{
 		"inputs": [],
-		"name": "lastDeletTo",
+		"name": "lusd",
 		"outputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "contract IERC20Upgradeable",
 				"name": "",
-				"type": "uint256"
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "rewardLocker",
+		"outputs": [
+			{
+				"internalType": "contract ILnRewardLocker",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "rewardSigner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -452,12 +429,12 @@
 	{
 		"inputs": [
 			{
-				"internalType": "contract ILnAddressStorage",
-				"name": "_addressStorage",
+				"internalType": "address",
+				"name": "_rewardSigner",
 				"type": "address"
 			}
 		],
-		"name": "updateAddressCache",
+		"name": "setRewardSigner",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -470,16 +447,11 @@
 				"type": "address"
 			}
 		],
-		"name": "userDebtState",
+		"name": "userLastClaimPeriodIds",
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "debtProportion",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "debtFactor",
+				"name": "",
 				"type": "uint256"
 			}
 		],

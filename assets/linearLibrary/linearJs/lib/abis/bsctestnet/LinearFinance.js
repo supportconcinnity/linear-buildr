@@ -1,3 +1,3 @@
-import LinearFinance from '../ropsten/LinearFinance';
+import LinearFinance from '../bscmainnet/LinearFinance';
       export default LinearFinance;
       

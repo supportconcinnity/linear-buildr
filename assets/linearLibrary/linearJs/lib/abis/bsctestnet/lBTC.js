@@ -1,3 +1,3 @@
-import lBTC from '../mainnet/lUSD';
+import lBTC from '../bscmainnet/lUSD';
       export default lBTC;
       

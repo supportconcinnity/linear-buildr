@@ -38,14 +38,29 @@
         return await this.contract.__LnDefaultPrices_init(_admin, _oracle, _currencyNames, _newPrices, txParams);
       };
     
-      this.addOracle = async (currencyKey, currencyAliasKey, OracleAddress, txParams) => {
+      this.addOracle = async (currencyKey, bandCurrencyKey, oracleAddress, txParams) => {
         txParams = txParams || {};
-        return await this.contract.addOracle(currencyKey, currencyAliasKey, OracleAddress, txParams);
+        return await this.contract.addOracle(currencyKey, bandCurrencyKey, oracleAddress, txParams);
       };
     
       this.admin = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.admin(txParams);
+      };
+    
+      this.bandCurrencyKeys = async (bytes32_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.bandCurrencyKeys(bytes32_1, txParams);
+      };
+    
+      this.bandOracleMap = async (bytes32_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.bandOracleMap(bytes32_1, txParams);
+      };
+    
+      this.bandOracleMapKeys = async (uint256_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.bandOracleMapKeys(uint256_1, txParams);
       };
     
       this.becomeAdmin = async (txParams) => {
@@ -91,16 +106,6 @@
       this.isStale = async (currencyName, txParams) => {
         txParams = txParams || {};
         return await this.contract.isStale(currencyName, txParams);
-      };
-    
-      this.mOracleArray = async (uint256_1, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.mOracleArray(uint256_1, txParams);
-      };
-    
-      this.mOracles = async (bytes32_1, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.mOracles(bytes32_1, txParams);
       };
     
       this.mPricesLastRound = async (bytes32_1, txParams) => {

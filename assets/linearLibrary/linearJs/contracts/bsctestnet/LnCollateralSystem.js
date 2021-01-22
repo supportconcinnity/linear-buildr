@@ -18,11 +18,6 @@
         return await this.contract.Collateral(_currency, _amount, txParams);
       };
     
-      this.CollateralEth = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.CollateralEth(txParams);
-      };
-    
       this.Currency_ETH = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.Currency_ETH(txParams);
@@ -73,11 +68,6 @@
         return await this.contract.Redeem(_currency, _amount, txParams);
       };
     
-      this.RedeemETH = async (_amount, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.RedeemETH(_amount, txParams);
-      };
-    
       this.RedeemMax = async (_currency, txParams) => {
         txParams = txParams || {};
         return await this.contract.RedeemMax(_currency, txParams);
@@ -113,29 +103,9 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
-      this.buildBurnSystem = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.buildBurnSystem(txParams);
-      };
-    
-      this.burnAndRedeem = async (_currency, _amount, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.burnAndRedeem(_currency, _amount, txParams);
-      };
-    
-      this.burnAndRedeemMax = async (_currency, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.burnAndRedeemMax(_currency, txParams);
-      };
-    
       this.candidate = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.candidate(txParams);
-      };
-    
-      this.collateralAndBuild = async (_currency, _amount, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.collateralAndBuild(_currency, _amount, txParams);
       };
     
       this.debtSystem = async (txParams) => {

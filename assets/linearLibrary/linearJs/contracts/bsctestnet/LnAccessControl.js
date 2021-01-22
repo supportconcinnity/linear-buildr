@@ -63,6 +63,11 @@
         return await this.contract.SetRoles(roleType, addresses, setTo, txParams);
       };
     
+      this.__LnAccessControl_init = async (admin, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.__LnAccessControl_init(admin, txParams);
+      };
+    
       this.getRoleAdmin = async (role, txParams) => {
         txParams = txParams || {};
         return await this.contract.getRoleAdmin(role, txParams);

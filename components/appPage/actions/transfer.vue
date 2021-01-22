@@ -436,7 +436,7 @@ export default {
         currencyList() {
             var tempData = [];
 
-            if (this.$store.state?.walletDetails?.transferableAssets.length > 0) {
+            if (this.$store.state?.walletDetails?.transferableAssets?.length > 0) {
                 tempData = this.$store.state?.walletDetails?.transferableAssets;
             } else {
                 tempData = [

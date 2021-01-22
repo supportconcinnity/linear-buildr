@@ -1,3 +1,3 @@
-import lXLM from '../mainnet/lUSD';
+import lXLM from '../bscmainnet/lUSD';
       export default lXLM;
       

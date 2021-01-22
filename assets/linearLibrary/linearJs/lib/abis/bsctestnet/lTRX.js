@@ -1,3 +1,3 @@
-import lTRX from '../mainnet/lUSD';
+import lTRX from '../bscmainnet/lUSD';
       export default lTRX;
       
