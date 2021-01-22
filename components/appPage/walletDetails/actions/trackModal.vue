@@ -23,7 +23,7 @@
             <div class="data">
                 <div class="li_1">
                     <div class="p_1">
-                        {{ formatNumber(debtData.issuedDebt) }}
+                        {{ isEthereumNetwork ? 'N/A' : formatNumber(debtData.issuedDebt) }}
                     </div>
                     <div class="p_2">
                         Total Issued Debt (ℓUSD)
@@ -32,7 +32,7 @@
                 <div class="line"></div>
                 <div class="li_2">
                     <div class="p_1">
-                        {{ formatNumber(debtData.currentDebt) }}
+                        {{ isEthereumNetwork ? 'N/A' : formatNumber(debtData.currentDebt) }}
                     </div>
                     <div class="p_2">
                         Total Current Debt (ℓUSD)
@@ -143,6 +143,11 @@ import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/
 import currencies from "@/common/currency";
 
 import {
+    isEthereumNetwork,
+    isBinanceNetwork
+} from "@/assets/linearLibrary/linearTools/network";
+
+import {
     getExchangeRates,
     getBalances
 } from "@/assets/linearLibrary/linearTools/request";
@@ -212,7 +217,10 @@ export default {
         closeSvg
     },
     watch: {
-        walletAddress() {}
+        walletAddress() {},
+        isEthereumNetwork() {},
+        isBinanceNetwork() {},
+        walletNetworkId() {}
     },
     computed: {
         walletAddress() {
@@ -221,6 +229,18 @@ export default {
         //移动端
         isMobile() {
             return this.$store.state?.isMobile;
+        },
+
+        isEthereumNetwork() {
+            return isEthereumNetwork(this.walletNetworkId);
+        },
+
+        isBinanceNetwork() {
+            return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        walletNetworkId() {
+            return this.$store.state?.walletNetworkId;
         }
     },
     created() {
@@ -300,7 +320,11 @@ export default {
                     lnrJS: { lUSD, lBTC, lETH, lHB10 }
                 } = lnrJSConnector;
 
-                let trackData = await fetchTrackDebt(this.walletAddress);
+                let trackData = {'issuedDebt': 0, 'currentDebt': []};
+
+                if (this.isBinanceNetwork) {
+                    trackData = await fetchTrackDebt(this.walletAddress);
+                }
 
                 let tableData = [];
 
