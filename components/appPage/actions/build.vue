@@ -731,7 +731,7 @@ export default {
                 //获取当前抵押率
                 this.inputData.ratio = this.buildData.currentRatio;
             } catch (e) {
-                console.log("getBuildData err");
+                console.log(e, "getBuildData err");
             } finally {
                 this.processing = false;
             }
@@ -1327,14 +1327,6 @@ export default {
                 try {
                     this.transactionErrMsg = "";
 
-                    //合约需要大于1
-                    if (this.actionData.stake.eq(n2bn("1"))) {
-                        this.actionData.stake = bnAdd(
-                            this.actionData.stake,
-                            n2bn("0.000000000000000001")
-                        );
-                    }
-
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.APPROVE
@@ -1348,6 +1340,14 @@ export default {
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.STAKING_BUILD + "BSC"
                     ) {
+                        //合约需要大于1
+                        if (this.actionData.stake.eq(n2bn("1"))) {
+                            this.actionData.stake = bnAdd(
+                                this.actionData.stake,
+                                n2bn("0.000000000000000001")
+                            );
+                        }
+
                         //console.log("同时stake和buid");
                         //一步调用
                         await this.startStakingAndBuildContract(
@@ -1362,12 +1362,22 @@ export default {
                         ) {
                             //console.log("单独stake");
                             //多抵押一点,防止build失败
-                            const stake = n2bn(
+                            let stake = n2bn(
                                 _.ceil(bn2n(this.actionData.stake), 2)
                             );
-                            if (stake.lt(this.buildData.LINABN)) {
-                                this.actionData.stake = stake;
+
+                            if (stake.gt(this.buildData.LINABN)) {
+                                stake = this.actionData.stake;
                             }
+
+                            //合约需要大于1
+                            if (stake.eq(n2bn("1"))) {
+                                stake = bnAdd(
+                                    stake,
+                                    n2bn("0.000000000000000001")
+                                );
+                            }
+                            this.actionData.stake = stake;
                             await this.startStakingContract(
                                 this.actionData.stake
                             );

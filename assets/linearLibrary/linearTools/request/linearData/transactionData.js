@@ -1,7 +1,7 @@
 "use strict";
-const {utils, BigNumber} = require('ethers')
+const {  BigNumber } = require("ethers");
 const pageResults = require("graph-results-pager");
-const { bn2n } = require('@/common/bnCalc');
+const { bn2n } = require("@/common/bnCalc");
 
 const maxRequest = 1000;
 
@@ -59,7 +59,7 @@ module.exports = {
                             account,
                             timestamp: Number(timestamp * 1000),
                             block: Number(block),
-                            value:  bn2n(BigNumber.from(value)),
+                            value: bn2n(BigNumber.from(value)),
                             source: source,
                             symbol: "+"
                         })
@@ -519,7 +519,7 @@ module.exports = {
                             depositor,
                             recipient,
                             source: currency,
-                            value:bn2n(BigNumber.from(amount)),
+                            value: bn2n(BigNumber.from(amount)),
                             timestamp: Number(timestamp * 1000),
                             symbol: "-"
                         })
@@ -618,7 +618,9 @@ module.exports = {
                                           "0x",
                                           "0x000000000000000000000000"
                                       )
-                                      .toLocaleLowerCase()+"-"+source}\\"`
+                                      .toLocaleLowerCase() +
+                                      "-" +
+                                      source}\\"`
                                 : undefined
                         }
                     },
@@ -628,8 +630,8 @@ module.exports = {
                 .then(results =>
                     results.map(({ id, freeZeTokens, UnFreeZeTokens }) => ({
                         account: id,
-                        freeZeTokens: bn2n(BigNumber.from(freeZeTokens)),
-                        UnFreeZeTokens: bn2n(BigNumber.from(UnFreeZeTokens))
+                        freeZeTokens: BigNumber.from(freeZeTokens),
+                        UnFreeZeTokens: BigNumber.from(UnFreeZeTokens)
                     }))
                 )
                 .catch(err => console.error(err));

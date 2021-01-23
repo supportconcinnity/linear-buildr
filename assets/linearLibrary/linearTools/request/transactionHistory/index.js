@@ -1,4 +1,4 @@
-import linearData from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
+import linearData from "../linearData/transactionData";
 import flatten from "lodash/flatten";
 import _ from "lodash";
 import { isBinanceNetwork, isEthereumNetwork } from "../../network";

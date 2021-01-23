@@ -360,7 +360,8 @@ export const storeDetailsData = async () => {
                 totalCryptoBalanceInUSD,
 
                 buildRatio,
-                totalCollateralInUsd
+                totalCollateralInUsd,
+                liquids2USD,
             };
 
             //统一格式化数据
@@ -372,8 +373,8 @@ export const storeDetailsData = async () => {
             formatData.priceRates = priceRates;
             //不需要格式化
             formatData.transferableAssets = transferableAssets;
-            formatData.liquids = formatNumber(formatEtherToNumber(liquidsData.liquids));
-            formatData.liquids2USD = formatNumber(liquids2USD);
+
+            formatData.liquids = formatData.liquids2USD;
 
             // console.log(formatData,'storeDetailsData');
 

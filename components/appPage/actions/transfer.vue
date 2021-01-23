@@ -366,7 +366,6 @@ import {
 } from "@/assets/linearLibrary/linearTools/network";
 
 import {
-    formatEtherToNumber,
     formatNumber
 } from "@/assets/linearLibrary/linearTools/format";
 import { n2bn } from "@/common/bnCalc";
