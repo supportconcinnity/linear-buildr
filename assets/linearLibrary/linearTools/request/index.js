@@ -222,7 +222,7 @@ export const getPriceRatesFromApi = async currency => {
  */
 export const storeDetailsData = async () => {
     const store = $nuxt.$store;
-    const walletAddress = "0xa4028721c960d3723401f1dd4cb22f9dcdc768ee";//store.state?.wallet?.address;
+    const walletAddress = store.state?.wallet?.address;
 
     if (walletAddress) {
         clearTimeout(loopId);
