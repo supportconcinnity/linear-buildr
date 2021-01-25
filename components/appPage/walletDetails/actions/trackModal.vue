@@ -136,7 +136,6 @@ import _ from "lodash";
 import trackchart from "@/components/echarts/trackchart";
 import closeSvg from "@/components/svg/close";
 import { format } from "date-fns";
-import { formatEtherToNumber } from "@/assets/linearLibrary/linearTools/format";
 
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/exchangeData";

@@ -238,7 +238,10 @@ import lnrJSConnector, {
 import { bn2n, bnSub, bnSub2N, n2bn } from "@/common/bnCalc";
 import { DECIMAL_PRECISION } from "@/assets/linearLibrary/linearTools/constants/process";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
-import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
+import {
+    formatEtherToNumber,
+    formatNumber
+} from "@/assets/linearLibrary/linearTools/format";
 
 export default {
     name: "swap",
@@ -422,27 +425,29 @@ export default {
                 ]);
 
                 this.currencies[this.selectCurrencyIndex].avaliable = _.floor(
-                    bn2n(avaliableAmount || 0),
+                    formatEtherToNumber(avaliableAmount),
                     DECIMAL_PRECISION
                 );
 
-                let currentFreeZeTokens = 0,
-                    otherUnFreeZeTokens = 0;
+                let currentFreeZeTokens = n2bn("0"),
+                    otherUnFreeZeTokens = n2bn("0");
                 current.length &&
                     (currentFreeZeTokens = current[0].freeZeTokens);
                 other.length && (otherUnFreeZeTokens = other[0].UnFreeZeTokens);
 
                 //计算可以解冻的数量
-                const frozenBalance = bnSub2N(
-                    n2bn(currentFreeZeTokens),
-                    n2bn(otherUnFreeZeTokens)
+                const frozenBalance = bnSub(
+                    currentFreeZeTokens,
+                    otherUnFreeZeTokens
                 );
                 this.currencies[
                     this.selectCurrencyIndex
-                ].frozenBalance = this.swapNumber =
-                    frozenBalance > 0
-                        ? _.floor(frozenBalance, DECIMAL_PRECISION)
-                        : null;
+                ].frozenBalance = this.swapNumber = frozenBalance.gt(n2bn("0"))
+                    ? _.floor(
+                          formatEtherToNumber(frozenBalance),
+                          DECIMAL_PRECISION
+                      )
+                    : null;
             } catch (error) {
                 console.log(error, "getFrozenBalance error");
             } finally {

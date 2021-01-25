@@ -367,7 +367,6 @@ import {
 import currencies from "@/common/currency";
 
 import {
-    formatEtherToNumber,
     formatNumber
 } from "@/assets/linearLibrary/linearTools/format";
 import { n2bn } from "@/common/bnCalc";

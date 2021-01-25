@@ -2,6 +2,13 @@
     <div id="walletDetails" :class="{ mScroll: mShowWallet }">
         <div class="walletAndAddressBox" v-if="!mShowWallet">
             <div class="info">
+                <img
+                    class="network"
+                    v-if="isEthereumNetwork"
+                    src="@/static/ETH.svg"
+                />
+                <img class="network" v-else src="@/static/binance.svg" />
+
                 <div class="wallet">
                     {{ walletNetworkName }}
                 </div>
@@ -47,7 +54,7 @@
                     </svg>
                 </Tooltip>
             </div>
-            <div class="chainChange" :class="{ chainChanging }">
+            <!-- <div class="chainChange" :class="{ chainChanging }">
                 <div
                     class="ethBox"
                     :class="{
@@ -69,7 +76,7 @@
                 <div class="mNetworkName" @click="mShowWallet = true">
                     {{ walletNetworkName }}
                 </div>
-            </div>
+            </div> -->
 
             <div class="mMenu" @click="mShowMenuFun">
                 <img src="@/static/icon-menu.svg" />
@@ -347,9 +354,7 @@
                         </div>
                         <div class="tokenItems">
                             <div class="left">
-                                1 ℓUSD = ${{
-                                    walletDetails.lUSD2USDRate || 1
-                                }}
+                                1 ℓUSD = ${{ walletDetails.lUSD2USDRate || 1 }}
                                 USD
                             </div>
                             <div class="right">
@@ -890,13 +895,19 @@ body {
         align-items: center;
 
         .info {
-            width: 294px;
+            width: 100%;
             padding: 7px 16px;
             display: flex;
             justify-content: space-evenly;
             align-items: center;
             border-radius: 20px;
             background: #f6f5f6;
+
+            .network {
+                margin-right: 8px;
+                width: 16px;
+                height: 16px;
+            }
 
             .wallet {
                 margin-right: 8px;
@@ -930,6 +941,7 @@ body {
                 cursor: pointer;
                 width: 16px;
                 height: 16px;
+                margin-top: 4px;
 
                 &:hover {
                     #Combined-Shape {
@@ -940,40 +952,41 @@ body {
             }
         }
 
-        .chainChange {
-            width: 64px;
-            height: 32px;
-            display: flex;
-            border-radius: 20px;
-            background: #f6f5f6;
+        // .chainChange {
+        //     width: 64px;
+        //     height: 32px;
+        //     display: flex;
+        //     border-radius: 20px;
+        //     background: #f6f5f6;
 
-            &.chainChanging {
-                .ethBox,
-                .bscBox {
-                    opacity: 0.2 !important;
-                    cursor: not-allowed !important;
-                }
-            }
+        //     &.chainChanging {
+        //         .ethBox,
+        //         .bscBox {
+        //             opacity: 0.2 !important;
+        //             cursor: not-allowed !important;
+        //         }
+        //     }
 
-            .ethBox,
-            .bscBox {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                transition: $animete-time linear;
+        //     .ethBox,
+        //     .bscBox {
+        //         width: 32px;
+        //         height: 32px;
+        //         border-radius: 50%;
+        //         display: flex;
+        //         justify-content: center;
+        //         align-items: center;
+        //         transition: $animete-time linear;
 
-                &.selected {
-                    box-shadow: 0 2px 6px 0 #deddde;
-                    background-color: #ffffff;
-                }
-            }
-            .mNetworkName {
-                display: none;
-            }
-        }
+        //         &.selected {
+        //             box-shadow: 0 2px 6px 0 #deddde;
+        //             background-color: #ffffff;
+        //         }
+        //     }
+        //     .mNetworkName {
+        //         display: none;
+        //     }
+        // }
+
         .mMenu {
             display: none;
         }
@@ -1416,60 +1429,60 @@ body {
                 }
             }
 
-            .chainChange {
-                width: 90px;
-                height: 32px;
-                display: flex;
-                border-radius: 20px;
-                background: #fff;
-                box-shadow: 0 2px 6px 0 #deddde;
-                padding: 0 0;
-                position: relative;
+            // .chainChange {
+            //     width: 90px;
+            //     height: 32px;
+            //     display: flex;
+            //     border-radius: 20px;
+            //     background: #fff;
+            //     box-shadow: 0 2px 6px 0 #deddde;
+            //     padding: 0 0;
+            //     position: relative;
 
-                &.chainChanging {
-                    .ethBox,
-                    .bscBox {
-                        opacity: 0.2 !important;
-                        cursor: not-allowed !important;
-                    }
-                }
+            //     &.chainChanging {
+            //         .ethBox,
+            //         .bscBox {
+            //             opacity: 0.2 !important;
+            //             cursor: not-allowed !important;
+            //         }
+            //     }
 
-                .ethBox,
-                .bscBox {
-                    width: 32px;
-                    height: 32px;
-                    border-radius: 50%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    transition: $animete-time linear;
+            //     .ethBox,
+            //     .bscBox {
+            //         width: 32px;
+            //         height: 32px;
+            //         border-radius: 50%;
+            //         display: flex;
+            //         justify-content: center;
+            //         align-items: center;
+            //         transition: $animete-time linear;
 
-                    &.selected {
-                        box-shadow: 0 0 0 0 #deddde;
-                        background-color: #ffffff;
-                    }
-                }
+            //         &.selected {
+            //             box-shadow: 0 0 0 0 #deddde;
+            //             background-color: #ffffff;
+            //         }
+            //     }
 
-                .bscBox {
-                    display: none;
-                }
+            //     .bscBox {
+            //         display: none;
+            //     }
 
-                .mNetworkName {
-                    display: block;
-                    font-family: Gilroy;
-                    font-size: 12px;
-                    font-weight: 500;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 32px;
-                    letter-spacing: normal;
-                    color: #99999a;
-                    position: absolute;
-                    padding-left: 29px;
-                    left: 0;
-                    top: 0px;
-                }
-            }
+            //     .mNetworkName {
+            //         display: block;
+            //         font-family: Gilroy;
+            //         font-size: 12px;
+            //         font-weight: 500;
+            //         font-stretch: normal;
+            //         font-style: normal;
+            //         line-height: 32px;
+            //         letter-spacing: normal;
+            //         color: #99999a;
+            //         position: absolute;
+            //         padding-left: 29px;
+            //         left: 0;
+            //         top: 0px;
+            //     }
+            // }
 
             .mMenu {
                 display: block;

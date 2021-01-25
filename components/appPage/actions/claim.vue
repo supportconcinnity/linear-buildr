@@ -158,10 +158,7 @@
 <script>
 import _ from "lodash";
 import { addSeconds, formatDistanceToNow } from "date-fns";
-import {
-    formatEtherToNumber,
-    formatNumber
-} from "@/assets/linearLibrary/linearTools/format";
+import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 import gasEditor from "@/components/gasEditor";

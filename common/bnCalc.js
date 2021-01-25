@@ -1,5 +1,6 @@
 import { BigNumber, utils } from "ethers";
 import { floor } from "lodash";
+import { formatEtherToNumber } from "@/assets/linearLibrary/linearTools/format";
 import { toNonExponential } from "./utils";
 
 //最大小数长度
@@ -11,7 +12,8 @@ export const BIGNUMBER_BASENUMBER = (1e18).toString();
 export const n2bn = num => utils.parseEther(num.toString());
 
 //bigNumber转Number
-export const bn2n = num => Number(utils.formatEther(num.toString()));
+// export const bn2n = num => Number(utils.formatEther(num.toString()));
+export const bn2n = num => formatEtherToNumber(num);
 
 //数字字符串直接转bigNumber
 export const numberStrToBN = num => BigNumber.from(num.toString());
