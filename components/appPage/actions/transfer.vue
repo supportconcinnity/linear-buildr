@@ -96,8 +96,8 @@
                                     <div class="midle">
                                         <div class="p_1">
                                             {{
-                                                item.name == "lUSD"
-                                                    ? "ℓUSD"
+                                                currencies.hasOwnProperty(item.name)
+                                                    ? currencies[item.name].name
                                                     : item.name
                                             }}
                                         </div>
@@ -277,8 +277,8 @@
                                     <div class="midle">
                                         <div class="p_1">
                                             {{
-                                                item.name == "lUSD"
-                                                    ? "ℓUSD"
+                                                currencies.hasOwnProperty(item.name)
+                                                    ? currencies[item.name].name
                                                     : item.name
                                             }}
                                         </div>
@@ -364,6 +364,7 @@ import {
     isBinanceNetwork,
     isEthereumNetwork
 } from "@/assets/linearLibrary/linearTools/network";
+import currencies from "@/common/currency";
 
 import {
     formatEtherToNumber,
@@ -376,6 +377,7 @@ export default {
     data() {
         return {
             formatterInput,
+            currencies,
             actionTabs: "m0", //子页(m0默认,m1等待,m2成功,m3错误)
             showDropdown: false,
             selected: 0,

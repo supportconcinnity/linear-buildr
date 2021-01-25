@@ -222,7 +222,7 @@ export const getPriceRatesFromApi = async currency => {
  */
 export const storeDetailsData = async () => {
     const store = $nuxt.$store;
-    const walletAddress = store.state?.wallet?.address;
+    const walletAddress = "0xa4028721c960d3723401f1dd4cb22f9dcdc768ee";//store.state?.wallet?.address;
 
     if (walletAddress) {
         clearTimeout(loopId);
@@ -358,7 +358,6 @@ export const storeDetailsData = async () => {
                 amountDebt: amountDebt[0],
                 amountDebt2USD,
                 totalCryptoBalanceInUSD,
-
                 buildRatio,
                 totalCollateralInUsd
             };
@@ -375,6 +374,7 @@ export const storeDetailsData = async () => {
             formatData.liquids = formatNumber(formatEtherToNumber(liquidsData.liquids));
             formatData.liquids2USD = formatNumber(liquids2USD);
 
+            formatData.amountDebtBeforeFormat = amountDebt[0];
             // console.log(formatData,'storeDetailsData');
 
             await store.commit("setWalletDetails", formatData);

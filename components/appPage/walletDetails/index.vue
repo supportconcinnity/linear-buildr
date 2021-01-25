@@ -253,7 +253,7 @@
                     <div class="box">
                         <div class="value">
                             <template v-if="!isEthereumNetwork">
-                                {{ walletDetails.currentRatioPercent || 0 }}
+                                {{ walletDetails.amountDebtBeforeFormat < 0.01 ? 0 : walletDetails.currentRatioPercent || 0 }}
                             </template>
                             <template v-if="isEthereumNetwork">
                                 N/A
