@@ -181,129 +181,514 @@
             </TabPane>
 
             <TabPane name="m1" class="waitingPage">
-                <div class="waitImg">
-                    <!-- 已完成 -->
-                    <img
-                        v-if="
-                            confirmTransactionStep > waitProcessArray.length - 1
-                        "
-                        class="course completed"
-                        src="@/static/transferProgress/transaction_completed.svg"
-                    />
-
-                    <!-- 已确认或错误 -->
-                    <img
-                        v-else-if="
-                            confirmTransactionStatus || transactionErrMsg
-                        "
-                        class="course"
-                        src="@/static/transferProgress/wellet_metamask.svg"
-                    />
-                    <!-- 需要approve -->
-                    <img
-                        v-else-if="shouldApprove"
-                        class="course"
-                        src="@/static/transferProgress/course/approve.png"
-                    />
-                    <!-- 在切链状态 -->
-                    <img
-                        v-else-if="confirmTransactionChainChanging"
-                        class="course"
-                        src="@/static/transferProgress/course/switch_network.png"
-                    />
-                    <!-- 等待确认 -->
-                    <img
-                        v-else-if="!confirmTransactionStatus"
-                        class="course"
-                        src="@/static/transferProgress/course/confirm.png"
-                    />
-                </div>
-
                 <div class="waitTitle">
-                    <!-- 已完成 -->
-                    <template
+                    <!-- 切链 -->
+                    <template v-if="confirmTransactionChainChanging">
+                        <!-- 原始钱包是metamask,目标是bsc钱包 -->
+                        <template
+                            v-if="
+                                sourceWalletType ==
+                                    SUPPORTED_WALLETS_MAP.METAMASK &&
+                                    targetWalletType ==
+                                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                            "
+                        >
+                            Please switch to BSC Wallet
+                        </template>
+
+                        <!-- 原始钱包是metamask,目标是metamask钱包 -->
+                        <template
+                            v-else-if="
+                                sourceWalletType ==
+                                    SUPPORTED_WALLETS_MAP.METAMASK &&
+                                    targetWalletType ==
+                                        SUPPORTED_WALLETS_MAP.METAMASK
+                            "
+                        >
+                            Switch to
+                            <template v-if="isEthereumNetwork(sourceNetworkId)"
+                                >Binance</template
+                            >
+                            <template
+                                v-else-if="isBinanceNetwork(sourceNetworkId)"
+                                >Ethereum</template
+                            >
+
+                            Network On Metamask
+                        </template>
+
+                        <!-- 原始钱包是BSC -->
+                        <template
+                            v-else-if="
+                                sourceWalletType ==
+                                    SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                            "
+                        >
+                            Please switch to Metamask Wallet
+                        </template>
+                    </template>
+
+                    <!-- 不是切链状态 -->
+                    <template v-else>
+                        <!-- 已经完成 -->
+                        <span
+                            v-if="
+                                confirmTransactionStep >
+                                    waitProcessArray.length - 1
+                            "
+                            >Congratulations!</span
+                        >
+                        <!-- 当前有错误 -->
+                        <span v-else-if="transactionErrMsg"
+                            >Oops! Something went wrong</span
+                        >
+                        <!-- 没完成,没错误,没确认 -->
+                        <span v-else-if="!confirmTransactionStatus">
+                            Confirm with
+                            <template
+                                v-if="
+                                    currentWalletType ==
+                                        SUPPORTED_WALLETS_MAP.METAMASK
+                                "
+                            >
+                                Metamask
+                            </template>
+
+                            <template
+                                v-if="
+                                    currentWalletType ==
+                                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                "
+                            >
+                                BSC Wallet
+                            </template>
+                        </span>
+                        <!-- 没完成,没错误,已确认 -->
+                        <span v-else>
+                            <template v-if="isMobile">
+                                Interacting
+                            </template>
+                            <template v-else>
+                                Interacting with the smart contract
+                            </template>
+                        </span>
+                    </template>
+                </div>
+
+                <div class="waitDesc">
+                    <!-- 已经完成 -->
+                    <span
                         v-if="
                             confirmTransactionStep > waitProcessArray.length - 1
                         "
                     >
-                        Congratulations!</template
-                    >
-
+                        <!-- 手机端 -->
+                        <template v-if="isMobile"
+                            >Swap transaction has been processed.</template
+                        >
+                        <!-- pc端 -->
+                        <template v-else
+                            >Your transaction has been processed
+                            already</template
+                        >
+                    </span>
                     <!-- 有错误 -->
-                    <template v-else-if="transactionErrMsg">
-                        Oops! Something is wrong.
-                    </template>
-                    <!-- 交易中 -->
-                    <template v-else-if="confirmTransactionStatus">
-                        Loading...
-                    </template>
-                    <!-- 需要approve -->
-                    <template v-else-if="shouldApprove">
-                        Approve address with Metamask</template
-                    >
-                    <!-- 在切链状态 -->
-                    <template v-else-if="confirmTransactionChainChanging">
-                        Switch to
-                        <template v-if="isEthereumNetwork(walletNetworkId)"
-                            >Binance</template
-                        >
-                        <template v-else>Ethereum</template>
-                        Network
-                    </template>
-                    <!-- 等待确认 -->
-                    <template v-else-if="!confirmTransactionStatus">
-                        Confirm with Metamask
-                    </template>
+                    <span class="error" v-else-if="transactionErrMsg">{{
+                        transactionErrMsg
+                    }}</span>
+                    <!-- 没完成没错误且是移动端 -->
+                    <span v-else-if="isMobile">
+                        Swap transaction is in progress
+                    </span>
                 </div>
 
-                <div class="waitDesc" :class="{ error: transactionErrMsg }">
-                    <!-- 已完成 -->
-                    <template
-                        v-if="
-                            confirmTransactionStep > waitProcessArray.length - 1
-                        "
-                    >
-                        Your transaction has been processed.</template
-                    >
+                <div class="waitWalletBox">
+                    <!-- 切链 -->
+                    <template v-if="confirmTransactionChainChanging">
+                        <!-- 原始钱包是metamask,目标是bsc钱包 -->
+                        <template
+                            v-if="
+                                sourceWalletType ==
+                                    SUPPORTED_WALLETS_MAP.METAMASK &&
+                                    targetWalletType ==
+                                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                            "
+                        >
+                            <div class="walletItem">
+                                <div class="walletIcon">
+                                    <img
+                                        class="leftIcon"
+                                        src="@/static/transferProgress/wallet_icon.svg"
+                                    />
 
-                    <!-- 有错误 -->
-                    <template v-else-if="transactionErrMsg">
-                        {{ transactionErrMsg }}
+                                    <img
+                                        class="rightIcon"
+                                        src="@/static/metamask.svg"
+                                    />
+                                </div>
+
+                                <div class="walletNetwork">
+                                    Metamask
+                                </div>
+
+                                <div class="walletAddress">
+                                    {{ abbreviateAddress(sourceWalletAddress) }}
+                                </div>
+                            </div>
+                            <img
+                                class="walletArrow"
+                                src="@/static/transferProgress/arrow_right.svg"
+                            />
+                            <div class="walletItem">
+                                <div class="walletIcon">
+                                    <img
+                                        class="leftIcon"
+                                        src="@/static/transferProgress/wallet_icon.svg"
+                                    />
+
+                                    <img
+                                        class="rightIcon"
+                                        src="@/static/binance.svg"
+                                    />
+                                </div>
+
+                                <div class="walletNetwork">
+                                    BSC Chain Wallet
+                                </div>
+
+                                <div class="walletAddress">
+                                    {{ abbreviateAddress(targetWalletAddress) }}
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- 原始钱包是metamask,目标是metamask钱包 -->
+                        <template
+                            v-else-if="
+                                sourceWalletType ==
+                                    SUPPORTED_WALLETS_MAP.METAMASK &&
+                                    targetWalletType ==
+                                        SUPPORTED_WALLETS_MAP.METAMASK
+                            "
+                        >
+                            <div class="walletItem">
+                                <div class="walletIcon">
+                                    <img
+                                        class="leftIcon"
+                                        src="@/static/metamask.svg"
+                                    />
+
+                                    <img
+                                        v-if="
+                                            isEthereumNetwork(sourceNetworkId)
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                    />
+                                    <img
+                                        v-else
+                                        class="rightIcon"
+                                        src="@/static/bnb.svg"
+                                    />
+                                </div>
+
+                                <div class="walletNetwork">
+                                    <template
+                                        v-if="
+                                            isEthereumNetwork(sourceNetworkId)
+                                        "
+                                    >
+                                        Ethereum Network
+                                    </template>
+                                    <template v-else>
+                                        BSC Network
+                                    </template>
+                                </div>
+
+                                <div class="walletAddress">
+                                    {{ abbreviateAddress(sourceWalletAddress) }}
+                                </div>
+                            </div>
+                            <img
+                                class="walletArrow"
+                                src="@/static/transferProgress/arrow_right.svg"
+                            />
+                            <div class="walletItem">
+                                <div class="walletIcon">
+                                    <img
+                                        class="leftIcon"
+                                        src="@/static/metamask.svg"
+                                    />
+
+                                    <img
+                                        v-if="
+                                            isEthereumNetwork(targetNetworkId)
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                    />
+                                    <img
+                                        v-else
+                                        class="rightIcon"
+                                        src="@/static/bnb.svg"
+                                    />
+                                </div>
+
+                                <div class="walletNetwork">
+                                    <template
+                                        v-if="
+                                            isEthereumNetwork(targetNetworkId)
+                                        "
+                                    >
+                                        Ethereum Network
+                                    </template>
+                                    <template v-else>
+                                        BSC Network
+                                    </template>
+                                </div>
+
+                                <div class="walletAddress">
+                                    {{ abbreviateAddress(targetWalletAddress) }}
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- 原始钱包是BSC -->
+                        <template
+                            v-else-if="
+                                sourceWalletType ==
+                                    SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                            "
+                        >
+                            <div class="walletItem">
+                                <div class="walletIcon">
+                                    <img
+                                        class="leftIcon"
+                                        src="@/static/metamask.svg"
+                                    />
+
+                                    <img
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                    />
+                                </div>
+
+                                <div class="walletNetwork">
+                                    Metamask
+                                </div>
+
+                                <div class="walletAddress">
+                                    {{ abbreviateAddress(targetWalletAddress) }}
+                                </div>
+                            </div>
+                        </template>
                     </template>
 
-                    <!-- 在切链状态 -->
-                    <template v-else-if="confirmTransactionChainChanging">
-                        If you do not have
-                        <template v-if="isEthereumNetwork(walletNetworkId)"
-                            >BSC</template
-                        >
-                        <template v-else>Ethereum</template>
-                        <template v-if="isMainnetNetwork(walletNetworkId)"
-                            >Mainnet</template
-                        >
-                        <template v-else>Testnet</template>
-                        , please setup and change
-                    </template>
+                    <!-- 不是切链 -->
+                    <div class="walletItem" v-else>
+                        <div class="walletIcon">
+                            <!-- 已完成 -->
+                            <template
+                                v-if="
+                                    confirmTransactionStep >
+                                        waitProcessArray.length - 1
+                                "
+                            >
+                                <img
+                                    class="completed"
+                                    src="@/static/transferProgress/transaction_completed.svg"
+                                />
+                            </template>
+                            <!-- 未完成 -->
+                            <template v-else>
+                                <!-- 原始钱包是metamask,目标是bsc钱包 -->
+                                <template
+                                    v-if="
+                                        sourceWalletType ==
+                                            SUPPORTED_WALLETS_MAP.METAMASK &&
+                                            targetWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                    "
+                                >
+                                    <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                        "
+                                        class="leftIcon"
+                                        src="@/static/metamask.svg"
+                                    />
+
+                                    <img
+                                        v-else-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        "
+                                        class="leftIcon"
+                                        src="@/static/binance.svg"
+                                    />
+
+                                    <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                    />
+
+                                    <img
+                                        v-else-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/bnb.svg"
+                                    />
+                                </template>
+
+                                <!-- 原始钱包是metamask,目标是metamask钱包 -->
+                                <template
+                                    v-else-if="
+                                        sourceWalletType ==
+                                            SUPPORTED_WALLETS_MAP.METAMASK &&
+                                            targetWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                    "
+                                >
+                                    <img
+                                        class="leftIcon"
+                                        src="@/static/metamask.svg"
+                                    />
+                                    <!-- 
+                                    <template
+                                        v-if="
+                                            isEthereumNetwork(walletNetworkId)
+                                        "
+                                    >
+                                        Ethereum Network
+                                    </template>
+                                    <template v-else>
+                                        BSC Network
+                                    </template> -->
+
+                                    <img
+                                        v-if="
+                                            isEthereumNetwork(walletNetworkId)
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                    />
+                                    <img
+                                        v-else
+                                        class="rightIcon"
+                                        src="@/static/bnb.svg"
+                                    />
+
+                                    <!-- <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                        
+                                    />
+
+                                    <img
+                                        v-else-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/bnb.svg"
+                                        
+                                    /> -->
+                                </template>
+
+                                <!-- 原始钱包是BSC -->
+                                <template
+                                    v-else-if="
+                                        sourceWalletType ==
+                                            SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                    "
+                                >
+                                    <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                        "
+                                        class="leftIcon"
+                                        src="@/static/metamask.svg"
+                                    />
+
+                                    <img
+                                        v-else-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        "
+                                        class="leftIcon"
+                                        src="@/static/binance.svg"
+                                    />
+
+                                    <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/ETH.svg"
+                                    />
+
+                                    <img
+                                        v-if="
+                                            currentWalletType ==
+                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        "
+                                        class="rightIcon"
+                                        src="@/static/bnb.svg"
+                                    />
+                                </template>
+                            </template>
+                        </div>
+
+                        <div class="walletNetwork">
+                            <template
+                                v-if="
+                                    currentWalletType ==
+                                        SUPPORTED_WALLETS_MAP.METAMASK
+                                "
+                            >
+                                <template
+                                    v-if="isEthereumNetwork(walletNetworkId)"
+                                >
+                                    Ethereum Network
+                                </template>
+                                <template v-else>
+                                    BSC Network
+                                </template>
+                            </template>
+
+                            <template
+                                v-else-if="
+                                    currentWalletType ==
+                                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                "
+                                >BSC Chain Wallet</template
+                            >
+                        </div>
+
+                        <div class="walletAddress">
+                            {{ abbreviateAddress(walletAddress) }}
+                        </div>
+                    </div>
                 </div>
 
-                <div
-                    v-if="confirmTransactionChainChanging"
-                    class="stepNetwork"
-                    @click.stop="stepNetwork"
-                >
-                    How to Setup <img src="@/static/info.svg" />
-                </div>
-
-                <!-- 网络设置 -->
-                <setupModal ref="setupModal" />
-
-                <!-- 当前是freeze,开始等待blocks,不在approve,不是错误 -->
                 <div
                     class="blockCompletedBox"
                     v-if="
-                        startWaitingBlocks &&
-                            !shouldApprove &&
-                            !transactionErrMsg
+                        waitProcessArray[confirmTransactionStep] ==
+                            BUILD_PROCESS_SETUP.FREEZE
                     "
                 >
                     <div class="blocks">
@@ -522,6 +907,62 @@
                         </ul>
                     </div>
                 </div>
+
+                <!-- 不是等待切链状态且是移动端的时候 -->
+                <div
+                    v-if="!confirmTransactionChainChanging && isMobile"
+                    class="mobileBtns"
+                >
+                    <!-- 完成 -->
+                    <div
+                        class="funcMobileBtn"
+                        v-if="
+                            confirmTransactionStep > waitProcessArray.length - 1
+                        "
+                        @click.stop="setDefaultTab"
+                    >
+                        Done
+                    </div>
+                    <!-- 错误 -->
+                    <div
+                        class="funcMobileBtn"
+                        v-else-if="transactionErrMsg"
+                        @click.stop="waitProcessFlow"
+                    >
+                        try again
+                    </div>
+                    <!-- 未确认交易 -->
+                    <!-- <div class="funcMobileBtn" v-else-if="!confirmTransactionChainChanging">
+                Confirm Contract
+            </div> -->
+
+                    <div
+                        class="viewMobileBtn"
+                        v-if="confirmTransactionStatus"
+                        @click.stop="
+                            openBlockchainBrowser(
+                                confirmTransactionHash,
+                                confirmTransactionNetworkId
+                            )
+                        "
+                    >
+                        <template
+                            v-if="
+                                isEthereumNetwork(confirmTransactionNetworkId)
+                            "
+                        >
+                            View Etherscan
+                        </template>
+                        <template
+                            v-else-if="
+                                isBinanceNetwork(confirmTransactionNetworkId)
+                            "
+                        >
+                            View Bscscan
+                        </template>
+                        <img src="@/static/arrow_right.svg" />
+                    </div>
+                </div>
             </TabPane>
         </Tabs>
     </div>
@@ -531,7 +972,6 @@
 import _ from "lodash";
 import { openBlockchainBrowser } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
-import setupModal from "@/components/setupModal";
 import {
     SUPPORTED_WALLETS_MAP,
     isEthereumNetwork,
@@ -567,8 +1007,7 @@ import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/trans
 export default {
     name: "watingEnhanceSwapNew",
     components: {
-        closeSvg,
-        setupModal
+        closeSvg
     },
     props: {
         //需要swap的数量
@@ -598,7 +1037,6 @@ export default {
             openBlockchainBrowser,
             isEthereumNetwork,
             isBinanceNetwork,
-            isMainnetNetwork,
             abbreviateAddress,
 
             actionTabs: "m0", //m0检查页,m1交易页
@@ -630,24 +1068,22 @@ export default {
             //     "Contract on ETH",
             //     "Contract on BSC"
             // ], //等待交易进度组
-            waitProcessArray: [], //等待交易进度组
-            waitProcessFlow: Function, //逻辑流
-            confirmTransactionStep: 0, //当前确认步骤
-            swapUnfreezeContinue: false, //是否继续swap
-            freezeSuccessHash: "", //冻结成功hash
-            sourceWalletType: "", //原始钱包类型
-            targetWalletType: "", //目标钱包类型
-            sourceNetworkId: "", //原始网络id
-            targetNetworkId: "", //目标网络id
-            confirmTransactionNetworkId: "", //当前确认时网络
-            sourceWalletAddress: "", //原始钱包地址
-            targetWalletAddress: "", //目标钱包地址
-            transactionErrMsg: "", //交易错误信息
-            chainChangedStatus: false, //是否已完成切链
-            confirmTransactionChainChanging: false, //是否在切链状态
-            confirmTransactionStatus: false, //确认交易状态
-            shouldApprove: false, //是否需要approve
-            startWaitingBlocks: false, //开始的等待获取blocks
+            waitProcessArray: [],
+            waitProcessFlow: Function,
+            confirmTransactionStep: 0,
+            swapUnfreezeContinue: false,
+            freezeSuccessHash: "",
+            sourceWalletType: "",
+            targetWalletType: "",
+            sourceNetworkId: "",
+            targetNetworkId: "",
+            confirmTransactionNetworkId: "",
+            sourceWalletAddress: "",
+            targetWalletAddress: "",
+            transactionErrMsg: "",
+            chainChangedStatus: false,
+            confirmTransactionChainChanging: false,
+            confirmTransactionStatus: false,
 
             chainChangeTokenFromUnfreeze: "", //解冻切换钱包事件监听id
             chainChangeFromSubscribe: "", //切换钱包事件监听id
@@ -784,6 +1220,26 @@ export default {
                     this.$store.state?.targetGasDetails?.price ||
                     50 * 1000000000;
 
+                // let networkId = this.$store.state?.sourceGasDetails?.networkId;
+                //暂时解决因为切链导致的gas位置错位的bug
+                // if (isEthereumNetwork(networkId)) {
+                //     this.sourceGasPrice =
+                //         this.$store.state?.sourceGasDetails?.price ||
+                //         60 * 1000000000;
+
+                //     this.targetGasPrice =
+                //         this.$store.state?.targetGasDetails?.price ||
+                //         60 * 1000000000;
+                // } else {
+                //     this.sourceGasPrice =
+                //         this.$store.state?.targetGasDetails?.price ||
+                //         60 * 1000000000;
+
+                //     this.targetGasPrice =
+                //         this.$store.state?.sourceGasDetails?.price ||
+                //         60 * 1000000000;
+                // }
+
                 // this.targetWalletAddress = this.walletAddress;
                 // this.targetWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
                 // await this.checkContract();
@@ -814,17 +1270,13 @@ export default {
                     if (this.checkStatus.stepType != -1) return;
                 }
 
-                //双钱包连接
                 // if (currentStep < 2) {
                 //     //连接目标钱包
                 //     await this.connectToTargetWallet();
                 //     if (this.checkStatus.stepType != -1) return;
                 // }
                 // this.checkStatus.stepIndex++;
-
-                //单钱包连接
-                this.targetWalletAddress = this.walletAddress;
-                this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+                this.connectMetamaskWallet();
 
                 if (currentStep < 2) {
                     await this.checkTargetBalace();
@@ -932,8 +1384,12 @@ export default {
                     );
 
                     if (diffCollateralLINA.gt(approveAmount)) {
-                        this.shouldApprove = true;
+                        this.waitProcessArray.push(
+                            this.BUILD_PROCESS_SETUP.APPROVE
+                        );
                     }
+
+                    //  this.waitProcessArray.push(this.BUILD_PROCESS_SETUP.APPROVE);
 
                     this.swapNumber > 0 &&
                         this.waitProcessArray.push(
@@ -949,6 +1405,20 @@ export default {
                     //         this.BUILD_PROCESS_SETUP.STAKING_BUILD
                     //     );
                     // }
+
+                    // //记录原始钱包类型
+                    // this.sourceWalletType = this.currentWalletType;
+
+                    // //记录原始网络类型
+                    // this.sourceNetworkId = this.walletNetworkId;
+
+                    // //记录目标网络id
+                    // this.targetNetworkId = getOtherNetworks(
+                    //     this.walletNetworkId
+                    // ).join();
+
+                    // //记录原始钱包地址
+                    // this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
                 }
 
                 this.checkStatus.stepIndex++;
@@ -971,6 +1441,15 @@ export default {
                 try {
                     this.transactionErrMsg = "";
 
+                    if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        this.BUILD_PROCESS_SETUP.APPROVE
+                    ) {
+                        await this.startApproveContract(
+                            n2bn(Number.MAX_SAFE_INTEGER)
+                        );
+                    }
+
                     let swapNumber = n2bn(this.swapNumber);
 
                     //build合约需要大于1
@@ -980,12 +1459,6 @@ export default {
                     //         n2bn("0.000000000000000001")
                     //     );
                     // }
-
-                    if (this.shouldApprove) {
-                        await this.startApproveContract(
-                            n2bn(Number.MAX_SAFE_INTEGER)
-                        );
-                    }
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
@@ -1039,6 +1512,13 @@ export default {
 
             let LnProxy,
                 LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+            // if (isEthereumNetwork(this.walletNetworkId)) {
+            //     // LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
+            //     // LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
+            // } else if (isBinanceNetwork(this.walletNetworkId)) {
+            //     // LnProxy = lnrJSConnector.lnrJS.LinearFinance;
+            //     // LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
+            // }
 
             if (this.currency == "LINA") {
                 LnProxy = lnrJSConnector.lnrJS.LinearFinance;
@@ -1092,7 +1572,8 @@ export default {
                     };
                 }
 
-                this.shouldApprove = false;
+                //成功后累加当前进度
+                this.confirmTransactionStep += 1;
             }
         },
 
@@ -1164,7 +1645,8 @@ export default {
 
             if (transaction) {
                 this.confirmTransactionStatus = true;
-                this.confirmTransactionHash = transaction.hash;
+                this.freezeSuccessHash = this.confirmTransactionHash =
+                    transaction.hash;
 
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
@@ -1184,8 +1666,6 @@ export default {
                     };
                 }
 
-                this.freezeSuccessHash = transaction.hash;
-
                 const {
                     blockNumber
                 } = await lnrJSConnector.provider.getTransaction(
@@ -1193,10 +1673,8 @@ export default {
                 );
 
                 //等待交易块确认完毕
-                this.startWaitingBlocks = true;
                 this.tansactionBlocks.blockNumber = blockNumber || 0;
                 await this.waitingBlockConfirmations(blockNumber);
-                this.startWaitingBlocks = false;
 
                 this.confirmTransactionStep += 1;
             }
@@ -1806,6 +2284,11 @@ export default {
                 } */
         },
 
+        async connectMetamaskWallet() {
+            this.targetWalletAddress = this.walletAddress;
+            this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+        },
+
         //连接钱包
         async connectToTargetWallet(provider = null) {
             try {
@@ -1972,10 +2455,6 @@ export default {
                 //打开钱包插件安装路径
                 window.open(url);
             }
-        },
-
-        stepNetwork() {
-            this.$refs.setupModal.show();
         },
 
         //回到默认状态
@@ -2278,28 +2757,27 @@ export default {
                 position: relative;
                 background-color: white;
 
-                .waitImg {
-                    margin-top: 112px;
-                    .course {
-                        width: 200px;
-                        height: 361px;
-                    }
-                }
-
                 .waitTitle {
-                    margin-top: 32px;
                     font-family: Gilroy-Bold;
-                    font-size: 24px;
+                    font-size: 32px;
                     font-weight: bold;
                     font-stretch: normal;
                     font-style: normal;
-                    line-height: 1.33;
+                    line-height: 1.25;
                     letter-spacing: normal;
                     text-align: center;
                     color: #5a575c;
+                    // max-width: 550px;
+                    width: 100%;
+                    margin-top: 228px;
                 }
 
                 .waitDesc {
+                    width: 100%;
+                    max-width: 500px;
+                    max-height: 50px;
+                    overflow-y: auto;
+                    color: #5a575c;
                     font-family: Gilroy-Regular;
                     font-size: 16px;
                     font-weight: normal;
@@ -2308,37 +2786,86 @@ export default {
                     line-height: 1.5;
                     letter-spacing: normal;
                     text-align: center;
+                    position: absolute;
+                    top: 272px;
+                    word-break: break-all;
 
-                    &.error {
+                    .error {
                         color: #df434c;
                     }
                 }
 
-                .stepNetwork {
-                    font-family: Gilroy-Bold;
-                    font-size: 10px;
-                    font-weight: bold;
-                    font-stretch: normal;
-                    font-style: normal;
-                    line-height: 1.6;
-                    letter-spacing: 1.25px;
-                    color: #1a38f8;
-                    text-transform: uppercase;
-                    cursor: pointer;
-                    margin-top: 8px;
+                .waitWalletBox {
+                    // width: 100%;
+                    display: flex;
+                    justify-content: space-evenly;
+                    align-items: center;
+                    margin-top: 37px;
 
-                    img {
-                        width: 13px;
-                        height: 13px;
-                        margin-left: 5px;
+                    .walletItem {
+                        // padding: 67px 35px 54px;
+                        width: 160px;
+                        height: 230px;
+                        border-radius: 8px;
+                        border: solid 1px #e5e5e5;
+                        display: flex;
+                        justify-content: center;
+                        flex-direction: column;
+                        align-items: center;
+
+                        .walletIcon {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            .leftIcon,
+                            .rightIcon {
+                                width: 40px;
+                                height: 40px;
+                                margin-bottom: 34px;
+                            }
+
+                            .completed {
+                                width: 64px;
+                                height: 64px;
+                                margin-bottom: 10px;
+                            }
+                        }
+
+                        .walletNetwork {
+                            font-family: Gilroy-Bold;
+                            font-size: 14px;
+                            font-weight: bold;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.29;
+                            letter-spacing: normal;
+                            color: #5a575c;
+                        }
+
+                        .walletAddress {
+                            font-family: Gilroy-Regular;
+                            font-size: 14px;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.29;
+                            letter-spacing: normal;
+                            text-align: center;
+                            color: #99999a;
+                        }
+                    }
+
+                    .walletArrow {
+                        width: 24px;
+                        height: 24px;
+                        margin: 0 24px;
                     }
                 }
 
                 .blockCompletedBox {
                     margin-top: 24px;
                     text-align: center;
-                    display: flex;
-                    align-items: center;
 
                     .blocks {
                         display: flex;
@@ -2365,7 +2892,7 @@ export default {
                         line-height: 1.33;
                         letter-spacing: normal;
                         color: #99999a;
-                        margin-left: 8px;
+                        margin-top: 8px;
 
                         .confirmations {
                             font-family: Gilroy-Bold;

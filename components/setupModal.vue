@@ -3,7 +3,7 @@
         <Modal
             v-model="stepModal"
             :footer-hide="true"
-            :transfer="false"
+            :transfer="true"
             :closable="false"
             :mask="true"
             class="stepModal"
@@ -147,7 +147,9 @@
                                             :content="tooltipContent"
                                             offset="0 4"
                                             placement="bottom"
-                                            @on-popper-hide="resetTooltipContent"
+                                            @on-popper-hide="
+                                                resetTooltipContent
+                                            "
                                         >
                                             <svg
                                                 class="copyBtn RPC_URL2"
@@ -177,8 +179,8 @@
                                                         stroke="none"
                                                     />
                                                 </g>
-                                            </svg>
-                                        </Tooltip>)
+                                            </svg> </Tooltip
+                                        >)
                                     </span>
                                 </Col>
                             </Row>
@@ -296,7 +298,9 @@
                                             :content="tooltipContent"
                                             offset="0 4"
                                             placement="bottom"
-                                            @on-popper-hide="resetTooltipContent"
+                                            @on-popper-hide="
+                                                resetTooltipContent
+                                            "
                                         >
                                             <svg
                                                 class="copyBtn RPC_URL3"
@@ -354,7 +358,11 @@
                                             class="copyBtn Block_Explorer_URL"
                                             data-clipboard-text="https://testnet.bscscan.com/"
                                             data-clipboard-action="copy"
-                                            @click="copyConfig('.Block_Explorer_URL')"
+                                            @click="
+                                                copyConfig(
+                                                    '.Block_Explorer_URL'
+                                                )
+                                            "
                                             width="24px"
                                             height="24px"
                                             viewBox="0 0 24 24"
@@ -380,7 +388,7 @@
                                             </g>
                                         </svg>
                                     </Tooltip>
-                            </Col>
+                                </Col>
                             </Row>
                         </div>
                     </div>
@@ -447,7 +455,7 @@ export default {
             setTimeout(function() {
                 that.tooltipContent = "Copy to clipboard";
             }, 300);
-        },
+        }
     },
     mounted() {},
     destroyed() {}
@@ -456,66 +464,6 @@ export default {
 
 <style lang="scss" scoped>
 body {
-    .transferTooltip {
-        z-index: 10001 !important;
-
-        &[x-placement="top"] {
-            .ivu-tooltip-arrow {
-                border-right: 1px solid #1a38f8;
-                border-bottom: 1px solid #1a38f8;
-            }
-        }
-
-        &[x-placement^="bottom"] {
-            .ivu-tooltip-arrow {
-                border-left: 1px solid #1a38f8;
-                border-top: 1px solid #1a38f8;
-            }
-        }
-
-        &[x-placement="left"] {
-            .ivu-tooltip-arrow {
-                border-top: 1px solid #1a38f8;
-                border-right: 1px solid #1a38f8;
-            }
-        }
-
-        &[x-placement^="right"] {
-            .ivu-tooltip-arrow {
-                border-left: 1px solid #1a38f8;
-                border-bottom: 1px solid #1a38f8;
-            }
-        }
-
-        .ivu-tooltip-arrow {
-            transform: rotate(45deg);
-            width: 10px;
-            height: 10px;
-            background: white;
-            border: none;
-        }
-
-        .ivu-tooltip-inner {
-            width: 100%;
-            background-color: #fff;
-            font-family: Gilroy-Medium;
-            font-size: 12px;
-            line-height: 16px;
-            font-weight: 500;
-            color: #5a575c;
-            padding: 10px 16px;
-            border: 1px solid #1a38f8;
-            box-shadow: 0 2px 12px 0 #deddde;
-            border-radius: 8px;
-            overflow: hidden;
-            text-align: left;
-            word-break: keep-all;
-            white-space: break-spaces;
-        }
-    }
-}
-
-#stepModal {
     .stepModal {
         /deep/.ivu-modal-wrap {
             display: flex;
@@ -566,7 +514,7 @@ body {
                                 cursor: pointer;
                                 width: 16px;
                                 height: 16px;
-                
+
                                 &:hover {
                                     #Combined-Shape {
                                         fill: #1a38f8;
@@ -689,6 +637,64 @@ body {
                                     display: none;
                                 }
                                 margin: 0 0 20px 0;
+                            }
+                        }
+
+                        .transferTooltip {
+                            z-index: 10001 !important;
+
+                            &[x-placement="top"] {
+                                .ivu-tooltip-arrow {
+                                    border-right: 1px solid #1a38f8;
+                                    border-bottom: 1px solid #1a38f8;
+                                }
+                            }
+
+                            &[x-placement^="bottom"] {
+                                .ivu-tooltip-arrow {
+                                    border-left: 1px solid #1a38f8;
+                                    border-top: 1px solid #1a38f8;
+                                }
+                            }
+
+                            &[x-placement="left"] {
+                                .ivu-tooltip-arrow {
+                                    border-top: 1px solid #1a38f8;
+                                    border-right: 1px solid #1a38f8;
+                                }
+                            }
+
+                            &[x-placement^="right"] {
+                                .ivu-tooltip-arrow {
+                                    border-left: 1px solid #1a38f8;
+                                    border-bottom: 1px solid #1a38f8;
+                                }
+                            }
+
+                            .ivu-tooltip-arrow {
+                                transform: rotate(45deg);
+                                width: 10px;
+                                height: 10px;
+                                background: white;
+                                border: none;
+                            }
+
+                            .ivu-tooltip-inner {
+                                width: 100%;
+                                background-color: #fff;
+                                font-family: Gilroy-Medium;
+                                font-size: 12px;
+                                line-height: 16px;
+                                font-weight: 500;
+                                color: #5a575c;
+                                padding: 10px 16px;
+                                border: 1px solid #1a38f8;
+                                box-shadow: 0 2px 12px 0 #deddde;
+                                border-radius: 8px;
+                                overflow: hidden;
+                                text-align: left;
+                                word-break: keep-all;
+                                white-space: break-spaces;
                             }
                         }
                     }

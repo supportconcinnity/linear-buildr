@@ -390,6 +390,7 @@
                     :currentConfirm="confirmTransactionStatus"
                     :currentErrMsg="transactionErrMsg"
                     :setupArray="waitProcessArray"
+                    :shouldApprove="shouldApprove"
                     @tryAgain="waitProcessFlow"
                     @close="setDefaultTab"
                 ></watingEnhance>
@@ -506,6 +507,7 @@ export default {
             confirmTransactionHash: "", //当前交易hash
             transactionErrMsg: "", //交易错误信息
             processing: false, // 处理状态, 防止重复点击
+            shouldApprove: false, //需要approve
 
             waitProcessArray: [], //等待交易进度组
             waitProcessFlow: Function, //flow闭包函数
@@ -1277,9 +1279,7 @@ export default {
                         this.confirmTransactionStep = 0;
 
                         if (this.actionData.needApprove.gt("0")) {
-                            this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.APPROVE
-                            );
+                            this.shouldApprove = true;
                         }
 
                         // if (
@@ -1327,12 +1327,10 @@ export default {
                 try {
                     this.transactionErrMsg = "";
 
-                    if (
-                        this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.APPROVE
-                    ) {
+                    if (this.shouldApprove) {
                         await this.startApproveContract(
-                            this.actionData.needApprove
+                            n2bn(Number.MAX_SAFE_INTEGER)
+                            // this.actionData.needApprove
                         );
                     }
 
@@ -1471,8 +1469,10 @@ export default {
                     };
                 }
 
+                this.shouldApprove = false;
+
                 //成功后累加当前进度
-                this.confirmTransactionStep += 1;
+                // this.confirmTransactionStep += 1;
             }
         },
 
