@@ -138,7 +138,7 @@ import closeSvg from "@/components/svg/close";
 import { format } from "date-fns";
 
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-import exchangeData from "@/assets/linearLibrary/linearTools/request/linearData/exchangeData";
+import bandPrice from "@/assets/linearLibrary/linearTools/request/linearData/bandPrice";
 import currencies from "@/common/currency";
 
 import {
