@@ -87,7 +87,7 @@
                                     Avaliable:
                                     {{
                                         formatNumber(
-                                            currency.avaliable,
+                                            currency.balance,
                                             DECIMAL_PRECISION
                                         )
                                     }}
@@ -114,7 +114,7 @@
                                             :min="currency.frozenBalance"
                                             :max="
                                                 floor(
-                                                    currency.avaliable,
+                                                    currency.balance,
                                                     DECIMAL_PRECISION
                                                 )
                                             "
@@ -159,7 +159,7 @@
                                         :min="currency.frozenBalance"
                                         :max="
                                             floor(
-                                                currency.avaliable,
+                                                currency.balance,
                                                 DECIMAL_PRECISION
                                             )
                                         "
@@ -202,7 +202,7 @@
                 <watingEnhanceSwapNew
                     :amount="diffSwapNumber"
                     v-if="actionTabs == 'm1'"
-                    :currency="currency.id"
+                    :currency="currency.key"
                     @close="close"
                 ></watingEnhanceSwapNew>
             </TabPane>
@@ -242,6 +242,8 @@ import {
     formatEtherToNumber,
     formatNumber
 } from "@/assets/linearLibrary/linearTools/format";
+import { getLiquids } from "@/assets/linearLibrary/linearTools/request";
+import currenciesList from "@/common/currency";
 
 export default {
     name: "swap",
@@ -274,12 +276,6 @@ export default {
 
             formatNumber,
 
-            // currency: {
-            //     name: "LINA",
-            //     img: require("@/static/LINA_logo.svg"),
-            //     avaliable: 0
-            // },
-
             currencyDropDown: false,
 
             selectCurrencyIndex: 0,
@@ -289,14 +285,7 @@ export default {
                     name: "LINA",
                     id: "LINA",
                     img: require("@/static/LINA_logo.svg"),
-                    avaliable: 0, //最大余额
-                    frozenBalance: 0 //已经存但未提取的数量
-                },
-                {
-                    name: "ℓUSD",
-                    id: "lUSD",
-                    img: require("@/static/currency/lUSD.svg"),
-                    avaliable: 0,
+                    balance: 0,
                     frozenBalance: 0
                 }
             ]
@@ -353,6 +342,9 @@ export default {
         }
     },
     async created() {
+        await this.initLiquidsList();
+        await this.getFrozenBalance();
+
         //监听链切换
         this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
             "onWalletChainChange",
@@ -372,10 +364,6 @@ export default {
             }
         );
     },
-
-    async mounted() {
-        await this.getFrozenBalance();
-    },
     destroyed() {
         //清除事件,防止重复
         if (this.chainChangeTokenFromUnfreeze != "") {
@@ -392,6 +380,37 @@ export default {
     },
 
     methods: {
+        //初始化liquids列表
+        async initLiquidsList() {
+            this.processing = true;
+            const [linaBalance, liquids] = await Promise.all([
+                lnrJSConnector.lnrJS.LinearFinance.balanceOf(
+                    this.walletAddress
+                ),
+                getLiquids(this.walletAddress)
+            ]);
+
+            let liquidsList = liquids.liquidsList.map(item => {
+                const key = item.name;
+                return {
+                    name: currenciesList[key].name,
+                    key,
+                    balance: _.floor(item.balance, DECIMAL_PRECISION),
+                    img: item.img,
+                    frozenBalance: 0
+                };
+            });
+
+            //单独设置lina余额
+            this.currencies[0].balance = _.floor(
+                bn2n(linaBalance),
+                DECIMAL_PRECISION
+            );
+
+            this.currencies = [...this.currencies, ...liquidsList];
+        },
+
+        //获取冻结余额
         async getFrozenBalance() {
             try {
                 this.processing = true;
@@ -401,33 +420,19 @@ export default {
                     this.walletNetworkId
                 ).join();
 
-                let contract;
-
-                if (this.selectCurrencyIndex == 0) {
-                    contract = lnrJSConnector.lnrJS.LinearFinance;
-                } else if (this.selectCurrencyIndex == 1) {
-                    contract = lnrJSConnector.lnrJS.lUSD;
-                }
-
                 //获取当前和其他网络冻结数据
                 const [current, other, avaliableAmount] = await Promise.all([
                     lnr.userSwapAssetsCount({
                         account: this.walletAddress,
-                        source: this.currency.id,
+                        source: this.currency.key,
                         networkId: this.walletNetworkId
                     }),
                     lnr.userSwapAssetsCount({
                         account: this.walletAddress,
-                        source: this.currency.id,
+                        source: this.currency.key,
                         networkId: otherNetworkId
-                    }),
-                    contract.balanceOf(this.walletAddress)
+                    })
                 ]);
-
-                this.currencies[this.selectCurrencyIndex].avaliable = _.floor(
-                    formatEtherToNumber(avaliableAmount),
-                    DECIMAL_PRECISION
-                );
 
                 let currentFreeZeTokens = n2bn("0"),
                     otherUnFreeZeTokens = n2bn("0");
@@ -440,9 +445,10 @@ export default {
                     currentFreeZeTokens,
                     otherUnFreeZeTokens
                 );
-                this.currencies[
-                    this.selectCurrencyIndex
-                ].frozenBalance = this.swapNumber = frozenBalance.gt(n2bn("0"))
+
+                this.currency.frozenBalance = this.swapNumber = frozenBalance.gt(
+                    n2bn("0")
+                )
                     ? _.floor(
                           formatEtherToNumber(frozenBalance),
                           DECIMAL_PRECISION
@@ -479,10 +485,7 @@ export default {
         //点击最大
         clickMaxAmount() {
             this.activeItemBtn = 0;
-            this.swapNumber = _.floor(
-                this.currency.avaliable,
-                DECIMAL_PRECISION
-            );
+            this.swapNumber = _.floor(this.currency.balance, DECIMAL_PRECISION);
 
             var el = document.getElementById("transfer_number_input");
             this.setCursorRange(el, 0, 0);
@@ -628,43 +631,46 @@ export default {
                                     .ivu-poptip-body {
                                         padding: 8px 0;
 
-                                        .currencyItem {
-                                            display: flex;
-                                            align-items: center;
-                                            padding: 16px 24px;
+                                        .ivu-poptip-body-content {
+                                            max-height: 300px;
+                                            .currencyItem {
+                                                display: flex;
+                                                align-items: center;
+                                                padding: 16px 24px;
 
-                                            .itemIcon {
-                                                width: 40px;
-                                                height: 40px;
-                                                margin-right: 17px;
-                                            }
-
-                                            .itemName {
-                                                font-family: Gilroy-Bold;
-                                                font-size: 16px;
-                                                font-weight: bold;
-                                                font-stretch: normal;
-                                                font-style: normal;
-                                                line-height: 1.5;
-                                                letter-spacing: normal;
-                                                color: #5a575c;
-                                            }
-
-                                            &.selected {
-                                                background-color: rgba(
-                                                    #7eb5ff,
-                                                    0.1
-                                                );
+                                                .itemIcon {
+                                                    width: 40px;
+                                                    height: 40px;
+                                                    margin-right: 17px;
+                                                }
 
                                                 .itemName {
-                                                    color: #1a38f8;
+                                                    font-family: Gilroy-Bold;
+                                                    font-size: 16px;
+                                                    font-weight: bold;
+                                                    font-stretch: normal;
+                                                    font-style: normal;
+                                                    line-height: 1.5;
+                                                    letter-spacing: normal;
+                                                    color: #5a575c;
                                                 }
-                                            }
 
-                                            &:hover {
-                                                &:not(.selected) {
+                                                &.selected {
+                                                    background-color: rgba(
+                                                        #7eb5ff,
+                                                        0.1
+                                                    );
+
                                                     .itemName {
                                                         color: #1a38f8;
+                                                    }
+                                                }
+
+                                                &:hover {
+                                                    &:not(.selected) {
+                                                        .itemName {
+                                                            color: #1a38f8;
+                                                        }
                                                     }
                                                 }
                                             }

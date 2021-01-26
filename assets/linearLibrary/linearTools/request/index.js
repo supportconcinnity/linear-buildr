@@ -17,7 +17,7 @@ let loopId = 0;
 /**
  * 获取所有合成资产余额/汇率列表，所有合成资产换算成lusd的总价值
  */
-export const getLiquids = async wallet => {
+export const getLiquids = async (wallet, all = false) => {
     const {
         lnrJS: {
             LnAssetSystem,
@@ -31,7 +31,7 @@ export const getLiquids = async wallet => {
     let liquids = 0;
     let assetKeys = [];
     let assetPromise = [];
-    let liquidsData = {liquids: 0, liquidsList: []};
+    let liquidsData = { liquids: 0, liquidsList: [] };
 
     //整理数据,判断前端库中是否有该资产的合约
     for (let i = 0; i < assetAddress.length; i++) {
@@ -58,7 +58,14 @@ export const getLiquids = async wallet => {
     for (let i = 0; i < assetAddress.length; i++) {
         for (const key in addressList) {
             //相同合约地址的数据
-            if (addressList[key] == assetAddress[i] && bn2n(assetBalances[i]) > 0) {
+            if (
+                addressList[key] == assetAddress[i] 
+            ) {
+                //如果不是获取所有且余额为0则跳过
+                if(!all && assetBalances[i].isZero()){
+                    continue;
+                }
+
                 liquidsData.liquidsList.push({
                     name: key,
                     balance: bn2n(assetBalances[i]),
@@ -328,7 +335,7 @@ export const storeDetailsData = async () => {
                     balance: amountETH,
                     valueUSD: 0,
                     img: require("@/static/ETH_logo.svg")
-                })
+                });
             } else if (isBinance) {
                 transferableAssets.push({
                     name: "BNB",
@@ -338,7 +345,9 @@ export const storeDetailsData = async () => {
                 });
             }
 
-            transferableAssets = transferableAssets.concat(liquidsData.liquidsList);
+            transferableAssets = transferableAssets.concat(
+                liquidsData.liquidsList
+            );
 
             let formatData = {
                 currentRatioPercent,
@@ -360,7 +369,7 @@ export const storeDetailsData = async () => {
                 totalCryptoBalanceInUSD,
                 buildRatio,
                 totalCollateralInUsd,
-                liquids2USD,
+                liquids2USD
             };
 
             //统一格式化数据
