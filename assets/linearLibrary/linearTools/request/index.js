@@ -1,5 +1,6 @@
 import _ from "lodash";
 import lnrJSConnector from "../lnrJSConnector";
+import { band } from "@/assets/linearLibrary/linearTools/request/linearData/bandPrice";
 
 import {
     CRYPTO_CURRENCIES,
@@ -10,7 +11,7 @@ import { formatNumber, formatEtherToNumber } from "../format";
 import { isBinanceNetwork, isEthereumNetwork, WALLET_STATUS } from "../network";
 import config from "@/config/common";
 import api from "@/api";
-import { n2bn, bn2n, bnMul } from "@/common/bnCalc";
+import { n2bn, bn2n, bnMul, bnAdd } from "@/common/bnCalc";
 
 let loopId = 0;
 
@@ -28,7 +29,7 @@ export const getLiquids = async (wallet, all = false) => {
     //获取资产列表
     const assetAddress = await LnAssetSystem.getAssetAddresses();
 
-    let liquids = 0;
+    let liquids = n2bn("0");
     let assetKeys = [];
     let assetPromise = [];
     let liquidsData = { liquids: 0, liquidsList: [] };
@@ -48,37 +49,45 @@ export const getLiquids = async (wallet, all = false) => {
         }
     }
 
-    //获取汇总数据
-    const [assetPrices, assetBalances] = await Promise.all([
-        getPriceRates(assetKeys),
-        Promise.all(assetPromise)
-    ]);
+    if (assetKeys.length && assetPromise.length) {
+        const walletNetworkId = $nuxt.$store.state.walletNetworkId;
+        const isEthereum = isEthereumNetwork(walletNetworkId);
 
-    //计算资产总数
-    for (let i = 0; i < assetAddress.length; i++) {
-        for (const key in addressList) {
-            //相同合约地址的数据
-            if (
-                addressList[key] == assetAddress[i] 
-            ) {
-                //如果不是获取所有且余额为0则跳过
-                if(!all && assetBalances[i].isZero()){
-                    continue;
-                }
+        let priceFunc = getPriceRates(assetKeys);
+        if (isEthereum) {
+            priceFunc = band.pricesLast({ sources: assetKeys });
+        }
 
-                liquidsData.liquidsList.push({
-                    name: key,
-                    balance: bn2n(assetBalances[i]),
-                    valueUSD: bn2n(bnMul(assetBalances[i], assetPrices[key])),
-                    img: currencies[key].icon
-                });
+        //获取汇总数据
+        const [assetPrices, assetBalances] = await Promise.all([
+            priceFunc,
+            Promise.all(assetPromise)
+        ]);
 
-                liquids += bn2n(bnMul(assetBalances[i], assetPrices[key]));
+        //计算资产总数
+        for (const index in assetKeys) {
+            const key = assetKeys[index]; //资产名称
+            const price = assetPrices[key]; //价格
+            const balance = assetBalances[index]; //余额
+
+            //如果不是获取所有且余额为0则跳过
+            if (!all && balance.isZero()) {
+                continue;
             }
+
+            const value = bnMul(balance, price);
+            liquidsData.liquidsList.push({
+                name: key,
+                balance: bn2n(balance),
+                valueUSD: bn2n(value),
+                img: currencies[key].icon
+            });
+
+            liquids = bnAdd(liquids, value);
         }
     }
 
-    liquidsData.liquids = n2bn(liquids);
+    liquidsData.liquids = liquids;
     return liquidsData;
 };
 

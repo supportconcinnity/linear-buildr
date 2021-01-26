@@ -563,6 +563,7 @@ import {
 } from "@/assets/linearLibrary/linearTools/format";
 import { BigNumber } from "ethers";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
+import currenciesList from "@/common/currency";
 
 export default {
     name: "watingEnhanceSwapNew",
@@ -896,9 +897,9 @@ export default {
                     let replaceCurrency = this.currency;
                     if (this.currency == "LINA") {
                         LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                    } else if (this.currency == "lUSD") {
-                        LnProxy = lnrJSConnector.lnrJS.lUSD;
-                        replaceCurrency = "ℓUSD";
+                    } else {
+                        LnProxy = lnrJSConnector.lnrJS[this.currency];
+                        replaceCurrency = currenciesList[this.currency].name;
                     }
 
                     //替换货币名称
@@ -1042,8 +1043,8 @@ export default {
 
             if (this.currency == "LINA") {
                 LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-            } else if (this.currency == "lUSD") {
-                LnProxy = lnrJSConnector.lnrJS.lUSD;
+            } else {
+                LnProxy = lnrJSConnector.lnrJS[this.currency];
             }
 
             const { utils } = lnrJSConnector;
@@ -1108,8 +1109,8 @@ export default {
 
                 if (this.currency == "LINA") {
                     LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                } else if (this.currency == "lUSD") {
-                    LnProxy = lnrJSConnector.lnrJS.lUSD;
+                } else {
+                    LnProxy = lnrJSConnector.lnrJS[this.currency];
                 }
 
                 if (

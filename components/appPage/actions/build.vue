@@ -1428,6 +1428,7 @@ export default {
             }
         ) {
             this.confirmTransactionStatus = false;
+            this.confirmTransactionNetworkId = this.walletNetworkId;
 
             //多抵押一点,防止build失败
             let tempStakeAmount = n2bn(_.ceil(bn2n(stakeAmountLINA), 2));
@@ -1458,8 +1459,6 @@ export default {
                 gasPrice: this.$store.state?.gasDetails?.price,
                 gasLimit: this.gasLimit
             };
-
-            this.confirmTransactionNetworkId = this.walletNetworkId;
 
             transactionSettings.gasLimit = await this.getGasEstimateFromStakingAndBuild(
                 stakeAmountLINA,

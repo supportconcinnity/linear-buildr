@@ -381,6 +381,7 @@ export default {
     methods: {
         async initData() {
             this.currencyDropDown = false;
+            this.selectCurrencyIndex = 0;
             this.currencies = [
                 {
                     name: "LINA",
@@ -526,7 +527,7 @@ export default {
 
         async close() {
             this.actionTabs = "m0";
-            await this.getFrozenBalance();
+            await this.initData();
         }
     }
 };

@@ -1,7 +1,6 @@
 "use strict";
-const {  BigNumber } = require("ethers");
+const { BigNumber } = require("ethers");
 const pageResults = require("graph-results-pager");
-const { bn2n } = require("@/common/bnCalc");
 
 const maxRequest = 1000;
 
@@ -22,7 +21,7 @@ module.exports = {
             sources = [],
             networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
-            return graphResultsPager({
+            return pageResults({
                 api: graphAPIEndpoints[networkId],
                 max,
                 query: {
@@ -30,26 +29,28 @@ module.exports = {
                     selection: {
                         where: {
                             id: source ? `\\"${source}\\"` : undefined,
-                            id_in: sources.length != 0
-                            ? "[" +
-                                sources
-                                  .map(code => `\\"${code}\\"`)
-                                  .join(",") +
-                              "]"
-                            : undefined,
+                            id_in:
+                                sources.length != 0
+                                    ? "[" +
+                                      sources
+                                          .map(code => `\\"${code}\\"`)
+                                          .join(",") +
+                                      "]"
+                                    : undefined
                         }
                     },
-                    properties: ["id", "currentPrice", "lastPrice"]
+                    properties: ["id", "currentPrice"]
                 }
             })
-                .then(results =>
-                    results.map(({ id, currentPrice, lastPrice }) => ({
-                        source: id,
-                        currentPrice: bn2n(BigNumber.from(currentPrice)),
-                        lastPrice: bn2n(BigNumber.from(lastPrice)),
-                    }))
-                )
+                .then(results => {
+                    let prices = {};
+                    results.map(
+                        ({ id, currentPrice }) =>
+                            (prices[id] = BigNumber.from(currentPrice))
+                    );
+                    return prices;
+                })
                 .catch(err => console.error(err));
-        },
+        }
     }
 };
