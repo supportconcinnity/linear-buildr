@@ -693,27 +693,27 @@ export default {
                         this.waitProcessArray = [];
                         this.confirmTransactionStep = 0;
 
-                        if (
-                            this.actionDatas.amount.gte(n2bn("0.01")) &&
-                            this.actionDatas.unStake.gte(n2bn("0.01"))
-                        ) {
+                        // if (
+                        //     this.actionDatas.amount.gte(n2bn("0.01")) &&
+                        //     this.actionDatas.unStake.gte(n2bn("0.01"))
+                        // ) {
+                        //     this.waitProcessArray.push(
+                        //         BUILD_PROCESS_SETUP.BURN_UNSTAKING
+                        //     );
+                        // } else {
+                        if (this.actionDatas.amount.gte(n2bn("0.01"))) {
+                            //需要先burn
                             this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.BURN_UNSTAKING
+                                BUILD_PROCESS_SETUP.BURN
                             );
-                        } else {
-                            if (this.actionDatas.amount.gte(n2bn("0.01"))) {
-                                //需要先burn
-                                this.waitProcessArray.push(
-                                    BUILD_PROCESS_SETUP.BURN
-                                );
-                            }
-
-                            if (this.actionDatas.unStake.gte(n2bn("0.01"))) {
-                                this.waitProcessArray.push(
-                                    BUILD_PROCESS_SETUP.UNSTAKING
-                                );
-                            }
                         }
+
+                        if (this.actionDatas.unStake.gte(n2bn("0.01"))) {
+                            this.waitProcessArray.push(
+                                BUILD_PROCESS_SETUP.UNSTAKING
+                            );
+                        }
+                        // }
 
                         this.actionTabs = "m1"; //进入等待页
 
@@ -739,12 +739,44 @@ export default {
                 try {
                     this.transactionErrMsg = "";
 
-                    if (this.waitProcessArray.length) {
-                        await this.burnAndUnstake({
-                            burnAmount: this.actionDatas.amount,
-                            unstakeAmount: this.actionDatas.unStake
-                        });
+                    if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.BURN_UNSTAKING
+                    ) {
+                        //console.log("同时burn和unstake");
+                        await this.burnAndUnstake(this.actionDatas.amount);
+                    } else {
+                        if (
+                            this.waitProcessArray[
+                                this.confirmTransactionStep
+                            ] == BUILD_PROCESS_SETUP.BURN
+                        ) {
+                            //console.log("单独burn");
+                            const amount = n2bn(
+                                _.ceil(bn2n(this.actionDatas.amount), 2)
+                            );
+                            if (amount.lt(this.burnData.lUSDBN)) {
+                                this.actionDatas.amount = amount;
+                            }
+
+                            await this.burn(this.actionDatas.amount);
+                        }
+
+                        if (
+                            this.waitProcessArray[
+                                this.confirmTransactionStep
+                            ] == BUILD_PROCESS_SETUP.UNSTAKING
+                        ) {
+                            //console.log("单独unstake");
+                            this.actionDatas.unStake = n2bn(
+                                _.floor(bn2n(this.actionDatas.unStake), 2)
+                            );
+                            await this.unstake(this.actionDatas.unStake);
+                        }
                     }
+
+                    //全部执行完毕显示成功
+                    // this.confirmTransactionStep += 1;
                 } catch (error) {
                     console.log(error, "startFlow");
                     //自定义错误
@@ -763,40 +795,22 @@ export default {
         },
 
         //burn
-        async burnAndUnstake(
-            { burnAmount, unstakeAmount } = {
-                burnAmount: n2bn("0"),
-                unstakeAmount: n2bn("0")
-            }
-        ) {
-            this.confirmTransactionStatus = false;
-            this.confirmTransactionNetworkId = this.walletNetworkId;
-
-            //burn多一点点,防止unstake出错
-            let tempBurnAmount = n2bn(_.ceil(bn2n(burnAmount), 2));
-            if (tempBurnAmount.lte(this.burnData.lUSDBN)) {
-                burnAmount = tempBurnAmount;
-            }
-
-            //unstake少一点,防止出错
-            unstakeAmount = n2bn(_.floor(bn2n(unstakeAmount), 2));
-
-            // console.log(unstakeAmount / 1e18, burnAmount / 1e18);
-
+        async burnAndUnstake(burnAmount) {
             const {
                 lnrJS: { LnCollateralSystem },
                 utils
             } = lnrJSConnector;
 
+            this.confirmTransactionStatus = false;
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
             const burnGasLimit = await this.getBurnAndUnstakeGasEstimate(
-                burnAmount,
-                unstakeAmount
+                burnAmount
             );
 
-            let transaction = await LnCollateralSystem.burnAndUnstake(
-                burnAmount,
+            let transaction = await LnCollateralSystem.burnAndRedeem(
                 utils.formatBytes32String("LINA"),
-                unstakeAmount,
+                burnAmount,
                 {
                     gasPrice: this.$store.state?.gasDetails?.price,
                     gasLimit: burnGasLimit
@@ -832,31 +846,160 @@ export default {
             }
         },
 
-        //评估 二合一 gas
-        async getBurnAndUnstakeGasEstimate(burnAmount, unstakeAmount) {
+        //burn
+        async burn(burnAmount) {
+            const {
+                lnrJS: { LnBuildBurnSystem },
+                utils
+            } = lnrJSConnector;
+
+            this.confirmTransactionStatus = false;
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
+            const burnGasLimit = await this.getBurnGasEstimate(burnAmount);
+
+            let transaction = await LnBuildBurnSystem.BurnAsset(burnAmount, {
+                gasPrice: this.$store.state?.gasDetails?.price,
+                gasLimit: burnGasLimit
+            });
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: BUILD_PROCESS_SETUP.BURN,
+                    networkId: this.walletNetworkId,
+                    value: `Burn ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
+                });
+
+                let status = await utils.waitForTransaction(transaction.hash);
+
+                if (!status) {
+                    throw {
+                        code: 6100004,
+                        message:
+                            "Something went wrong while burn ℓUSD, please try again."
+                    };
+                }
+
+                //成功后累加当前进度
+                this.confirmTransactionStep += 1;
+            }
+        },
+
+        //unstake
+        async unstake(unstakeAmount) {
+            const {
+                lnrJS: { LnCollateralSystem },
+                utils
+            } = lnrJSConnector;
+
+            this.confirmTransactionStatus = false;
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
+            const unstakeGasLimit = await this.getUnstakeGasEstimate(
+                unstakeAmount
+            );
+
+            let transaction = await LnCollateralSystem.Redeem(
+                utils.formatBytes32String("LINA"),
+                unstakeAmount,
+                {
+                    gasPrice: this.$store.state?.gasDetails?.price,
+                    gasLimit: unstakeGasLimit
+                }
+            );
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: BUILD_PROCESS_SETUP.UNSTAKING,
+                    networkId: this.walletNetworkId,
+                    value: `Burn ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
+                });
+
+                //等待交易结果返回
+                let status = await utils.waitForTransaction(transaction.hash);
+
+                if (!status) {
+                    throw {
+                        code: 6100005,
+                        message:
+                            "Something went wrong while unstaking your asset, please try again."
+                    };
+                }
+
+                //成功后累加当前进度
+                this.confirmTransactionStep += 1;
+            }
+        },
+
+        //评估 burn gas
+        async getBurnAndUnstakeGasEstimate(burnAmount) {
             try {
                 const {
                     lnrJS: { LnCollateralSystem },
                     utils
                 } = lnrJSConnector;
 
-                if (
-                    burnAmount.lte("0") &&
-                    unstakeAmount.lte("0") //小于等于0
-                ) {
-                    throw new Error("invalid input");
-                }
-
-                let gasEstimate = await LnCollateralSystem.contract.estimateGas.burnAndUnstake(
-                    burnAmount,
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.burnAndRedeem(
                     utils.formatBytes32String("LINA"),
-                    unstakeAmount
+                    burnAmount
                 );
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
                 // console.log(e);
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.burn);
+            }
+        },
+
+        //评估 burn gas
+        async getBurnGasEstimate(burnAmount) {
+            try {
+                const {
+                    lnrJS: { LnBuildBurnSystem },
+                    utils
+                } = lnrJSConnector;
+
+                let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BurnAsset(
+                    burnAmount
+                );
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.burn);
+            }
+        },
+
+        //评估 unstake gas
+        async getUnstakeGasEstimate(unstakeAmount) {
+            try {
+                const {
+                    lnrJS: { LnCollateralSystem },
+                    utils
+                } = lnrJSConnector;
+
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.Redeem(
+                    utils.formatBytes32String("LINA"),
+                    unstakeAmount
+                );
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                console.log(e);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.unstake);
             }
         },
 
