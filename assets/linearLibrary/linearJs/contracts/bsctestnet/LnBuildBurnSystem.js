@@ -63,6 +63,21 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
+      this.buildFromCollateralSys = async (user, amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.buildFromCollateralSys(user, amount, txParams);
+      };
+    
+      this.buildMaxFromCollateralSys = async (user, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.buildMaxFromCollateralSys(user, txParams);
+      };
+    
+      this.burnFromCollateralSys = async (user, amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.burnFromCollateralSys(user, amount, txParams);
+      };
+    
       this.candidate = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.candidate(txParams);

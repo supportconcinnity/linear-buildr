@@ -187,13 +187,6 @@ export default [
   },
   {
     inputs: [],
-    name: 'CollateralEth',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'payable',
-    type: 'function'
-  },
-  {
-    inputs: [],
     name: 'Currency_ETH',
     outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
     stateMutability: 'view',
@@ -270,13 +263,6 @@ export default [
       { internalType: 'uint256', name: '_amount', type: 'uint256' }
     ],
     name: 'Redeem',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'uint256', name: '_amount', type: 'uint256' } ],
-    name: 'RedeemETH',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -361,7 +347,7 @@ export default [
     name: 'buildBurnSystem',
     outputs: [
       {
-        internalType: 'contract LnBuildBurnSystem',
+        internalType: 'contract ILnBuildBurnSystem',
         name: '',
         type: 'address'
       }
@@ -371,17 +357,33 @@ export default [
   },
   {
     inputs: [
-      { internalType: 'bytes32', name: '_currency', type: 'bytes32' },
-      { internalType: 'uint256', name: '_amount', type: 'uint256' }
+      { internalType: 'uint256', name: 'burnAmount', type: 'uint256' },
+      {
+        internalType: 'bytes32',
+        name: 'unstakeCurrency',
+        type: 'bytes32'
+      },
+      {
+        internalType: 'uint256',
+        name: 'unstakeAmount',
+        type: 'uint256'
+      }
     ],
-    name: 'burnAndRedeem',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    name: 'burnAndUnstake',
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [ { internalType: 'bytes32', name: '_currency', type: 'bytes32' } ],
-    name: 'burnAndRedeemMax',
+    inputs: [
+      { internalType: 'uint256', name: 'burnAmount', type: 'uint256' },
+      {
+        internalType: 'bytes32',
+        name: 'unstakeCurrency',
+        type: 'bytes32'
+      }
+    ],
+    name: 'burnAndUnstakeMax',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -394,21 +396,11 @@ export default [
     type: 'function'
   },
   {
-    inputs: [
-      { internalType: 'bytes32', name: '_currency', type: 'bytes32' },
-      { internalType: 'uint256', name: '_amount', type: 'uint256' }
-    ],
-    name: 'collateralAndBuild',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
     inputs: [],
     name: 'debtSystem',
     outputs: [
       {
-        internalType: 'contract LnDebtSystem',
+        internalType: 'contract ILnDebtSystem',
         name: '',
         type: 'address'
       }
@@ -420,7 +412,7 @@ export default [
     inputs: [],
     name: 'mConfig',
     outputs: [
-      { internalType: 'contract LnConfig', name: '', type: 'address' }
+      { internalType: 'contract ILnConfig', name: '', type: 'address' }
     ],
     stateMutability: 'view',
     type: 'function'
@@ -430,7 +422,7 @@ export default [
     name: 'mRewardLocker',
     outputs: [
       {
-        internalType: 'contract LnRewardLocker',
+        internalType: 'contract ILnRewardLocker',
         name: '',
         type: 'address'
       }
@@ -464,7 +456,7 @@ export default [
     inputs: [],
     name: 'priceGetter',
     outputs: [
-      { internalType: 'contract LnPrices', name: '', type: 'address' }
+      { internalType: 'contract ILnPrices', name: '', type: 'address' }
     ],
     stateMutability: 'view',
     type: 'function'
@@ -481,6 +473,35 @@ export default [
   {
     inputs: [ { internalType: 'bool', name: '_paused', type: 'bool' } ],
     name: 'setPaused',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'stakeCurrency',
+        type: 'bytes32'
+      },
+      { internalType: 'uint256', name: 'stakeAmount', type: 'uint256' },
+      { internalType: 'uint256', name: 'buildAmount', type: 'uint256' }
+    ],
+    name: 'stakeAndBuild',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'stakeCurrency',
+        type: 'bytes32'
+      },
+      { internalType: 'uint256', name: 'stakeAmount', type: 'uint256' }
+    ],
+    name: 'stakeAndBuildMax',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -522,7 +543,7 @@ export default [
   {
     inputs: [
       {
-        internalType: 'contract LnAddressStorage',
+        internalType: 'contract ILnAddressStorage',
         name: '_addressStorage',
         type: 'address'
       }
@@ -543,6 +564,5 @@ export default [
     ],
     stateMutability: 'view',
     type: 'function'
-  },
-  { stateMutability: 'payable', type: 'receive' }
+  }
 ];

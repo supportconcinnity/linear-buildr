@@ -103,6 +103,21 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
+      this.buildBurnSystem = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.buildBurnSystem(txParams);
+      };
+    
+      this.burnAndUnstake = async (burnAmount, unstakeCurrency, unstakeAmount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.burnAndUnstake(burnAmount, unstakeCurrency, unstakeAmount, txParams);
+      };
+    
+      this.burnAndUnstakeMax = async (burnAmount, unstakeCurrency, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.burnAndUnstakeMax(burnAmount, unstakeCurrency, txParams);
+      };
+    
       this.candidate = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.candidate(txParams);
@@ -146,6 +161,16 @@
       this.setPaused = async (_paused, txParams) => {
         txParams = txParams || {};
         return await this.contract.setPaused(_paused, txParams);
+      };
+    
+      this.stakeAndBuild = async (stakeCurrency, stakeAmount, buildAmount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.stakeAndBuild(stakeCurrency, stakeAmount, buildAmount, txParams);
+      };
+    
+      this.stakeAndBuildMax = async (stakeCurrency, stakeAmount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.stakeAndBuildMax(stakeCurrency, stakeAmount, txParams);
       };
     
       this.tokenInfos = async (bytes32_1, txParams) => {

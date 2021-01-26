@@ -342,15 +342,14 @@ export default {
         }
     },
     async created() {
-        await this.initLiquidsList();
-        await this.getFrozenBalance();
+        await this.initData();
 
         //监听链切换
         this.chainChangeTokenFromSubscribe = this.$pub.subscribe(
             "onWalletChainChange",
             async () => {
                 if (this.actionTabs == "m0") {
-                    await this.getFrozenBalance();
+                    await this.initData();
                 }
             }
         );
@@ -359,7 +358,7 @@ export default {
             "onWalletAccountChange",
             async () => {
                 if (this.actionTabs == "m0") {
-                    await this.getFrozenBalance();
+                    await this.initData();
                 }
             }
         );
@@ -380,6 +379,22 @@ export default {
     },
 
     methods: {
+        async initData() {
+            this.currencyDropDown = false;
+            this.currencies = [
+                {
+                    name: "LINA",
+                    id: "LINA",
+                    img: require("@/static/LINA_logo.svg"),
+                    balance: 0,
+                    frozenBalance: 0
+                }
+            ];
+
+            await this.initLiquidsList();
+            await this.getFrozenBalance();
+        },
+
         //初始化liquids列表
         async initLiquidsList() {
             this.processing = true;

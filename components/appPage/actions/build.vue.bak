@@ -1282,28 +1282,28 @@ export default {
                             this.shouldApprove = true;
                         }
 
-                        if (
-                            this.actionData.stake.gte(n2bn("1")) &&
-                            this.actionData.amount.gte(n2bn("0.01"))
-                        ) {
-                            //合并进度
+                        // if (
+                        //     this.actionData.stake.gte(n2bn("1")) &&
+                        //     this.actionData.amount.gte(n2bn("0.01"))
+                        // ) {
+                        //     //一步调用
+                        //     this.waitProcessArray.push(
+                        //         BUILD_PROCESS_SETUP.STAKING_BUILD + " BSC"
+                        //     );
+                        // } else {
+                        //单独调用
+                        if (this.actionData.stake.gte(n2bn("1"))) {
                             this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.STAKING_BUILD + "BSC"
+                                BUILD_PROCESS_SETUP.STAKING
                             );
-                        } else {
-                            //单步进度
-                            if (this.actionData.stake.gte(n2bn("1"))) {
-                                this.waitProcessArray.push(
-                                    BUILD_PROCESS_SETUP.STAKING
-                                );
-                            }
-
-                            if (this.actionData.amount.gte(n2bn("0.01"))) {
-                                this.waitProcessArray.push(
-                                    BUILD_PROCESS_SETUP.BUILD
-                                );
-                            }
                         }
+
+                        if (this.actionData.amount.gte(n2bn("0.01"))) {
+                            this.waitProcessArray.push(
+                                BUILD_PROCESS_SETUP.BUILD
+                            );
+                        }
+                        // }
 
                         this.actionTabs = "m1"; //进入等待页
 
@@ -1330,14 +1330,69 @@ export default {
                     if (this.shouldApprove) {
                         await this.startApproveContract(
                             n2bn(Number.MAX_SAFE_INTEGER)
+                            // this.actionData.needApprove
                         );
                     }
 
-                    if (this.waitProcessArray.length) {
-                        await this.startStakingAndBuildContract({
-                            stakeAmountLINA: this.actionData.stake,
-                            buildAmountlUSD: this.actionData.amount
-                        });
+                    if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.STAKING_BUILD + "BSC"
+                    ) {
+                        //合约需要大于1
+                        if (this.actionData.stake.eq(n2bn("1"))) {
+                            this.actionData.stake = bnAdd(
+                                this.actionData.stake,
+                                n2bn("0.000000000000000001")
+                            );
+                        }
+
+                        //console.log("同时stake和buid");
+                        //一步调用
+                        await this.startStakingAndBuildContract(
+                            this.actionData.stake
+                        );
+                    } else {
+                        //单独调用
+                        if (
+                            this.waitProcessArray[
+                                this.confirmTransactionStep
+                            ] == BUILD_PROCESS_SETUP.STAKING
+                        ) {
+                            //console.log("单独stake");
+                            //多抵押一点,防止build失败
+                            let stake = n2bn(
+                                _.ceil(bn2n(this.actionData.stake), 2)
+                            );
+
+                            if (stake.gt(this.buildData.LINABN)) {
+                                stake = this.actionData.stake;
+                            }
+
+                            //合约需要大于1
+                            if (stake.eq(n2bn("1"))) {
+                                stake = bnAdd(
+                                    stake,
+                                    n2bn("0.000000000000000001")
+                                );
+                            }
+                            this.actionData.stake = stake;
+                            await this.startStakingContract(
+                                this.actionData.stake
+                            );
+                        }
+                        if (
+                            this.waitProcessArray[
+                                this.confirmTransactionStep
+                            ] == BUILD_PROCESS_SETUP.BUILD
+                        ) {
+                            //console.log("单独build");
+                            this.actionData.amount = n2bn(
+                                _.floor(bn2n(this.actionData.amount), 2)
+                            );
+                            await this.startBuildContract(
+                                this.actionData.amount
+                            );
+                        }
                     }
                 } catch (error) {
                     //自定义错误
@@ -1395,16 +1450,14 @@ export default {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
 
-                const amountStepNum = this.shouldApprove
-                    ? this.waitProcessArray.length + 1
-                    : this.waitProcessArray.length;
-
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.APPROVE,
                     networkId: this.walletNetworkId,
-                    value: `Building 1 / ${amountStepNum}`
+                    value: `Building ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
                 });
                 let status = await utils.waitForTransaction(transaction.hash);
 
@@ -1417,37 +1470,15 @@ export default {
                 }
 
                 this.shouldApprove = false;
+
+                //成功后累加当前进度
+                // this.confirmTransactionStep += 1;
             }
         },
 
         //开始抵押和build合约调用
-        async startStakingAndBuildContract(
-            { stakeAmountLINA, buildAmountlUSD } = {
-                stakeAmountLINA: n2bn("0"),
-                buildAmountlUSD: n2bn("0")
-            }
-        ) {
+        async startStakingAndBuildContract(stakeAmountLINA) {
             this.confirmTransactionStatus = false;
-
-            //多抵押一点,防止build失败
-            let tempStakeAmount = n2bn(_.ceil(bn2n(stakeAmountLINA), 2));
-
-            //小于等于最大数
-            if (tempStakeAmount.lte(this.buildData.LINABN)) {
-                stakeAmountLINA = tempStakeAmount;
-            }
-
-            //合约需要大于1
-            if (stakeAmountLINA.eq(n2bn("1"))) {
-                stakeAmountLINA = bnAdd(
-                    stakeAmountLINA,
-                    n2bn("0.000000000000000001")
-                );
-            }
-
-            if (buildAmountlUSD.gt(n2bn("0.01"))) {
-                buildAmountlUSD = n2bn(_.floor(bn2n(buildAmountlUSD), 2));
-            }
 
             const {
                 lnrJS: { LnCollateralSystem },
@@ -1462,13 +1493,121 @@ export default {
             this.confirmTransactionNetworkId = this.walletNetworkId;
 
             transactionSettings.gasLimit = await this.getGasEstimateFromStakingAndBuild(
+                stakeAmountLINA
+            );
+
+            let transaction = await LnCollateralSystem.collateralAndBuild(
+                utils.formatBytes32String("LINA"),
                 stakeAmountLINA,
+                transactionSettings
+            );
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: BUILD_PROCESS_SETUP.BUILD,
+                    networkId: this.walletNetworkId,
+                    value: `Building ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
+                });
+
+                let status = await utils.waitForTransaction(transaction.hash);
+
+                if (!status) {
+                    throw {
+                        code: 6100003,
+                        message:
+                            "Something went wrong while building your ℓUSD, please try again."
+                    };
+                }
+
+                this.confirmTransactionStep += 1;
+            }
+        },
+
+        //开始抵押合约调用
+        async startStakingContract(stakeAmountLINA) {
+            this.confirmTransactionStatus = false;
+
+            const {
+                lnrJS: { LnCollateralSystem },
+                utils
+            } = lnrJSConnector;
+
+            const transactionSettings = {
+                gasPrice: this.$store.state?.gasDetails?.price,
+                gasLimit: this.gasLimit
+            };
+
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
+            transactionSettings.gasLimit = await this.getGasEstimateFromStaking(
+                stakeAmountLINA
+            );
+
+            let transaction = await LnCollateralSystem.Collateral(
+                utils.formatBytes32String("LINA"),
+                stakeAmountLINA,
+                transactionSettings
+            );
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: BUILD_PROCESS_SETUP.STAKING,
+                    networkId: this.walletNetworkId,
+                    value: `Building ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
+                });
+
+                let status = await utils.waitForTransaction(transaction.hash);
+
+                if (!status) {
+                    throw {
+                        code: 6100002,
+                        message:
+                            "Something went wrong while staking your asset, please try again."
+                    };
+                }
+
+                this.confirmTransactionStep += 1;
+            }
+        },
+
+        //开始Build合约调用
+        async startBuildContract(buildAmountlUSD) {
+            this.confirmTransactionStatus = false;
+
+            //处理价格波动
+            //await this.handlePriceChange();
+
+            const {
+                lnrJS: { LnBuildBurnSystem },
+                utils
+            } = lnrJSConnector;
+
+            const transactionSettings = {
+                gasPrice: this.$store.state?.gasDetails?.price,
+                gasLimit: this.gasLimit
+            };
+
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
+            transactionSettings.gasLimit = await this.getGasEstimateFromBuild(
                 buildAmountlUSD
             );
 
-            let transaction = await LnCollateralSystem.stakeAndBuild(
-                utils.formatBytes32String("LINA"),
-                stakeAmountLINA,
+            let transaction = await LnBuildBurnSystem.BuildAsset(
                 buildAmountlUSD,
                 transactionSettings
             );
@@ -1477,17 +1616,14 @@ export default {
                 this.confirmTransactionStatus = true;
                 this.confirmTransactionHash = transaction.hash;
 
-                const currentStepNum =
-                    this.confirmTransactionStep + (this.shouldApprove ? 2 : 1);
-                const amountStepNum =
-                    this.waitProcessArray.length + (this.shouldApprove ? 1 : 0);
-
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
                     type: BUILD_PROCESS_SETUP.BUILD,
                     networkId: this.walletNetworkId,
-                    value: `Building ${currentStepNum} / ${amountStepNum}`
+                    value: `Building ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
                 });
 
                 let status = await utils.waitForTransaction(transaction.hash);
@@ -1530,10 +1666,7 @@ export default {
         },
 
         //评估StakingAndBuild的gas
-        async getGasEstimateFromStakingAndBuild(
-            stakeAmountLINA,
-            buildAmountlUSD
-        ) {
+        async getGasEstimateFromStakingAndBuild(stakeAmountLINA) {
             try {
                 const {
                     lnrJS: { LnCollateralSystem },
@@ -1541,22 +1674,71 @@ export default {
                 } = lnrJSConnector;
 
                 if (
-                    stakeAmountLINA.lte("0") &&
-                    buildAmountlUSD.lte("0") //小于等于0
+                    stakeAmountLINA.isZero() ||
+                    stakeAmountLINA.lt("0") //小于等于0
                 ) {
-                    throw new Error("invalid input");
+                    throw new Error("invalid stakeAmountLINA");
                 }
 
-                let gasEstimate = await LnCollateralSystem.contract.estimateGas.stakeAndBuild(
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.collateralAndBuild(
                     utils.formatBytes32String("LINA"),
-                    stakeAmountLINA,
-                    buildAmountlUSD
+                    stakeAmountLINA
                 );
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
                 console.log(e, "getGasEstimateFromStakingAndBuild");
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
+            }
+        },
+
+        //评估Staking的gas
+        async getGasEstimateFromStaking(stakeAmountLINA) {
+            try {
+                const {
+                    lnrJS: { LnCollateralSystem },
+                    utils
+                } = lnrJSConnector;
+
+                if (
+                    stakeAmountLINA.isZero() ||
+                    stakeAmountLINA.lt("0") //小于等于0
+                ) {
+                    throw new Error("invalid stakeAmountLINA");
+                }
+
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.Collateral(
+                    utils.formatBytes32String("LINA"),
+                    stakeAmountLINA
+                );
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
+            }
+        },
+
+        //评估Build的gas
+        async getGasEstimateFromBuild(buildAmountlUSD) {
+            try {
+                const {
+                    lnrJS: { LnBuildBurnSystem },
+                    utils
+                } = lnrJSConnector;
+
+                if (
+                    buildAmountlUSD <= 0 //小于等于0
+                ) {
+                    throw new Error("invalid buildAmountlUSD");
+                }
+
+                let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BuildAsset(
+                    buildAmountlUSD
+                );
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.build);
             }
         },
 

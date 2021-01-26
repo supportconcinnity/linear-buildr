@@ -244,7 +244,7 @@
                     <!-- 在切链状态 -->
                     <template v-else-if="confirmTransactionChainChanging">
                         Switch to
-                        <template v-if="isEthereumNetwork(walletNetworkId)"
+                        <template v-if="isEthereumNetwork(sourceNetworkId)"
                             >Binance</template
                         >
                         <template v-else>Ethereum</template>
@@ -274,11 +274,11 @@
                     <!-- 在切链状态 -->
                     <template v-else-if="confirmTransactionChainChanging">
                         If you do not have
-                        <template v-if="isEthereumNetwork(walletNetworkId)"
+                        <template v-if="isEthereumNetwork(sourceNetworkId)"
                             >BSC</template
                         >
                         <template v-else>Ethereum</template>
-                        <template v-if="isMainnetNetwork(walletNetworkId)"
+                        <template v-if="isMainnetNetwork(sourceNetworkId)"
                             >Mainnet</template
                         >
                         <template v-else>Testnet</template>
@@ -1180,7 +1180,7 @@ export default {
                 if (!status) {
                     throw {
                         code: 6100002,
-                        message: `Something went wrong while Freezing your ${this.currency}, please try again.`
+                        message: `Something went wrong while Swapping your ${this.currency}, please try again.`
                     };
                 }
 
@@ -1295,18 +1295,6 @@ export default {
                 };
             }
 
-            //验证钱包地址是否相同
-            // if (
-            //     this.walletAddress.toLocaleLowerCase() !=
-            //     this.sourceWalletAddress
-            // ) {
-            //     throw {
-            //         code: 6100005,
-            //         message:
-            //             "The wallet address is inconsistent, please confirm and try again"
-            //     };
-            // }
-
             if (walletStatus) {
                 let LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge,
                     SETUP;
@@ -1315,45 +1303,6 @@ export default {
                 } else if (isBinanceNetwork(this.walletNetworkId)) {
                     SETUP = "BSC";
                 }
-
-                // let gasEstimate = await LnBridge.contract.estimateGas.withdraw(
-                // 3,
-                //     97,
-                //     19,
-                //     "0x0000000000000000000000005534fda58c5885f32ebdf91f060cba9d739cefca",
-                //     "0x0000000000000000000000005534fda58c5885f32ebdf91f060cba9d739cefca",
-                //     "0x4c494e4100000000000000000000000000000000000000000000000000000000",
-                //     BigNumber.from("2941489189480148500000"),
-                //     "0xa92da339c0e66f78e31aed3242240b6eec02efccccccc81d35bbe0cea54cdd86425857531099c518a7c2ee30418c21abf6f3964866537d09311f198a1a32d7601b",
-                // );
-
-                // console.log(gasEstimate);
-
-                // console.log(
-                //     3,
-                //     97,
-                //     19,
-                //     formatAddressToByte32(this.walletAddress),
-                //     formatAddressToByte32(this.targetWalletAddress),
-                //     lnrJSConnector.utils.formatBytes32String(this.currency),
-                //     BigNumber.from("2941489189480148500000"),
-                //     "0xa92da339c0e66f78e31aed3242240b6eec02efccccccc81d35bbe0cea54cdd86425857531099c518a7c2ee30418c21abf6f3964866537d09311f198a1a32d7601b"
-                // );
-
-                // let transaction = await LnBridge.withdraw(
-                //     '3',
-                //     '97',
-                //     '19',
-                //     formatAddressToByte32(this.walletAddress),
-                //     formatAddressToByte32(this.targetWalletAddress),
-                //     lnrJSConnector.utils.formatBytes32String(this.currency),
-                //     BigNumber.from("2941489189480148500000"),
-                //     "0xa92da339c0e66f78e31aed3242240b6eec02efccccccc81d35bbe0cea54cdd86425857531099c518a7c2ee30418c21abf6f3964866537d09311f198a1a32d7601b"
-                // );
-
-                // console.log(transaction);
-
-                // return;
 
                 // console.log(`等待获取锁定hash`);
                 this.waitPendingProcess = true;
@@ -1411,7 +1360,7 @@ export default {
                         if (!status) {
                             throw {
                                 code: 6100003,
-                                message: `Something went wrong while Freezing your ${this.currency}, please try again.`
+                                message: `Something went wrong while Getting your ${this.currency}, please try again.`
                             };
                             break;
                         }
@@ -1511,7 +1460,7 @@ export default {
 
                 if (!status) {
                     throw {
-                        code: 6100003,
+                        code: 6100005,
                         message:
                             "Something went wrong while building your ℓUSD, please try again."
                     };
@@ -1620,30 +1569,6 @@ export default {
                     //         message: `No valid ${this.currency} was found`
                     //     });
                     // }
-
-                    //mock data
-                    /*  resolve([
-                        {
-                            srcChainId: 3,
-                            destChainId: 97,
-                            depositId: 1,
-                            depositor:
-                                "0x9e2661cc2b535339133652e501766518fa475e71",
-                            recipient:
-                                "0x9e2661cc2b535339133652e501766518fa475e71",
-                            currency,
-                            amount: "1000000000000000000",
-                            signatures: [
-                                {
-                                    signer:
-                                        "0x637709999580cdec12493E1275EB5BfBd254a6dc",
-                                    signature:
-                                        "0x242c3f17f48078c163ecaae1e9e70c44a4c660ba3b888ab52bf5b7354dbcc9c97fd16898db2a159e52fcd6c32ee148033a20c3c9bb628aed657628c56643a66f1c"
-                                }
-                            ]
-                        }
-                    ]);
-                    return; */
 
                     this.getPendingProcessLoopId = this.waitPendingProcess
                         ? setTimeout(wait, 3000)
@@ -1946,7 +1871,7 @@ export default {
             //余额不足
             if (this.checkStatus.stepType == 1) {
                 if (
-                    isMainnetNetwork(this.walletNetworkId) ||
+                    isMainnetNetwork(this.sourceNetworkId) ||
                     isMainnetNetwork(this.targetNetworkId)
                 ) {
                     return;
