@@ -229,20 +229,23 @@
                                     <img src="@/static/logo-wallet-bsc.svg" />
                                 </template>
 
-                                <template
-                                    v-if="!isMobile"
-                                >
+                                <template v-if="!isMobile">
                                     {{ row.chain }}
                                 </template>
 
-
                                 <template
-                                    v-if="isMobile && isEthereumNetwork(row.networkId)"
+                                    v-if="
+                                        isMobile &&
+                                            isEthereumNetwork(row.networkId)
+                                    "
                                 >
                                     ETH
                                 </template>
                                 <template
-                                    v-if="isMobile && isBinanceNetwork(row.networkId)"
+                                    v-if="
+                                        isMobile &&
+                                            isBinanceNetwork(row.networkId)
+                                    "
                                 >
                                     BSC
                                 </template>
@@ -315,7 +318,7 @@
         >
             <div class="titleBox">
                 <template v-if="filterNum != 0">
-                    {{filterNum}} Filters applied
+                    {{ filterNum }} Filters applied
                     <div
                         class="clearFiltersBtn"
                         :class="{
@@ -474,10 +477,10 @@
                         ></InputNumber>
                     </DropdownMenu>
                 </Dropdown>
-                
+
                 <div
                     class="applyFilterBtn"
-                    :class="{'mobileFiltersChange':mobileFiltersChange}"
+                    :class="{ mobileFiltersChange: mobileFiltersChange }"
                     @click="applyMobileFilters"
                 >
                     APPLY FILTERS
@@ -581,7 +584,7 @@ export default {
                 ) {
                     amount =
                         item.symbol +
-                        formatNumber(item.value) +
+                        formatNumber(item.value, item.decimal) +
                         " " +
                         item.source;
                 } else if (item.type == "Claim") {
@@ -745,7 +748,10 @@ export default {
             return this.$store.state?.isMobile;
         },
         mobileFiltersChange() {
-            if (!_.isEqual(this.filters, this.mobileFilters) && this.filterMenuMobileModal) {
+            if (
+                !_.isEqual(this.filters, this.mobileFilters) &&
+                this.filterMenuMobileModal
+            ) {
                 return true;
             } else {
                 return false;

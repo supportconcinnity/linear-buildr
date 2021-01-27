@@ -2,6 +2,7 @@ import linearData from "../linearData/transactionData";
 import flatten from "lodash/flatten";
 import _ from "lodash";
 import { isBinanceNetwork, isEthereumNetwork } from "../../network";
+import currencies from "@/common/currency";
 
 export const PAGINATION_INDEX = 10;
 
@@ -67,11 +68,12 @@ export const fetchTransactionHistory = async (
                 unfreezes
             ].map((eventType, i) => {
                 return eventType.map(event => {
+                    event.decimal = _.has(currencies, event.source) ? 4 : 2;
                     event.value
-                        ? (event.value = _.floor(event.value, 2))
+                        ? (event.value = _.floor(event.value, event.decimal))
                         : null;
                     event.amount
-                        ? (event.amount = _.floor(event.amount, 2))
+                        ? (event.amount = _.floor(event.amount, event.decimal))
                         : null;
                     event.rewardslusd
                         ? (event.rewardslusd = _.floor(event.rewardslusd, 2))
