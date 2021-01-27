@@ -1288,7 +1288,7 @@ export default {
                         ) {
                             //合并进度
                             this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.STAKING_BUILD + "BSC"
+                                BUILD_PROCESS_SETUP.STAKING_BUILD
                             );
                         } else {
                             //单步进度

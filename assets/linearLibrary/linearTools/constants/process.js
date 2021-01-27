@@ -1,11 +1,11 @@
 export const BUILD_PROCESS_SETUP = {
     APPROVE: "Approve Contract",
-    STAKING: "Confirm Staking",
-    BUILD: "Confirm Building",
-    STAKING_BUILD: "Building ℓUSD on ", //需保留前后空格
-    BURN: "Confirm Burning",
-    UNSTAKING: "Confirm Unstaking",
-    BURN_UNSTAKING: " Confirm Burning ", //需保留前后空格
+    STAKING: "Staking LINA on BSC",
+    BUILD: "Building ℓUSD on BSC",
+    STAKING_BUILD: "Staking LINA & Building ℓUSD on BSC",
+    BURN: "Burning ℓUSD on BSC",
+    UNSTAKING: "Unstaking LINA on BSC",
+    BURN_UNSTAKING: "Unstaking LINA & Burning ℓUSD on BSC",
     CLAIM: "Claiming Rewards",
     FREEZE: "Swapping [REPLACE_CURRENCY] on ",
     UNFREEZE: "Getting [REPLACE_CURRENCY] on "
@@ -13,7 +13,6 @@ export const BUILD_PROCESS_SETUP = {
 
 export const BUILD_PROCESS_SETUP_MOBILE = {
     APPROVE: "Approve Address",
-    SWAP: "Contract on",
     FREEZE: "Swapping [REPLACE_CURRENCY] on ",
     UNFREEZE: "Getting [REPLACE_CURRENCY] on "
 };

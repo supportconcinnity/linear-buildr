@@ -23,7 +23,11 @@
             <div class="data">
                 <div class="li_1">
                     <div class="p_1">
-                        {{ isEthereumNetwork ? 'N/A' : formatNumber(debtData.issuedDebt) }}
+                        {{
+                            isEthereumNetwork
+                                ? "N/A"
+                                : formatNumber(debtData.issuedDebt)
+                        }}
                     </div>
                     <div class="p_2">
                         Total Issued Debt (ℓUSD)
@@ -32,7 +36,11 @@
                 <div class="line"></div>
                 <div class="li_2">
                     <div class="p_1">
-                        {{ isEthereumNetwork ? 'N/A' : formatNumber(debtData.currentDebt) }}
+                        {{
+                            isEthereumNetwork
+                                ? "N/A"
+                                : formatNumber(debtData.currentDebt)
+                        }}
                     </div>
                     <div class="p_2">
                         Total Current Debt (ℓUSD)
@@ -108,11 +116,11 @@
                     </template>
 
                     <template slot-scope="{ row }" slot="balance">
-                        {{ formatNumber(row.balance) }}
+                        {{ formatNumber(row.balance, row.decimal) }}
                     </template>
 
                     <template slot-scope="{ row }" slot="valueUSD">
-                        $ {{ formatNumber(row.valueUSD) }} USD
+                        $ {{ formatNumber(row.valueUSD, row.decimal) }} USD
                     </template>
                 </Table>
                 <div class="nothing" v-else>
@@ -319,7 +327,7 @@ export default {
                     lnrJS: { lUSD, lBTC, lETH, lHB10 }
                 } = lnrJSConnector;
 
-                let trackData = {'issuedDebt': 0, 'currentDebt': []};
+                let trackData = { issuedDebt: 0, currentDebt: [] };
 
                 if (this.isBinanceNetwork) {
                     trackData = await fetchTrackDebt(this.walletAddress);
@@ -328,9 +336,12 @@ export default {
                 let tableData = [];
 
                 if (this.$store.state?.walletDetails?.transferableAssets) {
-                    tableData = this.$store.state?.walletDetails?.transferableAssets.filter(function (item) {
-                        return !['LINA', 'ETH', 'BNB'].includes(item.name);
-                    });
+                    tableData = this.$store.state?.walletDetails?.transferableAssets.filter(
+                        function(item) {
+                            item.decimal = _.has(currencies, item.name) ? 4 : 2;
+                            return !["LINA", "ETH", "BNB"].includes(item.name);
+                        }
+                    );
                 }
 
                 const currentDebt = trackData.currentDebt.length
