@@ -553,8 +553,7 @@ import { providers } from "ethers";
 import { LinearJs } from "@/assets/linearLibrary/linearJs";
 import {
     BUILD_PROCESS_SETUP,
-    BUILD_PROCESS_SETUP_MOBILE,
-    DECIMAL_PRECISION
+    BUILD_PROCESS_SETUP_MOBILE
 } from "@/assets/linearLibrary/linearTools/constants/process";
 import {
     formatAddressToByte32,

@@ -85,12 +85,7 @@
 
                                 <div v-if="isMobile" class="avaliable">
                                     Avaliable:
-                                    {{
-                                        formatNumber(
-                                            currency.balance,
-                                            DECIMAL_PRECISION
-                                        )
-                                    }}
+                                    {{ formatNumber(currency.balance, 4) }}
                                     {{ currency.name }}
                                 </div>
                             </div>
@@ -112,18 +107,16 @@
                                             ref="itemInput0"
                                             element-id="transfer_number_input"
                                             :min="currency.frozenBalance"
-                                            :max="
-                                                floor(
-                                                    currency.balance,
-                                                    DECIMAL_PRECISION
-                                                )
-                                            "
+                                            :max="floor(currency.balance, 4)"
                                             type="text"
                                             v-model="swapNumber"
                                             placeholder="0"
                                             @on-focus="inputFocus(0)"
                                             @on-blur="inputBlur(0)"
-                                            :formatter="formatterInput"
+                                            :formatter="
+                                                value =>
+                                                    formatterInput(value, 4)
+                                            "
                                         />
                                     </div>
 
@@ -157,18 +150,15 @@
                                         ref="itemInput0"
                                         element-id="transfer_number_input"
                                         :min="currency.frozenBalance"
-                                        :max="
-                                            floor(
-                                                currency.balance,
-                                                DECIMAL_PRECISION
-                                            )
-                                        "
+                                        :max="floor(currency.balance, 4)"
                                         type="text"
                                         v-model="swapNumber"
                                         placeholder="0"
                                         @on-focus="inputFocus(0)"
                                         @on-blur="inputBlur(0)"
-                                        :formatter="formatterInput"
+                                        :formatter="
+                                            value => formatterInput(value, 4)
+                                        "
                                     />
                                 </template>
                             </div>
@@ -236,7 +226,6 @@ import lnrJSConnector, {
     selectedWallet
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { bn2n, bnSub, bnSub2N, n2bn } from "@/common/bnCalc";
-import { DECIMAL_PRECISION } from "@/assets/linearLibrary/linearTools/constants/process";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 import {
     formatEtherToNumber,
@@ -265,8 +254,6 @@ export default {
             processing: false, // 处理状态, 防止重复点击
 
             floor: _.floor,
-
-            DECIMAL_PRECISION,
 
             errors: { amountMsg: "" },
 
@@ -331,10 +318,7 @@ export default {
         },
 
         diffSwapNumber() {
-            return _.floor(
-                this.swapNumber - this.currency.frozenBalance,
-                DECIMAL_PRECISION
-            );
+            return _.floor(this.swapNumber - this.currency.frozenBalance, 4);
         },
 
         currency() {
@@ -411,17 +395,14 @@ export default {
                 return {
                     name: currenciesList[key].name,
                     key,
-                    balance: _.floor(item.balance, DECIMAL_PRECISION),
+                    balance: _.floor(item.balance, 4),
                     img: item.img,
                     frozenBalance: 0
                 };
             });
 
             //单独设置lina余额
-            this.currencies[0].balance = _.floor(
-                bn2n(linaBalance),
-                DECIMAL_PRECISION
-            );
+            this.currencies[0].balance = _.floor(bn2n(linaBalance), 4);
 
             this.currencies = [...this.currencies, ...liquidsList];
         },
@@ -465,10 +446,7 @@ export default {
                 this.currency.frozenBalance = this.swapNumber = frozenBalance.gt(
                     n2bn("0")
                 )
-                    ? _.floor(
-                          formatEtherToNumber(frozenBalance),
-                          DECIMAL_PRECISION
-                      )
+                    ? _.floor(formatEtherToNumber(frozenBalance), 4)
                     : null;
             } catch (error) {
                 console.log(error, "getFrozenBalance error");
@@ -501,7 +479,7 @@ export default {
         //点击最大
         clickMaxAmount() {
             this.activeItemBtn = 0;
-            this.swapNumber = _.floor(this.currency.balance, DECIMAL_PRECISION);
+            this.swapNumber = _.floor(this.currency.balance, 4);
 
             var el = document.getElementById("transfer_number_input");
             this.setCursorRange(el, 0, 0);
