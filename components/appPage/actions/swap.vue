@@ -266,11 +266,12 @@ export default {
             currencyDropDown: false,
 
             selectCurrencyIndex: 0,
+            selectCurrencyKey: "LINA",
 
             currencies: [
                 {
                     name: "LINA",
-                    id: "LINA",
+                    key: "LINA",
                     img: require("@/static/LINA_logo.svg"),
                     balance: 0,
                     frozenBalance: 0
@@ -318,7 +319,7 @@ export default {
         },
 
         diffSwapNumber() {
-            return _.floor(this.swapNumber - this.currency.frozenBalance, 4);
+            return _.floor(this.swapNumber - this.currency?.frozenBalance, 4);
         },
 
         currency() {
@@ -365,17 +366,6 @@ export default {
     methods: {
         async initData() {
             this.currencyDropDown = false;
-            this.selectCurrencyIndex = 0;
-            this.currencies = [
-                {
-                    name: "LINA",
-                    id: "LINA",
-                    img: require("@/static/LINA_logo.svg"),
-                    balance: 0,
-                    frozenBalance: 0
-                }
-            ];
-
             await this.initLiquidsList();
             await this.getFrozenBalance();
         },
@@ -401,10 +391,23 @@ export default {
                 };
             });
 
-            //单独设置lina余额
-            this.currencies[0].balance = _.floor(bn2n(linaBalance), 4);
+            this.currencies = [
+                {
+                    name: "LINA",
+                    key: "LINA",
+                    img: require("@/static/LINA_logo.svg"),
+                    balance: _.floor(bn2n(linaBalance), 4),
+                    frozenBalance: 0
+                },
+                ...liquidsList
+            ];
 
-            this.currencies = [...this.currencies, ...liquidsList];
+            let index = _.findIndex(this.currencies, [
+                "key",
+                this.selectCurrencyKey
+            ]);
+
+            this.selectCurrencyIndex = index != -1 ? index : 0;
         },
 
         //获取冻结余额
@@ -471,6 +474,7 @@ export default {
 
         async changeSelectCurrencyIndex(index) {
             this.selectCurrencyIndex = index;
+            this.selectCurrencyKey = this.currency.key;
             this.currencyDropDown = false;
             this.activeItemBtn = -1;
             await this.getFrozenBalance();

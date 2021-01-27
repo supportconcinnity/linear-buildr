@@ -306,22 +306,30 @@
                             !transactionErrMsg
                     "
                 >
-                    <div class="blocks">
-                        <span
-                            v-for="(item, index) in tansactionBlocks.total"
-                            :key="index"
-                            class="blockItem"
-                            :class="{
-                                active: tansactionBlocks.confirmations > index
-                            }"
-                        ></span>
+                    <div class="blockBox">
+                        <div class="blocks">
+                            <span
+                                v-for="(item, index) in tansactionBlocks.total"
+                                :key="index"
+                                class="blockItem"
+                                :class="{
+                                    active:
+                                        tansactionBlocks.confirmations > index
+                                }"
+                            ></span>
+                        </div>
+                        <div class="blocknInfo">
+                            <span class="confirmations">{{
+                                tansactionBlocks.confirmations
+                            }}</span>
+                            / {{ tansactionBlocks.total }} blocks completed
+                        </div>
                     </div>
-                    <div class="blocknInfo">
-                        <span class="confirmations">{{
-                            tansactionBlocks.confirmations
-                        }}</span>
-                        / {{ tansactionBlocks.total }} blocks completed
-                    </div>
+
+                    <span class="refreshBlock" @click.stop="refreshBlock">
+                        <img src="@/static/transferProgress/refresh_gray.svg" />
+                        Refersh
+                    </span>
                 </div>
 
                 <div class="processBar">
@@ -648,6 +656,7 @@ export default {
             confirmTransactionStatus: false, //确认交易状态
             shouldApprove: false, //是否需要approve
             startWaitingBlocks: false, //开始的等待获取blocks
+            canRefreshBlocks: true, //是否可以刷新blocks
 
             chainChangeTokenFromUnfreeze: "", //解冻切换钱包事件监听id
             chainChangeFromSubscribe: "", //切换钱包事件监听id
@@ -696,28 +705,6 @@ export default {
     },
     created() {
         this.swapNumber = this.amount;
-
-        //监听链切换
-        // this.chainChangeFromSubscribe = this.$pub.subscribe(
-        //     "onWalletChainChange",
-        //     async () => {
-        //         if (this.actionTabs == "m0") {
-        //             // this.$emit("close");
-        //             // await this.getFrozenBalance();
-        //         }
-        //     }
-        // );
-
-        // this.walletChangeAccountFromSubscribe = this.$pub.subscribe(
-        //     "onWalletAccountChange",
-        //     async () => {
-        //         if (this.actionTabs == "m0") {
-        //             // this.$emit("close");
-        //             // await this.getFrozenBalance();
-        //         }
-        //     }
-        // );
-
         this.initStep();
     },
     mounted() {
@@ -1195,7 +1182,7 @@ export default {
                 //等待交易块确认完毕
                 this.startWaitingBlocks = true;
                 this.tansactionBlocks.blockNumber = blockNumber || 0;
-                await this.waitingBlockConfirmations(blockNumber);
+                await this.waitingBlockConfirmations();
                 this.startWaitingBlocks = false;
 
                 this.confirmTransactionStep += 1;
@@ -1520,33 +1507,22 @@ export default {
         },
 
         //等待交易块完成
-        async waitingBlockConfirmations(blockNumber = 0) {
+        async waitingBlockConfirmations() {
             return new Promise(resolve => {
                 const wait = async () => {
-                    //获取当前块高度
-                    let currentBlock = await lnrJSConnector.provider.getBlockNumber();
-
-                    //已确认块
-                    const confirmations = currentBlock - blockNumber;
-
-                    // console.log(
-                    //     currentBlock,
-                    //     blockNumber,
-                    //     confirmations,
-                    //     "confirmations"
-                    // );
-
-                    //1个以上,防止回退
-                    if (confirmations > 0) {
-                        this.tansactionBlocks.confirmations = confirmations;
-                    }
+                    this.canRefreshBlocks = false;
+                    await this.getBlocks();
 
                     //达到条件
-                    if (confirmations >= this.tansactionBlocks.total) {
+                    if (
+                        this.tansactionBlocks.confirmations >=
+                        this.tansactionBlocks.total
+                    ) {
                         resolve(true);
                         return;
                     }
 
+                    this.canRefreshBlocks = true;
                     this.waitingBlockConfirmationsLoopId = setTimeout(
                         wait,
                         5000
@@ -1555,6 +1531,30 @@ export default {
 
                 wait();
             });
+        },
+
+        async getBlocks() {
+            //获取当前块高度
+            let currentBlock = await lnrJSConnector.provider.getBlockNumber();
+
+            //已确认块
+            const confirmations =
+                currentBlock - this.tansactionBlocks.blockNumber;
+
+            //1个以上,防止回退
+            if (confirmations > 0) {
+                this.tansactionBlocks.confirmations = confirmations;
+            }
+        },
+
+        //刷新block
+        async refreshBlock() {
+            //防止刷新中点击刷新
+            if (this.canRefreshBlocks) {
+                this.canRefreshBlocks = false;
+                await this.getBlocks();
+                this.canRefreshBlocks = true;
+            }
         },
 
         async getPendingProcess() {
@@ -1905,33 +1905,31 @@ export default {
 
         //回到默认状态
         async setDefaultTab() {
-            // 上层用v-if,来销毁组件
-            // this.waitProcessArray = [];
-            // this.confirmTransactionStep = -1;
-            // this.swapNumber = null;
-            // this.waitPendingProcess = false;
-            // this.freezeSuccessHash = "";
-            // this.processing = false;
-            // this.sourceWalletType = "";
-            // this.sourceWalletAddress = "";
-            // this.chainChangedStatus = false;
-            // this.confirmTransactionChainChanging = false;
-            // this.confirmTransactionHash = "";
-            // this.confirmTransactionNetworkId = "";
-            // this.confirmTransactionStatus = false;
-            // this.actionTabs = "m0";
-            // this.sourceNetworkId = "";
-            // this.targetNetworkId = "";
-            // this. checkStatus: {
-            //     stepIndex: 0,
-            //     stepError: "",
-            //     stepInstall: "",
-            //     stepType: -1,
-            //     stepArray: []s
-            // };
-            // this.sourceGasPrice = "";
-            // this.targetGasPrice = "";
-
+            this.waitProcessArray = [];
+            this.confirmTransactionStep = -1;
+            this.swapNumber = null;
+            this.waitPendingProcess = false;
+            this.freezeSuccessHash = "";
+            this.processing = false;
+            this.sourceWalletType = "";
+            this.sourceWalletAddress = "";
+            this.chainChangedStatus = false;
+            this.confirmTransactionChainChanging = false;
+            this.confirmTransactionHash = "";
+            this.confirmTransactionNetworkId = "";
+            this.confirmTransactionStatus = false;
+            this.actionTabs = "m0";
+            this.sourceNetworkId = "";
+            this.targetNetworkId = "";
+            this.checkStatus = {
+                stepIndex: 0,
+                stepError: "",
+                stepInstall: "",
+                stepType: -1,
+                stepArray: []
+            };
+            this.sourceGasPrice = "";
+            this.targetGasPrice = "";
             this.$emit("close");
         }
     },
@@ -1941,16 +1939,6 @@ export default {
             this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);
             this.chainChangeTokenFromUnfreeze = "";
         }
-
-        // if (this.chainChangeFromSubscribe) {
-        //     this.$pub.unsubscribe(this.chainChangeFromSubscribe);
-        // this.chainChangeFromSubscribe = "";
-        // }
-
-        // if (this.walletChangeAccountFromSubscribe) {
-        //     this.$pub.unsubscribe(this.walletChangeAccountFromSubscribe);
-        // this.walletChangeAccountFromSubscribe="";
-        // }
 
         clearTimeout(this.waitChainChangeLoopId);
         clearTimeout(this.waitingBlockConfirmationsLoopId);
@@ -2262,40 +2250,70 @@ export default {
                 .blockCompletedBox {
                     margin-top: 24px;
                     text-align: center;
-                    display: flex;
-                    align-items: center;
 
-                    .blocks {
+                    .blockBox {
                         display: flex;
+                        align-items: center;
+                        margin-bottom: 12px;
+                        .blocks {
+                            display: flex;
 
-                        .blockItem {
-                            background-color: #e5e5e5;
-                            width: 8px;
-                            height: 8px;
-                            margin: 0 3px;
-                            transition: $animete-time linear;
+                            .blockItem {
+                                background-color: #e5e5e5;
+                                width: 8px;
+                                height: 8px;
+                                margin: 0 3px;
+                                transition: $animete-time linear;
 
-                            &.active {
-                                background-color: #1a38f8;
+                                &.active {
+                                    background-color: #1a38f8;
+                                }
+                            }
+                        }
+
+                        .blocknInfo {
+                            font-family: Gilroy-Medium;
+                            font-size: 12px;
+                            font-weight: 500;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: 1.33;
+                            letter-spacing: normal;
+                            color: #99999a;
+                            margin-left: 8px;
+
+                            .confirmations {
+                                font-family: Gilroy-Bold;
+                                font-weight: bold;
+                                color: #5a575c;
                             }
                         }
                     }
 
-                    .blocknInfo {
-                        font-family: Gilroy-Medium;
+                    .refreshBlock {
+                        font-family: Gilroy-SemiBold;
                         font-size: 12px;
-                        font-weight: 500;
+                        font-weight: 600;
                         font-stretch: normal;
                         font-style: normal;
                         line-height: 1.33;
-                        letter-spacing: normal;
+                        letter-spacing: 1.5px;
                         color: #99999a;
-                        margin-left: 8px;
+                        padding: 4px 12px;
+                        border-radius: 20px;
+                        border: solid 1px #e5e5e5;
+                        cursor: pointer;
+                        transition: $animete-time linear;
 
-                        .confirmations {
-                            font-family: Gilroy-Bold;
-                            font-weight: bold;
-                            color: #5a575c;
+                        img {
+                            width: 16px;
+                            height: 16px;
+                            margin-right: 10px;
+                        }
+
+                        &:hover {
+                            border-color: #1a38f8;
+                            color: #1a38f8;
                         }
                     }
                 }
