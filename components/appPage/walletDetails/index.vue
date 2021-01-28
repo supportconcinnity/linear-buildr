@@ -260,7 +260,11 @@
                     <div class="box">
                         <div class="value">
                             <template v-if="!isEthereumNetwork">
-                                {{ walletDetails.amountDebtBeforeFormat < 0.01 ? 0 : walletDetails.currentRatioPercent || 0 }}
+                                {{
+                                    walletDetails.amountDebtBeforeFormat < 0.01
+                                        ? 0
+                                        : walletDetails.currentRatioPercent || 0
+                                }}
                             </template>
                             <template v-if="isEthereumNetwork">
                                 N/A
@@ -784,8 +788,8 @@ export default {
 
             const currentAction = this.$store.state?.currentAction;
 
-            //build,burn,swap
-            if (![1, 2, 5].includes(currentAction) || forceAction) {
+            //build,swap
+            if (![1, 5].includes(currentAction) || forceAction) {
                 this.$store.commit("setCurrentAction", 0);
             }
         },

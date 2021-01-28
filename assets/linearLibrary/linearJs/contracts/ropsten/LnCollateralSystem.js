@@ -18,6 +18,11 @@
         return await this.contract.Collateral(_currency, _amount, txParams);
       };
     
+      this.CollateralEth = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.CollateralEth(txParams);
+      };
+    
       this.Currency_ETH = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.Currency_ETH(txParams);
@@ -68,6 +73,11 @@
         return await this.contract.Redeem(_currency, _amount, txParams);
       };
     
+      this.RedeemETH = async (_amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.RedeemETH(_amount, txParams);
+      };
+    
       this.RedeemMax = async (_currency, txParams) => {
         txParams = txParams || {};
         return await this.contract.RedeemMax(_currency, txParams);
@@ -108,16 +118,6 @@
         return await this.contract.buildBurnSystem(txParams);
       };
     
-      this.burnAndUnstake = async (burnAmount, unstakeCurrency, unstakeAmount, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.burnAndUnstake(burnAmount, unstakeCurrency, unstakeAmount, txParams);
-      };
-    
-      this.burnAndUnstakeMax = async (burnAmount, unstakeCurrency, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.burnAndUnstakeMax(burnAmount, unstakeCurrency, txParams);
-      };
-    
       this.candidate = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.candidate(txParams);
@@ -138,11 +138,6 @@
         return await this.contract.mRewardLocker(txParams);
       };
     
-      this.migrateCollateral = async (_currency, _users, _amounts, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.migrateCollateral(_currency, _users, _amounts, txParams);
-      };
-    
       this.paused = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.paused(txParams);
@@ -161,16 +156,6 @@
       this.setPaused = async (_paused, txParams) => {
         txParams = txParams || {};
         return await this.contract.setPaused(_paused, txParams);
-      };
-    
-      this.stakeAndBuild = async (stakeCurrency, stakeAmount, buildAmount, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.stakeAndBuild(stakeCurrency, stakeAmount, buildAmount, txParams);
-      };
-    
-      this.stakeAndBuildMax = async (stakeCurrency, stakeAmount, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.stakeAndBuildMax(stakeCurrency, stakeAmount, txParams);
       };
     
       this.tokenInfos = async (bytes32_1, txParams) => {

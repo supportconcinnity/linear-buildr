@@ -344,6 +344,52 @@ export default [
   },
   {
     inputs: [],
+    name: 'buildBurnSystem',
+    outputs: [
+      {
+        internalType: 'contract ILnBuildBurnSystem',
+        name: '',
+        type: 'address'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint256', name: 'burnAmount', type: 'uint256' },
+      {
+        internalType: 'bytes32',
+        name: 'unstakeCurrency',
+        type: 'bytes32'
+      },
+      {
+        internalType: 'uint256',
+        name: 'unstakeAmount',
+        type: 'uint256'
+      }
+    ],
+    name: 'burnAndUnstake',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint256', name: 'burnAmount', type: 'uint256' },
+      {
+        internalType: 'bytes32',
+        name: 'unstakeCurrency',
+        type: 'bytes32'
+      }
+    ],
+    name: 'burnAndUnstakeMax',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
     name: 'candidate',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
     stateMutability: 'view',
@@ -427,6 +473,35 @@ export default [
   {
     inputs: [ { internalType: 'bool', name: '_paused', type: 'bool' } ],
     name: 'setPaused',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'stakeCurrency',
+        type: 'bytes32'
+      },
+      { internalType: 'uint256', name: 'stakeAmount', type: 'uint256' },
+      { internalType: 'uint256', name: 'buildAmount', type: 'uint256' }
+    ],
+    name: 'stakeAndBuild',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'stakeCurrency',
+        type: 'bytes32'
+      },
+      { internalType: 'uint256', name: 'stakeAmount', type: 'uint256' }
+    ],
+    name: 'stakeAndBuildMax',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'

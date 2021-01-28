@@ -1,3 +1,3 @@
-import LnCollateralSystem from '../ropsten/LnCollateralSystem';
+import LnCollateralSystem from '../bscmainnet/LnCollateralSystem';
       export default LnCollateralSystem;
       

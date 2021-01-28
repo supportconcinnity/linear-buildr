@@ -63,14 +63,14 @@
         return await this.contract.candidate(txParams);
       };
     
-      this.claimReward = async (periodId, stakingReward, feeReward, v, r, s, txParams) => {
+      this.claimReward = async (periodId, stakingReward, feeReward, signature, txParams) => {
         txParams = txParams || {};
-        return await this.contract.claimReward(periodId, stakingReward, feeReward, v, r, s, txParams);
+        return await this.contract.claimReward(periodId, stakingReward, feeReward, signature, txParams);
       };
     
-      this.claimRewardFor = async (periodId, recipient, stakingReward, feeReward, v, r, s, txParams) => {
+      this.claimRewardFor = async (periodId, recipient, stakingReward, feeReward, signature, txParams) => {
         txParams = txParams || {};
-        return await this.contract.claimRewardFor(periodId, recipient, stakingReward, feeReward, v, r, s, txParams);
+        return await this.contract.claimRewardFor(periodId, recipient, stakingReward, feeReward, signature, txParams);
       };
     
       this.collateralSystem = async (txParams) => {

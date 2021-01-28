@@ -74,25 +74,6 @@
 		"inputs": [
 			{
 				"indexed": false,
-				"internalType": "address",
-				"name": "oldCandidate",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "newCandidate",
-				"type": "address"
-			}
-		],
-		"name": "CandidateChanged",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
 				"internalType": "bool",
 				"name": "isPaused",
 				"type": "bool"
@@ -153,6 +134,25 @@
 		"type": "event"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "oldCandidate",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "newCandidate",
+				"type": "address"
+			}
+		],
+		"name": "candidateChanged",
+		"type": "event"
+	},
+	{
 		"inputs": [],
 		"name": "DECIMALS",
 		"outputs": [
@@ -163,7 +163,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -176,7 +177,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -189,7 +191,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -202,7 +205,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -215,7 +219,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [
@@ -239,7 +244,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [
@@ -282,29 +288,12 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
 		"name": "becomeAdmin",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "burn",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -320,7 +309,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -333,7 +323,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -346,7 +337,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -359,25 +351,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "mint",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -390,7 +365,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -403,7 +379,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -416,7 +393,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [
@@ -460,19 +438,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bool",
-				"name": "_paused",
-				"type": "bool"
-			}
-		],
-		"name": "setPaused",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "address payable",
 				"name": "_proxy",
 				"type": "address"
@@ -507,7 +472,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -520,7 +486,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [],
@@ -533,7 +500,8 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
+		"type": "function",
+		"constant": true
 	},
 	{
 		"inputs": [
@@ -585,6 +553,55 @@
 				"type": "bool"
 			}
 		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "mint",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "burn",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "_paused",
+				"type": "bool"
+			}
+		],
+		"name": "setPaused",
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	}

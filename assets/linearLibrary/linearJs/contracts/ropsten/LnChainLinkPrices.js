@@ -23,21 +23,6 @@
         return await this.contract.LUSD(txParams);
       };
     
-      this.__LnAdminUpgradeable_init = async (_admin, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.__LnAdminUpgradeable_init(_admin, txParams);
-      };
-    
-      this.__LnDefaultPrices_init = async (_admin, _oracle, _currencyNames, _newPrices, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.__LnDefaultPrices_init(_admin, _oracle, _currencyNames, _newPrices, txParams);
-      };
-    
-      this.addOracle = async (currencyKey, OracleAddress, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.addOracle(currencyKey, OracleAddress, txParams);
-      };
-    
       this.admin = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.admin(txParams);
@@ -108,11 +93,6 @@
         return await this.contract.oracle(txParams);
       };
     
-      this.removeOracle = async (currencyKey, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.removeOracle(currencyKey, txParams);
-      };
-    
       this.setCandidate = async (_candidate, txParams) => {
         txParams = txParams || {};
         return await this.contract.setCandidate(_candidate, txParams);
@@ -136,6 +116,16 @@
       this.updateAll = async (currencyNames, newPrices, timeSent, txParams) => {
         txParams = txParams || {};
         return await this.contract.updateAll(currencyNames, newPrices, timeSent, txParams);
+      };
+    
+      this.addOracle = async (currencyKey, OracleAddress, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.addOracle(currencyKey, OracleAddress, txParams);
+      };
+    
+      this.removeOracle = async (currencyKey, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.removeOracle(currencyKey, txParams);
       };
     
       }

@@ -1,5 +1,31 @@
 [
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_admin",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_oracle",
+				"type": "address"
+			},
+			{
+				"internalType": "bytes32[]",
+				"name": "_currencies",
+				"type": "bytes32[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "_prices",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -16,25 +42,6 @@
 			}
 		],
 		"name": "AdminChanged",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "oldCandidate",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "newCandidate",
-				"type": "address"
-			}
-		],
-		"name": "CandidateChanged",
 		"type": "event"
 	},
 	{
@@ -134,6 +141,25 @@
 		"type": "event"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "oldCandidate",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "newCandidate",
+				"type": "address"
+			}
+		],
+		"name": "candidateChanged",
+		"type": "event"
+	},
+	{
 		"inputs": [],
 		"name": "LINA",
 		"outputs": [
@@ -157,65 +183,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_admin",
-				"type": "address"
-			}
-		],
-		"name": "__LnAdminUpgradeable_init",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_admin",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_oracle",
-				"type": "address"
-			},
-			{
-				"internalType": "bytes32[]",
-				"name": "_currencyNames",
-				"type": "bytes32[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "_newPrices",
-				"type": "uint256[]"
-			}
-		],
-		"name": "__LnDefaultPrices_init",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "currencyKey",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "address",
-				"name": "OracleAddress",
-				"type": "address"
-			}
-		],
-		"name": "addOracle",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -486,19 +453,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
-				"name": "currencyKey",
-				"type": "bytes32"
-			}
-		],
-		"name": "removeOracle",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "address",
 				"name": "_candidate",
 				"type": "address"
@@ -574,6 +528,37 @@
 				"type": "bool"
 			}
 		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "currencyKey",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "address",
+				"name": "OracleAddress",
+				"type": "address"
+			}
+		],
+		"name": "addOracle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "currencyKey",
+				"type": "bytes32"
+			}
+		],
+		"name": "removeOracle",
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	}

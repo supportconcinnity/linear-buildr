@@ -704,7 +704,7 @@ export default {
             // ], //等待交易进度组
             waitProcessArray: [], //等待交易进度组
             waitProcessFlow: Function, //逻辑流
-            confirmTransactionStep: 0, //当前确认步骤
+            confirmTransactionStep: -1, //当前确认步骤
             swapUnfreezeContinue: false, //是否继续swap
             freezeSuccessHash: "", //冻结成功hash
             sourceWalletType: "", //原始钱包类型
@@ -921,7 +921,6 @@ export default {
                 } else {
                     //清空之前数据
                     this.waitProcessArray = [];
-                    this.confirmTransactionStep = 0;
                     this.waitProcessFlow = null;
 
                     let LnProxy,
@@ -1004,6 +1003,7 @@ export default {
 
                 this.checkStatus.stepIndex++;
 
+                this.confirmTransactionStep = 0;
                 this.actionTabs = "m1";
 
                 this.waitProcessFlow = this.startFlow();

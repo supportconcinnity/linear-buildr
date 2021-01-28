@@ -469,7 +469,7 @@ export default {
 
             activeItemBtn: -1, //当前激活按钮 0 unstack max, 1 burn max
 
-            confirmTransactionStep: 0, //当前交易进度
+            confirmTransactionStep: -1, //当前交易进度
             confirmTransactionStatus: false, //当前交易确认状态
             confirmTransactionNetworkId: "", //当前交易确认网络id
             confirmTransactionHash: "", //当前交易hash
@@ -691,7 +691,7 @@ export default {
 
                         //清空之前数据
                         this.waitProcessArray = [];
-                        this.confirmTransactionStep = 0;
+                        
 
                         if (
                             this.actionDatas.amount.gte(n2bn("0.01")) &&
@@ -715,6 +715,7 @@ export default {
                             }
                         }
 
+                        this.confirmTransactionStep = 0;
                         this.actionTabs = "m1"; //进入等待页
 
                         this.waitProcessFlow = this.startFlow();

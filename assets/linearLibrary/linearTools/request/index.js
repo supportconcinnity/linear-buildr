@@ -325,8 +325,15 @@ export const storeDetailsData = async () => {
             const amountETH2USD = amountETH * ETH2USDRate;
             const liquids2USD = formatEtherToNumber(liquidsData.liquids);
             const amountDebt2USD = amountDebt[0] * lUSD2USDRate;
+
             const totalCryptoBalanceInUSD =
-                amountLINA2USD + amountETH2USD + liquids2USD;
+                amountETH2USD +
+                liquids2USD +
+                (isEthereum
+                    ? avaliableLINA2USD
+                    : isBinance
+                    ? amountLINA2USD
+                    : 0);
 
             //所有资产余额
             let transferableAssets = [

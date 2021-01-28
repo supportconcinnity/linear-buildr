@@ -201,6 +201,19 @@
 	},
 	{
 		"inputs": [],
+		"name": "CollateralEth",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "Currency_ETH",
 		"outputs": [
 			{
@@ -394,6 +407,25 @@
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "RedeemETH",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "bytes32",
 				"name": "_currency",
 				"type": "bytes32"
@@ -523,53 +555,12 @@
 		"name": "buildBurnSystem",
 		"outputs": [
 			{
-				"internalType": "contract ILnBuildBurnSystem",
+				"internalType": "contract LnBuildBurnSystem",
 				"name": "",
 				"type": "address"
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "burnAmount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "unstakeCurrency",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256",
-				"name": "unstakeAmount",
-				"type": "uint256"
-			}
-		],
-		"name": "burnAndUnstake",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "burnAmount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "unstakeCurrency",
-				"type": "bytes32"
-			}
-		],
-		"name": "burnAndUnstakeMax",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -590,7 +581,7 @@
 		"name": "debtSystem",
 		"outputs": [
 			{
-				"internalType": "contract ILnDebtSystem",
+				"internalType": "contract LnDebtSystem",
 				"name": "",
 				"type": "address"
 			}
@@ -603,7 +594,7 @@
 		"name": "mConfig",
 		"outputs": [
 			{
-				"internalType": "contract ILnConfig",
+				"internalType": "contract LnConfig",
 				"name": "",
 				"type": "address"
 			}
@@ -616,41 +607,12 @@
 		"name": "mRewardLocker",
 		"outputs": [
 			{
-				"internalType": "contract ILnRewardLocker",
+				"internalType": "contract LnRewardLocker",
 				"name": "",
 				"type": "address"
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "_currency",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "address[]",
-				"name": "_users",
-				"type": "address[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "_amounts",
-				"type": "uint256[]"
-			}
-		],
-		"name": "migrateCollateral",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -671,7 +633,7 @@
 		"name": "priceGetter",
 		"outputs": [
 			{
-				"internalType": "contract ILnPrices",
+				"internalType": "contract LnPrices",
 				"name": "",
 				"type": "address"
 			}
@@ -701,47 +663,6 @@
 			}
 		],
 		"name": "setPaused",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "stakeCurrency",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256",
-				"name": "stakeAmount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "buildAmount",
-				"type": "uint256"
-			}
-		],
-		"name": "stakeAndBuild",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "stakeCurrency",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256",
-				"name": "stakeAmount",
-				"type": "uint256"
-			}
-		],
-		"name": "stakeAndBuildMax",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -815,7 +736,7 @@
 	{
 		"inputs": [
 			{
-				"internalType": "contract ILnAddressStorage",
+				"internalType": "contract LnAddressStorage",
 				"name": "_addressStorage",
 				"type": "address"
 			}
@@ -848,5 +769,9 @@
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"stateMutability": "payable",
+		"type": "receive"
 	}
 ]

@@ -13,34 +13,34 @@
         );
   
         
-      this.DECIMALS = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.DECIMALS(txParams);
+      this.DECIMALS = async () => {
+        
+        return await this.contract.DECIMALS();
       };
     
-      this.MAX_SUPPLY = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.MAX_SUPPLY(txParams);
+      this.MAX_SUPPLY = async () => {
+        
+        return await this.contract.MAX_SUPPLY();
       };
     
-      this.TOKEN_NAME = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.TOKEN_NAME(txParams);
+      this.TOKEN_NAME = async () => {
+        
+        return await this.contract.TOKEN_NAME();
       };
     
-      this.TOKEN_SYMBOL = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.TOKEN_SYMBOL(txParams);
+      this.TOKEN_SYMBOL = async () => {
+        
+        return await this.contract.TOKEN_SYMBOL();
       };
     
-      this.admin = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.admin(txParams);
+      this.admin = async () => {
+        
+        return await this.contract.admin();
       };
     
-      this.allowance = async (owner, spender, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.allowance(owner, spender, txParams);
+      this.allowance = async (owner, spender) => {
+        
+        return await this.contract.allowance(owner, spender);
       };
     
       this.approve = async (spender, value, txParams) => {
@@ -48,9 +48,9 @@
         return await this.contract.approve(spender, value, txParams);
       };
     
-      this.balanceOf = async (account, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.balanceOf(account, txParams);
+      this.balanceOf = async (account) => {
+        
+        return await this.contract.balanceOf(account);
       };
     
       this.becomeAdmin = async (txParams) => {
@@ -58,49 +58,39 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
-      this.burn = async (account, amount, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.burn(account, amount, txParams);
+      this.candidate = async () => {
+        
+        return await this.contract.candidate();
       };
     
-      this.candidate = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.candidate(txParams);
+      this.decimals = async () => {
+        
+        return await this.contract.decimals();
       };
     
-      this.decimals = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.decimals(txParams);
+      this.integrationProxy = async () => {
+        
+        return await this.contract.integrationProxy();
       };
     
-      this.integrationProxy = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.integrationProxy(txParams);
+      this.messageSender = async () => {
+        
+        return await this.contract.messageSender();
       };
     
-      this.messageSender = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.messageSender(txParams);
+      this.name = async () => {
+        
+        return await this.contract.name();
       };
     
-      this.mint = async (account, amount, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.mint(account, amount, txParams);
+      this.paused = async () => {
+        
+        return await this.contract.paused();
       };
     
-      this.name = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.name(txParams);
-      };
-    
-      this.paused = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.paused(txParams);
-      };
-    
-      this.proxy = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.proxy(txParams);
+      this.proxy = async () => {
+        
+        return await this.contract.proxy();
       };
     
       this.setCandidate = async (_candidate, txParams) => {
@@ -118,11 +108,6 @@
         return await this.contract.setMessageSender(sender, txParams);
       };
     
-      this.setPaused = async (_paused, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.setPaused(_paused, txParams);
-      };
-    
       this.setProxy = async (_proxy, txParams) => {
         txParams = txParams || {};
         return await this.contract.setProxy(_proxy, txParams);
@@ -133,19 +118,19 @@
         return await this.contract.setTokenStorage(_tokenStorage, txParams);
       };
     
-      this.symbol = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.symbol(txParams);
+      this.symbol = async () => {
+        
+        return await this.contract.symbol();
       };
     
-      this.tokenStorage = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.tokenStorage(txParams);
+      this.tokenStorage = async () => {
+        
+        return await this.contract.tokenStorage();
       };
     
-      this.totalSupply = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.totalSupply(txParams);
+      this.totalSupply = async () => {
+        
+        return await this.contract.totalSupply();
       };
     
       this.transfer = async (to, value, txParams) => {
@@ -156,6 +141,21 @@
       this.transferFrom = async (from, to, value, txParams) => {
         txParams = txParams || {};
         return await this.contract.transferFrom(from, to, value, txParams);
+      };
+    
+      this.mint = async (account, amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.mint(account, amount, txParams);
+      };
+    
+      this.burn = async (account, amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.burn(account, amount, txParams);
+      };
+    
+      this.setPaused = async (_paused, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.setPaused(_paused, txParams);
       };
     
       }

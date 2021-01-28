@@ -1276,7 +1276,6 @@ export default {
 
                         //清空之前数据
                         this.waitProcessArray = [];
-                        this.confirmTransactionStep = 0;
 
                         if (this.actionData.needApprove.gt("0")) {
                             this.shouldApprove = true;
@@ -1305,6 +1304,7 @@ export default {
                             }
                         }
 
+                        this.confirmTransactionStep = 0;
                         this.actionTabs = "m1"; //进入等待页
 
                         this.waitProcessFlow = this.startFlow();

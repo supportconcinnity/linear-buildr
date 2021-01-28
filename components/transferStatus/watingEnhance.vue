@@ -69,6 +69,12 @@
             <template v-else-if="currentErrMsg">
                 {{ currentErrMsg }}
             </template>
+
+            <!-- 等待确认 -->
+            <template v-else-if="!currentConfirm">
+                Check the transaction under MetaMask Activity if it doesn't pop
+                up.
+            </template>
         </div>
 
         <div class="processBar">

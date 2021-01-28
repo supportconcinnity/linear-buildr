@@ -63,11 +63,6 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
-      this.bulkAppendReward = async (_users, _amounts, _lockTo, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.bulkAppendReward(_users, _amounts, _lockTo, txParams);
-      };
-    
       this.candidate = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.candidate(txParams);
