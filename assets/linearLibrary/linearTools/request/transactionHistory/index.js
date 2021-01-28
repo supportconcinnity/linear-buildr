@@ -68,7 +68,7 @@ export const fetchTransactionHistory = async (
                 unfreezes
             ].map((eventType, i) => {
                 return eventType.map(event => {
-                    event.decimal = _.has(currencies, event.source) ? 4 : 2;
+                    event.decimal = TRANSACTION_EVENTS[i] == "Swap" ? 4 : 2;
                     event.value
                         ? (event.value = _.floor(event.value, event.decimal))
                         : null;

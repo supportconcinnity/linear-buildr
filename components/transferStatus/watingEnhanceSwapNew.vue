@@ -200,23 +200,47 @@
                         src="@/static/transferProgress/wellet_metamask.svg"
                     />
                     <!-- 需要approve -->
-                    <img
-                        v-else-if="shouldApprove"
-                        class="course"
-                        src="@/static/transferProgress/course/approve.png"
-                    />
+
+                    <template v-else-if="shouldApprove">
+                        <img
+                            v-if="isEthereumNetwork(sourceNetworkId)"
+                            class="course"
+                            src="@/static/transferProgress/course/approve_eth_mainnet.png"
+                        />
+                        <img
+                            v-else
+                            class="course"
+                            src="@/static/transferProgress/course/approve_bsc_mainnet.png"
+                        />
+                    </template>
+
                     <!-- 在切链状态 -->
-                    <img
-                        v-else-if="confirmTransactionChainChanging"
-                        class="course"
-                        src="@/static/transferProgress/course/switch_network.png"
-                    />
+                    <template v-else-if="confirmTransactionChainChanging">
+                        <img
+                            v-if="isEthereumNetwork(sourceNetworkId)"
+                            class="course"
+                            src="@/static/transferProgress/course/switch_bsc_mainnet.png"
+                        />
+                        <img
+                            v-else
+                            class="course"
+                            src="@/static/transferProgress/course/switch_eth_mainnet.png"
+                        />
+                    </template>
+
                     <!-- 等待确认 -->
-                    <img
-                        v-else-if="!confirmTransactionStatus"
-                        class="course"
-                        src="@/static/transferProgress/course/confirm.png"
-                    />
+                    <template v-else-if="!confirmTransactionStatus">
+                        <img
+                            v-if="isEthereumNetwork(walletNetworkId)"
+                            class="course"
+                            src="@/static/transferProgress/course/confirm_eth_mainnet.png"
+                        />
+                        <img
+                            v-else
+                            class="course"
+                            src="@/static/transferProgress/course/confirm_bsc_mainnet.png"
+                        />
+                    </template>
                 </div>
 
                 <div class="waitTitle">
@@ -272,22 +296,37 @@
                     </template>
 
                     <!-- 在切链状态 -->
-                    <template v-else-if="confirmTransactionChainChanging">
-                        If you do not have
-                        <template v-if="isEthereumNetwork(sourceNetworkId)"
-                            >BSC</template
-                        >
-                        <template v-else>Ethereum</template>
+                    <template
+                        v-else-if="
+                            confirmTransactionChainChanging &&
+                                isEthereumNetwork(sourceNetworkId)
+                        "
+                    >
+                        If you do not have BSC
                         <template v-if="isMainnetNetwork(sourceNetworkId)"
                             >Mainnet</template
                         >
                         <template v-else>Testnet</template>
                         , please setup and change
                     </template>
+
+                    <!-- 等待确认 -->
+                    <template
+                        v-else-if="
+                            !confirmTransactionChainChanging &&
+                                !confirmTransactionStatus
+                        "
+                    >
+                        Check the transaction under MetaMask Activity if it
+                        doesn't pop up.
+                    </template>
                 </div>
 
                 <div
-                    v-if="confirmTransactionChainChanging"
+                    v-if="
+                        confirmTransactionChainChanging &&
+                            isEthereumNetwork(sourceNetworkId)
+                    "
                     class="stepNetwork"
                     @click.stop="stepNetwork"
                 >
@@ -326,9 +365,34 @@
                         </div>
                     </div>
 
-                    <span class="refreshBlock" @click.stop="refreshBlock">
-                        <img src="@/static/transferProgress/refresh_gray.svg" />
-                        Refersh
+                    <span
+                        class="refreshBtn"
+                        :class="{ disabled: !canRefreshBlocks }"
+                        @click.stop="refreshBlock"
+                    >
+                        <svg
+                            :class="{ loading: !canRefreshBlocks }"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 16 16"
+                        >
+                            <g fill="none" fill-rule="evenodd">
+                                <g fill="#99999a" class="color">
+                                    <g>
+                                        <g>
+                                            <g>
+                                                <path
+                                                    d="M3.56 9.162c.494 2.534 2.88 4.204 5.331 3.73 1.467-.285 2.664-1.288 3.25-2.655l-2.376.46c-.248.048-.49-.107-.566-.351l-.015-.058c-.05-.257.096-.506.33-.582l.057-.014 3.185-.617c.248-.048.49.106.566.35l.015.058.663 3.4c.054.278-.119.545-.386.597-.248.049-.49-.105-.567-.35l-.015-.058-.336-1.728c-.786 1.313-2.078 2.255-3.61 2.552-2.984.578-5.891-1.456-6.493-4.545-.054-.278.118-.545.386-.597.267-.052.527.13.581.408zm10.188-3.365c.097.265-.032.556-.288.65-.255.093-.541-.046-.638-.312-.886-2.426-3.505-3.703-5.85-2.852-1.108.402-1.985 1.218-2.479 2.256l2.065-.75c.238-.086.501.029.615.258l.023.055c.09.247-.015.515-.236.626l-.053.023-3.049 1.107c-.237.086-.5-.028-.614-.257l-.024-.055L2.032 3.29c-.097-.265.032-.556.288-.65.238-.086.501.028.615.257l.024.055.718 1.972C4.3 3.719 5.334 2.789 6.622 2.32c2.857-1.036 6.047.52 7.126 3.476z"
+                                                    transform="translate(-544 -904) translate(466 904) translate(78)"
+                                                />
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+
+                        Refresh
                     </span>
                 </div>
 
@@ -1510,8 +1574,7 @@ export default {
         async waitingBlockConfirmations() {
             return new Promise(resolve => {
                 const wait = async () => {
-                    this.canRefreshBlocks = false;
-                    await this.getBlocks();
+                    await this.refreshBlock();
 
                     //达到条件
                     if (
@@ -1522,7 +1585,6 @@ export default {
                         return;
                     }
 
-                    this.canRefreshBlocks = true;
                     this.waitingBlockConfirmationsLoopId = setTimeout(
                         wait,
                         5000
@@ -1533,26 +1595,22 @@ export default {
             });
         },
 
-        async getBlocks() {
-            //获取当前块高度
-            let currentBlock = await lnrJSConnector.provider.getBlockNumber();
-
-            //已确认块
-            const confirmations =
-                currentBlock - this.tansactionBlocks.blockNumber;
-
-            //1个以上,防止回退
-            if (confirmations > 0) {
-                this.tansactionBlocks.confirmations = confirmations;
-            }
-        },
-
         //刷新block
         async refreshBlock() {
             //防止刷新中点击刷新
             if (this.canRefreshBlocks) {
                 this.canRefreshBlocks = false;
-                await this.getBlocks();
+                //获取当前块高度
+                let currentBlock = await lnrJSConnector.provider.getBlockNumber();
+
+                //已确认块
+                const confirmations =
+                    currentBlock - this.tansactionBlocks.blockNumber;
+
+                //1个以上,防止回退
+                if (confirmations > 0) {
+                    this.tansactionBlocks.confirmations = confirmations;
+                }
                 this.canRefreshBlocks = true;
             }
         },
@@ -2290,7 +2348,7 @@ export default {
                         }
                     }
 
-                    .refreshBlock {
+                    .refreshBtn {
                         font-family: Gilroy-SemiBold;
                         font-size: 12px;
                         font-weight: 600;
@@ -2304,16 +2362,32 @@ export default {
                         border: solid 1px #e5e5e5;
                         cursor: pointer;
                         transition: $animete-time linear;
+                        position: relative;
 
-                        img {
-                            width: 16px;
-                            height: 16px;
-                            margin-right: 10px;
+                        &.disabled {
+                            cursor: not-allowed;
+                            opacity: 0.5;
+                        }
+
+                        svg {
+                            position: relative;
+                            margin-right: 4px;
+                            top: 4px;
+
+                            &.loading {
+                                animation: rotate_reverse 3s linear infinite;
+                            }
                         }
 
                         &:hover {
-                            border-color: #1a38f8;
-                            color: #1a38f8;
+                            &:not(.disabled) {
+                                border-color: #1a38f8;
+                                color: #1a38f8;
+
+                                .color {
+                                    fill: #1a38f8;
+                                }
+                            }
                         }
                     }
                 }
@@ -2624,6 +2698,15 @@ export default {
     }
     to {
         transform: rotate(359deg);
+    }
+}
+
+@keyframes rotate_reverse {
+    from {
+        transform: rotate(359deg);
+    }
+    to {
+        transform: rotate(0deg);
     }
 }
 </style>

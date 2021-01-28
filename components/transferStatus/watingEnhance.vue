@@ -25,13 +25,13 @@
             <img
                 v-else-if="shouldApprove"
                 class="course"
-                src="@/static/transferProgress/course/approve.png"
+                src="@/static/transferProgress/course/approve_bsc_mainnet.png"
             />
             <!-- 等待确认 -->
             <img
                 v-else-if="!currentConfirm"
                 class="course"
-                src="@/static/transferProgress/course/confirm.png"
+                src="@/static/transferProgress/course/confirm_bsc_mainnet.png"
             />
         </div>
 
