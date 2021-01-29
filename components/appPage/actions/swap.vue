@@ -377,7 +377,7 @@ export default {
                 lnrJSConnector.lnrJS.LinearFinance.balanceOf(
                     this.walletAddress
                 ),
-                getLiquids(this.walletAddress)
+                getLiquids(this.walletAddress,true)
             ]);
 
             let liquidsList = liquids.liquidsList.map(item => {

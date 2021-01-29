@@ -1,5 +1,5 @@
 "use strict";
-const {  BigNumber } = require("ethers");
+const { BigNumber } = require("ethers");
 const pageResults = require("graph-results-pager");
 const { bn2n } = require("@/common/bnCalc");
 
@@ -629,7 +629,10 @@ module.exports = {
             })
                 .then(results =>
                     results.map(({ id, freeZeTokens, UnFreeZeTokens }) => ({
-                        account: id,
+                        account: id
+                            .substring(0, id.indexOf("-"))
+                            .replace("0x000000000000000000000000", "0x")
+                            .toLocaleLowerCase(),
                         freeZeTokens: BigNumber.from(freeZeTokens),
                         UnFreeZeTokens: BigNumber.from(UnFreeZeTokens)
                     }))
