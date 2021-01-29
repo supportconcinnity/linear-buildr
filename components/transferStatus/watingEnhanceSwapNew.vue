@@ -2,7 +2,7 @@
 
 <template>
     <div id="watingEnhanceSwapNew">
-        <div class="close" @click.stop="setDefaultTab">
+        <div class="close" @click.stop="setDefaultTab" v-if="!confirmTransactionStatus || confirmTransactionStep > waitProcessArray.length - 1">
             <img v-if="isMobile" src="@/static/icon-cancel.svg" />
             <closeSvg v-else></closeSvg>
         </div>
@@ -768,6 +768,7 @@ export default {
         }
     },
     created() {
+         this.$store.commit("setIsTransaction", true);
         this.swapNumber = this.amount;
         this.initStep();
     },
@@ -1992,6 +1993,8 @@ export default {
         }
     },
     destroyed() {
+         this.$store.commit("setIsTransaction", false);
+
         //清除事件,防止重复
         if (this.chainChangeTokenFromUnfreeze) {
             this.$pub.unsubscribe(this.chainChangeTokenFromUnfreeze);

@@ -203,7 +203,6 @@
 <script>
 import _ from "lodash";
 import gasEditorSwap from "@/components/gasEditorSwap";
-import watingEnhanceSwap from "@/components/transferStatus/watingEnhanceSwap";
 import watingEnhanceSwapNew from "@/components/transferStatus/watingEnhanceSwapNew";
 import dropdownArrowSvg from "@/components/svg/dropdownArrow";
 
@@ -238,7 +237,6 @@ export default {
     name: "swap",
     components: {
         gasEditorSwap,
-        watingEnhanceSwap,
         watingEnhanceSwapNew,
         dropdownArrowSvg
     },

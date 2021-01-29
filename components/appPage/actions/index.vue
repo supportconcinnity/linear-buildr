@@ -25,18 +25,50 @@
                 />
             </a>
 
-            <div class="introductActionBox" v-if="currentAction != 0 || othersAction != 0">
-                <div class="title" v-if="currentAction == 1 && othersAction == 0">Build</div>
-                <div class="title" v-if="currentAction == 2 && othersAction == 0">Burn</div>
-                <div class="title" v-if="currentAction == 3 && othersAction == 0">Claim</div>
-                <div class="title" v-if="currentAction == 4 && othersAction == 0">Transfer</div>
-                <div class="title" v-if="currentAction == 5 && othersAction == 0">Swap</div>
+            <div
+                class="introductActionBox"
+                v-if="currentAction != 0 || othersAction != 0"
+            >
+                <div
+                    class="title"
+                    v-if="currentAction == 1 && othersAction == 0"
+                >
+                    Build
+                </div>
+                <div
+                    class="title"
+                    v-if="currentAction == 2 && othersAction == 0"
+                >
+                    Burn
+                </div>
+                <div
+                    class="title"
+                    v-if="currentAction == 3 && othersAction == 0"
+                >
+                    Claim
+                </div>
+                <div
+                    class="title"
+                    v-if="currentAction == 4 && othersAction == 0"
+                >
+                    Transfer
+                </div>
+                <div
+                    class="title"
+                    v-if="currentAction == 5 && othersAction == 0"
+                >
+                    Swap
+                </div>
 
                 <div class="title" v-if="othersAction == 1">Track Debt</div>
                 <div class="title" v-if="othersAction == 2">Transaction</div>
                 <div class="title" v-if="othersAction == 3">Referral</div>
 
-                <img v-if="othersAction == 0" src="@/static/info.svg" @click="showIntroductActionModal"/>
+                <img
+                    v-if="othersAction == 0"
+                    src="@/static/info.svg"
+                    @click="showIntroductActionModal"
+                />
             </div>
 
             <Modal
@@ -66,8 +98,8 @@
                     Transfer different currencies to specified wallet address
                 </div>
                 <div class="context" v-if="currentAction == 5">
-                   You can select the type of liquids and enter the
-                            amount you want to swap to the other chain.
+                    You can select the type of liquids and enter the amount you
+                    want to swap to the other chain.
                 </div>
             </Modal>
 
@@ -77,12 +109,9 @@
                 class="action"
                 :class="{
                     activited: currentAction == index + 1,
-                    hover: currentHover == index + 1,
-                    hit: currentAction != 0 || currentHover != 0
+                    isTransaction
                 }"
                 @click="actionChange(index + 1)"
-                @mouseenter="mouseenter(index + 1)"
-                @mouseleave="mouseleave(index + 1)"
             >
                 {{ item }}
             </div>
@@ -90,9 +119,7 @@
             <div class="mNavigate" v-if="mMenuState && isMobile">
                 <div class="mHead">
                     <div class="mLogo">
-                        <img
-                            src="@/static/logo-crypto-linear-colour.svg"
-                        />
+                        <img src="@/static/logo-crypto-linear-colour.svg" />
                         Menu
                     </div>
                     <img
@@ -132,11 +159,11 @@
             <transfer v-else-if="currentAction == 4"></transfer>
             <swap v-else></swap>
 
-            <referralModal></referralModal>
-            <transactionModal></transactionModal>
-            <trackModal></trackModal>
+            <referralModal />
+            <transactionModal />
+            <trackModal />
         </div>
-        <notificationQueue> </notificationQueue>
+        <notificationQueue />
     </div>
 </template>
 
@@ -173,8 +200,7 @@ export default {
             introductActionModal: false,
             currentAction: this.$store.state.currentAction, //显示不同功能 0homePage 1build 2burn 3claim 4transfer 5swap
             othersAction: 0, // 0没有 1track 2transaction 3referral
-            currentHover: 0,
-            actions: ["Build", "Burn", "Claim", "Transfer", "Swap"],
+            actions: ["Build", "Burn", "Claim", "Transfer", "Swap"]
         };
     },
     created() {
@@ -187,13 +213,13 @@ export default {
         });
         this.$pub.subscribe("transactionModalChange", (msg, params) => {
             // console.log("transactionModalChange", params);
-            if (params) {    
+            if (params) {
                 this.othersAction = 2;
             }
         });
         this.$pub.subscribe("referralModalChange", (msg, params) => {
             // console.log("referralModalChange", params);
-            if (params) {    
+            if (params) {
                 this.othersAction = 3;
             }
         });
@@ -215,53 +241,53 @@ export default {
         currentActionComputed(newVal, oldVal) {
             this.currentAction = this.currentActionComputed;
         },
-        isMobile(){},
+        isMobile() {}
     },
     computed: {
         currentActionComputed() {
             return this.$store.state.currentAction;
         },
         mMenuState() {
-            return this.$store.state.mMenuState
+            return this.$store.state.mMenuState;
         },
 
-        isMobile(){
-            return this.$store.state.isMobile
+        isMobile() {
+            return this.$store.state.isMobile;
+        },
+
+        isTransaction() {
+            return this.$store.state.isTransaction;
         }
     },
     methods: {
         //切换功能
         //Switch between features
         actionChange: function(action) {
-            this.$store.commit("setCurrentAction", action);
-            // this.currentAction = action;
+            //正在交易中无法点击其他按钮
+            if (!this.isTransaction) {
+                this.$store.commit("setCurrentAction", action);
+                // this.currentAction = action;
 
-            //关闭 referral transaction track 的 modal
-            this.$pub.publish("referralModalCloseEvent");
-            this.$pub.publish("transactionModalCloseEvent");
-            this.$pub.publish("trackModalCloseEvent");
+                //关闭 referral transaction track 的 modal
+                this.$pub.publish("referralModalCloseEvent");
+                this.$pub.publish("transactionModalCloseEvent");
+                this.$pub.publish("trackModalCloseEvent");
 
-            this.othersAction = 0;
+                this.othersAction = 0;
 
-            this.$pub.publish("referralModalChange", false);
-            this.$pub.publish("transactionModalChange", false);
-            this.$pub.publish("trackModalChange", false);
-            this.$store.commit('setmMenuState', false)
+                this.$pub.publish("referralModalChange", false);
+                this.$pub.publish("transactionModalChange", false);
+                this.$pub.publish("trackModalChange", false);
+                this.$store.commit("setmMenuState", false);
+            }
         },
 
         showIntroductActionModal() {
             this.introductActionModal = true;
         },
 
-        //鼠标进入离开用于设置hover和activeted时,改变其他元素color
-        mouseenter(index) {
-            this.currentHover = index;
-        },
-        mouseleave(index) {
-            this.currentHover = 0;
-        },
         mHideMenuFun() {
-            this.$store.commit('setmMenuState', false)
+            this.$store.commit("setmMenuState", false);
         }
     }
 };
@@ -283,7 +309,6 @@ export default {
 
         .webLogo {
             .linearBuildrlogo {
-                
                 width: 163px;
                 height: 32px;
                 cursor: pointer;
@@ -310,23 +335,25 @@ export default {
             font-stretch: normal;
             font-style: normal;
             line-height: 1.33;
-            color: #5a575c;
+            color: #99999a;
 
             text-transform: uppercase;
 
-            &.hit {
-                color: #99999a;
+            &:hover {
+                &:not(.isTransaction):not(.activited) {
+                    border-color: #1a38f8;
+                    color: #1a38f8;
+                }
             }
 
-            &.hover {
-                border-color: #1a38f8;
-                color: #1a38f8;
+            &.isTransaction {
+                cursor: not-allowed;
             }
 
             &.activited {
-                border-color: #1a38f8;
-                background: #1a38f8;
-                color: #fff;
+                border-color: #ecf2fb;
+                background-color: #ecf2fb;
+                color: #1a38f8;
             }
         }
     }
@@ -360,7 +387,6 @@ export default {
                 display: block;
 
                 .linearBuildrlogo {
-                    
                     width: 163px;
                     height: 32px;
                     cursor: pointer;
@@ -368,7 +394,6 @@ export default {
                 }
 
                 .logoWhenAction {
-                    
                     cursor: pointer;
                     margin-right: 8px;
                 }
@@ -386,19 +411,19 @@ export default {
 
             /deep/.introductActionModal {
                 .ivu-modal-mask {
-                    z-index: 10000!important;
+                    z-index: 10000 !important;
                 }
 
                 .ivu-modal-wrap {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    z-index: 10000!important;
+                    z-index: 10000 !important;
 
                     .ivu-modal {
-                        width: 74.66vw!important;
+                        width: 74.66vw !important;
                         height: 36.8vw;
-                        top: 0!important;
+                        top: 0 !important;
 
                         .ivu-modal-content {
                             height: 100%;
@@ -426,7 +451,7 @@ export default {
             .action {
                 display: none;
             }
-            
+
             .mNavigate {
                 width: 100vw;
                 height: 100vh;

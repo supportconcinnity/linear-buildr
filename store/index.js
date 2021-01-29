@@ -13,13 +13,13 @@ export const state = () => ({
         price: 0,
         type: NETWORK_SPEEDS_TO_KEY.MEDIUM,
         status: -1,
-        networkId:"",
+        networkId: ""
     }, //swap gas设置详情,-1未初始化,1已初始化
     targetGasDetails: {
         price: 0,
         type: NETWORK_SPEEDS_TO_KEY.MEDIUM,
         status: -1,
-        networkId:"",
+        networkId: ""
     }, //swap gas设置详情,-1未初始化,1已初始化
     wallet: { address: "", status: -1 }, //钱包 address=钱包地址,status:-1=未初始化数据,0:更新中,1更新完成,2更新失败,
     walletDetails: {}, //钱包详情
@@ -33,8 +33,9 @@ export const state = () => ({
     isMobile: false, //是否移动端
     registeredMetamaskWalletEvents: false, //是否已经注册metamask钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
     registeredBinanceWalletEvents: false, //是否已经注册binance钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
-    swapUnfreezeDatas:{},//swap等待解冻所需数据,用于页面强制刷新后重载swap逻辑
-    swapUnfreezeContinue:false, //用于判断用户是否点击了继续swap
+    swapUnfreezeDatas: {}, //swap等待解冻所需数据,用于页面强制刷新后重载swap逻辑
+    swapUnfreezeContinue: false, //用于判断用户是否点击了继续swap
+    isTransaction: false // 是否在交易页面
 });
 
 export const mutations = {
@@ -128,6 +129,10 @@ export const mutations = {
 
     setSwapUnfreezeContinue(state, status) {
         state.swapUnfreezeContinue = status;
+    },
+
+    setIsTransaction(state, isTransaction) {
+        state.isTransaction = isTransaction;
     }
 };
 

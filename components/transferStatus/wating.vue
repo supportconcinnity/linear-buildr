@@ -77,6 +77,9 @@ export default {
             return this.$store.state?.walletNetworkId;
         }
     },
+    created() {
+        this.$store.commit("setIsTransaction", true);
+    },
     mounted() {
         this.waitPercentTimeId = setInterval(() => {
             this.waitPercent++;
@@ -89,6 +92,7 @@ export default {
         }
     },
     destroyed() {
+        this.$store.commit("setIsTransaction", false);
         clearInterval(this.waitPercentTimeId);
     }
 };

@@ -2,7 +2,7 @@
 
 <template>
     <div id="transferWatingEnhance">
-        <div class="close" @click.stop="$emit('close')">
+        <div class="close" v-if="!currentConfirm || currentStep > setupArray.length - 1" @click.stop="$emit('close')">
             <img v-if="isMobile" src="@/static/icon-cancel.svg" />
             <closeSvg v-else></closeSvg>
         </div>
@@ -334,13 +334,17 @@ export default {
             return this.$store.state?.walletNetworkName;
         }
     },
-    mounted() {},
     methods: {
         tryAgain() {
             this.$emit("tryAgain");
         }
     },
-    destroyed() {}
+    created() {
+        this.$store.commit("setIsTransaction", true);
+    },
+    destroyed() {
+        this.$store.commit("setIsTransaction", false);
+    }
 };
 </script>
 
