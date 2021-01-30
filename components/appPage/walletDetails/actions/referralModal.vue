@@ -29,8 +29,7 @@
 
                     <div class="contentTitle">Earn LINA with friends</div>
                     <div class="contentDesc">
-                        Receive 10 USD worth LINA when a friend adds your code
-                        and completes 5 transactions
+                        Receive 10 USD worth LINA when a friend adds your code and completes 10 transactions, up to 1000 quota for phase 1 marketing
                     </div>
                     <div class="youCodeBox">
                         <div class="icon">
