@@ -599,6 +599,34 @@ module.exports = {
                 )
                 .catch(err => console.error(err));
         },
+        userMintOrBurnAssetsCount({
+            max = maxRequest,
+            account = undefined,
+            source = "lUSD",
+            networkId = $nuxt.$store.state?.walletNetworkId
+        } = {}) {
+            return pageResults({
+                api: graphAPIEndpoints[networkId],
+                max,
+                query: {
+                    entity: "userMintOrBurnAssetsCounts",
+                    selection: {
+                        where: {
+                            account: account ? `\\"${account}\\"` : undefined,
+                            source: source ? `\\"${source}\\"` : undefined,
+                        }
+                    },
+                    properties: ["totalIssuedDebt"]
+                }
+            })
+                .then(results =>
+                    results.map(({ totalIssuedDebt }) => ({
+                        totalIssuedDebt: bn2n(BigNumber.from(totalIssuedDebt))
+                    }))
+                )
+                .catch(err => console.error(err));
+        }
+        ,
         userSwapAssetsCount({
             max = maxRequest,
             account = undefined,
