@@ -2,7 +2,7 @@
 
 <template>
     <div id="transferWatingEnhance">
-        <div class="close" v-if="!currentConfirm || currentStep > setupArray.length - 1" @click.stop="$emit('close')">
+        <div class="close" v-if="!currentConfirm || currentErrMsg || currentStep > setupArray.length - 1" @click.stop="$emit('close')">
             <img v-if="isMobile" src="@/static/icon-cancel.svg" />
             <closeSvg v-else></closeSvg>
         </div>

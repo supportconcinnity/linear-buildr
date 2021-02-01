@@ -1333,11 +1333,24 @@ export default {
                         );
                     }
 
-                    if (this.waitProcessArray.length) {
+                    if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.STAKING_BUILD
+                    ) {
                         await this.startStakingAndBuildContract({
                             stakeAmountLINA: this.actionData.stake,
                             buildAmountlUSD: this.actionData.amount
                         });
+                    } else if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.STAKING
+                    ) {
+                        await this.startStakingContract(this.actionData.stake);
+                    } else if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        BUILD_PROCESS_SETUP.BUILD
+                    ) {
+                        await this.startBuildContract(this.actionData.amount);
                     }
                 } catch (error) {
                     //自定义错误
@@ -1503,6 +1516,131 @@ export default {
             }
         },
 
+        //开始抵押合约调用
+        async startStakingContract(stakeAmountLINA) {
+            this.confirmTransactionStatus = false;
+
+            //多抵押一点,防止build失败
+            let tempStakeAmount = n2bn(_.ceil(bn2n(stakeAmountLINA), 2));
+
+            //小于等于最大数
+            if (tempStakeAmount.lte(this.buildData.LINABN)) {
+                stakeAmountLINA = tempStakeAmount;
+            }
+
+            //合约需要大于1
+            if (stakeAmountLINA.eq(n2bn("1"))) {
+                stakeAmountLINA = bnAdd(
+                    stakeAmountLINA,
+                    n2bn("0.000000000000000001")
+                );
+            }
+
+            const {
+                lnrJS: { LnCollateralSystem },
+                utils
+            } = lnrJSConnector;
+
+            const transactionSettings = {
+                gasPrice: this.$store.state?.gasDetails?.price,
+                gasLimit: this.gasLimit
+            };
+
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
+            transactionSettings.gasLimit = await this.getGasEstimateFromStaking(
+                stakeAmountLINA
+            );
+
+            let transaction = await LnCollateralSystem.Collateral(
+                utils.formatBytes32String("LINA"),
+                stakeAmountLINA,
+                transactionSettings
+            );
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: BUILD_PROCESS_SETUP.STAKING,
+                    networkId: this.walletNetworkId,
+                    value: `Building ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
+                });
+
+                let status = await utils.waitForTransaction(transaction.hash);
+
+                if (!status) {
+                    throw {
+                        code: 6100002,
+                        message:
+                            "Something went wrong while staking your asset, please try again."
+                    };
+                }
+
+                this.confirmTransactionStep += 1;
+            }
+        },
+
+        //开始Build合约调用
+        async startBuildContract(buildAmountlUSD) {
+            this.confirmTransactionStatus = false;
+
+            buildAmountlUSD = n2bn(_.floor(bn2n(buildAmountlUSD), 2));
+
+            const {
+                lnrJS: { LnBuildBurnSystem },
+                utils
+            } = lnrJSConnector;
+
+            const transactionSettings = {
+                gasPrice: this.$store.state?.gasDetails?.price,
+                gasLimit: this.gasLimit
+            };
+
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
+            transactionSettings.gasLimit = await this.getGasEstimateFromBuild(
+                buildAmountlUSD
+            );
+
+            let transaction = await LnBuildBurnSystem.BuildAsset(
+                buildAmountlUSD,
+                transactionSettings
+            );
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: BUILD_PROCESS_SETUP.BUILD,
+                    networkId: this.walletNetworkId,
+                    value: `Building ${this.confirmTransactionStep + 1} / ${
+                        this.waitProcessArray.length
+                    }`
+                });
+
+                let status = await utils.waitForTransaction(transaction.hash);
+
+                if (!status) {
+                    throw {
+                        code: 6100003,
+                        message:
+                            "Something went wrong while building your ℓUSD, please try again."
+                    };
+                }
+
+                this.confirmTransactionStep += 1;
+            }
+        },
+
         //评估Approve的gas
         async getGasEstimateFromApprove(contractAddress, approveAmountLINA) {
             try {
@@ -1556,6 +1694,56 @@ export default {
             } catch (e) {
                 console.log(e, "getGasEstimateFromStakingAndBuild");
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
+            }
+        },
+
+        //评估Staking的gas
+        async getGasEstimateFromStaking(stakeAmountLINA) {
+            try {
+                const {
+                    lnrJS: { LnCollateralSystem },
+                    utils
+                } = lnrJSConnector;
+
+                if (
+                    stakeAmountLINA.isZero() ||
+                    stakeAmountLINA.lt("0") //小于等于0
+                ) {
+                    throw new Error("invalid stakeAmountLINA");
+                }
+
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.Collateral(
+                    utils.formatBytes32String("LINA"),
+                    stakeAmountLINA
+                );
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
+            }
+        },
+
+        //评估Build的gas
+        async getGasEstimateFromBuild(buildAmountlUSD) {
+            try {
+                const {
+                    lnrJS: { LnBuildBurnSystem },
+                    utils
+                } = lnrJSConnector;
+
+                if (
+                    buildAmountlUSD <= 0 //小于等于0
+                ) {
+                    throw new Error("invalid buildAmountlUSD");
+                }
+
+                let gasEstimate = await LnBuildBurnSystem.contract.estimateGas.BuildAsset(
+                    buildAmountlUSD
+                );
+
+                return bufferGasLimit(gasEstimate);
+            } catch (e) {
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.build);
             }
         },
 
