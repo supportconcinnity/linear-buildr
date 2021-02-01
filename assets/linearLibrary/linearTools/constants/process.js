@@ -8,7 +8,8 @@ export const BUILD_PROCESS_SETUP = {
     BURN_UNSTAKING: "Unstaking LINA & Burning ℓUSD on BSC",
     CLAIM: "Claiming Rewards",
     FREEZE: "Swapping [REPLACE_CURRENCY] on ",
-    UNFREEZE: "Getting [REPLACE_CURRENCY] on "
+    UNFREEZE: "Getting [REPLACE_CURRENCY] on ",
+    TRANSFER: "Transfer [REPLACE_CURRENCY] on "
 };
 
 export const BUILD_PROCESS_SETUP_MOBILE = {

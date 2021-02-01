@@ -14,13 +14,13 @@
                         <div
                             class="from actionInputItem"
                             :class="{
-                                error: errors.amountMsg,
+                                error: transactionErrMsg,
                                 showDropdown
                             }"
                         >
                             <div class="iconBox">
                                 <div class="icon">
-                                    <img :src="currencyList[selected].img"  />
+                                    <img :src="currentSelectCurrency.img" />
                                 </div>
                             </div>
                             <div class="midle">
@@ -45,12 +45,10 @@
                                 <img
                                     v-show="showDropdown || dropdownHover"
                                     src="@/static/arrow.svg"
-                                    
                                 />
                                 <img
                                     v-show="!showDropdown && !dropdownHover"
                                     src="@/static/arrow_gray.svg"
-                                    
                                 />
                             </div>
                             <div class="value">
@@ -63,7 +61,7 @@
                                                 element-id="transfer_number_input"
                                                 :min="0"
                                                 :max="
-                                                currencyList[selected].balance
+                                                    currentSelectCurrency.balance
                                                 "
                                                 type="text"
                                                 v-model="transferNumber"
@@ -90,13 +88,15 @@
                                 >
                                     <div class="iconBox">
                                         <div class="icon">
-                                            <img :src="item.img"  />
+                                            <img :src="item.img" />
                                         </div>
                                     </div>
                                     <div class="midle">
                                         <div class="p_1">
                                             {{
-                                                currencies.hasOwnProperty(item.name)
+                                                currencies.hasOwnProperty(
+                                                    item.name
+                                                )
                                                     ? currencies[item.name].name
                                                     : item.name
                                             }}
@@ -108,10 +108,10 @@
                         <div
                             class="someWrong"
                             :style="{
-                                opacity: errors.amountMsg ? '1' : '0'
+                                opacity: transactionErrMsg ? '1' : '0'
                             }"
                         >
-                            {{ errors.amountMsg }}
+                            {{ transactionErrMsg }}
                         </div>
 
                         <div
@@ -124,7 +124,7 @@
                             <div class="li_1">
                                 <div class="iconBox">
                                     <div class="icon">
-                                        <img src="@/static/wallet.svg"  />
+                                        <img src="@/static/wallet.svg" />
                                     </div>
                                 </div>
                                 <div class="midle">
@@ -161,16 +161,16 @@
                             class="errMsg"
                             :style="{
                                 display:
-                                    errors.amountMsg ||
+                                    transactionErrMsg ||
                                     (walletError &&
                                         this.transferToAddress != '')
                                         ? 'flex'
                                         : 'none'
                             }"
                         >
-                            <img src="@/static/error.svg"  />
-                            <div v-if="errors.amountMsg">
-                                {{ errors.amountMsg }}
+                            <img src="@/static/error.svg" />
+                            <div v-if="transactionErrMsg">
+                                {{ transactionErrMsg }}
                             </div>
                             <div v-else>
                                 Please input a valid address.
@@ -179,13 +179,13 @@
                         <div
                             class="from actionInputItem"
                             :class="{
-                                error: errors.amountMsg,
+                                error: transactionErrMsg,
                                 showDropdown
                             }"
                         >
                             <div class="iconBox">
                                 <div class="icon">
-                                    <img :src="currencyList[selected].img"  />
+                                    <img :src="currentSelectCurrency.img" />
                                 </div>
                             </div>
 
@@ -203,12 +203,10 @@
                                     <img
                                         v-show="showDropdown || dropdownHover"
                                         src="@/static/arrow.svg"
-                                        
                                     />
                                     <img
                                         v-show="!showDropdown && !dropdownHover"
                                         src="@/static/arrow_gray.svg"
-                                        
                                     />
                                 </div>
                             </div>
@@ -221,7 +219,7 @@
                                     "
                                 >
                                     Avaliable:
-                                    {{ currencyList[selected].balance }}
+                                    {{ currentSelectCurrency.balance }}
                                     {{ currentSelectCurrency.name }}
                                 </div>
                                 <div v-else>
@@ -239,7 +237,7 @@
                                         ref="itemInput2"
                                         element-id="transfer_number_input"
                                         :min="0"
-                                        :max="currencyList[selected].balance"
+                                        :max="currentSelectCurrency.balance"
                                         type="text"
                                         v-model="transferNumber"
                                         placeholder="2"
@@ -271,16 +269,12 @@
                                 >
                                     <div class="iconBox">
                                         <div class="icon">
-                                            <img :src="item.img"  />
+                                            <img :src="item.img" />
                                         </div>
                                     </div>
                                     <div class="midle">
                                         <div class="p_1">
-                                            {{
-                                                currencies.hasOwnProperty(item.name)
-                                                    ? currencies[item.name].name
-                                                    : item.name
-                                            }}
+                                            {{ item.name }}
                                         </div>
                                     </div>
                                 </div>
@@ -311,34 +305,28 @@
                     <div
                         class="transferBtn"
                         :class="{ disabled: transferDisabled || walletError }"
-                        @click="onSend"
+                        @click="clickTransfer"
                     >
                         TRANSFER NOW
                     </div>
+
+                    <Spin fix v-if="processing"></Spin>
                 </div>
             </TabPane>
             <TabPane name="m1">
                 <div class="waitingBox">
-                    <wating
+                    <watingEnhance
+                        class="waitingBox"
                         v-if="actionTabs == 'm1'"
-                        v-model="confirmTransactionStatus"
-                        @etherscan="etherscan"
-                        @homepage="homepage"
-                    ></wating>
-                </div>
-            </TabPane>
-            <TabPane name="m2">
-                <div class="successBox">
-                    <success @homepage="homepage" @close="close"></success>
-                </div>
-            </TabPane>
-            <TabPane name="m3">
-                <div class="failBox">
-                    <wrong
-                        @again="again"
-                        @close="close"
-                        @homepage="homepage"
-                    ></wrong>
+                        :currentStep="confirmTransactionStep"
+                        :currentHash="confirmTransactionHash"
+                        :currentNetworkId="confirmTransactionNetworkId"
+                        :currentConfirm="confirmTransactionStatus"
+                        :currentErrMsg="transactionErrMsg"
+                        :setupArray="waitProcessArray"
+                        @tryAgain="waitProcessFlow"
+                        @close="setDefaultTab"
+                    ></watingEnhance>
                 </div>
             </TabPane>
         </Tabs>
@@ -356,7 +344,10 @@ import {
 
 import _ from "lodash";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
+import {
+    getLiquids,
+    storeDetailsData
+} from "@/assets/linearLibrary/linearTools/request";
 import gasEditor from "@/components/gasEditor";
 import {
     bufferGasLimit,
@@ -366,10 +357,9 @@ import {
 } from "@/assets/linearLibrary/linearTools/network";
 import currencies from "@/common/currency";
 
-import {
-    formatNumber
-} from "@/assets/linearLibrary/linearTools/format";
-import { n2bn } from "@/common/bnCalc";
+import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
+import { bn2n, n2bn } from "@/common/bnCalc";
+import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
 
 export default {
     name: "transfer",
@@ -377,7 +367,7 @@ export default {
         return {
             formatterInput,
             currencies,
-            actionTabs: "m0", //子页(m0默认,m1等待,m2成功,m3错误)
+            actionTabs: "m0", //子页(m0默认,m1等待)
             showDropdown: false,
             selected: 0,
             processing: false, //交易按钮防抖
@@ -390,11 +380,22 @@ export default {
             dropdownHover: false,
 
             confirmTransactionStatus: true,
+            confirmTransactionStep: -1,
             confirmTransactionHash: "",
+            confirmTransactionNetworkId: "",
+            transactionErrMsg: "",
+            waitProcessArray: [],
+            waitProcessFlow: Function,
+            BUILD_PROCESS_SETUP: { ...BUILD_PROCESS_SETUP },
 
-            errors: {
-                amountMsg: ""
-            }
+            currencyList: [
+                {
+                    name: "LINA",
+                    key: "LINA",
+                    img: require("@/static/LINA_logo.svg"),
+                    balance: 0
+                }
+            ]
         };
     },
     watch: {
@@ -404,11 +405,10 @@ export default {
         isBinanceNetwork() {},
         walletNetworkId() {},
         isMobile() {},
-        currencyList() { //切换钱包时 this.currencyList 会清空
-            if (this.currencyList.length - 1 < this.selected) {
-                this.selected = 0;
-            }
-        }
+        transferDisabled() {},
+        walletError() {},
+        currentSelectCurrency() {},
+        canSendEthAmount() {}
     },
     computed: {
         //transfer按钮禁止状态
@@ -433,32 +433,8 @@ export default {
         walletAddress() {
             return this.$store.state?.wallet?.address;
         },
-        //所有资产余额
-        currencyList() {
-            var tempData = [];
-
-            if (this.$store.state?.walletDetails?.transferableAssets?.length > 0) {
-                tempData = this.$store.state?.walletDetails?.transferableAssets;
-            } else {
-                tempData = [
-                    {
-                        name: "LINA",
-                        img: require("@/static/LINA_logo.svg"),
-                        balance: 0,
-                        valueUSD: 0
-                    }
-                ];
-            }
-
-            return tempData;
-        },
-
         currentSelectCurrency() {
-            if (this.currencyList.length < this.selected) { //切换钱包时 this.currencyList 会清空
-                return this.currencyList[0];
-            } else {
-                return this.currencyList[this.selected];
-            }
+            return this.currencyList[this.selected];
         },
 
         canSendEthAmount() {
@@ -488,6 +464,8 @@ export default {
         }
     },
     async created() {
+        await this.initLiquidsList();
+
         const currency = this.isEthereumNetwork
             ? "ETH"
             : this.isBinanceNetwork
@@ -496,7 +474,7 @@ export default {
         //获取ETH gas limit评估
         let ethGasLimit = await this.getGasEstimate(
             currency,
-            lnrJSConnector.utils.parseEther("1"),
+            "1",
             this.walletAddress
         );
 
@@ -512,86 +490,193 @@ export default {
     },
     methods: {
         async selectCurrencyFun(index) {
-            this.errors.amountMsg = "";
+            this.transactionErrMsg = "";
             this.selected = index;
-            this.transferNumber = 0;
+            this.transferNumber = null;
             this.activeItemBtn = -1;
         },
-        async onSend() {
-            if (this.transferDisabled) return;
 
+        //初始化liquids列表
+        async initLiquidsList() {
             this.processing = true;
-            this.confirmTransactionStatus = false;
+            const [linaBalance, walletBalance, liquids] = await Promise.all([
+                lnrJSConnector.lnrJS.LinearFinance.balanceOf(
+                    this.walletAddress
+                ),
+                lnrJSConnector.provider.getBalance(this.walletAddress),
+                getLiquids(this.walletAddress, true)
+            ]);
 
-            let selectedAssetKind = this.currentSelectCurrency.name,
-                sendAmount = this.transferNumber,
-                selectedAssetMaxValue = this.currentSelectCurrency.balance,
-                recieveAddress = this.transferToAddress;
+            let liquidsList = liquids.liquidsList.map(item => {
+                const key = item.name;
+                return {
+                    name: currencies[key].name,
+                    key,
+                    balance: _.floor(item.balance, 4),
+                    img: item.img
+                };
+            });
 
-            if (
-                Number(selectedAssetMaxValue) > 0 &&
-                Number(selectedAssetMaxValue) >= Number(sendAmount)
-            ) {
-                try {
-                    //获取gas评估
-                    const gasLimit = await this.getGasEstimate(
-                        selectedAssetKind,
-                        sendAmount,
-                        recieveAddress
-                    );
+            this.currencyList = [
+                {
+                    name: "LINA",
+                    key: "LINA",
+                    img: require("@/static/LINA_logo.svg"),
+                    balance: _.floor(bn2n(linaBalance), 4)
+                },
+                {
+                    name: this.isEthereumNetwork ? "ETH" : "BNB",
+                    key: this.isEthereumNetwork ? "ETH" : "BNB",
+                    img: require(`@/static/${
+                        this.isEthereumNetwork ? "ETH_logo" : "currency/lBNB"
+                    }.svg`),
+                    balance: _.floor(bn2n(walletBalance), 4)
+                },
+                ...liquidsList
+            ];
 
-                    const transactionSettings = {
-                        gasPrice: this.$store.state?.gasDetails?.price,
-                        gasLimit: gasLimit
-                    };
+            let index = _.findIndex(this.currencyList, [
+                "key",
+                this.currentSelectCurrency.key
+            ]);
 
-                    sendAmount = lnrJSConnector.utils.parseEther(
-                        sendAmount.toString()
-                    );
-
-                    this.actionTabs = "m1";
-
-                    let transaction = await this.sendTransaction(
-                        selectedAssetKind,
-                        sendAmount,
-                        recieveAddress,
-                        transactionSettings
-                    );
-
-                    if (transaction) {
-                        this.confirmTransactionStatus = true;
-                        this.confirmTransactionHash = transaction.hash;
-
-                        // 发起右下角通知
-                        this.$pub.publish("notificationQueue", {
-                            hash: this.confirmTransactionHash,
-                            type: "Transfer",
-                            networkId: this.walletNetworkId,
-                            value: `${formatNumber(
-                                lnrJSConnector.utils.formatEther(sendAmount)
-                            )} ${this.currentSelectCurrency.name}`
-                        });
-
-                        //等待结果返回
-                        let status = await lnrJSConnector.utils.waitForTransaction(
-                            transaction.hash
-                        );
-
-                        //判断成功还是错误子页
-                        this.actionTabs = status ? "m2" : "m3";
-
-                        //成功则更新数据
-                        status &&
-                            _.delay(async () => await storeDetailsData(), 5000);
-                    }
-                } catch (e) {
-                    console.log(e);
-                    this.actionTabs = "m3"; //进入错误页
-                    this.processing = false;
-                }
-            }
+            this.selected = index != -1 ? index : 0;
 
             this.processing = false;
+        },
+
+        async setDefaultTab() {
+            this.activeItemBtn = -1;
+            this.actionTabs = "m0";
+
+            this.waitProcessArray = [];
+            this.confirmTransactionStep = -1;
+            this.transferNumber = null;
+            this.transactionErrMsg = "";
+            await this.initLiquidsList();
+        },
+
+        async clickTransfer() {
+            try {
+                if (this.transferDisabled) return;
+                this.processing = true;
+                this.confirmTransactionStatus = false;
+                this.waitProcessArray = [];
+
+                let sendAmount = this.transferNumber,
+                    selectedAssetMaxValue = this.currentSelectCurrency.balance;
+
+                //替换货币名称
+                this.BUILD_PROCESS_SETUP.TRANSFER = _.replace(
+                    BUILD_PROCESS_SETUP.TRANSFER,
+                    "[REPLACE_CURRENCY]",
+                    this.currentSelectCurrency.name == "LINA"
+                        ? "LINA"
+                        : this.currentSelectCurrency.name
+                );
+
+                if (
+                    Number(selectedAssetMaxValue) > 0 &&
+                    Number(selectedAssetMaxValue) >= Number(sendAmount)
+                ) {
+                    this.waitProcessArray.push(
+                        this.BUILD_PROCESS_SETUP.TRANSFER +
+                            (this.isEthereumNetwork ? "ETH" : "BSC")
+                    );
+
+                    this.confirmTransactionStep = 0;
+                    this.actionTabs = "m1"; //进入等待页
+
+                    this.waitProcessFlow = this.startFlow();
+
+                    //开始逻辑流处理函数
+                    await this.waitProcessFlow();
+                }
+            } catch (error) {
+                console.log(error, "clickTransfer");
+                this.transactionErrMsg =
+                    "Something went wrong, please try again.";
+            } finally {
+                this.processing = false;
+            }
+        },
+
+        startFlow() {
+            return async () => {
+                try {
+                    this.transactionErrMsg = "";
+
+                    if (
+                        this.waitProcessArray[this.confirmTransactionStep] ==
+                        this.BUILD_PROCESS_SETUP.TRANSFER +
+                            (this.isEthereumNetwork ? "ETH" : "BSC")
+                    ) {
+                        await this.onSend(n2bn(this.transferNumber));
+                    }
+                } catch (error) {
+                    //自定义错误
+                    if (
+                        _.has(error, "code") &&
+                        [6100001, 6100002, 6100003, 6100004].includes(
+                            error.code
+                        )
+                    ) {
+                        this.transactionErrMsg = error.message;
+                    } else {
+                        console.log(error, "startFlow error");
+                        //通用错误
+                        this.transactionErrMsg =
+                            "Something went wrong, please try again.";
+                    }
+                }
+            };
+        },
+
+        async onSend(sendAmount) {
+            let selectedAssetKind = this.currentSelectCurrency.key,
+                recieveAddress = this.transferToAddress;
+
+            //获取gas评估
+            const gasLimit = await this.getGasEstimate(
+                selectedAssetKind,
+                bn2n(sendAmount),
+                recieveAddress
+            );
+            const transactionSettings = {
+                gasPrice: this.$store.state?.gasDetails?.price,
+                gasLimit: gasLimit
+            };
+
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
+            let transaction = await this.sendTransaction(
+                selectedAssetKind,
+                sendAmount,
+                recieveAddress,
+                transactionSettings
+            );
+
+            if (transaction) {
+                this.confirmTransactionStatus = true;
+                this.confirmTransactionHash = transaction.hash;
+
+                // 发起右下角通知
+                this.$pub.publish("notificationQueue", {
+                    hash: this.confirmTransactionHash,
+                    type: "Transfer",
+                    networkId: this.walletNetworkId,
+                    value: `${formatNumber(
+                        lnrJSConnector.utils.formatEther(sendAmount)
+                    )} ${this.currentSelectCurrency.name}`
+                });
+
+                //等待结果返回
+                let status = await lnrJSConnector.utils.waitForTransaction(
+                    transaction.hash
+                );
+
+                this.confirmTransactionStep += 1;
+            }
         },
 
         //发起链上交易
@@ -599,12 +684,6 @@ export default {
             if (!currency) return null;
             if (currency === "LINA") {
                 let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-                // if (this.isEthereumNetwork) {
-                //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-                // } else if (this.isBinanceNetwork) {
-                //     LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
-                // }
-
                 return LnProxy.transfer(destination, amount, settings);
             } else if (["ETH", "BNB"].includes(currency)) {
                 return lnrJSConnector.signer.sendTransaction({
@@ -682,11 +761,11 @@ export default {
                     this.transferNumber = this.currencyList[
                         this.selected
                     ].balance;
-                    this.errors.amountMsg = `You don\`t have enought balance of ${this.currentSelectCurrency.name}.`;
+                    this.transactionErrMsg = `You don\`t have enought balance of ${this.currentSelectCurrency.name}.`;
                     return;
                 }
 
-                this.errors.amountMsg = "";
+                this.transactionErrMsg = "";
                 this.transferNumber = this.canSendEthAmount;
             } else {
                 this.transferNumber = this.currentSelectCurrency.balance;
@@ -698,9 +777,9 @@ export default {
                 ["ETH", "BNB"].includes(this.currentSelectCurrency.name) &&
                 amount > this.canSendEthAmount
             ) {
-                this.errors.amountMsg = `You don\`t have enought balance of ${this.currentSelectCurrency.name}.`;
+                this.transactionErrMsg = `You don\`t have enought balance of ${this.currentSelectCurrency.name}.`;
             } else {
-                this.errors.amountMsg = "";
+                this.transactionErrMsg = "";
             }
         },
 
@@ -726,25 +805,6 @@ export default {
                 );
                 removeClass(parentElement, "active");
             });
-        },
-        //交易状态页面回调方法 打开etherscan
-        etherscan() {
-            openBlockchainBrowser(
-                this.confirmTransactionHash,
-                this.walletNetworkId
-            );
-        },
-        //交易状态页面回调方法 回到主页
-        homepage() {
-            this.$store.commit("setCurrentAction", 0);
-        },
-        //交易状态页面回调方法 close
-        close() {
-            this.actionTabs = "m0";
-        },
-        //交易状态页面回调方法 again
-        again() {
-            this.actionTabs = "m0";
         }
     }
 };

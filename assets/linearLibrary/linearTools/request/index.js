@@ -256,12 +256,7 @@ export const storeDetailsData = async () => {
             const isBinance = isBinanceNetwork(walletNetworkId);
 
             let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-
-            // if (isEthereum) {
-            //     LnProxy = lnrJSConnector.lnrJS.LnProxyERC20;
-            // } else if (isBinance) {
-            //     LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
-            // }
+            
 
             const {
                 lnrJS: {
