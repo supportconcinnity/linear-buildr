@@ -20,16 +20,19 @@
                     <div
                         class="errMsgMobile"
                         :style="{
-                            display: codeInputErrorMsg && isMobile ? 'flex' : 'none'
+                            display:
+                                codeInputErrorMsg && isMobile ? 'flex' : 'none'
                         }"
                     >
-                        <img src="@/static/error.svg" >
+                        <img src="@/static/error.svg" />
                         {{ codeInputErrorMsg }}
                     </div>
 
                     <div class="contentTitle">Earn LINA with friends</div>
                     <div class="contentDesc">
-                        Receive 10 USD worth LINA when a friend adds your code and completes 10 transactions, up to 1000 quota for phase 1 marketing
+                        Receive 10 USD worth LINA when a friend adds your code
+                        and completes 10 transactions, up to 1000 quota for
+                        phase 1 marketing
                     </div>
                     <div class="youCodeBox">
                         <div class="icon">
@@ -37,16 +40,24 @@
                         </div>
                         <div class="title">Your referral code</div>
                         <div class="code">{{ referralCode.self_code }}</div>
-                        <div
-                            :class="[copyStatusStyle]"
-                            class="copyBtn"
-                            :data-clipboard-text="referralCode.self_code"
-                            data-clipboard-action="copy"
-                            @click="copyYouCode"
+
+                        <Tooltip
+                            class="globalInfoStyle"
+                            :content="tooltipContent"
+                            offset="0 6"
+                            placement="bottom"
+                            @on-popper-hide="resetTooltipContent"
                         >
-                            <img src="@/static/copy_hover.svg" />Copy to
-                            Clipboard
-                        </div>
+                            <div
+                                class="copyBtn"
+                                :data-clipboard-text="referralCode.self_code"
+                                data-clipboard-action="copy"
+                                @click="copyYouCode"
+                            >
+                                <img src="@/static/copy_hover.svg" />Copy to
+                                Clipboard
+                            </div>
+                        </Tooltip>
                     </div>
 
                     <div class="dashLine"></div>
@@ -75,7 +86,6 @@
                             <img
                                 class="showInfoMobile"
                                 src="@/static/info_white.svg"
-                                
                                 @click="showIntroductActionModal"
                             />
                         </div>
@@ -183,9 +193,9 @@ export default {
 
             loading: false,
 
-            copyStatus: 0,
-
             introductActionModal: false,
+
+            tooltipContent: "Copy to clipboard"
         };
     },
     created() {
@@ -209,24 +219,13 @@ export default {
             );
         },
 
-        copyStatusStyle() {
-            switch (this.copyStatus) {
-                case 1:
-                    return "success";
-                case -1:
-                    return "error";
-                default:
-                    return "";
-            }
-        },
-
         walletAddress() {
             return this.$store.state?.wallet?.address;
         },
 
         isMobile() {
             return this.$store.state?.isMobile;
-        },
+        }
     },
     methods: {
         /**
@@ -267,16 +266,12 @@ export default {
         copyYouCode() {
             var clipboarda = new Clipboard(".copyBtn");
             clipboarda.on("success", e => {
+                this.tooltipContent = "Copied";
                 e.clearSelection();
-                this.copyStatus = 1;
             });
             clipboarda.on("error", function(e) {
-                this.copyStatus = -1;
+                this.tooltipContent = "Error";
             });
-
-            _.delay(() => {
-                this.copyStatus = 0;
-            }, 200);
         },
 
         /**
@@ -361,6 +356,13 @@ export default {
         showIntroductActionModal() {
             this.introductActionModal = true;
         },
+
+        //重置复制提示框的文本
+        resetTooltipContent() {
+            setTimeout(() => {
+                this.tooltipContent = "Copy to clipboard";
+            }, 300);
+        }
     }
 };
 </script>
@@ -405,7 +407,7 @@ export default {
                         padding: 64px 193px;
 
                         .errMsgMobile {
-                            display: none;        
+                            display: none;
                         }
 
                         .contentTitle {
@@ -480,7 +482,7 @@ export default {
 
                             .copyBtn {
                                 margin-top: 16px;
-                                padding: 8px 16px;
+                                padding: 6px 16px;
                                 display: flex;
                                 align-items: center;
                                 text-transform: uppercase;
@@ -736,19 +738,19 @@ export default {
     body {
         .introductActionModal {
             .ivu-modal-mask {
-                z-index: 10000!important;
+                z-index: 10000 !important;
             }
 
             .ivu-modal-wrap {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                z-index: 10000!important;
+                z-index: 10000 !important;
 
                 .ivu-modal {
-                    width: 74.66vw!important;
+                    width: 74.66vw !important;
                     height: 36.8vw;
-                    top: 0!important;
+                    top: 0 !important;
 
                     .ivu-modal-content {
                         height: 100%;
@@ -786,8 +788,8 @@ export default {
                     right: 7px;
 
                     #closeSvg {
-                        width: 26px!important;
-                        height: 26px!important;
+                        width: 26px !important;
+                        height: 26px !important;
                     }
                 }
 
@@ -815,7 +817,7 @@ export default {
                                 padding: 12px 16px;
                                 margin-top: 24px;
                                 border-radius: 8px;
-                                background-color: rgba(223,67,76,.05);
+                                background-color: rgba(223, 67, 76, 0.05);
                                 font-size: 12px;
                                 color: #df434c;
 
@@ -837,7 +839,6 @@ export default {
                             }
 
                             .youCodeBox {
-                                
                             }
 
                             .youCodeBox {
@@ -856,7 +857,7 @@ export default {
                             }
 
                             .dashLine {
-                                margin: 30px 0!important;
+                                margin: 30px 0 !important;
                                 width: 786px;
                                 display: inline-block;
                                 height: 1px;
@@ -954,7 +955,7 @@ export default {
                         }
 
                         .submitBtn {
-                            height: 12.8vw!important;
+                            height: 12.8vw !important;
                             font-size: 16px;
                             display: flex;
                             justify-content: center;

@@ -18,7 +18,7 @@
                 <Tooltip
                     class="globalInfoStyle"
                     :content="tooltipContent"
-                    offset="0 4"
+                    offset="0 6"
                     placement="bottom"
                     @on-popper-hide="resetTooltipContent"
                 >
@@ -101,7 +101,7 @@
                     <Tooltip
                         class="globalInfoStyle"
                         :content="tooltipContent"
-                        offset="0 4"
+                        offset="0 6"
                         placement="bottom"
                         @on-popper-hide="resetTooltipContent"
                     >
@@ -428,7 +428,7 @@
                                     class="globalInfoStyle"
                                     content="Total value of synthetic exposure created using Linear.Exchange."
                                     placement="bottom"
-                                    offset="0 4"
+                                    offset="0 6"
                                 >
                                     <img src="@/static/info_white.svg" />
                                 </Tooltip>
@@ -455,7 +455,7 @@
                                     class="globalInfoStyle"
                                     content="Total value that must be paid off before unlocking collateral. Fluctuates depending on trading activity."
                                     placement="bottom"
-                                    offset="0 4"
+                                    offset="0 6"
                                 >
                                     <img src="@/static/info_white.svg" />
                                 </Tooltip>
