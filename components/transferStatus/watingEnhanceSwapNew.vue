@@ -338,7 +338,7 @@
                     class="stepNetwork"
                     @click.stop="stepNetwork"
                 >
-                    How to Setup <img src="@/static/info.svg" />
+                    How to Setup <img src="@/static/info_white.svg" />
                 </div>
 
                 <!-- 网络设置 -->

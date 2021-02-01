@@ -23,7 +23,7 @@
                             display: codeInputErrorMsg && isMobile ? 'flex' : 'none'
                         }"
                     >
-                        <img src="@/static/error.svg" alt="">
+                        <img src="@/static/error.svg" >
                         {{ codeInputErrorMsg }}
                     </div>
 
@@ -69,13 +69,13 @@
                                 content="Referral code can only be submitted once."
                                 offset="0 4"
                             >
-                                <img src="@/static/info.svg" />
+                                <img src="@/static/info_white.svg" />
                             </Tooltip>
 
                             <img
                                 class="showInfoMobile"
                                 src="@/static/info_white.svg"
-                                alt=""
+                                
                                 @click="showIntroductActionModal"
                             />
                         </div>

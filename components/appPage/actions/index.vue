@@ -5,7 +5,7 @@
                 <img
                     class="linearBuildrlogo"
                     src="@/static/linear_buildr_logo.svg"
-                    alt=""
+                    
                 />
             </a>
 
@@ -13,13 +13,13 @@
                 <img
                     class="linearBuildrlogo"
                     src="@/static/linear_buildr_logo.svg"
-                    alt=""
+                    
                     v-show="currentAction == 0 && othersAction == 0"
                 />
                 <img
                     class="logoWhenAction"
                     src="@/static/logo-crypto-linear-colour.svg"
-                    alt=""
+                    
                     style="height: 32px;"
                     v-show="currentAction != 0 || othersAction != 0"
                 />
@@ -66,7 +66,7 @@
 
                 <img
                     v-if="othersAction == 0"
-                    src="@/static/info.svg"
+                    src="@/static/info_white.svg"
                     @click="showIntroductActionModal"
                 />
             </div>
@@ -262,7 +262,7 @@ export default {
     methods: {
         //切换功能
         //Switch between features
-        actionChange: function(action) {
+        actionChange(action) {
             //正在交易中无法点击其他按钮
             if (!this.isTransaction) {
                 this.$store.commit("setCurrentAction", action);

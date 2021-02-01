@@ -124,7 +124,7 @@
                     </template>
                 </Table>
                 <div class="nothing" v-else>
-                    <img src="@/static/line_charts.svg" alt="" />
+                    <img src="@/static/line_charts.svg"  />
                     <div class="text">
                         <span class="title">No Debts</span> <br />
                         <span class="subject"

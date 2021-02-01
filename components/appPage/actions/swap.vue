@@ -58,7 +58,7 @@
                                             <img
                                                 class="itemIcon"
                                                 :src="item.img"
-                                                alt=""
+                                                
                                             />
                                             <div class="itemName">
                                                 {{ item.name }}

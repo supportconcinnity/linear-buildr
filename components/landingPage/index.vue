@@ -4,11 +4,11 @@
             <img
                 class="linearBuildrlogo"
                 src="@/static/linear_buildr_logo.svg"
-                alt=""
+                
             />
             <div class="mBuyLINA mobileShow" @click.stop="openBuyLINA">
                 BUY LINA
-                <img src="@/static/arrow_right.svg" alt="" />
+                <img src="@/static/arrow_right.svg"  />
             </div>
         </div>
         <div class="container">
@@ -71,7 +71,7 @@
                     class="mRect mobileShow"
                     @click.stop="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
                 >
-                    <img class="boxLogo" src="@/static/metamask.svg" alt="" />
+                    <img class="boxLogo" src="@/static/metamask.svg"  />
                     <div class="box">
                         <div class="context">
                             Connect MetaMask Wallet
@@ -93,7 +93,7 @@
                         <img
                             class="boxLogo"
                             src="@/static/metamask.svg"
-                            alt=""
+                            
                         />
 
                         <div>
@@ -114,7 +114,7 @@
                         <img
                             class="boxLogo"
                             src="@/static/LINA_logo.svg"
-                            alt=""
+                            
                         />
 
                         <div class="boxTitle">
@@ -122,7 +122,7 @@
                             <img
                                 class="buy_right"
                                 src="@/static/arrow_right.svg"
-                                alt=""
+                                
                             />
                         </div>
 
@@ -140,7 +140,7 @@
                         <img
                             class="boxLogo"
                             src="@/static/binance.svg"
-                            alt=""
+                            
                         />
 
                         <div>

@@ -29,11 +29,11 @@
                         placeholder="All Chains"
                     >
                         <Option value="ethereum" label="Ethereum">
-                            <img src="@/static/ETH.svg" alt="" />
+                            <img src="@/static/ETH.svg"  />
                             <span>Ethereum</span>
                         </Option>
                         <Option value="binance" label="Binance">
-                            <img src="@/static/binance.svg" alt="" />
+                            <img src="@/static/binance.svg"  />
                             <span> Binance</span>
                         </Option>
                     </Select>
@@ -177,7 +177,7 @@
             </div>
 
             <div class="filterMenuMobile" v-if="isMobile">
-                <img src="@/static/add.svg" alt="" @click="showFilterMenuMobileModal">
+                <img src="@/static/add.svg"  @click="showFilterMenuMobileModal">
                 <template v-if="filterNum != 0">
                     {{filterNum}} Filters applied
                 </template>
@@ -302,7 +302,7 @@
         </div>
 
         <div v-else class="noTransactionBox">
-            <img src="@/static/no_transaction.svg" alt="" />
+            <img src="@/static/no_transaction.svg"  />
             <div class="title">No Transactions</div>
             <div class="context">You have not made any transactions yet</div>
             <div class="buildBtn" @click="toBuild()">Build ℓUSD</div>
@@ -347,11 +347,11 @@
                     placeholder="All Chains"
                 >
                     <Option value="ethereum" label="Ethereum">
-                        <img src="@/static/ETH.svg" alt="" />
+                        <img src="@/static/ETH.svg"  />
                         <span>Ethereum</span>
                     </Option>
                     <Option value="binance" label="Binance">
-                        <img src="@/static/binance.svg" alt="" />
+                        <img src="@/static/binance.svg"  />
                         <span> Binance</span>
                     </Option>
                 </Select>

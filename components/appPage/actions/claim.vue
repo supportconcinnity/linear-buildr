@@ -20,12 +20,12 @@
                                 <img
                                     v-if="feesAreClaimable"
                                     src="@/static/LINA_logo.svg"
-                                    alt=""
+                                    
                                 />
                                 <img
                                     v-else
                                     src="@/static/LINA_gray_logo.svg"
-                                    alt=""
+                                    
                                 />
                                 <div class="title">Staking Rewards</div>
                                 <div class="amount">
@@ -37,12 +37,12 @@
                                 <img
                                     v-if="feesAreClaimable"
                                     src="@/static/currency/lUSD.svg"
-                                    alt=""
+                                    
                                 />
                                 <img
                                     v-else
                                     src="@/static/LUSD_gray_logo.svg"
-                                    alt=""
+                                    
                                 />
                                 <div class="title">Exchange Rewards</div>
                                 <div class="amount">
@@ -61,13 +61,13 @@
                                         content="Reward can only be claimed when target ratio is reached."
                                         placement="top"
                                     >
-                                        <img src="@/static/info.svg" alt="" />
+                                        <img src="@/static/info_white.svg"  />
                                     </Tooltip>
 
                                     <img
                                         class="showInfoMobile"
                                         src="@/static/info_white.svg"
-                                        alt=""
+                                        
                                         @click="showIntroductActionModal"
                                     />
                                 </div>

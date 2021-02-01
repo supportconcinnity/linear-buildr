@@ -32,7 +32,7 @@
             <div v-if="value" class="etherscan" @click="$emit('etherscan')">
                 View on <template v-if="isEthereumNetwork">Etherscan</template>
                 <template v-else> BSCscan</template>
-                <span><img src="@/static/arrow_right.svg" alt=""/></span>
+                <span><img src="@/static/arrow_right.svg" /></span>
             </div>
             <div class="gap">&nbsp;</div>
 

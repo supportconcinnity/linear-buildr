@@ -20,7 +20,7 @@
                         >
                             <div class="iconBox">
                                 <div class="icon">
-                                    <img :src="currencyList[selected].img" alt="" />
+                                    <img :src="currencyList[selected].img"  />
                                 </div>
                             </div>
                             <div class="midle">
@@ -45,12 +45,12 @@
                                 <img
                                     v-show="showDropdown || dropdownHover"
                                     src="@/static/arrow.svg"
-                                    alt=""
+                                    
                                 />
                                 <img
                                     v-show="!showDropdown && !dropdownHover"
                                     src="@/static/arrow_gray.svg"
-                                    alt=""
+                                    
                                 />
                             </div>
                             <div class="value">
@@ -90,7 +90,7 @@
                                 >
                                     <div class="iconBox">
                                         <div class="icon">
-                                            <img :src="item.img" alt="" />
+                                            <img :src="item.img"  />
                                         </div>
                                     </div>
                                     <div class="midle">
@@ -124,7 +124,7 @@
                             <div class="li_1">
                                 <div class="iconBox">
                                     <div class="icon">
-                                        <img src="@/static/wallet.svg" alt="" />
+                                        <img src="@/static/wallet.svg"  />
                                     </div>
                                 </div>
                                 <div class="midle">
@@ -168,7 +168,7 @@
                                         : 'none'
                             }"
                         >
-                            <img src="@/static/error.svg" alt="" />
+                            <img src="@/static/error.svg"  />
                             <div v-if="errors.amountMsg">
                                 {{ errors.amountMsg }}
                             </div>
@@ -185,7 +185,7 @@
                         >
                             <div class="iconBox">
                                 <div class="icon">
-                                    <img :src="currencyList[selected].img" alt="" />
+                                    <img :src="currencyList[selected].img"  />
                                 </div>
                             </div>
 
@@ -203,12 +203,12 @@
                                     <img
                                         v-show="showDropdown || dropdownHover"
                                         src="@/static/arrow.svg"
-                                        alt=""
+                                        
                                     />
                                     <img
                                         v-show="!showDropdown && !dropdownHover"
                                         src="@/static/arrow_gray.svg"
-                                        alt=""
+                                        
                                     />
                                 </div>
                             </div>
@@ -271,7 +271,7 @@
                                 >
                                     <div class="iconBox">
                                         <div class="icon">
-                                            <img :src="item.img" alt="" />
+                                            <img :src="item.img"  />
                                         </div>
                                     </div>
                                     <div class="midle">

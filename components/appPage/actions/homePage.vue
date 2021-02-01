@@ -9,7 +9,7 @@
         <div class="actionsBox">
             <div class="boxItem" @click="isMobile && btnClick(1)">
                 <div class="imgBox">
-                    <img src="@/static/LINA_logo.svg" alt="" />
+                    <img src="@/static/LINA_logo.svg"  />
                 </div>
                 <div class="boxContext">
                     Buy LINA <br />
@@ -25,7 +25,7 @@
             </div>
             <div class="boxItem" @click="isMobile && btnClick(2)">
                 <div class="imgBox">
-                    <img src="@/static/currency/lUSD.svg" alt="" />
+                    <img src="@/static/currency/lUSD.svg"  />
                 </div>
                 <div class="boxContext">
                     Stake LINA <br />

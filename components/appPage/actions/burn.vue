@@ -31,7 +31,7 @@
                         >
                             <div class="itemLeft">
                                 <div class="itemIcon">
-                                    <img src="@/static/LINA_logo.svg" alt="" />
+                                    <img src="@/static/LINA_logo.svg"  />
                                 </div>
                                 <div class="itemType">
                                     <div class="itemTypeTitle">
@@ -44,8 +44,8 @@
                                             offset="0 4"
                                         >
                                             <img
-                                                src="@/static/info.svg"
-                                                alt=""
+                                                src="@/static/info_white.svg"
+                                                
                                             />
                                         </Tooltip>
                                     </div>
@@ -96,7 +96,7 @@
                                 <div class="itemIcon">
                                     <img
                                         src="@/static/currency/lUSD.svg"
-                                        alt=""
+                                        
                                     />
                                 </div>
                                 <div class="itemType">
@@ -144,7 +144,7 @@
                         >
                             <div class="itemLeft">
                                 <div class="itemIcon">
-                                    <img src="@/static/percentage.svg" alt="" />
+                                    <img src="@/static/percentage.svg"  />
                                 </div>
                                 <div class="itemType">
                                     <div class="itemTypeTitle">P Ratio</div>
@@ -205,7 +205,7 @@
                                         : 'none'
                             }"
                         >
-                            <img src="@/static/error.svg" alt="" />
+                            <img src="@/static/error.svg"  />
                             {{ errors.unStakeMsg }}
                             {{ errors.ratioMsg }}
                             {{ errors.amountMsg }}
@@ -226,14 +226,14 @@
                                     <img
                                         class="showInfo"
                                         src="@/static/info_white.svg"
-                                        alt=""
+                                        
                                         @click="showIntroductActionModal"
                                     />
 
                                     <img
                                         class="logo"
                                         src="@/static/LINA_logo.svg"
-                                        alt=""
+                                        
                                     />
 
                                     <div class="itemTypeTitle">
@@ -278,7 +278,7 @@
                                     <img
                                         class="logo"
                                         src="@/static/currency/lUSD.svg"
-                                        alt=""
+                                        
                                     />
 
                                     <div class="itemTypeTitle">Burn ℓUSD</div>

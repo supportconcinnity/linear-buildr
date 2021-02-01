@@ -42,12 +42,7 @@ $lightBlue: #f1f7ff;
     line-height: 1;
     .ivu-tooltip-rel {
         transition: $animete-time linear;
-        opacity: 0.2;
         line-height: 1;
-
-        &:hover {
-            opacity: 1;
-        }
 
         img {
             width: 16px;
