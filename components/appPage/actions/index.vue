@@ -5,7 +5,6 @@
                 <img
                     class="linearBuildrlogo"
                     src="@/static/linear_buildr_logo.svg"
-                    
                 />
             </a>
 
@@ -13,13 +12,11 @@
                 <img
                     class="linearBuildrlogo"
                     src="@/static/linear_buildr_logo.svg"
-                    
                     v-show="currentAction == 0 && othersAction == 0"
                 />
                 <img
                     class="logoWhenAction"
                     src="@/static/logo-crypto-linear-colour.svg"
-                    
                     style="height: 32px;"
                     v-show="currentAction != 0 || othersAction != 0"
                 />
@@ -65,8 +62,9 @@
                 <div class="title" v-if="othersAction == 3">Referral</div>
 
                 <img
+                    class="info"
                     v-if="othersAction == 0"
-                    src="@/static/info_white.svg"
+                    src="@/static/info.svg"
                     @click="showIntroductActionModal"
                 />
             </div>
@@ -401,11 +399,23 @@ export default {
 
             .introductActionBox {
                 display: flex;
+                align-items: center;
 
                 .title {
                     font-family: Gilroy-Bold;
                     font-size: 20px;
-                    margin-right: 4px;
+                    font-weight: bold;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.6;
+                    letter-spacing: normal;
+                    color: #3c3a3e;
+                }
+
+                .info {
+                    margin-left: 4px;
+                    width: 16px;
+                    height: 16px;
                 }
             }
 

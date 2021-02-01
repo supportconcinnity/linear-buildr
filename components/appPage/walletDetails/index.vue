@@ -1301,7 +1301,6 @@ export default {
         }
 
         .walletAndAddressBox {
-            width: 142px;
             height: 44px;
             display: flex;
             justify-content: space-around;
@@ -1419,14 +1418,14 @@ export default {
             // }
 
             .mMenu {
-                display: block;
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 width: 32px;
                 height: 32px;
-                line-height: 37px;
-                border-radius: 20px;
+                border-radius: 50%;
                 box-shadow: 0 2px 6px 0 #deddde;
                 background-color: #ffffff;
-                text-align: center;
             }
         }
         .mShowWalletClass {
