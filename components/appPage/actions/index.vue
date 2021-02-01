@@ -101,18 +101,32 @@
                 </div>
             </Modal>
 
-            <div
+            <Tooltip
+                class="globalInfoStyle action"
+                offset="0 6"
+                max-width="300"
+                placement="bottom"
                 v-for="(item, index) in actions"
                 :key="index"
-                class="action"
                 :class="{
                     activited: currentAction == index + 1,
-                    isTransaction
+                    isTransaction: isTransaction && currentAction != index + 1
                 }"
-                @click="actionChange(index + 1)"
+                :disabled="!isTransaction || currentAction == index + 1"
+                @click.native="actionChange(index + 1)"
             >
                 {{ item }}
-            </div>
+
+                <div slot="content">
+                    <div class="tipTitle">
+                        Please complete the
+                        {{ actions[currentAction - 1] }} transaction
+                    </div>
+                    <div class="tipDesc">
+                        You can only do one transaction at a time
+                    </div>
+                </div>
+            </Tooltip>
 
             <div class="mNavigate" v-if="mMenuState && isMobile">
                 <div class="mHead">
@@ -198,7 +212,7 @@ export default {
             introductActionModal: false,
             currentAction: this.$store.state.currentAction, //显示不同功能 0homePage 1build 2burn 3claim 4transfer 5swap
             othersAction: 0, // 0没有 1track 2transaction 3referral
-            actions: ["Build", "Burn", "Claim", "Transfer", "Swap"]
+            actions: ["Build", "Burn", "Claim", "Transfer", "Swap"],
         };
     },
     created() {
