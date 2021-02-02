@@ -504,7 +504,7 @@ export default {
                     this.walletAddress
                 ),
                 lnrJSConnector.provider.getBalance(this.walletAddress),
-                getLiquids(this.walletAddress, true)
+                getLiquids(this.walletAddress)
             ]);
 
             let liquidsList = liquids.liquidsList.map(item => {
@@ -636,18 +636,19 @@ export default {
             let selectedAssetKind = this.currentSelectCurrency.key,
                 recieveAddress = this.transferToAddress;
 
+            this.confirmTransactionNetworkId = this.walletNetworkId;
+
             //获取gas评估
             const gasLimit = await this.getGasEstimate(
                 selectedAssetKind,
                 bn2n(sendAmount),
                 recieveAddress
             );
+            
             const transactionSettings = {
                 gasPrice: this.$store.state?.gasDetails?.price,
                 gasLimit: gasLimit
             };
-
-            this.confirmTransactionNetworkId = this.walletNetworkId;
 
             let transaction = await this.sendTransaction(
                 selectedAssetKind,

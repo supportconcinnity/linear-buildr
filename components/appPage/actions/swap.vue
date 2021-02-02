@@ -58,7 +58,6 @@
                                             <img
                                                 class="itemIcon"
                                                 :src="item.img"
-                                                
                                             />
                                             <div class="itemName">
                                                 {{ item.name }}
@@ -365,6 +364,7 @@ export default {
         async initData() {
             this.currencyDropDown = false;
             await this.initLiquidsList();
+            // await this.getLiquidsFrozenBalance();
             await this.getFrozenBalance();
         },
 
@@ -375,7 +375,7 @@ export default {
                 lnrJSConnector.lnrJS.LinearFinance.balanceOf(
                     this.walletAddress
                 ),
-                getLiquids(this.walletAddress,true)
+                getLiquids(this.walletAddress, true)
             ]);
 
             let liquidsList = liquids.liquidsList.map(item => {
@@ -408,6 +408,63 @@ export default {
             this.selectCurrencyIndex = index != -1 ? index : 0;
         },
 
+        async getLiquidsFrozenBalance() {
+            //获取其他网络id
+            let otherNetworkId = getOtherNetworks(this.walletNetworkId).join();
+
+            let frozenPromise = [];
+            this.currencies.map(item => {
+                //获取当前和其他网络冻结数据
+                frozenPromise.push(
+                    Promise.all([
+                        lnr.userSwapAssetsCount({
+                            account: this.walletAddress,
+                            source: item.key,
+                            networkId: this.walletNetworkId
+                        }),
+                        lnr.userSwapAssetsCount({
+                            account: this.walletAddress,
+                            source: item.key,
+                            networkId: otherNetworkId
+                        })
+                    ])
+                );
+            });
+
+            let frozenArray = await Promise.all(frozenPromise);
+
+            let currencies = this.currencies.filter((item, index) => {
+                let [current, other] = frozenArray[index];
+
+                let currentFreeZeTokens = n2bn("0"),
+                    otherUnFreeZeTokens = n2bn("0");
+                current.length &&
+                    (currentFreeZeTokens = current[0].freeZeTokens);
+                other.length && (otherUnFreeZeTokens = other[0].UnFreeZeTokens);
+
+                //计算可以解冻的数量
+                let frozenBalance = bnSub(
+                    currentFreeZeTokens,
+                    otherUnFreeZeTokens
+                );
+
+                frozenBalance = frozenBalance.gt(n2bn("0"))
+                    ? _.floor(formatEtherToNumber(frozenBalance), 4)
+                    : null;
+
+                item.balance += frozenBalance;
+                item.frozenBalance = frozenBalance;
+
+                // console.log(frozenBalance, item.key);
+                console.log(item.balance, item.key);
+                return item.balance > 0;
+            });
+
+            this.currencies = [...currencies];
+
+            console.log(this.currencies, " this.currencies");
+        },
+
         //获取冻结余额
         async getFrozenBalance() {
             try {
@@ -419,7 +476,7 @@ export default {
                 ).join();
 
                 //获取当前和其他网络冻结数据
-                const [current, other, avaliableAmount] = await Promise.all([
+                const [current, other] = await Promise.all([
                     lnr.userSwapAssetsCount({
                         account: this.walletAddress,
                         source: this.currency.key,
@@ -449,6 +506,8 @@ export default {
                 )
                     ? _.floor(formatEtherToNumber(frozenBalance), 4)
                     : null;
+
+                this.currency.balance += this.currency.frozenBalance; //修复最大数bug
             } catch (error) {
                 console.log(error, "getFrozenBalance error");
             } finally {
@@ -475,6 +534,7 @@ export default {
             this.selectCurrencyKey = this.currency.key;
             this.currencyDropDown = false;
             this.activeItemBtn = -1;
+            this.swapNumber = null;
             await this.getFrozenBalance();
         },
 
