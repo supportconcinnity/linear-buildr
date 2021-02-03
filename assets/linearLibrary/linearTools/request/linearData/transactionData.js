@@ -631,6 +631,7 @@ module.exports = {
             max = maxRequest,
             account = undefined,
             source = "LINA",
+            sourceKeyInArr = [],
             networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
             return pageResults({
@@ -640,27 +641,34 @@ module.exports = {
                     entity: "userSwapAssetsCounts",
                     selection: {
                         where: {
-                            id: account
+                            account: account
                                 ? `\\"${account
                                       .replace(
                                           "0x",
                                           "0x000000000000000000000000"
                                       )
-                                      .toLocaleLowerCase() +
-                                      "-" +
-                                      source}\\"`
-                                : undefined
+                                      .toLocaleLowerCase()}\\"`
+                                : undefined,
+                            source: source ? `\\"${source}\\"` : undefined,
+                            source_in:
+                                sourceKeyInArr != undefined &&
+                                sourceKeyInArr.length != 0
+                                    ? "[" +
+                                      sourceKeyInArr
+                                          .map(code => `\\"${code}\\"`)
+                                          .join(",") +
+                                      "]"
+                                    : undefined,
                         }
                     },
-                    properties: ["id", "freeZeTokens", "UnFreeZeTokens"]
+                    properties: ["account","source" , "freeZeTokens", "UnFreeZeTokens"]
                 }
             })
                 .then(results =>
-                    results.map(({ id, freeZeTokens, UnFreeZeTokens }) => ({
-                        account: id
-                            .substring(0, id.indexOf("-"))
-                            .replace("0x000000000000000000000000", "0x")
-                            .toLocaleLowerCase(),
+                    results.map(({ account,source, freeZeTokens, UnFreeZeTokens }) => ({
+                        account: account
+                            .replace("0x000000000000000000000000", "0x"),
+                        source,
                         freeZeTokens: BigNumber.from(freeZeTokens),
                         UnFreeZeTokens: BigNumber.from(UnFreeZeTokens)
                     }))
