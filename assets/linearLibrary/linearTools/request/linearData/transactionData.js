@@ -613,7 +613,7 @@ module.exports = {
                     selection: {
                         where: {
                             account: account ? `\\"${account}\\"` : undefined,
-                            source: source ? `\\"${source}\\"` : undefined,
+                            source: source ? `\\"${source}\\"` : undefined
                         }
                     },
                     properties: ["totalIssuedDebt"]
@@ -625,12 +625,11 @@ module.exports = {
                     }))
                 )
                 .catch(err => console.error(err));
-        }
-        ,
+        },
         userSwapAssetsCount({
             max = maxRequest,
             account = undefined,
-            source = "LINA",
+            source = undefined,
             sourceKeyInArr = [],
             networkId = $nuxt.$store.state?.walletNetworkId
         } = {}) {
@@ -658,20 +657,34 @@ module.exports = {
                                           .map(code => `\\"${code}\\"`)
                                           .join(",") +
                                       "]"
-                                    : undefined,
+                                    : undefined
                         }
                     },
-                    properties: ["account","source" , "freeZeTokens", "UnFreeZeTokens"]
+                    properties: [
+                        "account",
+                        "source",
+                        "freeZeTokens",
+                        "UnFreeZeTokens"
+                    ]
                 }
             })
                 .then(results =>
-                    results.map(({ account,source, freeZeTokens, UnFreeZeTokens }) => ({
-                        account: account
-                            .replace("0x000000000000000000000000", "0x"),
-                        source,
-                        freeZeTokens: BigNumber.from(freeZeTokens),
-                        UnFreeZeTokens: BigNumber.from(UnFreeZeTokens)
-                    }))
+                    results.map(
+                        ({
+                            account,
+                            source,
+                            freeZeTokens,
+                            UnFreeZeTokens
+                        }) => ({
+                            account: account.replace(
+                                "0x000000000000000000000000",
+                                "0x"
+                            ),
+                            source,
+                            freeZeTokens: BigNumber.from(freeZeTokens),
+                            UnFreeZeTokens: BigNumber.from(UnFreeZeTokens)
+                        })
+                    )
                 )
                 .catch(err => console.error(err));
         }

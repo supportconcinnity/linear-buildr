@@ -170,14 +170,6 @@ export default {
             openBuyLINA
         };
     },
-    watch: {
-        autoConnect() {}
-    },
-    computed: {
-        autoConnect() {
-            return this.$store.state.autoConnect;
-        }
-    },
     mounted() {
         //进入界面的欢迎效果
         setTimeout(() => {
@@ -190,9 +182,9 @@ export default {
         //     1000
         // ); //自动连接BINANCE
         //调试用,进入指定页,不用时屏蔽
-
+        let autoConnect = this.$store.state.autoConnect;
         if (this.autoConnect) {
-            this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
+            // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
         }
     }
 };
