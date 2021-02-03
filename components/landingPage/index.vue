@@ -176,15 +176,15 @@ export default {
             this.introduct = "1";
         }, 100);
         //调试用,进入指定页,不用时屏蔽
-        // this.$store.commit("setCurrentAction",1);
+        this.$store.commit("setCurrentAction",5);
         // setTimeout(
         //     () => selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
         //     1000
         // ); //自动连接BINANCE
         //调试用,进入指定页,不用时屏蔽
         let autoConnect = this.$store.state.autoConnect;
-        if (this.autoConnect) {
-            // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
+        if (autoConnect) {
+            this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
         }
     }
 };

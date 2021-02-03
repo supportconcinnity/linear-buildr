@@ -106,7 +106,9 @@
                                             ref="itemInput0"
                                             element-id="transfer_number_input"
                                             :min="currency.frozenBalance"
-                                            :max="floor(currency.balance, 4)"
+                                            :max="
+                                                floor(currency.totalBalance, 4)
+                                            "
                                             type="text"
                                             v-model="swapNumber"
                                             placeholder="0"
@@ -149,7 +151,7 @@
                                         ref="itemInput0"
                                         element-id="transfer_number_input"
                                         :min="currency.frozenBalance"
-                                        :max="floor(currency.balance, 4)"
+                                        :max="floor(currency.totalBalance, 4)"
                                         type="text"
                                         v-model="swapNumber"
                                         placeholder="0"
@@ -271,7 +273,8 @@ export default {
                     key: "LINA",
                     img: require("@/static/LINA_logo.svg"),
                     balance: 0,
-                    frozenBalance: 0
+                    frozenBalance: 0,
+                    totalBalance: 0
                 }
             ]
         };
@@ -362,10 +365,14 @@ export default {
 
     methods: {
         async initData() {
-            this.currencyDropDown = false;
-            await this.initLiquidsList();
-            // await this.getLiquidsFrozenBalance();
-            await this.getFrozenBalance();
+            try {
+                this.currencyDropDown = false;
+                await this.initLiquidsList();
+                await this.filterCurrencies();
+                // await this.getCurrencyBalance();
+            } catch (error) {
+                this.processing = false;
+            }
         },
 
         //初始化liquids列表
@@ -385,7 +392,8 @@ export default {
                     key,
                     balance: _.floor(item.balance, 4),
                     img: item.img,
-                    frozenBalance: 0
+                    frozenBalance: 0,
+                    totalBalance: 0
                 };
             });
 
@@ -395,7 +403,8 @@ export default {
                     key: "LINA",
                     img: require("@/static/LINA_logo.svg"),
                     balance: _.floor(bn2n(linaBalance), 4),
-                    frozenBalance: 0
+                    frozenBalance: 0,
+                    totalBalance: 0
                 },
                 ...liquidsList
             ];
@@ -408,65 +417,66 @@ export default {
             this.selectCurrencyIndex = index != -1 ? index : 0;
         },
 
-        async getLiquidsFrozenBalance() {
+        async filterCurrencies() {
             //获取其他网络id
             let otherNetworkId = getOtherNetworks(this.walletNetworkId).join();
 
-            let frozenPromise = [];
-            this.currencies.map(item => {
-                //获取当前和其他网络冻结数据
-                frozenPromise.push(
-                    Promise.all([
-                        lnr.userSwapAssetsCount({
-                            account: this.walletAddress,
-                            source: item.key,
-                            networkId: this.walletNetworkId
-                        }),
-                        lnr.userSwapAssetsCount({
-                            account: this.walletAddress,
-                            source: item.key,
-                            networkId: otherNetworkId
-                        })
-                    ])
+            let keyMap = this.currencies.map(item => item.key);
+
+            //获取冻结数据
+            let [currentArray, otherArray] = await Promise.all([
+                lnr.userSwapAssetsCount({
+                    account: this.walletAddress,
+                    sourceKeyInArr: keyMap,
+                    networkId: this.walletNetworkId
+                }),
+                lnr.userSwapAssetsCount({
+                    account: this.walletAddress,
+                    sourceKeyInArr: keyMap,
+                    networkId: otherNetworkId
+                })
+            ]);
+
+            let currencies = this.currencies.filter(item => {
+                //查找数据
+                let current = currentArray.find(
+                    currency => item.key == currency.source
                 );
-            });
-
-            let frozenArray = await Promise.all(frozenPromise);
-
-            let currencies = this.currencies.filter((item, index) => {
-                let [current, other] = frozenArray[index];
-
-                let currentFreeZeTokens = n2bn("0"),
-                    otherUnFreeZeTokens = n2bn("0");
-                current.length &&
-                    (currentFreeZeTokens = current[0].freeZeTokens);
-                other.length && (otherUnFreeZeTokens = other[0].UnFreeZeTokens);
+                let other = otherArray.find(
+                    currency => item.key == currency.source
+                );
 
                 //计算可以解冻的数量
+                let currentFreeZeTokens = n2bn("0"),
+                    otherUnFreeZeTokens = n2bn("0");
+
+                current && (currentFreeZeTokens = current.freeZeTokens);
+                other && (otherUnFreeZeTokens = other.UnFreeZeTokens);
+
                 let frozenBalance = bnSub(
                     currentFreeZeTokens,
                     otherUnFreeZeTokens
                 );
 
-                frozenBalance = frozenBalance.gt(n2bn("0"))
+                item.frozenBalance = frozenBalance.gt(n2bn("0"))
                     ? _.floor(formatEtherToNumber(frozenBalance), 4)
                     : null;
 
-                item.balance += frozenBalance;
-                item.frozenBalance = frozenBalance;
+                //总额
+                item.totalBalance = item.balance + item.frozenBalance;
 
-                // console.log(frozenBalance, item.key);
-                console.log(item.balance, item.key);
-                return item.balance > 0;
+                return item.totalBalance > 0;
             });
 
             this.currencies = [...currencies];
 
-            console.log(this.currencies, " this.currencies");
+            this.swapNumber = this.currency.frozenBalance;
+
+            this.processing = false;
         },
 
         //获取冻结余额
-        async getFrozenBalance() {
+        async getCurrencyBalance() {
             try {
                 this.processing = true;
 
@@ -475,8 +485,15 @@ export default {
                     this.walletNetworkId
                 ).join();
 
+                let contract;
+                if (this.currency.key == "LINA") {
+                    contract = lnrJSConnector.lnrJS.LinearFinance;
+                } else {
+                    contract = lnrJSConnector.lnrJS[this.currency.key];
+                }
+
                 //获取当前和其他网络冻结数据
-                const [current, other] = await Promise.all([
+                const [current, other, balance] = await Promise.all([
                     lnr.userSwapAssetsCount({
                         account: this.walletAddress,
                         source: this.currency.key,
@@ -486,7 +503,8 @@ export default {
                         account: this.walletAddress,
                         source: this.currency.key,
                         networkId: otherNetworkId
-                    })
+                    }),
+                    contract.balanceOf(this.walletAddress)
                 ]);
 
                 let currentFreeZeTokens = n2bn("0"),
@@ -507,9 +525,9 @@ export default {
                     ? _.floor(formatEtherToNumber(frozenBalance), 4)
                     : null;
 
-                this.currency.balance += this.currency.frozenBalance; //修复最大数bug
+                this.currency.balance = bn2n(balance, 4);
             } catch (error) {
-                console.log(error, "getFrozenBalance error");
+                console.log(error, "getCurrencyBalance error");
             } finally {
                 this.processing = false;
             }
@@ -535,13 +553,13 @@ export default {
             this.currencyDropDown = false;
             this.activeItemBtn = -1;
             this.swapNumber = null;
-            await this.getFrozenBalance();
+            await this.getCurrencyBalance();
         },
 
         //点击最大
         clickMaxAmount() {
             this.activeItemBtn = 0;
-            this.swapNumber = _.floor(this.currency.balance, 4);
+            this.swapNumber = _.floor(this.currency.totalBalance, 4);
 
             var el = document.getElementById("transfer_number_input");
             this.setCursorRange(el, 0, 0);
