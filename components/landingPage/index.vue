@@ -4,11 +4,10 @@
             <img
                 class="linearBuildrlogo"
                 src="@/static/linear_buildr_logo.svg"
-                
             />
             <div class="mBuyLINA mobileShow" @click.stop="openBuyLINA">
                 BUY LINA
-                <img src="@/static/arrow_right.svg"  />
+                <img src="@/static/arrow_right.svg" />
             </div>
         </div>
         <div class="container">
@@ -61,7 +60,7 @@
                         </p>
                     </Panel> -->
                 </Collapse>
-<!-- 
+                <!-- 
                 <div class="buyLINA" @click.stop="openBuyLINA">
                     Buy LINA
                     <Icon type="ios-arrow-round-forward" />
@@ -71,7 +70,7 @@
                     class="mRect mobileShow"
                     @click.stop="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
                 >
-                    <img class="boxLogo" src="@/static/metamask.svg"  />
+                    <img class="boxLogo" src="@/static/metamask.svg" />
                     <div class="box">
                         <div class="context">
                             Connect MetaMask Wallet
@@ -90,11 +89,7 @@
                             selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)
                         "
                     >
-                        <img
-                            class="boxLogo"
-                            src="@/static/metamask.svg"
-                            
-                        />
+                        <img class="boxLogo" src="@/static/metamask.svg" />
 
                         <div>
                             <div class="boxSub">Connect</div>
@@ -111,18 +106,13 @@
                     </div>
 
                     <div class="boxItem" @click.stop="openBuyLINA">
-                        <img
-                            class="boxLogo"
-                            src="@/static/LINA_logo.svg"
-                            
-                        />
+                        <img class="boxLogo" src="@/static/LINA_logo.svg" />
 
                         <div class="boxTitle">
                             Buy LINA<br />
                             <img
                                 class="buy_right"
                                 src="@/static/arrow_right.svg"
-                                
                             />
                         </div>
 
@@ -170,6 +160,7 @@ import { SUPPORTED_WALLETS_MAP } from "@/assets/linearLibrary/linearTools/networ
 
 import { openBuyLINA } from "@/common/utils";
 
+
 export default {
     name: "landingPage",
     data() {
@@ -195,14 +186,14 @@ export default {
         }, 100);
         //调试用,进入指定页,不用时屏蔽
         // this.$store.commit("setCurrentAction",1);
-        // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
         // setTimeout(
         //     () => selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
         //     1000
         // ); //自动连接BINANCE
         //调试用,进入指定页,不用时屏蔽
-    }
 
+        // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
+    }
 };
 </script>
 

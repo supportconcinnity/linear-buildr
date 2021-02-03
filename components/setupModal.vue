@@ -22,9 +22,10 @@
                         </p>
                     </div>
                     <div class="picture">
-                        <img
+                        <thumbnail
                             style="width: 402px; height: 262px;"
-                            src="@/static/setupModal/1.png"
+                            thumb="setupModal/1_thumb.png"
+                            src="setupModal/1.png"
                         />
                     </div>
                 </div>
@@ -38,9 +39,10 @@
                         </p>
                     </div>
                     <div class="picture">
-                        <img
+                        <thumbnail
                             style="width: 398px; height: 258px;"
-                            src="@/static/setupModal/2.png"
+                            thumb="setupModal/2_thumb.png"
+                            src="setupModal/2.png"
                         />
                     </div>
                 </div>
@@ -394,10 +396,18 @@
                     </div>
                     <div class="picture">
                         <div class="p_1">
-                            <img src="@/static/setupModal/3.png" />
+                            <thumbnail
+                                style="width:187px;height:240px;margin: 0 auto;"
+                                thumb="setupModal/3_thumb.png"
+                                src="setupModal/3.png"
+                            />
                         </div>
                         <div class="p_2">
-                            <img src="@/static/setupModal/4.png" />
+                            <thumbnail
+                                style="width:187px;height:240px;margin: 0 auto;"
+                                thumb="setupModal/4_thumb.png"
+                                src="setupModal/4.png"
+                            />
                         </div>
                     </div>
                 </div>
@@ -609,6 +619,8 @@ body {
                                 .picture {
                                     width: 402px;
                                     text-align: center;
+
+
                                     .p_1 {
                                         margin: 73px 0 42px 0;
                                     }

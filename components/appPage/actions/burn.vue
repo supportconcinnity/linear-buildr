@@ -2052,7 +2052,7 @@ export default {
                         }
 
                         .actionInputItem {
-                            margin-bottom: 16px;
+                            margin-bottom: 24px;
                             border-radius: 8px;
                             border: solid 1px #deddde;
                             padding: 39px 24px;
@@ -2221,7 +2221,7 @@ export default {
                         }
 
                         #gasEditor {
-                            margin-top: 36px;
+                            margin-top: 20px;
                         }
                     }
 

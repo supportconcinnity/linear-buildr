@@ -41,7 +41,7 @@
                         >
                             <div class="itemLeft">
                                 <div class="itemIcon">
-                                    <img src="@/static/LINA_logo.svg"  />
+                                    <img src="@/static/LINA_logo.svg" />
                                 </div>
                                 <div class="itemType">
                                     <div class="itemTypeTitle">Stake LINA</div>
@@ -101,10 +101,7 @@
                         >
                             <div class="itemLeft">
                                 <div class="itemIcon">
-                                    <img
-                                        src="@/static/currency/lUSD.svg"
-                                        
-                                    />
+                                    <img src="@/static/currency/lUSD.svg" />
                                 </div>
                                 <div class="itemType">
                                     <div class="itemTypeTitle">
@@ -118,7 +115,6 @@
                                         >
                                             <img
                                                 src="@/static/info_white.svg"
-                                                
                                             />
                                         </Tooltip>
                                     </div>
@@ -173,7 +169,7 @@
                         >
                             <div class="itemLeft">
                                 <div class="itemIcon">
-                                    <img src="@/static/percentage.svg"  />
+                                    <img src="@/static/percentage.svg" />
                                 </div>
                                 <div class="itemType">
                                     <div class="itemTypeTitle">P Ratio</div>
@@ -236,7 +232,7 @@
                                         : 'none'
                             }"
                         >
-                            <img src="@/static/error.svg"  />
+                            <img src="@/static/error.svg" />
                             {{ errors.stakeMsg }}
                             {{ errors.ratioMsg }}
                             {{ errors.amountMsg }}
@@ -263,16 +259,12 @@
                                 <img
                                     class="showInfo"
                                     src="@/static/info_white.svg"
-                                    
                                     @click="showIntroductActionModal"
                                 />
 
                                 <div class="box">
                                     <div class="itemType">
-                                        <img
-                                            src="@/static/LINA_logo.svg"
-                                            
-                                        />
+                                        <img src="@/static/LINA_logo.svg" />
                                         <div class="itemTypeTitle">
                                             Stake LINA
                                         </div>
@@ -291,10 +283,7 @@
                                     </div>
 
                                     <div class="itemType">
-                                        <img
-                                            src="@/static/currency/lUSD.svg"
-                                            
-                                        />
+                                        <img src="@/static/currency/lUSD.svg" />
                                         <div class="itemTypeTitle">
                                             Build ℓUSD
                                         </div>
@@ -579,7 +568,8 @@ export default {
                 this.errors.stakeMsg ||
                 this.errors.amountMsg ||
                 this.errors.ratioMsg ||
-                this.processing
+                this.processing ||
+                (this.isEthereumNetwork && _.lt(this.inputData.stake, 1))
             );
         },
 
@@ -1942,7 +1932,7 @@ export default {
                         }
 
                         .actionInputItem {
-                            margin-bottom: 16px;
+                            margin-bottom: 24px;
                             border-radius: 8px;
                             border: solid 1px #deddde;
                             padding: 39px 24px;
@@ -2113,7 +2103,7 @@ export default {
 
                         #gasEditor,
                         #gasEditorSwap {
-                            margin-top: 36px;
+                            margin-top: 20px;
                         }
                     }
 

@@ -2,7 +2,15 @@
 
 <template>
     <div id="transferWatingEnhance">
-        <div class="close" v-if="!currentConfirm || currentErrMsg || currentStep > setupArray.length - 1" @click.stop="$emit('close')">
+        <div
+            class="close"
+            v-if="
+                !currentConfirm ||
+                    currentErrMsg ||
+                    currentStep > setupArray.length - 1
+            "
+            @click.stop="$emit('close')"
+        >
             <img v-if="isMobile" src="@/static/icon-cancel.svg" />
             <closeSvg v-else></closeSvg>
         </div>
@@ -22,16 +30,18 @@
             />
 
             <!-- 需要approve -->
-            <img
+            <thumbnail
                 v-else-if="shouldApprove"
                 class="course"
-                src="@/static/transferProgress/course/approve_bsc_mainnet.png"
+                thumb="transferProgress/course/approve_bsc_mainnet_thumb.png"
+                src="transferProgress/course/approve_bsc_mainnet.png"
             />
             <!-- 等待确认 -->
-            <img
+            <thumbnail
                 v-else-if="!currentConfirm"
                 class="course"
-                src="@/static/transferProgress/course/confirm_bsc_mainnet.png"
+                thumb="transferProgress/course/confirm_bsc_mainnet_thumb.png"
+                src="transferProgress/course/confirm_bsc_mainnet.png"
             />
         </div>
 

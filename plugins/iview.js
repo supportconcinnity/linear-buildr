@@ -8,7 +8,7 @@ import {
     Dropdown,
     DropdownMenu,
     DropdownItem,
-    Poptip ,
+    Poptip,
     Tabs,
     TabPane,
     Progress,
@@ -35,6 +35,7 @@ import wating from "@/components/transferStatus/wating";
 import watingEnhance from "@/components/transferStatus/watingEnhance";
 import wrong from "@/components/transferStatus/wrong";
 import success from "@/components/transferStatus/success";
+import thumbnail from "@/components/thumbnail";
 
 locale(lang);
 
@@ -71,6 +72,8 @@ Vue.component("success", success);
 Vue.component("Collapse", Collapse);
 Vue.component("Panel", Panel);
 Vue.component("Table", Table);
+
+Vue.component("thumbnail", thumbnail);
 
 Vue.prototype.$Notice = Notice;
 

@@ -210,43 +210,50 @@
                     <!-- 需要approve -->
 
                     <template v-else-if="shouldApprove">
-                        <img
-                            v-if="isEthereumNetwork(sourceNetworkId)"
+                        <thumbnail
                             class="course"
-                            src="@/static/transferProgress/course/approve_eth_mainnet.png"
+                            v-if="isEthereumNetwork(sourceNetworkId)"
+                            thumb="transferProgress/course/approve_eth_mainnet_thumb.png"
+                            src="transferProgress/course/approve_eth_mainnet.png"
                         />
-                        <img
+
+                        <thumbnail
                             v-else
                             class="course"
-                            src="@/static/transferProgress/course/approve_bsc_mainnet.png"
+                            thumb="transferProgress/course/approve_bsc_mainnet_thumb.png"
+                            src="transferProgress/course/approve_bsc_mainnet.png"
                         />
                     </template>
 
                     <!-- 在切链状态 -->
                     <template v-else-if="confirmTransactionChainChanging">
-                        <img
+                        <thumbnail
                             v-if="isEthereumNetwork(sourceNetworkId)"
                             class="course"
-                            src="@/static/transferProgress/course/switch_bsc_mainnet.png"
+                            thumb="transferProgress/course/switch_bsc_mainnet_thumb.png"
+                            src="transferProgress/course/switch_bsc_mainnet.png"
                         />
-                        <img
+                        <thumbnail
                             v-else
                             class="course"
-                            src="@/static/transferProgress/course/switch_eth_mainnet.png"
+                            thumb="transferProgress/course/switch_eth_mainnet_thumb.png"
+                            src="transferProgress/course/switch_eth_mainnet.png"
                         />
                     </template>
 
                     <!-- 等待确认 -->
                     <template v-else-if="!confirmTransactionStatus">
-                        <img
+                        <thumbnail
                             v-if="isEthereumNetwork(walletNetworkId)"
                             class="course"
-                            src="@/static/transferProgress/course/confirm_eth_mainnet.png"
+                            thumb="transferProgress/course/confirm_eth_mainnet_thumb.png"
+                            src="transferProgress/course/confirm_eth_mainnet.png"
                         />
-                        <img
+                        <thumbnail
                             v-else
                             class="course"
-                            src="@/static/transferProgress/course/confirm_bsc_mainnet.png"
+                            thumb="transferProgress/course/confirm_bsc_mainnet_thumb.png"
+                            src="transferProgress/course/confirm_bsc_mainnet.png"
                         />
                     </template>
                 </div>
