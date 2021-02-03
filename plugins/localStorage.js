@@ -8,9 +8,9 @@ export default ({ store }) => {
     if (isProp) {
         //生产版本才加密
         storageParams = {
-            getItem: (key) => ls.get(key),
+            getItem: key => ls.get(key),
             setItem: (key, value) => ls.set(key, value),
-            removeItem: (key) => ls.remove(key),
+            removeItem: key => ls.remove(key)
         };
     }
     createPersistedState({
@@ -21,8 +21,9 @@ export default ({ store }) => {
             return {
                 theme: state.theme,
                 locale: state.locale,
-                swapUnfreezeDatas:state.swapUnfreezeDatas,
+                autoConnect: state.autoConnect,
+                swapUnfreezeDatas: state.swapUnfreezeDatas
             };
-        },
+        }
     })(store);
 };

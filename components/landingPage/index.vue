@@ -160,7 +160,6 @@ import { SUPPORTED_WALLETS_MAP } from "@/assets/linearLibrary/linearTools/networ
 
 import { openBuyLINA } from "@/common/utils";
 
-
 export default {
     name: "landingPage",
     data() {
@@ -172,12 +171,12 @@ export default {
         };
     },
     watch: {
-        // ethereum() {}
+        autoConnect() {}
     },
     computed: {
-        // ethereum() {
-        //     return window.ethereum;
-        // }
+        autoConnect() {
+            return this.$store.state.autoConnect;
+        }
     },
     mounted() {
         //进入界面的欢迎效果
@@ -192,7 +191,9 @@ export default {
         // ); //自动连接BINANCE
         //调试用,进入指定页,不用时屏蔽
 
-        // this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
+        if (this.autoConnect) {
+            this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
+        }
     }
 };
 </script>

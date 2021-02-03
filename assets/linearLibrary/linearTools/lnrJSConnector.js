@@ -37,7 +37,7 @@ export const connectToWallet = async networkType => {
 
         //  [1, 56].includes(networkId)
 
-        if (!name ) {
+        if (!name) {
             throw new Error("not support network");
         }
 
@@ -188,6 +188,8 @@ export const selectedWallet = async (walletType, waitStore = true) => {
                 walletStatus.networkId.toString()
             );
 
+            store.commit("setAutoConnect", true);
+
             //防止onWalletAccountChange内数据未更新时,太快进入功能子页获取不到wallet的问题
             store.commit("mergeWallet", {
                 address: walletStatus?.currentWallet
@@ -228,7 +230,7 @@ export const selectedWallet = async (walletType, waitStore = true) => {
                             address: address[0]
                         });
 
-                        store.commit("setWalletDetails",{}); //清理数据
+                        store.commit("setWalletDetails", {}); //清理数据
                         await storeDetailsData();
                         $pub.publish("onWalletAccountChange");
                         $nuxt.$Spin.hide();
@@ -240,7 +242,7 @@ export const selectedWallet = async (walletType, waitStore = true) => {
                     if (
                         store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK
                     ) {
-                        store.commit("setWalletDetails",{}); //清理数据
+                        store.commit("setWalletDetails", {}); //清理数据
                         const status = await selectedWallet(
                             SUPPORTED_WALLETS_MAP.METAMASK
                         );

@@ -1,8 +1,5 @@
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
-import {
-    SUPPORTED_NETWORKS,
-    BLOCKCHAIN
-} from "@/assets/linearLibrary/linearTools/network";
+import { SUPPORTED_NETWORKS } from "@/assets/linearLibrary/linearTools/network";
 
 export const state = () => ({
     locale: "en", //默认语言
@@ -27,7 +24,6 @@ export const state = () => ({
     walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS_MAP
     walletNetworkId: "1", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
     walletNetworkName: SUPPORTED_NETWORKS["1"], //当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
-    // currentGraphApi: BLOCKCHAIN.ETHEREUM, //当前钱包网络子图接口地址
     mMenuState: false, //移动端 显示菜单
     mWalletState: false, //移动端 显示钱包详情
     isMobile: false, //是否移动端
@@ -35,7 +31,8 @@ export const state = () => ({
     registeredBinanceWalletEvents: false, //是否已经注册binance钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
     swapUnfreezeDatas: {}, //swap等待解冻所需数据,用于页面强制刷新后重载swap逻辑
     swapUnfreezeContinue: false, //用于判断用户是否点击了继续swap
-    isTransaction: false // 是否在交易页面
+    isTransaction: false, // 是否在交易页面
+    autoConnect: false //自动连接钱包
 });
 
 export const mutations = {
@@ -133,6 +130,10 @@ export const mutations = {
 
     setIsTransaction(state, isTransaction) {
         state.isTransaction = isTransaction;
+    },
+
+    setAutoConnect(state, status) {
+        state.autoConnect = status;
     }
 };
 
