@@ -409,6 +409,11 @@ export default {
                 ...liquidsList
             ];
 
+            this.resetCurrencyIndex();
+        },
+
+        //充值当前index
+        resetCurrencyIndex() {
             let index = _.findIndex(this.currencies, [
                 "key",
                 this.selectCurrencyKey
@@ -417,6 +422,7 @@ export default {
             this.selectCurrencyIndex = index != -1 ? index : 0;
         },
 
+        //过滤无余额的token
         async filterCurrencies() {
             //获取其他网络id
             let otherNetworkId = getOtherNetworks(this.walletNetworkId).join();
@@ -469,6 +475,8 @@ export default {
             });
 
             this.currencies = [...currencies];
+
+            this.resetCurrencyIndex();
 
             this.swapNumber = this.currency.frozenBalance;
 

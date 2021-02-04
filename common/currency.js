@@ -2,7 +2,7 @@ const currencies = {
     lUSD: {
         name: "ℓUSD",
         fullName: "ℓUSD",
-        type: "crypto",
+        type: "crypto"
     },
     lBTC: {
         name: "ℓBTC",
@@ -154,6 +154,36 @@ const currencies = {
         fullName: "Xangle Cap index",
         type: "index"
     },
+    lUNI: {
+        name: "ℓUNI",
+        fullName: "Uniswap",
+        type: "crypto"
+    },
+    lXCU: {
+        name: "ℓXCU",
+        fullName: "ℓXCU",
+        type: "commodity"
+    },
+    lCHF: {
+        name: "ℓCHF",
+        fullName: "ℓCHF",
+        type: "currencies"
+    },
+    lJPN: {
+        name: "ℓJPN",
+        fullName: "ℓJPN",
+        type: "currencies"
+    },
+    lEUR: {
+        name: "ℓEUR",
+        fullName: "ℓEUR",
+        type: "currencies"
+    },
+    lDOGE: {
+        name: "ℓDOGE",
+        fullName: "Doge Coin",
+        type: "crypto"
+    }
 };
 
 //导入资源路径

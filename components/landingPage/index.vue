@@ -176,7 +176,7 @@ export default {
             this.introduct = "1";
         }, 100);
         //调试用,进入指定页,不用时屏蔽
-        this.$store.commit("setCurrentAction",5);
+        // this.$store.commit("setCurrentAction",5);
         // setTimeout(
         //     () => selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
         //     1000
