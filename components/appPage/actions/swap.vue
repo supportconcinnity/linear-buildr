@@ -34,7 +34,7 @@
                                 <Poptip
                                     class="name"
                                     placement="bottom"
-                                    :width="isMobile ? 318 : 400"
+                                    :width="isMobile ? 280 : 400"
                                     offset="0px 24px"
                                     v-model="currencyDropDown"
                                 >

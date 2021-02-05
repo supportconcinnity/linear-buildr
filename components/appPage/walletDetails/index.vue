@@ -77,6 +77,14 @@
                 </div>
             </div> -->
 
+            <div v-if="isMobile" class="mNetwork" @click="mShowWallet = true">
+                <ethereumSvg v-if="isEthereumNetwork" :selected="true" />
+                <binanceSvg v-else :selected="true" />
+                <div class="mNetworkName">
+                    {{ walletNetworkName }}
+                </div>
+            </div>
+
             <div class="mMenu" @click="mShowMenuFun">
                 <img src="@/static/icon-menu.svg" />
             </div>
@@ -88,9 +96,12 @@
         >
             <div class="mWalletHead">
                 <ethereumSvg
-                    class="metamaskIcon"
-                    :selected="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
+                    class="networkIcon"
+                    v-if="isEthereumNetwork"
+                    :selected="true"
                 />
+                <binanceSvg class="networkIcon" v-else :selected="true" />
+
                 <div class="mInfo">
                     <div class="wallet">
                         {{ walletNetworkName }}
@@ -551,6 +562,7 @@ import lnrJSConnector, {
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
+import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";
 
 export default {
     name: "walletDetails",
@@ -591,9 +603,14 @@ export default {
         isEthereumNetwork() {},
         isBinanceNetwork() {},
         walletNetworkId() {},
-        walletType() {}
+        walletType() {},
+        isMobile() {}
     },
     computed: {
+        isMobile() {
+            return this.$store.state.isMobile;
+        },
+
         isEthereumNetwork() {
             return isEthereumNetwork(this.walletNetworkId);
         },
@@ -615,7 +632,7 @@ export default {
             return this.$store.state?.walletNetworkName;
         },
         walletAddress() {
-            return this.$store.state?.wallet?.address;
+            return abbreviateAddress(this.$store.state?.wallet?.address);
         },
         walletDetails() {
             return _.clone(this.$store.state?.walletDetails);
@@ -865,9 +882,10 @@ export default {
                 font-family: Gilroy-Regular;
                 font-size: 14px;
                 margin-right: 16px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                text-align: center;
+                // white-space: nowrap;
+                // overflow: hidden;
+                // text-overflow: ellipsis;
                 font-weight: normal;
                 font-stretch: normal;
                 font-style: normal;
@@ -1336,9 +1354,10 @@ export default {
                     font-family: Gilroy-Regular;
                     font-size: 14px;
                     margin-right: 16px;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
+                    text-align: center;
+                    // white-space: nowrap;
+                    // overflow: hidden;
+                    // text-overflow: ellipsis;
                     font-weight: normal;
                     font-stretch: normal;
                     font-style: normal;
@@ -1417,6 +1436,34 @@ export default {
             //     }
             // }
 
+            .mNetwork {
+                display: flex;
+                align-items: center;
+                padding: 8px 12px;
+                box-shadow: 0 2px 6px 0 #deddde;
+                background-color: #ffffff;
+                border-radius: 16px;
+                margin-right: 8px;
+
+                #ethereumSvg,
+                #binanceSvg {
+                    width: 16px;
+                    height: 16px;
+                    margin-right: 4px;
+                }
+
+                .mNetworkName {
+                    font-family: Gilroy-Medium;
+                    font-size: 12px;
+                    font-weight: 500;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.33;
+                    letter-spacing: normal;
+                    color: #99999a;
+                }
+            }
+
             .mMenu {
                 display: flex;
                 justify-content: center;
@@ -1444,7 +1491,7 @@ export default {
                 display: flex;
                 margin-bottom: 16px;
 
-                .metamaskIcon {
+                .networkIcon {
                     width: 32px;
                     height: 32px;
                     padding: 8px 8px 8px 8px;
@@ -1490,9 +1537,10 @@ export default {
                         flex: 1;
                         font-family: Gilroy-Regular;
                         font-size: 14px;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
+                        text-align: center;
+                        // white-space: nowrap;
+                        // overflow: hidden;
+                        // text-overflow: ellipsis;
                         font-weight: normal;
                         font-stretch: normal;
                         font-style: normal;

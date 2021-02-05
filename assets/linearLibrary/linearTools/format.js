@@ -47,9 +47,9 @@ export const formatAddressToByte32 = address => {
 };
 
 //钱包地址缩略, 例: 0x1234...7890
-export const abbreviateAddress = address => {
+export const abbreviateAddress = (address, omit = 4) => {
     if (!address) return "";
-    return address.substr(0, 6) + "..." + address.substr(-4, 4);
+    return address.substr(0, 6) + ".".repeat(omit) + address.substr(-4, 4);
 };
 
 //将大数向下取指定位数(防止过长小数导致精度的问题)

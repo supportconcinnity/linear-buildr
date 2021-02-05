@@ -357,7 +357,7 @@ import {
 } from "@/assets/linearLibrary/linearTools/network";
 import currencies from "@/common/currency";
 
-import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
+import { abbreviateAddress, formatNumber } from "@/assets/linearLibrary/linearTools/format";
 import { bn2n, n2bn } from "@/common/bnCalc";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
 
@@ -426,9 +426,7 @@ export default {
             return true;
         },
         walletAddressEllipsis() {
-            if (this.$store.state?.wallet?.address) {
-                return this.$store.state.wallet.address.substring(0, 7) + "...";
-            }
+            return abbreviateAddress(this.$store.state?.wallet?.address);
         },
         walletAddress() {
             return this.$store.state?.wallet?.address;
