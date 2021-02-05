@@ -616,12 +616,13 @@ module.exports = {
                             source: source ? `\\"${source}\\"` : undefined
                         }
                     },
-                    properties: ["totalIssuedDebt"]
+                    properties: ["mintTokens","burnTokens"]
                 }
             })
                 .then(results =>
-                    results.map(({ totalIssuedDebt }) => ({
-                        totalIssuedDebt: bn2n(BigNumber.from(totalIssuedDebt))
+                    results.map(({ mintTokens, burnTokens }) => ({
+                        mintTokens: bn2n(BigNumber.from(mintTokens)),
+                        burnTokens: bn2n(BigNumber.from(burnTokens))
                     }))
                 )
                 .catch(err => console.error(err));
