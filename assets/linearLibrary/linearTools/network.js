@@ -113,7 +113,6 @@ export const DEOSIT_PROOF_API = {
     97: process.env.DEOSIT_PROOF_TESTNET_API
 };
 
-
 /**
  * 链切换类型
  * network 钱包内切换网络
@@ -242,11 +241,12 @@ export const getNetworkSpeeds = async walletNetworkId => {
             }
         };
     } else if (isBinanceNetwork(walletNetworkId)) {
-        let currentGasPrice = 0;
-        const res = await api.getBSCGasPrice();
+        let currentGasPrice = 20;
+        const res = await api.getBSCGasPrice(walletNetworkId);
         if (res?.result) {
             currentGasPrice = unFormatGasPrice(res.result);
         }
+
         return {
             [NETWORK_SPEEDS_TO_KEY.SLOW]: {
                 price: currentGasPrice * 0.75,
