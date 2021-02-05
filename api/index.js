@@ -1,7 +1,8 @@
 import {
     isEthereumNetwork,
     BLOCKCHAIN_BROWSER_API,
-    DEOSIT_PROOF_API
+    DEOSIT_PROOF_API,
+    isMainnetNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 
 export default {
@@ -35,9 +36,15 @@ export default {
             });
     },
 
-    async getBSCGasPrice() {
+    async getBSCGasPrice(walletNetworkId = 56) {
+        let url;
+        if (isMainnetNetwork(walletNetworkId)) {
+            url = "https://bsc-dataseed.binance.org";
+        } else {
+            url = "https://data-seed-prebsc-1-s1.binance.org:8545";
+        }
         return await $nuxt.$axios
-            .$post("https://bsc-dataseed.binance.org", {
+            .$post(url, {
                 jsonrpc: "2.0",
                 id: 1,
                 method: "eth_gasPrice",
