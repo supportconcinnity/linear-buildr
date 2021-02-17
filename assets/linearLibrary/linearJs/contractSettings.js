@@ -29,7 +29,7 @@ class ContractSettings {
                     break;
                 case 97: //BSC测试网RPC
                     tempNetwork =
-                        "https://data-seed-prebsc-1-s1.binance.org:8545/";
+                        "https://data-seed-prebsc-1-s3.binance.org:8545/";
                     break;
             }
             this.provider = getDefaultProvider(tempNetwork, API_KEY);

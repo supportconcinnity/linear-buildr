@@ -267,16 +267,7 @@ export default {
             selectCurrencyIndex: 0,
             selectCurrencyKey: "LINA",
 
-            currencies: [
-                {
-                    name: "LINA",
-                    key: "LINA",
-                    img: require("@/static/LINA_logo.svg"),
-                    balance: 0,
-                    frozenBalance: 0,
-                    totalBalance: 0
-                }
-            ]
+            currencies: []
         };
     },
     watch: {
@@ -364,13 +355,29 @@ export default {
     },
 
     methods: {
+        //设置初始列表
+        initCurrencies() {
+            this.currencies = [
+                {
+                    name: "LINA",
+                    key: "LINA",
+                    img: require("@/static/LINA_logo.svg"),
+                    balance: 0,
+                    frozenBalance: 0,
+                    totalBalance: 0
+                }
+            ];
+            this.selectCurrencyIndex = 0;
+        },
+
         async initData() {
             try {
                 this.currencyDropDown = false;
                 await this.initLiquidsList();
                 await this.filterCurrencies();
-                // await this.getCurrencyBalance();
             } catch (error) {
+                this.initCurrencies();
+                this.selectCurrencyKey = "LINA";
                 this.processing = false;
             }
         },
@@ -378,6 +385,7 @@ export default {
         //初始化liquids列表
         async initLiquidsList() {
             this.processing = true;
+            this.initCurrencies();
             const [linaBalance, liquids] = await Promise.all([
                 lnrJSConnector.lnrJS.LinearFinance.balanceOf(
                     this.walletAddress
@@ -397,19 +405,8 @@ export default {
                 };
             });
 
-            this.currencies = [
-                {
-                    name: "LINA",
-                    key: "LINA",
-                    img: require("@/static/LINA_logo.svg"),
-                    balance: _.floor(bn2n(linaBalance), 4),
-                    frozenBalance: 0,
-                    totalBalance: 0
-                },
-                ...liquidsList
-            ];
-
-            this.resetCurrencyIndex();
+            this.currencies[0].balance = _.floor(bn2n(linaBalance), 4);
+            this.currencies = [...this.currencies, ...liquidsList];
         },
 
         //充值当前index
@@ -418,8 +415,8 @@ export default {
                 "key",
                 this.selectCurrencyKey
             ]);
-
             this.selectCurrencyIndex = index != -1 ? index : 0;
+            this.selectCurrencyKey = index != -1 ? this.currency.key : "LINA";
         },
 
         //过滤无余额的token
@@ -471,7 +468,7 @@ export default {
                 //总额
                 item.totalBalance = item.balance + item.frozenBalance;
 
-                return item.totalBalance > 0;
+                return item.key == "LINA" || item.totalBalance > 0;
             });
 
             this.currencies = [...currencies];
