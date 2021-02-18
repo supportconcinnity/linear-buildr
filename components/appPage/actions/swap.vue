@@ -378,6 +378,7 @@ export default {
             } catch (error) {
                 this.initCurrencies();
                 this.selectCurrencyKey = "LINA";
+                console.log("initData error",error);
                 this.processing = false;
             }
         },
@@ -392,6 +393,7 @@ export default {
                 ),
                 getLiquids(this.walletAddress, true)
             ]);
+
 
             let liquidsList = liquids.liquidsList.map(item => {
                 const key = item.name;

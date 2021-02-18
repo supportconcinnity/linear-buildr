@@ -14,7 +14,7 @@
             <closeSvg></closeSvg>
         </div>
 
-        <div class="trackBox">
+        <div v-if="false" class="trackBox">
             <div class="title" v-if="!isMobile">Track Debt</div>
             <div class="context" v-if="!isMobile">
                 Track your debt over time, with charts
@@ -124,7 +124,7 @@
                     </template>
                 </Table>
                 <div class="nothing" v-else>
-                    <img src="@/static/line_charts.svg"  />
+                    <img src="@/static/line_charts.svg" />
                     <div class="text">
                         <span class="title">No Debts</span> <br />
                         <span class="subject"
@@ -132,6 +132,17 @@
                         >
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div v-else class="maintenance">
+            <div class="title">
+                Track debt function is currently undergoing maintenance
+            </div>
+            <img src="@/static/maintenance.svg" alt="" />
+            <div class="desc">
+                We're preparing to serve you better. We should be back shortly.
+                Thank you for your patience.
             </div>
         </div>
 
@@ -570,6 +581,44 @@ export default {
                     }
                 }
             }
+
+            .maintenance {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                .title {
+                    font-family: Gilroy-Bold;
+                    font-size: 32px;
+                    font-weight: bold;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.25;
+                    letter-spacing: normal;
+                    color: #5a575c;
+                    text-align: center;
+                }
+
+                img {
+                    width: 100%;
+                    height: auto;
+                    margin: 50px 0;
+                }
+
+                .desc {
+                    font-family: Gilroy-Regular;
+                    font-size: 16px;
+                    font-weight: normal;
+                    font-stretch: normal;
+                    font-style: normal;
+                    line-height: 1.5;
+                    letter-spacing: normal;
+                    text-align: center;
+                    color: #5a575c;
+                }
+            }
         }
     }
 }
@@ -704,6 +753,28 @@ export default {
                                 font-family: Gilroy-Regular;
                             }
                         }
+                    }
+                }
+
+                .maintenance {
+                    .title {
+                        font-family: Gilroy-Bold;
+                        font-size: 24px;
+                        font-weight: bold;
+                        font-stretch: normal;
+                        font-style: normal;
+                        line-height: 1.25;
+                        letter-spacing: normal;
+                        color: #5a575c;
+                        text-align: center;
+                    }
+
+                    img {
+                        margin: 25px 0;
+                    }
+
+                    .desc {
+                        font-size: 12px;
                     }
                 }
             }

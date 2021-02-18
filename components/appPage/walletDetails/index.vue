@@ -52,6 +52,10 @@
                         </g>
                     </svg>
                 </Tooltip>
+
+                <div class="disconnect" @click.stop="disconnect">
+                    Disconnect
+                </div>
             </div>
             <!-- <div class="chainChange" :class="{ chainChanging }">
                 <div
@@ -807,6 +811,13 @@ export default {
         },
         mShowMenuFun() {
             this.$store.commit("setmMenuState", true);
+        },
+
+        //断开连接
+        disconnect() {
+            // this.$store.commit("setWallet", "");
+            this.$store.commit("setAutoConnect", false);
+            location.reload();
         }
     }
 };
@@ -881,7 +892,7 @@ export default {
                 flex: 1;
                 font-family: Gilroy-Regular;
                 font-size: 14px;
-                margin-right: 16px;
+                margin-right: 4px;
                 text-align: center;
                 // white-space: nowrap;
                 // overflow: hidden;
@@ -899,12 +910,31 @@ export default {
                 width: 16px;
                 height: 16px;
                 margin-top: 4px;
+                margin-right:12px;
 
                 &:hover {
                     #Combined-Shape {
                         fill: #1a38f8;
                         stroke: #1a38f8;
                     }
+                }
+            }
+
+            .disconnect {
+                font-family: Gilroy-Bold;
+                font-size: 10px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                letter-spacing: 1.25px;
+                text-align: center;
+                color: #99999a;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: $animete-time linear;
+
+                &:hover {
+                    color: #1a38f8;
                 }
             }
         }
@@ -1353,7 +1383,7 @@ export default {
                     flex: 1;
                     font-family: Gilroy-Regular;
                     font-size: 14px;
-                    margin-right: 16px;
+                    margin-right: 4px;
                     text-align: center;
                     // white-space: nowrap;
                     // overflow: hidden;
@@ -1371,6 +1401,7 @@ export default {
                     width: 16px;
                     height: 16px;
                     display: none;
+                    margin-right: 12px;
 
                     &:hover {
                         #Combined-Shape {

@@ -67,8 +67,8 @@ export const getLiquids = async (wallet, all = false) => {
         //计算资产总数
         for (const index in assetKeys) {
             const key = assetKeys[index]; //资产名称
-            const price = assetPrices[key]; //价格
             const balance = assetBalances[index]; //余额
+            let price = key == "lUSD" ? (price = n2bn(1)) : assetPrices[key]; //价格
 
             //如果不是获取所有且余额为0则跳过
             if (!all && balance.isZero()) {
@@ -256,7 +256,6 @@ export const storeDetailsData = async () => {
             const isBinance = isBinanceNetwork(walletNetworkId);
 
             let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
-            
 
             const {
                 lnrJS: {
