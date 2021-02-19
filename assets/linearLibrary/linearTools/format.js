@@ -1,5 +1,6 @@
 import numbro from "numbro";
 import { BigNumber, utils } from "ethers";
+import { DECIMAL_PRECISION } from "@/common/bnCalc";
 import _ from "lodash";
 
 //格式化bigNumber到number
@@ -23,15 +24,15 @@ export const formatEtherToNumber = val => {
 };
 
 //数字千分位
-export const formatNumber = (val, decimals = 2) => {
+export const formatNumber = (val, decimals = DECIMAL_PRECISION) => {
     if (!val || !Number(val)) return 0;
     return numbro(_.floor(val, decimals)).format("0,0." + "0".repeat(decimals));
 };
 
 //大数转千分位
-export const formatNumberFromBigNumber = (val, decimals = 2) => {
+export const formatNumberFromBigNumber = (val, decimals = DECIMAL_PRECISION) => {
     if (!val || !Number(val)) return 0;
-    return numbro(_.floor(utils.formatEther(val), decimals)).format(
+    return numbro(_.floor(floorBigNumber(val), decimals)).format(
         "0,0." + "0".repeat(decimals)
     );
 };
