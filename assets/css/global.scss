@@ -153,3 +153,13 @@ $lightBlue: #f1f7ff;
 .ivu-spin-fullscreen {
     z-index: 10000 !important;
 }
+
+.vertical-center-modal{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .ivu-modal{
+        top: 0;
+    }
+}

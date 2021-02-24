@@ -14,7 +14,7 @@
             <closeSvg></closeSvg>
         </div>
 
-        <div v-if="false" class="trackBox">
+        <div v-if="true" class="trackBox">
             <div class="title" v-if="!isMobile">Track Debt</div>
             <div class="context" v-if="!isMobile">
                 Track your debt over time, with charts
