@@ -13,7 +13,7 @@
                     {{ walletNetworkName }}
                 </div>
                 <div class="address">
-                    {{ walletAddress }}
+                    {{ abbreviateAddress }}
                 </div>
                 <Tooltip
                     class="globalInfoStyle"
@@ -24,7 +24,7 @@
                 >
                     <svg
                         class="copyBtn"
-                        :data-clipboard-text="currentAddress"
+                        :data-clipboard-text="walletAddress"
                         data-clipboard-action="copy"
                         @click="copyAddress()"
                         width="24px"
@@ -111,7 +111,7 @@
                         {{ walletNetworkName }}
                     </div>
                     <div class="address">
-                        {{ walletAddress }}
+                        {{ abbreviateAddress }}
                     </div>
                     <Tooltip
                         class="globalInfoStyle"
@@ -122,7 +122,7 @@
                     >
                         <svg
                             class="copyBtn"
-                            :data-clipboard-text="currentAddress"
+                            :data-clipboard-text="walletAddress"
                             data-clipboard-action="copy"
                             @click="copyAddress()"
                             width="24px"
@@ -572,7 +572,6 @@ export default {
     name: "walletDetails",
     data() {
         return {
-            currentAddress: this.$store.state?.wallet?.address,
             tooltipContent: "Copy to clipboard",
             // refreshing: false, //刷新钱包详情数据中
 
@@ -603,6 +602,7 @@ export default {
         trackStatusChange() {},
         walletStatus() {},
         walletAddress() {},
+        abbreviateAddress() {},
         walletDetails() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
@@ -636,7 +636,10 @@ export default {
             return this.$store.state?.walletNetworkName;
         },
         walletAddress() {
-            return abbreviateAddress(this.$store.state?.wallet?.address);
+            return this.$store.state?.wallet?.address;
+        },
+        abbreviateAddress() {
+            return abbreviateAddress(this.walletAddress);
         },
         walletDetails() {
             return _.clone(this.$store.state?.walletDetails);
@@ -910,7 +913,7 @@ export default {
                 width: 16px;
                 height: 16px;
                 margin-top: 4px;
-                margin-right:12px;
+                margin-right: 12px;
 
                 &:hover {
                     #Combined-Shape {
