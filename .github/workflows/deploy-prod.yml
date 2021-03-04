@@ -1,0 +1,67 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - "prod"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone Source Code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          yarn install
+
+      - name: Build Website
+        run: |
+          echo "NODE_ENV=\"production\"" >> ./.env.production
+          echo "INFURA_PROJECT_ID=\"${{ secrets.BUILD_INFURA_PROJECT_ID }}\"" >> ./.env.production
+          echo "ETHERSCAN_KEY=\"${{ secrets.BUILD_ETHERSCAN_KEY }}\"" >> ./.env.production
+          echo "BSCSCAN_KEY=\"${{ secrets.BUILD_BSCSCAN_KEY }}\"" >> ./.env.production
+          echo "ALCHEMY_KEY=\"${{ secrets.BUILD_ALCHEMY_KEY }}\"" >> ./.env.production
+          echo "ETH_GAS_STATION_KEY=\"${{ secrets.BUILD_ETH_GAS_STATION_KEY }}\"" >> ./.env.production
+          echo "DEFI_PULSE_STATION_KEY=\"${{ secrets.BUILD_DEFI_PULSE_STATION_KEY }}\"" >> ./.env.production
+          echo "GRAPH_BUILDR_ETHEREUM_MAINNET=\"${{ secrets.BUILD_GRAPH_BUILDR_ETHEREUM_MAINNET }}\"" >> ./.env.production
+          echo "GRAPH_BUILDR_SWAP_ETHEREUM_MAINNET=\"${{ secrets.BUILD_GRAPH_BUILDR_SWAP_ETHEREUM_MAINNET }}\"" >> ./.env.production
+          echo "GRAPH_BUILDR_ETHEREUM_ROPSTEN=\"${{ secrets.BUILD_GRAPH_BUILDR_ETHEREUM_ROPSTEN }}\"" >> ./.env.production
+          echo "GRAPH_BUILDR_SWAP_ETHEREUM_ROPSTEN=\"${{ secrets.BUILD_GRAPH_BUILDR_SWAP_ETHEREUM_ROPSTEN }}\"" >> ./.env.production
+          echo "GRAPH_BUILDR_BINANCE_MAINNET=\"${{ secrets.BUILD_GRAPH_BUILDR_BINANCE_MAINNET }}\"" >> ./.env.production
+          echo "GRAPH_BUILDR_BINANCE_TESTNET=\"${{ secrets.BUILD_GRAPH_BUILDR_BINANCE_TESTNET }}\"" >> ./.env.production
+          echo "GRAPH_EXCHANGE_BINANCE_MAINNET=\"${{ secrets.BUILD_GRAPH_EXCHANGE_BINANCE_MAINNET }}\"" >> ./.env.production
+          echo "GRAPH_EXCHANGE_BINANCE_TESTNET=\"${{ secrets.BUILD_GRAPH_EXCHANGE_BINANCE_TESTNET }}\"" >> ./.env.production
+          echo "GRAPH_BAND_BINANCE_MAINNET=\"${{ secrets.BUILD_GRAPH_BAND_BINANCE_MAINNET }}\"" >> ./.env.production
+          echo "GRAPH_BAND_BINANCE_TESTNET=\"${{ secrets.BUILD_GRAPH_BAND_BINANCE_TESTNET }}\"" >> ./.env.production
+          echo "DEOSIT_PROOF_MAINNET_API=\"${{ secrets.BUILD_DEOSIT_PROOF_MAINNET_API }}\"" >> ./.env.production
+          echo "DEOSIT_PROOF_TESTNET_API=\"${{ secrets.BUILD_DEOSIT_PROOF_TESTNET_API }}\"" >> ./.env.production
+          yarn generate
+
+      - name: Clone Workers Site Template
+        run: |
+          git clone https://github.com/xJonathanLEI/cf-workers-site-template
+
+      - name: Install Template Dependencies
+        run: |
+          cd ./cf-workers-site-template
+          npm install
+
+      - name: Authenticate with Cloudflare
+        run: |
+          cd ./cf-workers-site-template
+          echo "${{ secrets.CLOUDFLARE_API_TOKEN }}" | yarn wrangler config
+
+      - name: Publish Workers Site
+        env:
+          CLOUDFLARE_WORKER_NAME: ${{ secrets.CLOUDFLARE_WORKER_NAME }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DOMAIN: ${{ secrets.CLOUDFLARE_DOMAIN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+        run: |
+          rm -rf ./cf-workers-site-template/public/**
+          cp -r ./dist/. ./cf-workers-site-template/public/
+          cd ./cf-workers-site-template
+          yarn run publish
