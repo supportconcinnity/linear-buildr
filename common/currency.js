@@ -169,9 +169,9 @@ const currencies = {
         fullName: "ℓCHF",
         type: "currencies"
     },
-    lJPN: {
-        name: "ℓJPN",
-        fullName: "ℓJPN",
+    lJPY: {
+        name: "ℓJPY",
+        fullName: "ℓJPY",
         type: "currencies"
     },
     lEUR: {
