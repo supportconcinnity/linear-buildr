@@ -1,7 +1,7 @@
 import {
     isEthereumNetwork,
     BLOCKCHAIN_BROWSER_API,
-    DEOSIT_PROOF_API,
+    TOKEN_BRIDGE_API,
     isMainnetNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 
@@ -122,7 +122,7 @@ export default {
 
     async getDeposits(srcChainId, depositId) {
         return await $nuxt.$axios
-            .$get(DEOSIT_PROOF_API[srcChainId], {
+            .$get(TOKEN_BRIDGE_API[srcChainId], {
                 params: {
                     srcChainId,
                     depositId

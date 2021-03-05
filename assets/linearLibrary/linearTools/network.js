@@ -106,11 +106,11 @@ export const BLOCKCHAIN_BROWSER_API = {
     97: "https://api-testnet.bscscan.com/api"
 };
 
-export const DEOSIT_PROOF_API = {
-    1: process.env.DEOSIT_PROOF_MAINNET_API,
-    3: process.env.DEOSIT_PROOF_TESTNET_API,
-    56: process.env.DEOSIT_PROOF_MAINNET_API,
-    97: process.env.DEOSIT_PROOF_TESTNET_API
+export const TOKEN_BRIDGE_API = {
+    1: process.env.TOKEN_BRIDGE_MAINNET,
+    3: process.env.TOKEN_BRIDGE_TESTNET,
+    56: process.env.TOKEN_BRIDGE_MAINNET,
+    97: process.env.TOKEN_BRIDGE_TESTNET
 };
 
 /**

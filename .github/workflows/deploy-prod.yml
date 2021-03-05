@@ -32,12 +32,10 @@ jobs:
           echo "GRAPH_BUILDR_SWAP_ETHEREUM_ROPSTEN=\"${{ secrets.BUILD_GRAPH_BUILDR_SWAP_ETHEREUM_ROPSTEN }}\"" >> ./.env.production
           echo "GRAPH_BUILDR_BINANCE_MAINNET=\"${{ secrets.BUILD_GRAPH_BUILDR_BINANCE_MAINNET }}\"" >> ./.env.production
           echo "GRAPH_BUILDR_BINANCE_TESTNET=\"${{ secrets.BUILD_GRAPH_BUILDR_BINANCE_TESTNET }}\"" >> ./.env.production
-          echo "GRAPH_EXCHANGE_BINANCE_MAINNET=\"${{ secrets.BUILD_GRAPH_EXCHANGE_BINANCE_MAINNET }}\"" >> ./.env.production
-          echo "GRAPH_EXCHANGE_BINANCE_TESTNET=\"${{ secrets.BUILD_GRAPH_EXCHANGE_BINANCE_TESTNET }}\"" >> ./.env.production
           echo "GRAPH_BAND_BINANCE_MAINNET=\"${{ secrets.BUILD_GRAPH_BAND_BINANCE_MAINNET }}\"" >> ./.env.production
           echo "GRAPH_BAND_BINANCE_TESTNET=\"${{ secrets.BUILD_GRAPH_BAND_BINANCE_TESTNET }}\"" >> ./.env.production
-          echo "DEOSIT_PROOF_MAINNET_API=\"${{ secrets.BUILD_DEOSIT_PROOF_MAINNET_API }}\"" >> ./.env.production
-          echo "DEOSIT_PROOF_TESTNET_API=\"${{ secrets.BUILD_DEOSIT_PROOF_TESTNET_API }}\"" >> ./.env.production
+          echo "TOKEN_BRIDGE_MAINNET=\"${{ secrets.BUILD_TOKEN_BRIDGE_MAINNET }}\"" >> ./.env.production
+          echo "TOKEN_BRIDGE_TESTNET=\"${{ secrets.BUILD_TOKEN_BRIDGE_TESTNET }}\"" >> ./.env.production
           yarn generate
 
       - name: Clone Workers Site Template
