@@ -8,7 +8,7 @@ import {
 export default {
     async getReferralCode(wallet) {
         return await $nuxt.$axios
-            .$post("/referral/getCode", { wallet })
+            .$post(`${process.env.BACKEND_API}/referral/getCode`, { wallet })
             .then(res => {
                 return Promise.resolve(res);
             })
@@ -23,7 +23,7 @@ export default {
 
     async addReferralCode(wallet, referral_code, only_check = false) {
         return await $nuxt.$axios
-            .$post("/referral/addCode", {
+            .$post(`${process.env.BACKEND_API}/referral/addCode`, {
                 wallet,
                 referral_code,
                 only_check
