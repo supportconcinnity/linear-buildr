@@ -2,7 +2,6 @@
   import LinearFinance from './LinearFinance';
 import LnAssetSystem from './LnAssetSystem';
 import LnConfig from './LnConfig';
-import LnAccessControl from './LnAccessControl';
 import LnChainLinkPrices from './LnChainLinkPrices';
 import LnBandProtocol from './LnBandProtocol';
 import LnDebtSystem from './LnDebtSystem';
@@ -28,12 +27,12 @@ import lXRP from './lXRP';
 import LnErc20Bridge from './LnErc20Bridge';
 import lCHF from './lCHF';
 import lEUR from './lEUR';
-import lJPN from './lJPN';
+import lJPY from './lJPY';
 import lXCU from './lXCU';
 import lUNI from './lUNI';
 import lDOGE from './lDOGE';
   
   export default {
-    LinearFinance, LnAssetSystem, LnConfig, LnAccessControl, LnChainLinkPrices, LnBandProtocol, LnDebtSystem, LnCollateralSystem, LnBuildBurnSystem, LnRewardLocker, LnRewardSystem, lUSD, lBTC, lETH, lHB10, lLINK, lTRX, lDOT, lYFI, lBNB, lXAU, lXAG, lADA, lXLM, lXCI, lXRP, LnErc20Bridge, lCHF, lEUR, lJPN, lXCU, lUNI, lDOGE
+    LinearFinance, LnAssetSystem, LnConfig, LnChainLinkPrices, LnBandProtocol, LnDebtSystem, LnCollateralSystem, LnBuildBurnSystem, LnRewardLocker, LnRewardSystem, lUSD, lBTC, lETH, lHB10, lLINK, lTRX, lDOT, lYFI, lBNB, lXAU, lXAG, lADA, lXLM, lXCI, lXRP, LnErc20Bridge, lCHF, lEUR, lJPY, lXCU, lUNI, lDOGE
   };
     

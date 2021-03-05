@@ -3,7 +3,6 @@
 import LnAssetSystem from './LnAssetSystem';
 import LnBuildBurnSystem from './LnBuildBurnSystem';
 import LnConfig from './LnConfig';
-import LnAccessControl from './LnAccessControl';
 import LnBandProtocol from './LnBandProtocol';
 import LnDebtSystem from './LnDebtSystem';
 import LnCollateralSystem from './LnCollateralSystem';
@@ -22,8 +21,11 @@ import lADA from './lADA';
 import lXLM from './lXLM';
 import lXAU from './lXAU';
 import lXAG from './lXAG';
+import lEUR from './lEUR';
+import lUNI from './lUNI';
+import lJPY from './lJPY';
   
   export default {
-    LinearFinance, LnAssetSystem, LnBuildBurnSystem, LnConfig, LnAccessControl, LnBandProtocol, LnDebtSystem, LnCollateralSystem, LnRewardLocker, lUSD, LnRewardSystem, LnErc20Bridge, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG
+    LinearFinance, LnAssetSystem, LnBuildBurnSystem, LnConfig, LnBandProtocol, LnDebtSystem, LnCollateralSystem, LnRewardLocker, lUSD, LnRewardSystem, LnErc20Bridge, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG, lEUR, lUNI, lJPY
   };
     

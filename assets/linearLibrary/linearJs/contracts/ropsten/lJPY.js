@@ -1,13 +1,13 @@
 
       import {Contract} from 'ethers';
       import ContractSettings from '../../contractSettings';
-      import abi from '../../lib/abis/ropsten/lJPN';
+      import abi from '../../lib/abis/ropsten/lJPY';
   
-      function lJPN(contractSettings) {
+      function lJPY(contractSettings) {
         this.contractSettings = contractSettings || new ContractSettings();
   
         this.contract = new Contract(
-          this.contractSettings.addressList['lJPN'],
+          this.contractSettings.addressList['lJPY'],
           abi,
           this.contractSettings.signer || this.contractSettings.provider
         );
@@ -120,5 +120,5 @@
     
       }
   
-      export default lJPN;
+      export default lJPY;
     

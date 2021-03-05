@@ -1,13 +1,13 @@
 
       import {Contract} from 'ethers';
       import ContractSettings from '../../contractSettings';
-      import abi from '../../lib/abis/bsctestnet/lJPN';
+      import abi from '../../lib/abis/mainnet/lEUR';
   
-      function lJPN(contractSettings) {
+      function lEUR(contractSettings) {
         this.contractSettings = contractSettings || new ContractSettings();
   
         this.contract = new Contract(
-          this.contractSettings.addressList['lJPN'],
+          this.contractSettings.addressList['lEUR'],
           abi,
           this.contractSettings.signer || this.contractSettings.provider
         );
@@ -120,5 +120,5 @@
     
       }
   
-      export default lJPN;
+      export default lEUR;
     
