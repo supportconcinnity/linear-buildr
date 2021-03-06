@@ -53,6 +53,10 @@ jobs:
           cd ./cf-workers-site-template
           echo "${{ secrets.CLOUDFLARE_API_TOKEN }}" | yarn wrangler config
 
+      - name: Configure Proxy
+        run: |
+          echo '${{ secrets.PROXIES }}' > ./cf-workers-site-template/src/external/proxies.json
+
       - name: Publish Workers Site
         env:
           CLOUDFLARE_WORKER_NAME: ${{ secrets.CLOUDFLARE_WORKER_NAME }}
