@@ -183,11 +183,11 @@ export default {
             pendingRewardEntries: undefined,
             currentRatioPercent: 0, //当前P ratio
 
-            leftTime: 0
+            // leftTime: 0
         };
     },
     created() {
-        this.countDown();
+        // this.countDown();
         this.useGetFeeData(this.walletAddress);
     },
     watch: {
@@ -217,13 +217,13 @@ export default {
         //claim按钮禁止状态
         claimDisabled() {
             //到达20210310-15:30则停止claim
-            let disbaled = false;
-            if (isMainnetNetwork(this.walletNetworkId) && this.leftTime <= 0) {
-                console.log("_");
-                disbaled = true;
-            }
+            // let disbaled = false;
+            // if (isMainnetNetwork(this.walletNetworkId) && this.leftTime <= 0) {
+            //     console.log("_");
+            //     disbaled = true;
+            // }
             return (
-                disbaled ||
+                // disbaled ||
                 !this.feesAreClaimable ||
                 this.processing ||
                 (this.tradingRewards == 0 && this.stakingRewards == 0) ||
