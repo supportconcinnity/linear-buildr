@@ -13,34 +13,24 @@
         );
   
         
-      this.Claim = async (_amount, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.Claim(_amount, txParams);
-      };
-    
-      this.ClaimMaxable = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.ClaimMaxable(txParams);
-      };
-    
-      this.Init = async (_feeSysAddr, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.Init(_feeSysAddr, txParams);
-      };
-    
-      this.Slimming = async (_user, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.Slimming(_user, txParams);
-      };
-    
       this.__LnAdminUpgradeable_init = async (_admin, txParams) => {
         txParams = txParams || {};
         return await this.contract.__LnAdminUpgradeable_init(_admin, txParams);
       };
     
-      this.__LnRewardLocker_init = async (_admin, linaAddress, txParams) => {
+      this.__LnRewardLocker_init = async (_linaTokenAddr, _accessCtrl, _admin, txParams) => {
         txParams = txParams || {};
-        return await this.contract.__LnRewardLocker_init(_admin, linaAddress, txParams);
+        return await this.contract.__LnRewardLocker_init(_linaTokenAddr, _accessCtrl, _admin, txParams);
+      };
+    
+      this.accessCtrl = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.accessCtrl(txParams);
+      };
+    
+      this.addReward = async (user, amount, unlockTime, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.addReward(user, amount, unlockTime, txParams);
       };
     
       this.admin = async (txParams) => {
@@ -48,14 +38,9 @@
         return await this.contract.admin(txParams);
       };
     
-      this.appendReward = async (_user, _amount, _lockTo, txParams) => {
+      this.balanceOf = async (user, txParams) => {
         txParams = txParams || {};
-        return await this.contract.appendReward(_user, _amount, _lockTo, txParams);
-      };
-    
-      this.balanceOf = async (address_1, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.balanceOf(address_1, txParams);
+        return await this.contract.balanceOf(user, txParams);
       };
     
       this.becomeAdmin = async (txParams) => {
@@ -63,24 +48,34 @@
         return await this.contract.becomeAdmin(txParams);
       };
     
-      this.bulkAppendReward = async (_users, _amounts, _lockTo, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.bulkAppendReward(_users, _amounts, _lockTo, txParams);
-      };
-    
       this.candidate = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.candidate(txParams);
       };
     
-      this.linaToken = async (txParams) => {
+      this.lastRewardEntryId = async (txParams) => {
         txParams = txParams || {};
-        return await this.contract.linaToken(txParams);
+        return await this.contract.lastRewardEntryId(txParams);
       };
     
-      this.maxRewardArrayLen = async (txParams) => {
+      this.linaTokenAddr = async (txParams) => {
         txParams = txParams || {};
-        return await this.contract.maxRewardArrayLen(txParams);
+        return await this.contract.linaTokenAddr(txParams);
+      };
+    
+      this.lockedAmountByAddresses = async (address_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.lockedAmountByAddresses(address_1, txParams);
+      };
+    
+      this.migrateRewards = async (users, amounts, unlockTimes, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.migrateRewards(users, amounts, unlockTimes, txParams);
+      };
+    
+      this.rewardEntries = async (uint256_1, address_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.rewardEntries(uint256_1, address_1, txParams);
       };
     
       this.setCandidate = async (_candidate, txParams) => {
@@ -88,19 +83,9 @@
         return await this.contract.setCandidate(_candidate, txParams);
       };
     
-      this.setLinaAddress = async (_token, txParams) => {
+      this.totalLockedAmount = async (txParams) => {
         txParams = txParams || {};
-        return await this.contract.setLinaAddress(_token, txParams);
-      };
-    
-      this.totalNeedToReward = async (txParams) => {
-        txParams = txParams || {};
-        return await this.contract.totalNeedToReward(txParams);
-      };
-    
-      this.userRewards = async (address_1, uint256_1, txParams) => {
-        txParams = txParams || {};
-        return await this.contract.userRewards(address_1, uint256_1, txParams);
+        return await this.contract.totalLockedAmount(txParams);
       };
     
       }

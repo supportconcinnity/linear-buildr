@@ -24,31 +24,6 @@ export default [
       {
         indexed: false,
         internalType: 'address',
-        name: 'user',
-        type: 'address'
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256'
-      },
-      {
-        indexed: false,
-        internalType: 'uint64',
-        name: 'lockTo',
-        type: 'uint64'
-      }
-    ],
-    name: 'AppendReward',
-    type: 'event'
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
         name: 'oldCandidate',
         type: 'address'
       },
@@ -67,6 +42,12 @@ export default [
     inputs: [
       {
         indexed: false,
+        internalType: 'uint256',
+        name: 'entryId',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
         internalType: 'address',
         name: 'user',
         type: 'address'
@@ -76,40 +57,16 @@ export default [
         internalType: 'uint256',
         name: 'amount',
         type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'unlockTime',
+        type: 'uint256'
       }
     ],
-    name: 'ClaimLog',
+    name: 'RewardEntryAdded',
     type: 'event'
-  },
-  {
-    inputs: [ { internalType: 'uint256', name: '_amount', type: 'uint256' } ],
-    name: 'Claim',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'ClaimMaxable',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_feeSysAddr', type: 'address' }
-    ],
-    name: 'Init',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'address', name: '_user', type: 'address' } ],
-    name: 'Slimming',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
   },
   {
     inputs: [ { internalType: 'address', name: '_admin', type: 'address' } ],
@@ -120,10 +77,43 @@ export default [
   },
   {
     inputs: [
-      { internalType: 'address', name: '_admin', type: 'address' },
-      { internalType: 'address', name: 'linaAddress', type: 'address' }
+      {
+        internalType: 'address',
+        name: '_linaTokenAddr',
+        type: 'address'
+      },
+      {
+        internalType: 'contract ILnAccessControl',
+        name: '_accessCtrl',
+        type: 'address'
+      },
+      { internalType: 'address', name: '_admin', type: 'address' }
     ],
     name: '__LnRewardLocker_init',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'accessCtrl',
+    outputs: [
+      {
+        internalType: 'contract ILnAccessControl',
+        name: '',
+        type: 'address'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'user', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { internalType: 'uint256', name: 'unlockTime', type: 'uint256' }
+    ],
+    name: 'addReward',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -136,18 +126,7 @@ export default [
     type: 'function'
   },
   {
-    inputs: [
-      { internalType: 'address', name: '_user', type: 'address' },
-      { internalType: 'uint256', name: '_amount', type: 'uint256' },
-      { internalType: 'uint64', name: '_lockTo', type: 'uint64' }
-    ],
-    name: 'appendReward',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'address', name: '', type: 'address' } ],
+    inputs: [ { internalType: 'address', name: 'user', type: 'address' } ],
     name: 'balanceOf',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
@@ -161,21 +140,6 @@ export default [
     type: 'function'
   },
   {
-    inputs: [
-      { internalType: 'address[]', name: '_users', type: 'address[]' },
-      {
-        internalType: 'uint256[]',
-        name: '_amounts',
-        type: 'uint256[]'
-      },
-      { internalType: 'uint64', name: '_lockTo', type: 'uint64' }
-    ],
-    name: 'bulkAppendReward',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
     inputs: [],
     name: 'candidate',
     outputs: [ { internalType: 'address', name: '', type: 'address' } ],
@@ -184,15 +148,50 @@ export default [
   },
   {
     inputs: [],
-    name: 'linaToken',
-    outputs: [ { internalType: 'contract IERC20', name: '', type: 'address' } ],
+    name: 'lastRewardEntryId',
+    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
     stateMutability: 'view',
     type: 'function'
   },
   {
     inputs: [],
-    name: 'maxRewardArrayLen',
+    name: 'linaTokenAddr',
+    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [ { internalType: 'address', name: '', type: 'address' } ],
+    name: 'lockedAmountByAddresses',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address[]', name: 'users', type: 'address[]' },
+      { internalType: 'uint256[]', name: 'amounts', type: 'uint256[]' },
+      {
+        internalType: 'uint256[]',
+        name: 'unlockTimes',
+        type: 'uint256[]'
+      }
+    ],
+    name: 'migrateRewards',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint256', name: '', type: 'uint256' },
+      { internalType: 'address', name: '', type: 'address' }
+    ],
+    name: 'rewardEntries',
+    outputs: [
+      { internalType: 'uint216', name: 'amount', type: 'uint216' },
+      { internalType: 'uint40', name: 'unlockTime', type: 'uint40' }
+    ],
     stateMutability: 'view',
     type: 'function'
   },
@@ -206,29 +205,9 @@ export default [
     type: 'function'
   },
   {
-    inputs: [ { internalType: 'address', name: '_token', type: 'address' } ],
-    name: 'setLinaAddress',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
     inputs: [],
-    name: 'totalNeedToReward',
+    name: 'totalLockedAmount',
     outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '', type: 'address' },
-      { internalType: 'uint256', name: '', type: 'uint256' }
-    ],
-    name: 'userRewards',
-    outputs: [
-      { internalType: 'uint64', name: 'lockToTime', type: 'uint64' },
-      { internalType: 'uint256', name: 'amount', type: 'uint256' }
-    ],
     stateMutability: 'view',
     type: 'function'
   }
