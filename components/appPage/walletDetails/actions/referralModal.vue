@@ -243,6 +243,7 @@ export default {
                         }
                     })
                     .catch(err => {
+                        this.referralCode.self_code = "--------";
                         this.codeInputErrorMsg = _.has(err.data, "msg")
                             ? err.data.msg
                             : "unknown error";

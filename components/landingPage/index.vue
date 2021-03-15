@@ -155,9 +155,7 @@
 
 <script>
 import { selectedWallet } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
-
 import { SUPPORTED_WALLETS_MAP } from "@/assets/linearLibrary/linearTools/network";
-
 import { openBuyLINA } from "@/common/utils";
 
 export default {
@@ -175,16 +173,11 @@ export default {
         setTimeout(() => {
             this.introduct = "1";
         }, 100);
-        //调试用,进入指定页,不用时屏蔽
-        // this.$store.commit("setCurrentAction",5);
-        // setTimeout(
-        //     () => selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN),
-        //     1000
-        // ); //自动连接BINANCE
-        //调试用,进入指定页,不用时屏蔽
+
+        //自动连接metamasks
         let autoConnect = this.$store.state.autoConnect;
         if (autoConnect) {
-            this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK); //自动连接metamasks
+            this.selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK);
         }
     }
 };

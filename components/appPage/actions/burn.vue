@@ -1944,11 +1944,6 @@ export default {
             this.actionTabs = "m3";
         },
 
-        //交易状态页面回调方法 回到主页
-        goHomePage() {
-            this.$store.commit("setCurrentAction", 0);
-        },
-
         //回到默认状态
         setDefaultTab() {
             this.actionTabs = "m0";

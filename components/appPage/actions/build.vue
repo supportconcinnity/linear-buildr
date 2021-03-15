@@ -1811,11 +1811,6 @@ export default {
             this.introductActionModal = true;
         },
 
-        //交易状态页面回调方法 回到主页
-        goHomePage() {
-            this.$store.commit("setCurrentAction", 0);
-        },
-
         //回到默认状态
         //Back to default page
         setDefaultTab() {

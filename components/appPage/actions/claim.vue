@@ -20,13 +20,8 @@
                                 <img
                                     v-if="feesAreClaimable"
                                     src="@/static/LINA_logo.svg"
-                                    
                                 />
-                                <img
-                                    v-else
-                                    src="@/static/LINA_gray_logo.svg"
-                                    
-                                />
+                                <img v-else src="@/static/LINA_gray_logo.svg" />
                                 <div class="title">Staking Rewards</div>
                                 <div class="amount">
                                     <span>{{ stakingRewards }}</span> LINA
@@ -37,13 +32,8 @@
                                 <img
                                     v-if="feesAreClaimable"
                                     src="@/static/currency/lUSD.svg"
-                                    
                                 />
-                                <img
-                                    v-else
-                                    src="@/static/LUSD_gray_logo.svg"
-                                    
-                                />
+                                <img v-else src="@/static/LUSD_gray_logo.svg" />
                                 <div class="title">Exchange Rewards</div>
                                 <div class="amount">
                                     <span>{{ tradingRewards }}</span> ℓUSD
@@ -61,13 +51,12 @@
                                         content="Reward can only be claimed when target ratio is reached."
                                         placement="top"
                                     >
-                                        <img src="@/static/info_white.svg"  />
+                                        <img src="@/static/info_white.svg" />
                                     </Tooltip>
 
                                     <img
                                         class="showInfoMobile"
                                         src="@/static/info_white.svg"
-                                        
                                         @click="showIntroductActionModal"
                                     />
                                 </div>
@@ -462,6 +451,7 @@ export default {
         //交易状态页面回调方法 回到主页
         goHomePage() {
             this.$store.commit("setCurrentAction", 0);
+            this.$router.push("/");
         },
 
         //回到默认状态

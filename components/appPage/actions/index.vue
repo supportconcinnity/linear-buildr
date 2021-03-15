@@ -193,6 +193,8 @@ import referralModal from "@/components/appPage/walletDetails/actions/referralMo
 import transactionModal from "@/components/appPage/walletDetails/actions/transactionModal";
 import trackModal from "@/components/appPage/walletDetails/actions/trackModal";
 
+import common from "@/config/common";
+
 export default {
     name: "actions",
     components: {
@@ -210,9 +212,9 @@ export default {
     data() {
         return {
             introductActionModal: false,
-            currentAction: this.$store.state.currentAction, //显示不同功能 0homePage 1build 2burn 3claim 4transfer 5swap
+            // currentAction: this.$store.state.currentAction,
             othersAction: 0, // 0没有 1track 2transaction 3referral
-            actions: ["Build", "Burn", "Claim", "Transfer", "Swap"],
+            actions: ["Build", "Burn", "Claim", "Transfer", "Swap"]
         };
     },
     created() {
@@ -250,15 +252,12 @@ export default {
         //});
     },
     watch: {
-        currentActionComputed(newVal, oldVal) {
-            this.currentAction = this.currentActionComputed;
-        },
-        isMobile() {}
+        isMobile() {},
+
+        //显示不同功能 0homePage 1build 2burn 3claim 4transfer 5swap
+        currentAction() {}
     },
     computed: {
-        currentActionComputed() {
-            return this.$store.state.currentAction;
-        },
         mMenuState() {
             return this.$store.state.mMenuState;
         },
@@ -269,6 +268,10 @@ export default {
 
         isTransaction() {
             return this.$store.state.isTransaction;
+        },
+
+        currentAction() {
+            return this.$store.state.currentAction;
         }
     },
     methods: {
@@ -277,20 +280,25 @@ export default {
         actionChange(action) {
             //正在交易中无法点击其他按钮
             if (!this.isTransaction) {
-                this.$store.commit("setCurrentAction", action);
-                // this.currentAction = action;
+                if (this.currentAction != action) {
+                    this.$store.commit("setCurrentAction", action);
+                    this.$router.push(common.SUBPAGE_OPTIONS_MAP[action]);
 
-                //关闭 referral transaction track 的 modal
-                this.$pub.publish("referralModalCloseEvent");
-                this.$pub.publish("transactionModalCloseEvent");
-                this.$pub.publish("trackModalCloseEvent");
+                    //关闭 referral transaction track 的 modal
+                    this.$pub.publish("referralModalCloseEvent");
+                    this.$pub.publish("transactionModalCloseEvent");
+                    this.$pub.publish("trackModalCloseEvent");
 
-                this.othersAction = 0;
+                    this.othersAction = 0;
 
-                this.$pub.publish("referralModalChange", false);
-                this.$pub.publish("transactionModalChange", false);
-                this.$pub.publish("trackModalChange", false);
-                this.$store.commit("setmMenuState", false);
+                    this.$pub.publish("referralModalChange", false);
+                    this.$pub.publish("transactionModalChange", false);
+                    this.$pub.publish("trackModalChange", false);
+                    this.$store.commit("setmMenuState", false);
+                } else {
+                    this.$store.commit("setCurrentAction", 0);
+                    this.$router.push("/");
+                }
             }
         },
 
