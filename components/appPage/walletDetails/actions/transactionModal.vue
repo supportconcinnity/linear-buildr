@@ -855,7 +855,7 @@ export default {
         toBuild() {
             this.transactionModal = false;
             this.$store.commit("setCurrentAction", 1);
-            this.$router.push("build");
+            this.$router.push("/build");
         },
         showFilterMenuMobileModal() {
             this.mobileFilters = _.cloneDeep(this.filters);

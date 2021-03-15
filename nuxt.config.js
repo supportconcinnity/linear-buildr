@@ -110,7 +110,11 @@ module.exports = {
         }
     },
     router: {
-        middleware: "i18n", // 引入全局多语言中间件
+        middleware: "i18n" // 引入全局多语言中间件
+    },
+    //静态部署添加动态路由子页
+    generate: {
+        routes: ["/build", "/burn", "/claim", "/transfer", "/swap"]
     },
     /*
      ** Build configuration

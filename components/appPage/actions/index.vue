@@ -282,7 +282,7 @@ export default {
             if (!this.isTransaction) {
                 if (this.currentAction != action) {
                     this.$store.commit("setCurrentAction", action);
-                    this.$router.push(common.SUBPAGE_OPTIONS_MAP[action]);
+                    this.$router.push("/" + common.SUBPAGE_OPTIONS_MAP[action]);
 
                     //关闭 referral transaction track 的 modal
                     this.$pub.publish("referralModalCloseEvent");
