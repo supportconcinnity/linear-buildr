@@ -1,1 +1,1 @@
-zip -q -r dist.zip ./dist/
+cd dist/ && zip -qr ../dist.zip ./*
