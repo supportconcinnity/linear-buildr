@@ -112,8 +112,11 @@ module.exports = {
     router: {
         middleware: "i18n" // 引入全局多语言中间件
     },
+    target: "static",
     //静态部署添加动态路由子页
     generate: {
+        //忽略页面
+        exclude: [/^\/demo/],
         routes: ["/build", "/burn", "/claim", "/transfer", "/swap"]
     },
     /*
@@ -121,8 +124,6 @@ module.exports = {
      */
     build: {
         postcss: {
-            // 添加插件名称作为键，参数作为值
-            // 使用npm或yarn安装它们
             preset: {
                 autoprefixer: true
             }
