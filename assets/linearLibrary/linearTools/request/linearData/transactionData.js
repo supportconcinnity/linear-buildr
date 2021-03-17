@@ -362,6 +362,177 @@ module.exports = {
                 )
                 .catch(err => console.error(err));
         },
+        userPositionMarked({
+            max = maxRequest,
+            account = undefined,
+            networkId = $nuxt.$store.state?.walletNetworkId
+        } = {}) {
+            return pageResults({
+                api: graphAPIEndpoints[networkId],
+                max,
+                query: {
+                    entity: "userPositionMarkeds",
+                    selection: {
+                        orderBy: "timestamp",
+                        orderDirection: "desc",
+                        where: {
+                            user: account ? `\\"${account}\\"` : undefined
+                        }
+                    },
+                    properties: [
+                        "user",
+                        "markertimestamp",
+                        "positionMarkedState",
+                    ]
+                }
+            })
+                .then(results =>
+                    results.map(
+                        ({
+                            user,
+                            markertimestamp,
+                            positionMarkedState,
+                        }) => ({
+                            account:user,
+                            timestamp: Number(markertimestamp * 1000),
+                            state: positionMarkedState == 1? true : false,
+                        })
+                    )
+                )
+                .catch(err => console.error(err));
+        },
+        positionLiquidated({
+            max = maxRequest,
+            account = undefined,
+            networkId = $nuxt.$store.state?.walletNetworkId
+        } = {}) {
+            return pageResults({
+                api: graphAPIEndpoints[networkId],
+                max,
+                query: {
+                    entity: "positionLiquidateds",
+                    selection: {
+                        orderBy: "timestamp",
+                        orderDirection: "desc",
+                        where: {
+                            user: account ? `\\"${account}\\"` : undefined
+                        }
+                    },
+                    properties: [
+                        "user",
+                        "collateralWithdrawnFromStaked",
+                        "collateralWithdrawnFromLocked",
+                        "timestamp",
+                    ]
+                }
+            })
+                .then(results =>
+                    results.map(
+                        ({
+                            user,
+                            collateralWithdrawnFromStaked,
+                            collateralWithdrawnFromLocked,
+                            timestamp,
+                        }) => ({
+                            account:user,
+                            stakedValue:bn2n(BigNumber.from(collateralWithdrawnFromStaked)),
+                            lockedValue:bn2n(BigNumber.from(collateralWithdrawnFromLocked)),
+                            timestamp: Number(timestamp * 1000),
+                        })
+                    )
+                )
+                .catch(err => console.error(err));
+        },
+        liquidatedStakedCollateral({
+            max = maxRequest,
+            account = undefined,
+            networkId = $nuxt.$store.state?.walletNetworkId
+        } = {}) {
+            return pageResults({
+                api: graphAPIEndpoints[networkId],
+                max,
+                query: {
+                    entity: "liquidatedStakedCollaterals",
+                    selection: {
+                        orderBy: "timestamp",
+                        orderDirection: "desc",
+                        where: {
+                            user: account ? `\\"${account}\\"` : undefined
+                        }
+                    },
+                    properties: [
+                        "id",
+                        "user",
+                        "amount",
+                        "timestamp",
+                        "currency",
+                    ]
+                }
+            })
+                .then(results =>
+                    results.map(
+                        ({
+                            id,
+                            user,
+                            amount,
+                            timestamp,
+                            currency
+                        }) => ({
+                            hash: id.split("-")[0],
+                            account : user,
+                            timestamp: Number(timestamp * 1000),
+                            amount: bn2n(BigNumber.from(amount)),
+                            source: currency,
+                        })
+                    )
+                )
+                .catch(err => console.error(err));
+        },
+        liquidatedLockedCollateral({
+            max = maxRequest,
+            account = undefined,
+            networkId = $nuxt.$store.state?.walletNetworkId
+        } = {}) {
+            return pageResults({
+                api: graphAPIEndpoints[networkId],
+                max,
+                query: {
+                    entity: "liquidatedLockedCollaterals",
+                    selection: {
+                        orderBy: "timestamp",
+                        orderDirection: "desc",
+                        where: {
+                            user: account ? `\\"${account}\\"` : undefined
+                        }
+                    },
+                    properties: [
+                        "id",
+                        "user",
+                        "amount",
+                        "timestamp",
+                        "currency",
+                    ]
+                }
+            })
+                .then(results =>
+                    results.map(
+                        ({
+                            id,
+                            user,
+                            amount,
+                            timestamp,
+                            currency
+                        }) => ({
+                            hash: id.split("-")[0],
+                            account : user,
+                            timestamp: Number(timestamp * 1000),
+                            amount: bn2n(BigNumber.from(amount)),
+                            source: currency,
+                        })
+                    )
+                )
+                .catch(err => console.error(err));
+        },
         referral({
             to = undefined,
             max = maxRequest,
@@ -692,6 +863,6 @@ module.exports = {
                     )
                 )
                 .catch(err => console.error(err));
-        }
+        },
     }
 };
