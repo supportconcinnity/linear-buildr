@@ -94,3 +94,4 @@ sw.*
 .env.*
 .editorconfig
 package-lock.json
+yarn.lock

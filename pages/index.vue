@@ -1,6 +1,7 @@
 <template>
     <div id="mainPage">
-        <div class="container">
+        <maintenance v-if="enableMaintenance" />
+        <div v-else class="container">
             <landingPage v-if="!walletAddress"></landingPage>
             <appPage v-else></appPage>
         </div>
@@ -12,11 +13,13 @@ import _ from "lodash";
 import landingPage from "@/components/landingPage";
 import appPage from "@/components/appPage";
 import common from "@/config/common";
+import maintenance from "@/components/maintenance";
 
 export default {
     components: {
         landingPage,
-        appPage
+        appPage,
+        maintenance
     },
     name: "mainPage",
     validate({ params, query, store, redirect }) {
@@ -25,7 +28,10 @@ export default {
          */
         if (params.sub) {
             if (common.SUBPAGE_OPTIONS[params.sub]) {
-                store.commit("setCurrentAction",common.SUBPAGE_OPTIONS[params.sub]);
+                store.commit(
+                    "setCurrentAction",
+                    common.SUBPAGE_OPTIONS[params.sub]
+                );
             } else {
                 return false;
             }
@@ -42,7 +48,9 @@ export default {
                 height: 0
             },
             mobileWidth: 414, //移动端布局
-            isMobile: window.innerWidth <= 414
+            isMobile: window.innerWidth <= 414,
+
+            enableMaintenance: process.env.ENABLE_MAINTENANCE === "TRUE"
         };
     },
     watch: {
