@@ -73,6 +73,16 @@
         return await this.contract.migrateRewards(users, amounts, unlockTimes, txParams);
       };
     
+      this.moveReward = async (from, recipient, amount, rewardEntryIds, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.moveReward(from, recipient, amount, rewardEntryIds, txParams);
+      };
+    
+      this.moveRewardProRata = async (from, recipient1, amount1, recipient2, amount2, rewardEntryIds, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.moveRewardProRata(from, recipient1, amount1, recipient2, amount2, rewardEntryIds, txParams);
+      };
+    
       this.rewardEntries = async (uint256_1, address_1, txParams) => {
         txParams = txParams || {};
         return await this.contract.rewardEntries(uint256_1, address_1, txParams);
