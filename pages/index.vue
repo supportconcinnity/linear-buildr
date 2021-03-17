@@ -1,6 +1,7 @@
 <template>
     <div id="mainPage">
-        <div class="container">
+        <maintenance v-if="enableMaintenance" />
+        <div v-else class="container">
             <landingPage v-if="!walletAddress"></landingPage>
             <appPage v-else></appPage>
         </div>
@@ -11,11 +12,13 @@
 import _ from "lodash";
 import landingPage from "@/components/landingPage";
 import appPage from "@/components/appPage";
+import maintenance from "@/components/maintenance";
 
 export default {
     components: {
         landingPage,
         appPage,
+        maintenance
     },
     name: "mainPage",
     data() {
@@ -26,6 +29,8 @@ export default {
             },
             mobileWidth: 414, //移动端布局
             isMobile: window.innerWidth <= 414,
+
+            enableMaintenance: process.env.ENABLE_MAINTENANCE === "TRUE"
         };
     },
     watch: {

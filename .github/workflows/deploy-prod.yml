@@ -37,6 +37,7 @@ jobs:
           echo "TOKEN_BRIDGE_MAINNET=\"${{ secrets.BUILD_TOKEN_BRIDGE_MAINNET }}\"" >> ./.env.production
           echo "TOKEN_BRIDGE_TESTNET=\"${{ secrets.BUILD_TOKEN_BRIDGE_TESTNET }}\"" >> ./.env.production
           echo "BACKEND_API=\"${{ secrets.BUILD_BACKEND_API }}\"" >> ./.env.production
+          echo "ENABLE_MAINTENANCE=\"${{ secrets.BUILD_ENABLE_MAINTENANCE }}\"" >> ./.env.production
           yarn generate
 
       - name: Clone Workers Site Template

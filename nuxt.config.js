@@ -5,7 +5,7 @@ require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` }); //读取差�
 module.exports = {
     ssr: false,
     env: {
-        baseUrl: process.env.BASE_URL
+        baseUrl: process.env.BACKEND_API
     },
     server: {
         port: process.env.SERVER_PORT,
@@ -99,7 +99,7 @@ module.exports = {
     proxy: {
         //匹配名称
         "/buildr_api/": {
-            target: process.env.BASE_URL, //代理地址
+            target: process.env.BACKEND_API, //代理地址
             pathRewrite: {
                 "^/buildr_api/": "/", //将前缀替换成 /
                 changeOrigin: true, //标识跨域
@@ -112,15 +112,19 @@ module.exports = {
     router: {
         middleware: "i18n" // 引入全局多语言中间件
     },
+    target: "static",
+    //静态部署添加动态路由子页
+    generate: {
+        //忽略页面
+        exclude: [/^\/demo/]
+    },
     /*
      ** Build configuration
      */
     build: {
         postcss: {
-            // 添加插件名称作为键，参数作为值
-            // 使用npm或yarn安装它们
             preset: {
-              autoprefixer: true
+                autoprefixer: true
             }
         },
 
