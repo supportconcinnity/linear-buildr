@@ -116,7 +116,8 @@ module.exports = {
     //静态部署添加动态路由子页
     generate: {
         //忽略页面
-        exclude: [/^\/demo/]
+        exclude: [/^\/demo/],
+        routes: ["/build", "/burn", "/claim", "/transfer", "/swap"]
     },
     /*
      ** Build configuration

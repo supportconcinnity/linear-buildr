@@ -155,6 +155,7 @@ import {
     bufferGasLimit,
     DEFAULT_GAS_LIMIT,
     isBinanceNetwork,
+    isEthDevNetwork,
     isEthereumNetwork,
     isMainnetNetwork
 } from "@/assets/linearLibrary/linearTools/network";
@@ -187,8 +188,7 @@ export default {
         };
     },
     created() {
-        // this.countDown();
-        this.useGetFeeData(this.walletAddress);
+        !this.isEthDevNetwork && this.useGetFeeData(this.walletAddress);
     },
     watch: {
         walletAddress() {},
@@ -204,6 +204,10 @@ export default {
 
         isBinanceNetwork() {
             return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        isEthDevNetwork() {
+            return isEthDevNetwork(this.walletNetworkId);
         },
 
         walletNetworkName() {
@@ -472,6 +476,7 @@ export default {
         //交易状态页面回调方法 回到主页
         goHomePage() {
             this.$store.commit("setCurrentAction", 0);
+            this.$router.push("/");
         },
 
         //回到默认状态
@@ -481,7 +486,8 @@ export default {
             this.confirmTransactionStep = 0;
             this.waitProcessArray = [];
 
-            setTimeout(this.useGetFeeData(this.walletAddress), 5000);
+            !this.isEthDevNetwork &&
+                setTimeout(this.useGetFeeData(this.walletAddress), 5000);
         },
 
         //重试

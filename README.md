@@ -24,7 +24,7 @@ Depends on your environment, create the corrsponding files ".env.development" or
 ```sh
 NODE_ENV="development or production"
 SERVER_PORT="6111"
-BASE_URL=""
+BACKEND_API=""
 INFURA_PROJECT_ID=""
 ETHERSCAN_KEY=""
 BSCSCAN_KEY=""

@@ -810,6 +810,7 @@ export default {
             //build,swap
             if (![1, 5].includes(currentAction) || forceAction) {
                 this.$store.commit("setCurrentAction", 0);
+                this.$router.push("/");
             }
         },
         mShowMenuFun() {

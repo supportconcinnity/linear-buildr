@@ -65,6 +65,7 @@ export default {
                 openBuyLINA();
             } else {
                 this.$store.commit("setCurrentAction", 1);
+                this.$router.push("/build")
             }
         }
     }

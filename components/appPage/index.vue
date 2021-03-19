@@ -70,6 +70,7 @@ export default {
     methods: {
         jumoToSwap() {
             this.$store.commit("setCurrentAction", 5);
+            this.$router.push('/swap')
             this.$store.commit("setSwapUnfreezeContinue", true);
             this.hasUnfreeze = false;
         },
