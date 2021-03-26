@@ -188,6 +188,11 @@ const currencies = {
         name: "ℓDOGE",
         fullName: "Doge Coin",
         type: "crypto"
+    },
+    lVET: {
+        name: "ℓVET",
+        fullName: "Vechain",
+        type: "crypto",
     }
 };
 
