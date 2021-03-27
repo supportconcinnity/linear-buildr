@@ -187,8 +187,8 @@ export const DEFAULT_GAS_LIMIT = {
     unstake: 500000,
     claim: 140000,
     exchange: 22000,
-    freeze: 250000,
-    unfreeze: 250000
+    freeze: 200000,
+    unfreeze: 200000
 };
 
 /**
