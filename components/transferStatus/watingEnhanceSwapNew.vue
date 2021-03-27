@@ -873,6 +873,10 @@ export default {
                 //记录原始钱包地址
                 this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
 
+                //单钱包连接
+                this.targetWalletAddress = this.walletAddress;
+                this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+
                 if (currentStep < 1) {
                     await this.checkSounrceBalance();
                     if (this.checkStatus.stepType != -1) return;
@@ -886,9 +890,7 @@ export default {
                 // }
                 // this.checkStatus.stepIndex++;
 
-                //单钱包连接
-                this.targetWalletAddress = this.walletAddress;
-                this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+                
 
                 if (currentStep < 2) {
                     //不是测试链,检查目标网络钱包余额
@@ -1909,12 +1911,6 @@ export default {
         //获取冻结手续费
         async getFreezeFee() {
             let LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-            if (isEthereumNetwork(this.walletNetworkId)) {
-                // LnBridge = lnrJSConnector.lnrJS.LnErc20Bridge;
-            } else if (isBinanceNetwork(this.walletNetworkId)) {
-                // LnBridge = lnrJSConnector.lnrJS.LnBep20Bridge;
-            }
-
             const gasLimit = await this.getGasEstimateFromFreeze(
                 LnBridge,
                 n2bn(this.swapNumber)
