@@ -515,9 +515,9 @@ export default {
 
             //真实操作数据
             actionData: {
-                stake: BigNumber.from("0"),
-                amount: BigNumber.from("0"),
-                needApprove: BigNumber.from("0"),
+                stake: n2bn("0"),
+                amount: n2bn("0"),
+                needApprove: n2bn("0"),
                 ratio: 0
             },
 
@@ -615,9 +615,9 @@ export default {
                         ratio: 0
                     };
                     this.actionData = {
-                        stake: BigNumber.from("0"),
-                        amount: BigNumber.from("0"),
-                        needApprove: BigNumber.from("0"),
+                        stake: n2bn("0"),
+                        amount: n2bn("0"),
+                        needApprove: n2bn("0"),
                         ratio: 0
                     };
                     await this.getBuildData(this.walletAddress);
@@ -714,7 +714,7 @@ export default {
                         totalCollateralInUsd
                     ] = results.map(formatEtherToNumber);
 
-                    let currentRatioPercent = BigNumber.from("0");
+                    let currentRatioPercent = n2bn("0");
 
                     if (results[6].gt("0") && results[4][0].gt("0")) {
                         currentRatioPercent = bnMul(
@@ -787,7 +787,7 @@ export default {
                 if (this.isEthDevNetwork) {
                     this.inputData.stake = this.buildData.LINA;
                 } else {
-                    let allCanBuildLUSDAfterStakeAll = BigNumber.from("0");
+                    let allCanBuildLUSDAfterStakeAll = n2bn("0");
 
                     //抵押所有lina后能生成多少lUSD
                     allCanBuildLUSDAfterStakeAll = bnDiv(
@@ -815,7 +815,7 @@ export default {
 
                     //需要approve
                     if (
-                        this.buildData.LINABN.gt(BigNumber.from("0")) &&
+                        this.buildData.LINABN.gt(n2bn("0")) &&
                         this.buildData.LINABN.gt(this.buildData.approvedBN)
                     ) {
                         this.actionData.needApprove = n2bn("10000000000");
@@ -837,7 +837,7 @@ export default {
                         allCanBuildLUSDAfterStakeAll,
                         this.buildData.debtBN
                     );
-                    this.actionData.ratio = BigNumber.from("500");
+                    this.actionData.ratio = n2bn("500");
 
                     this.adjustMinStake();
                 }
@@ -857,7 +857,7 @@ export default {
                 if (this.isEthDevNetwork) {
                     this.inputData.stake = this.buildData.LINA;
                 } else {
-                    if (this.buildData.debtBN.eq(BigNumber.from("0"))) {
+                    if (this.buildData.debtBN.eq(n2bn("0"))) {
                         this.errors.ratioMsg = "You don't have build ℓUSD.";
                         return;
                     }
@@ -892,14 +892,14 @@ export default {
                             ) - this.toleranceDifference; //增加容错
                         this.inputData.ratio = 500;
 
-                        this.actionData.stake = BigNumber.from("0");
+                        this.actionData.stake = n2bn("0");
                         this.actionData.amount = bnSub(
                             bnSub(stakeAndLockToLUSD, this.buildData.debtBN),
                             n2bn(this.toleranceDifference.toString())
                         ); //增加容错
 
                         // console.log(this.actionData.amount,'this.actionData.amount ');
-                        this.actionData.ratio = BigNumber.from("500");
+                        this.actionData.ratio = n2bn("500");
                     } else if (
                         this.buildData.currentRatioBN.lt(
                             n2bn(this.buildData.targetRatio.toString())
@@ -947,8 +947,8 @@ export default {
                         this.inputData.ratio = 500;
 
                         this.actionData.stake = newStakeAmount;
-                        this.actionData.amount = BigNumber.from("0");
-                        this.actionData.ratio = BigNumber.from("500");
+                        this.actionData.amount = n2bn("0");
+                        this.actionData.ratio = n2bn("500");
                     }
 
                     this.adjustMinStake();
@@ -998,9 +998,9 @@ export default {
                         this.buildData.debtBN
                     );
 
-                    if (canBuildAfterStake.lt(BigNumber.from("0"))) {
+                    if (canBuildAfterStake.lt(n2bn("0"))) {
                         this.inputData.amount = 0;
-                        this.actionData.amount = BigNumber.from("0");
+                        this.actionData.amount = n2bn("0");
                     } else {
                         this.inputData.amount = formatEtherToNumber(
                             canBuildAfterStake
@@ -1079,8 +1079,8 @@ export default {
                     );
 
                     //抵押所有lina也无法生成lusd
-                    if (canBuildAfterStakeAll.lt(BigNumber.from("0"))) {
-                        canBuildAfterStakeAll = BigNumber.from("0");
+                    if (canBuildAfterStakeAll.lt(n2bn("0"))) {
+                        canBuildAfterStakeAll = n2bn("0");
                     }
 
                     //输入lusd超过最大可build数量
@@ -1132,7 +1132,7 @@ export default {
 
                         //需要approve
                         if (
-                            needStakeAmount.gt(BigNumber.from("0")) &&
+                            needStakeAmount.gt(n2bn("0")) &&
                             needStakeAmount.gt(this.buildData.approvedBN)
                         ) {
                             this.actionData.needApprove = n2bn("10000000000");
@@ -1234,7 +1234,7 @@ export default {
                         return;
                     }
 
-                    let maxRatioAfterStakeMax = BigNumber.from("0");
+                    let maxRatioAfterStakeMax = n2bn("0");
 
                     maxRatioAfterStakeMax = bnMul(
                         bnDiv(
@@ -1284,7 +1284,7 @@ export default {
 
                         //需要approve
                         if (
-                            needStake.gt(BigNumber.from("0")) &&
+                            needStake.gt(n2bn("0")) &&
                             needStake.gt(this.buildData.approvedBN)
                         ) {
                             this.actionData.needApprove = n2bn("10000000000");
@@ -1294,10 +1294,10 @@ export default {
                         this.actionData.stake = needStake;
 
                         this.inputData.amount = 0;
-                        this.actionData.amount = BigNumber.from("0");
+                        this.actionData.amount = n2bn("0");
 
                         this.inputData.ratio = ratioAmount;
-                        this.actionData.ratio = BigNumber.from(
+                        this.actionData.ratio = n2bn(
                             ratioAmount.toString()
                         );
                     } else if (
@@ -1324,7 +1324,7 @@ export default {
                         );
 
                         this.inputData.stake = 0;
-                        this.actionData.stake = BigNumber.from("0");
+                        this.actionData.stake = n2bn("0");
 
                         this.inputData.amount = formatEtherToNumber(
                             needBuildAmount
@@ -1332,7 +1332,7 @@ export default {
                         this.actionData.amount = needBuildAmount;
 
                         this.inputData.ratio = ratioAmount;
-                        this.actionData.ratio = BigNumber.from(
+                        this.actionData.ratio = n2bn(
                             ratioAmount.toString()
                         );
                     }
@@ -1839,10 +1839,10 @@ export default {
 
             //真实操作数据
             this.actionData = {
-                stake: BigNumber.from("0"),
-                amount: BigNumber.from("0"),
-                needApprove: BigNumber.from("0"),
-                ratio: BigNumber.from("0")
+                stake: n2bn("0"),
+                amount: n2bn("0"),
+                needApprove: n2bn("0"),
+                ratio: n2bn("0")
             };
         },
 
