@@ -29,6 +29,8 @@ export const state = () => ({
     isMobile: false, //是否移动端
     registeredMetamaskWalletEvents: false, //是否已经注册metamask钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
     registeredBinanceWalletEvents: false, //是否已经注册binance钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
+    registeredWalletConnectEvents: false, //是否已经注册WalletConnect协议回调事件(onWalletConnectAccountChange和onWalletConnectChainChange)
+    walletConnect:{uri:"https://www.investopedia.com/terms/q/quick-response-qr-code.asp",qrcode: false}, // wallet conncect 的 uri连接，在还没生成的时候用教程顶替 , qrcode 为是否显示二维码用
     swapUnfreezeDatas: {}, //swap等待解冻所需数据,用于页面强制刷新后重载swap逻辑
     swapUnfreezeContinue: false, //用于判断用户是否点击了继续swap
     isTransaction: false, // 是否在交易页面
@@ -120,6 +122,10 @@ export const mutations = {
         state.registeredBinanceWalletEvents = status;
     },
 
+    setRegisteredWalletConnectEvents(state, status) {
+        state.registeredWalletConnectEvents = status;
+    },
+
     setSwapUnfreezeDatas(state, datas) {
         state.swapUnfreezeDatas = datas;
     },
@@ -134,6 +140,10 @@ export const mutations = {
 
     setAutoConnect(state, status) {
         state.autoConnect = status;
+    },
+
+    setWalletConnect(state, data) {
+        state.walletConnect = { ...state.walletConnect, ...data };
     }
 };
 

@@ -360,5 +360,23 @@ export function onBinanceChainChange(cb) {
     window.BinanceChain.on("chainChanged", listener);
 }
 
+export function onWalletConnectAccountChange(provider,cb) {
+    if (!provider) return;
+    const listener = _.throttle(cb, 2000);
+    provider.on("accountsChanged", listener);
+}
+
+export function onWalletConnectChainChange(provider,cb) {
+    if (!provider) return;
+    const listener = _.throttle(cb, 2000);
+    provider.on("chainChanged", listener);
+}
+
+export function onWalletConnectDisconnect(provider,cb) {
+    if (!provider) return;
+    const listener = _.throttle(cb, 2000);
+    provider.on("disconnect", listener);
+}
+
 export const bufferGasLimit = gasLimit =>
     Math.round(Number(gasLimit) * (1 + GAS_LIMIT_BUFFER));

@@ -818,9 +818,15 @@ export default {
         },
 
         //断开连接
-        disconnect() {
+        async disconnect() {
             // this.$store.commit("setWallet", "");
             this.$store.commit("setAutoConnect", false);
+            let registeredWalletConnectEvents =
+                $nuxt.$store.state?.registeredWalletConnectEvents;
+            if(registeredWalletConnectEvents){
+                await lnrJSConnector.signer.provider.provider.disconnect();
+                this.$store.commit("setRegisteredWalletConnectEvents", false);
+            }
             location.reload();
         }
     }

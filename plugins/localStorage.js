@@ -22,6 +22,7 @@ export default ({ store }) => {
                 theme: state.theme,
                 locale: state.locale,
                 autoConnect: state.autoConnect,
+                walletType: state.walletType,
                 swapUnfreezeDatas: state.swapUnfreezeDatas
             };
         }
