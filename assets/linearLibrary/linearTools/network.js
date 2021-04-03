@@ -68,6 +68,12 @@ const DEV_RELATIVE_NETWORKS = {
     10056: "BSCDEV"
 };
 
+//有liquidation的网络
+export const LIQUIDATION_NETWORKS = {
+    56: "BSCMAINNET",
+    10056: "BSCDEV"
+};
+
 export const isEthereumNetwork = walletNetworkId => {
     return ETHEREUM_NETWORKS.hasOwnProperty(walletNetworkId);
 };

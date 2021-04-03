@@ -117,7 +117,7 @@ module.exports = {
     generate: {
         //忽略页面
         exclude: [/^\/demo/],
-        routes: ["/build", "/burn", "/claim", "/transfer", "/swap"]
+        routes: ["/build", "/burn", "/claim", "/transfer", "/swap", "/referral", "/transaction", "/track"]
     },
     /*
      ** Build configuration

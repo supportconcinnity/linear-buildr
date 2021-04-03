@@ -4,7 +4,8 @@ import { SUPPORTED_NETWORKS } from "@/assets/linearLibrary/linearTools/network";
 export const state = () => ({
     locale: "en", //默认语言
     theme: "light", //默认主题,light或dark
-    currentAction: 0, //应用页面跳转控制 1build 2burn 3claim 4transfer
+    currentAction: 0, //应用页面跳转控制 1build 2burn 3claim 4transfer 5swap
+    walletDetailsActionURL: '', //如果url参数有 referral transaction track，则先打开
     gasDetails: { price: 0, type: NETWORK_SPEEDS_TO_KEY.MEDIUM, status: -1 }, //gas设置详情,-1未初始化,1已初始化
     sourceGasDetails: {
         price: 0,
@@ -18,6 +19,10 @@ export const state = () => ({
         status: -1,
         networkId: ""
     }, //swap gas设置详情,-1未初始化,1已初始化
+    liquidationStatus: {
+        status: false,
+        timestamp: 0,
+    },
     wallet: { address: "", status: -1 }, //钱包 address=钱包地址,status:-1=未初始化数据,0:更新中,1更新完成,2更新失败,
     walletDetails: {}, //钱包详情
     walletDetailsLoopRefreshStatus: true,
@@ -60,6 +65,10 @@ export const mutations = {
         state.targetGasDetails = { ...gasDetails };
     },
 
+    setLiquidationStatus(state, data) {
+        state.liquidationStatus = { ...data };
+    },
+
     // setCurrentBlockChain(state, blockChain) {
     //     state.currentGraphApi = blockChain;
     // },
@@ -70,6 +79,10 @@ export const mutations = {
 
     setCurrentAction(state, data) {
         state.currentAction = data;
+    },
+    
+    setWalletDetailsActionURL(state, data) {
+        state.walletDetailsActionURL = data;
     },
 
     setWalletType(state, value) {
