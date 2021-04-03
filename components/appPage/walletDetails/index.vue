@@ -256,6 +256,45 @@
                 </div>
             </div>
             <div class="ratioBox">
+                <div class="currentRatio" :class="{inLiquidation:liquidationStatus.status}">
+                    {{
+                        walletDetails.amountDebtBeforeFormat < 0.01
+                            ? 0
+                            : walletDetails.currentRatioPercent || 0
+                    }}
+                </div>
+                <div class="countDown" v-if="liquidationStatus.status">Liquidating in {{liquidationCountDown}}</div>
+                <div class="context">
+                    My Current Pledge Ratio
+                    <Tooltip
+                        max-width="200"
+                        class="globalInfoStyle"
+                        content="Target ratio is the minimum threshold that needs to be maintained to claim rewards or unlock collateral."
+                        placement="bottom"
+                        offset="0 6"
+                    >
+                        <img src="@/static/info_white.svg" />
+                    </Tooltip>
+                </div>
+                <div class="percentBox">
+                    <div class="cursorBox">
+                        <div class="cursor" :style="{left:cursorPosition+'%!important', marginLeft:cursorPosition>2?'-6px!important':'0px!important'}"></div>
+                    </div>
+                    <div class="scale200"></div>
+                    <div class="scale500"></div>
+                    <div class="colorBlock">
+                        <div class="leftBlock"></div>
+                        <div class="centerBlock"></div>
+                        <div class="rightBlock"></div>
+                    </div>
+                    <div class="flag">
+                        <div class="item">Liqidate: 200</div>
+                        <div class="item">Target: 500</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="ratioBox">
                 <div class="title">
                     Pledge Ratio
                     <Tooltip
@@ -298,7 +337,7 @@
                     :stroke-width="8"
                     hide-info
                 />
-            </div>
+            </div> -->
             <div class="walletInfo">
                 <div class="title">Wallet Balance</div>
                 <div class=" tokenBox">
@@ -559,7 +598,8 @@ import {
     CHAIN_CHANGE_TYPE,
     isBinanceNetwork,
     isEthereumNetwork,
-    SUPPORTED_WALLETS_MAP
+    SUPPORTED_WALLETS_MAP,
+    LIQUIDATION_NETWORKS
 } from "@/assets/linearLibrary/linearTools/network";
 import lnrJSConnector, {
     selectedWallet
@@ -567,6 +607,7 @@ import lnrJSConnector, {
 import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
 import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";
+import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 
 export default {
     name: "walletDetails",
@@ -590,6 +631,11 @@ export default {
 
             refreshSelected: false,
 
+            cursorPosition: 0,
+
+            liquidationCountDown: '',
+            liquidationCountDownId: 0,
+
             //移动端 显示钱包状态
             mShowWallet: false
         };
@@ -603,7 +649,8 @@ export default {
         walletStatus() {},
         walletAddress() {},
         abbreviateAddress() {},
-        walletDetails() {},
+        walletDetails(data) {
+        },
         isEthereumNetwork() {},
         isBinanceNetwork() {},
         walletNetworkId() {},
@@ -638,10 +685,18 @@ export default {
         walletAddress() {
             return this.$store.state?.wallet?.address;
         },
+        liquidationStatus() {
+            return this.$store.state?.liquidationStatus;
+        },
         abbreviateAddress() {
             return abbreviateAddress(this.walletAddress);
         },
         walletDetails() {
+            if (this.$store.state?.walletDetails.currentRatioPercent > 700) {
+                this.cursorPosition = 98;
+            } else {
+                this.cursorPosition = (this.$store.state?.walletDetails.currentRatioPercent / 700) * 100;
+            }
             return _.clone(this.$store.state?.walletDetails);
         },
         //当前抵押率占目标抵押率的百分比
@@ -676,7 +731,6 @@ export default {
         this.$pub.subscribe("onWalletAccountChange", (msg, params) => {
             this.walletStatusChange(true);
         });
-
         //订阅链改变事件
         this.$pub.subscribe("onWalletChainChange", (msg, params) => {
             this.walletStatusChange();
@@ -690,8 +744,79 @@ export default {
         // 测试用,无用时删除
         // _.delay(this.trackModalClick, 500)
         // 测试用,无用时删除
+
+        this.checkLiquidation();
+
+        //根据url参数判断是否打开track transaction referral
+        if (this.$store.state?.walletDetailsActionURL) {
+            switch(this.$store.state?.walletDetailsActionURL) {
+                case 'referral':
+                    this.referStatus = true;
+                    this.$pub.publish("referralModalChange", true);
+                    break;
+                case 'transaction':
+                    this.transactionStatus = true;
+                    this.$pub.publish("transactionModalChange", true);
+                    break;
+                case 'track':
+                    this.trackStatus = true;
+                    this.$pub.publish("trackModalChange", true);
+                    break;
+            }
+
+            this.$store.commit("setWalletDetailsActionURL", '');
+        }
     },
     methods: {
+        async checkLiquidation() {
+            try {
+                clearInterval(this.liquidationCountDownId);
+
+                //如果是bsc main/bsc(私链)则检查liquidation
+                if (LIQUIDATION_NETWORKS[this.walletNetworkId] !== undefined) {
+                    let liquidationStatus = await lnr.userPositionMarked({ account: this.walletAddress });
+
+                    if (liquidationStatus.length > 0 && liquidationStatus[0].state) { //已标记
+                        this.$store.commit("setLiquidationStatus", {
+                            status: liquidationStatus[0].state,
+                            timestamp: liquidationStatus[0].timestamp / 1000
+                        });
+
+                        this.liquidationCal();
+                        this.liquidationCountDownId = setInterval(this.liquidationCal, 60000);    
+                    } else { //未标记要清除
+                        this.$store.commit("setLiquidationStatus", {
+                            status: false,
+                            timestamp: 0
+                        });
+                    }
+                }
+            } catch(e) {
+                console.log(e, "wallet details check liquidation err");
+            }
+        },
+
+        //liquidated清算倒计时
+        liquidationCal() {
+            let currentTimstamp = Math.round(new Date() / 1000);
+            let liquidationWindow = (this.$store.state?.liquidationStatus.timestamp + 259200) - currentTimstamp;
+
+            if (liquidationWindow < 0) {//已经过了三天窗口
+                clearInterval(this.liquidationCountDownId);
+                this.liquidationCountDown = '0h 0m';
+                return;
+            }
+
+            let liquidationWindowHour = _.floor(liquidationWindow / 3600);
+            let liquidationWindowMinute = _.floor((liquidationWindow % 3600) / 60);
+
+            if (liquidationWindowHour != 0) {
+                this.liquidationCountDown = liquidationWindowHour + 'h ' + liquidationWindowMinute + 'm';
+            } else {
+                this.liquidationCountDown = liquidationWindowMinute + 'm';
+            }
+        },
+
         //测试复制文字
         copyAddress() {
             var that = this;
@@ -806,6 +931,8 @@ export default {
             this.$pub.publish("trackModalChange", this.trackStatus);
 
             const currentAction = this.$store.state?.currentAction;
+
+            this.checkLiquidation();
 
             //build,swap
             if (![1, 5].includes(currentAction) || forceAction) {
@@ -1056,6 +1183,118 @@ export default {
             border-top: solid 1px #e5e5e5;
             border-bottom: solid 1px #e5e5e5;
             padding: 24px 0;
+
+            .currentRatio {
+                font-family: Gilroy-Bold;
+                font-size: 32px;
+                text-align: center;
+                color: #5a575c;
+
+                &.inLiquidation {
+                    color: #df434c;
+                }
+            }
+
+            .countDown {
+                font-family: Gilroy-Bold;
+                font-size: 12px;
+                text-align: center;
+                color: #df434c;
+            }
+
+            .context {
+                font-family: Gilroy-Bold;
+                font-size: 14px;
+                text-align: center;
+                color: #5a575c;
+
+                img {
+                    margin-top: -3px;
+                }
+            }
+
+            .percentBox {
+                position: relative;
+
+                .cursorBox {
+                    .cursor {
+                        width: 0;
+                        height: 0;
+                        position: relative;
+                        margin-bottom: -3px;
+                        border: 6px solid;
+                        border-color: black transparent transparent;
+                    }
+                }
+
+                .scale200, .scale500 {
+                    width: 1px;
+                    height: 24px;
+                    background-color: #5a575c;
+                    position: absolute;
+                }
+
+                .scale200 {
+                    left: 28.6%;
+                }
+
+                .scale500 {
+                    left: 71.4%;
+                }
+
+                .colorBlock {
+                    width: 100%;
+                    display: flex;
+
+                    .leftBlock {
+                        width: 28.6%;
+                        height: 16px;
+                        border-bottom-left-radius: 100px;
+                        border-top-left-radius: 100px;
+                        background-color: #df434c;
+                    }
+
+                    .centerBlock {
+                        width: 42.8%;
+                        height: 16px;
+                        background-color: #ffc941;
+                    }
+
+                    .rightBlock {
+                        width: 28.6%;
+                        height: 16px;
+                        border-bottom-right-radius: 100px;
+                        border-top-right-radius: 100px;
+                        background-color: #7eb5ff;
+                    }
+                }
+
+                .flag {
+                    display: flex;
+                    margin-top: 6px;
+
+                    .item {
+                        font-family: Gilroy;
+                        font-size: 10px;
+                        text-align: center;
+                        color: #99999a;
+
+                        &:first-child {
+                            margin-left: 69px;
+                        }
+                        &:last-child {
+                            margin-left: 92px;
+                        }
+                    }
+                }
+            }
+        }
+
+        /*.ratioBox {
+            margin: 16px 0 24px;
+            border-top: solid 1px #e5e5e5;
+            border-bottom: solid 1px #e5e5e5;
+            padding: 24px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1125,7 +1364,7 @@ export default {
                     }
                 }
             }
-        }
+        }*/
 
         .walletInfo {
             margin-bottom: 24px;

@@ -1,7 +1,6 @@
 <template>
     <div id="mainPage">
-        <maintenance v-if="enableMaintenance" />
-        <div v-else class="container">
+        <div class="container">
             <landingPage v-if="!walletAddress"></landingPage>
             <appPage v-else></appPage>
         </div>
@@ -13,13 +12,11 @@ import _ from "lodash";
 import landingPage from "@/components/landingPage";
 import appPage from "@/components/appPage";
 import common from "@/config/common";
-import maintenance from "@/components/maintenance";
 
 export default {
     components: {
         landingPage,
-        appPage,
-        maintenance
+        appPage
     },
     name: "mainPage",
     validate({ params, query, store, redirect }) {
@@ -28,10 +25,21 @@ export default {
          */
         if (params.sub) {
             if (common.SUBPAGE_OPTIONS[params.sub]) {
-                store.commit(
-                    "setCurrentAction",
-                    common.SUBPAGE_OPTIONS[params.sub]
-                );
+                store.commit("setCurrentAction", common.SUBPAGE_OPTIONS[params.sub]);
+            } else if (common.WALLET_DETAILS_OPTIONS[params.sub]) {
+                store.commit("setCurrentAction", 0);
+                
+                switch(params.sub) {
+                    case 'referral':
+                        store.commit("setWalletDetailsActionURL", 'referral');
+                        break;
+                    case 'transaction':
+                        store.commit("setWalletDetailsActionURL", 'transaction');
+                        break;
+                    case 'track':
+                        store.commit("setWalletDetailsActionURL", 'track');
+                        break;
+                }
             } else {
                 return false;
             }
@@ -48,13 +56,11 @@ export default {
                 height: 0
             },
             mobileWidth: 414, //移动端布局
-            isMobile: window.innerWidth <= 414,
-
-            enableMaintenance: process.env.ENABLE_MAINTENANCE === "TRUE"
+            isMobile: window.innerWidth <= 414
         };
     },
     watch: {
-        walletAddress() {}
+        walletAddress(data) {}
     },
     computed: {
         walletAddress() {
