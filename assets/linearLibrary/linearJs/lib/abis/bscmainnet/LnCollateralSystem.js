@@ -93,6 +93,37 @@ export default [
       {
         indexed: false,
         internalType: 'address',
+        name: 'fromUser',
+        type: 'address'
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'toUser',
+        type: 'address'
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'currency',
+        type: 'bytes32'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256'
+      }
+    ],
+    name: 'CollateralMoved',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
         name: 'account',
         type: 'address'
       }
@@ -409,6 +440,23 @@ export default [
     type: 'function'
   },
   {
+    inputs: [ { internalType: 'address', name: '_user', type: 'address' } ],
+    name: 'getUserLinaCollateralBreakdown',
+    outputs: [
+      { internalType: 'uint256', name: 'staked', type: 'uint256' },
+      { internalType: 'uint256', name: 'locked', type: 'uint256' }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'liquidation',
+    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
     inputs: [],
     name: 'mConfig',
     outputs: [
@@ -442,6 +490,18 @@ export default [
     ],
     name: 'migrateCollateral',
     outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'fromUser', type: 'address' },
+      { internalType: 'address', name: 'toUser', type: 'address' },
+      { internalType: 'bytes32', name: 'currency', type: 'bytes32' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' }
+    ],
+    name: 'moveCollateral',
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },

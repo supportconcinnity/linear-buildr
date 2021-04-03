@@ -106,6 +106,12 @@
                                 <Checkbox label="Swap">
                                     Swap
                                 </Checkbox>
+                                <Checkbox label="Liquidated(Staked)">
+                                    Liquidated(Staked)
+                                </Checkbox>
+                                <Checkbox label="Liquidated(Locked)">
+                                    Liquidated(Locked)
+                                </Checkbox>
                             </CheckboxGroup>
                         </DropdownMenu>
                     </Dropdown>
@@ -428,6 +434,12 @@
                             <Checkbox label="Swap">
                                 Swap
                             </Checkbox>
+                            <Checkbox label="Liquidated(Staked)">
+                                Liquidated(Staked)
+                            </Checkbox>
+                            <Checkbox label="Liquidated(Locked)">
+                                Liquidated(Locked)
+                            </Checkbox>
                         </CheckboxGroup>
                     </DropdownMenu>
                 </Dropdown>
@@ -583,7 +595,9 @@ export default {
                     item.type == "Stake" ||
                     item.type == "Swap" ||
                     item.type == "Referral" ||
-                    item.type == "Transfer"
+                    item.type == "Transfer" ||
+                    item.type == "Liquidated(Staked)" ||
+                    item.type == "Liquidated(Locked)"
                 ) {
                     amount =
                         item.symbol +
@@ -1112,7 +1126,7 @@ body {
                             }
 
                             .ivu-select-dropdown {
-                                width: 144px;
+                                width: 160px;
                                 left: 0;
                                 padding-left: 6px;
 

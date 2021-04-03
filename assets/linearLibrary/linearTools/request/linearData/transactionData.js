@@ -362,6 +362,7 @@ module.exports = {
                 )
                 .catch(err => console.error(err));
         },
+        //用户pratio状态（是否被标记为即将清算，有三天窗口）
         userPositionMarked({
             max = maxRequest,
             account = undefined,
@@ -373,8 +374,6 @@ module.exports = {
                 query: {
                     entity: "userPositionMarkeds",
                     selection: {
-                        orderBy: "timestamp",
-                        orderDirection: "desc",
                         where: {
                             user: account ? `\\"${account}\\"` : undefined
                         }
@@ -401,6 +400,7 @@ module.exports = {
                 )
                 .catch(err => console.error(err));
         },
+        //用户最近的爆仓状态
         positionLiquidated({
             max = maxRequest,
             account = undefined,
@@ -446,7 +446,8 @@ module.exports = {
         liquidatedStakedCollateral({
             max = maxRequest,
             account = undefined,
-            networkId = $nuxt.$store.state?.walletNetworkId
+            networkId = $nuxt.$store.state?.walletNetworkId,
+            value = undefined
         } = {}) {
             return pageResults({
                 api: graphAPIEndpoints[networkId],
@@ -457,13 +458,14 @@ module.exports = {
                         orderBy: "timestamp",
                         orderDirection: "desc",
                         where: {
-                            user: account ? `\\"${account}\\"` : undefined
+                            user: account ? `\\"${account}\\"` : undefined,
+                            value_gt: value || undefined,
                         }
                     },
                     properties: [
                         "id",
                         "user",
-                        "amount",
+                        "value",
                         "timestamp",
                         "currency",
                     ]
@@ -474,15 +476,16 @@ module.exports = {
                         ({
                             id,
                             user,
-                            amount,
+                            value,
                             timestamp,
                             currency
                         }) => ({
                             hash: id.split("-")[0],
                             account : user,
                             timestamp: Number(timestamp * 1000),
-                            amount: bn2n(BigNumber.from(amount)),
+                            value: bn2n(BigNumber.from(value)),
                             source: currency,
+                            symbol: "-"
                         })
                     )
                 )
@@ -491,7 +494,8 @@ module.exports = {
         liquidatedLockedCollateral({
             max = maxRequest,
             account = undefined,
-            networkId = $nuxt.$store.state?.walletNetworkId
+            networkId = $nuxt.$store.state?.walletNetworkId,
+            value = undefined
         } = {}) {
             return pageResults({
                 api: graphAPIEndpoints[networkId],
@@ -502,13 +506,14 @@ module.exports = {
                         orderBy: "timestamp",
                         orderDirection: "desc",
                         where: {
-                            user: account ? `\\"${account}\\"` : undefined
+                            user: account ? `\\"${account}\\"` : undefined,
+                            value_gt: value || undefined,
                         }
                     },
                     properties: [
                         "id",
                         "user",
-                        "amount",
+                        "value",
                         "timestamp",
                         "currency",
                     ]
@@ -519,15 +524,16 @@ module.exports = {
                         ({
                             id,
                             user,
-                            amount,
+                            value,
                             timestamp,
                             currency
                         }) => ({
                             hash: id.split("-")[0],
                             account : user,
                             timestamp: Number(timestamp * 1000),
-                            amount: bn2n(BigNumber.from(amount)),
+                            value: bn2n(BigNumber.from(value)),
                             source: currency,
+                            symbol: "-"
                         })
                     )
                 )

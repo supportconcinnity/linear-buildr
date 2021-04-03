@@ -73,6 +73,11 @@
         return await this.contract.buildMaxFromCollateralSys(user, txParams);
       };
     
+      this.burnForLiquidation = async (user, liquidator, amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.burnForLiquidation(user, liquidator, amount, txParams);
+      };
+    
       this.burnFromCollateralSys = async (user, amount, txParams) => {
         txParams = txParams || {};
         return await this.contract.burnFromCollateralSys(user, amount, txParams);

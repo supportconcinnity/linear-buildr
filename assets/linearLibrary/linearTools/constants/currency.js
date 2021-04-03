@@ -11,11 +11,6 @@ export const CRYPTO_CURRENCIES_API = {
         id: "binancecoin",
         symbol: "bnb",
         name: "Binance Coin"
-    },
-    LINA: {
-        id: "linear",
-        symbol: "lina",
-        name: "Linear"
     }
 };
 export const CRYPTO_CURRENCY_TO_KEY = _.keyBy(CRYPTO_CURRENCIES, key => key);

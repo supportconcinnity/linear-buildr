@@ -1,7 +1,7 @@
 import linearData from "../linearData/transactionData";
 import flatten from "lodash/flatten";
 import _ from "lodash";
-import { isBinanceNetwork, isEthereumNetwork } from "../../network";
+import { isBinanceNetwork, isEthereumNetwork, LIQUIDATION_NETWORKS } from "../../network";
 
 export const PAGINATION_INDEX = 10;
 
@@ -14,7 +14,9 @@ export const TRANSACTION_EVENTS = [
     "Transfer",
     "Referral",
     "Swap",
-    "Swap"
+    "Swap",
+    "Liquidated(Staked)",
+    "Liquidated(Locked)"
 ];
 
 export const fetchTransactionHistory = async (
@@ -47,6 +49,32 @@ export const fetchTransactionHistory = async (
             linearData.lnr.unfreeze({ recipient: walletAddress, networkId })
         ]);
 
+        let tempDataArr = [
+            Build,
+            burned,
+            feesClaimed,
+            collaterals,
+            redeemCollaterals,
+            transfers,
+            referrals,
+            freeZes,
+            unfreezes
+        ];
+
+        //如果是bsc main/bsc(私链)则检查liquidation
+        if (LIQUIDATION_NETWORKS[networkId] !== undefined) {
+            let [
+                liquidatedStaked,
+                liquidatedLocked
+            ] = await Promise.all([
+                linearData.lnr.liquidatedStakedCollateral({ account: walletAddress, networkId, value: '0' }),
+                linearData.lnr.liquidatedLockedCollateral({ account: walletAddress, networkId, value: '0' })
+            ]);
+
+            tempDataArr.push(liquidatedStaked);
+            tempDataArr.push(liquidatedLocked);
+        }
+
         let chain; //链
         if (isEthereumNetwork(networkId)) {
             chain = "ethereum";
@@ -55,17 +83,7 @@ export const fetchTransactionHistory = async (
         }
 
         const mergedArray = flatten(
-            [
-                Build,
-                burned,
-                feesClaimed,
-                collaterals,
-                redeemCollaterals,
-                transfers,
-                referrals,
-                freeZes,
-                unfreezes
-            ].map((eventType, i) => {
+            tempDataArr.map((eventType, i) => {
                 return eventType.map(event => {
                     event.decimal = TRANSACTION_EVENTS[i] == "Swap" ? 4 : 2;
                     event.value
@@ -99,7 +117,7 @@ export const fetchTransactionHistory = async (
         const orderData = mergedArray.sort(function(record1, record2) {
             return record2.timestamp - record1.timestamp;
         });
-
+console.log(orderData, "orderData");
         return orderData;
     } catch (e) {
         console.log(e, "fetchTransactionHistory error");

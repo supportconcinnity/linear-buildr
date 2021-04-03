@@ -27,8 +27,9 @@ import lJPY from './lJPY';
 import lXLCI from './lXLCI';
 import lXBCI from './lXBCI';
 import lVET from './lVET';
+import LnLiquidation from './LnLiquidation';
   
   export default {
-    LinearFinance, LnAssetSystem, LnBuildBurnSystem, LnConfig, LnBandProtocol, LnDebtSystem, LnCollateralSystem, LnRewardLocker, lUSD, LnRewardSystem, LnErc20Bridge, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG, lEUR, lUNI, lJPY, lXLCI, lXBCI, lVET
+    LinearFinance, LnAssetSystem, LnBuildBurnSystem, LnConfig, LnBandProtocol, LnDebtSystem, LnCollateralSystem, LnRewardLocker, lUSD, LnRewardSystem, LnErc20Bridge, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG, lEUR, lUNI, lJPY, lXLCI, lXBCI, lVET, LnLiquidation
   };
     

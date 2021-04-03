@@ -128,6 +128,16 @@
         return await this.contract.debtSystem(txParams);
       };
     
+      this.getUserLinaCollateralBreakdown = async (_user, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.getUserLinaCollateralBreakdown(_user, txParams);
+      };
+    
+      this.liquidation = async (txParams) => {
+        txParams = txParams || {};
+        return await this.contract.liquidation(txParams);
+      };
+    
       this.mConfig = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.mConfig(txParams);
@@ -141,6 +151,11 @@
       this.migrateCollateral = async (_currency, _users, _amounts, txParams) => {
         txParams = txParams || {};
         return await this.contract.migrateCollateral(_currency, _users, _amounts, txParams);
+      };
+    
+      this.moveCollateral = async (fromUser, toUser, currency, amount, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.moveCollateral(fromUser, toUser, currency, amount, txParams);
       };
     
       this.paused = async (txParams) => {
