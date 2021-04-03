@@ -198,6 +198,17 @@ export default [
   {
     inputs: [
       { internalType: 'address', name: 'user', type: 'address' },
+      { internalType: 'address', name: 'liquidator', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' }
+    ],
+    name: 'burnForLiquidation',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'user', type: 'address' },
       { internalType: 'uint256', name: 'amount', type: 'uint256' }
     ],
     name: 'burnFromCollateralSys',

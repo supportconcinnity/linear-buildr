@@ -1,3 +1,3 @@
-import LnBuildBurnSystem from '../bscmainnet/LnBuildBurnSystem';
+import LnBuildBurnSystem from '../bsctestnet/LnBuildBurnSystem';
       export default LnBuildBurnSystem;
       

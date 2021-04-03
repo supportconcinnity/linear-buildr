@@ -48,6 +48,31 @@ export default [
       },
       {
         indexed: false,
+        internalType: 'uint256',
+        name: 'oldAmount',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'newAmount',
+        type: 'uint256'
+      }
+    ],
+    name: 'RewardAmountChanged',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'entryId',
+        type: 'uint256'
+      },
+      {
+        indexed: false,
         internalType: 'address',
         name: 'user',
         type: 'address'
@@ -66,6 +91,19 @@ export default [
       }
     ],
     name: 'RewardEntryAdded',
+    type: 'event'
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'entryId',
+        type: 'uint256'
+      }
+    ],
+    name: 'RewardEntryRemoved',
     type: 'event'
   },
   {
@@ -178,6 +216,40 @@ export default [
       }
     ],
     name: 'migrateRewards',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'from', type: 'address' },
+      { internalType: 'address', name: 'recipient', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      {
+        internalType: 'uint256[]',
+        name: 'rewardEntryIds',
+        type: 'uint256[]'
+      }
+    ],
+    name: 'moveReward',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'from', type: 'address' },
+      { internalType: 'address', name: 'recipient1', type: 'address' },
+      { internalType: 'uint256', name: 'amount1', type: 'uint256' },
+      { internalType: 'address', name: 'recipient2', type: 'address' },
+      { internalType: 'uint256', name: 'amount2', type: 'uint256' },
+      {
+        internalType: 'uint256[]',
+        name: 'rewardEntryIds',
+        type: 'uint256[]'
+      }
+    ],
+    name: 'moveRewardProRata',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
