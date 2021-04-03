@@ -288,7 +288,7 @@
                         <div class="rightBlock"></div>
                     </div>
                     <div class="flag">
-                        <div class="item">Liqidate: 200</div>
+                        <div class="item">Liquidate: 200</div>
                         <div class="item">Target: 500</div>
                     </div>
                 </div>
