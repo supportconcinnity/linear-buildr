@@ -9,7 +9,6 @@ import LnCollateralSystem from './LnCollateralSystem';
 import LnRewardLocker from './LnRewardLocker';
 import lUSD from './lUSD';
 import LnRewardSystem from './LnRewardSystem';
-import LnErc20Bridge from './LnErc20Bridge';
 import lBTC from './lBTC';
 import lETH from './lETH';
 import lLINK from './lLINK';
@@ -29,6 +28,6 @@ import lXBCI from './lXBCI';
 import lVET from './lVET';
   
   export default {
-    LinearFinance, LnAssetSystem, LnBuildBurnSystem, LnConfig, LnChainLinkPrices, LnDebtSystem, LnCollateralSystem, LnRewardLocker, lUSD, LnRewardSystem, LnErc20Bridge, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG, lEUR, lUNI, lJPY, lXLCI, lXBCI, lVET
+    LinearFinance, LnAssetSystem, LnBuildBurnSystem, LnConfig, LnChainLinkPrices, LnDebtSystem, LnCollateralSystem, LnRewardLocker, lUSD, LnRewardSystem, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG, lEUR, lUNI, lJPY, lXLCI, lXBCI, lVET
   };
     

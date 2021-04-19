@@ -26,6 +26,14 @@ export const BINANCE_NETWORKS = {
 };
 
 /**
+ * Moonbeam network
+ */
+
+export const MOONBEAM_NETWORKS = {
+    1287: "MOONBASE-A"
+}
+
+/**
  * 主网网络
  */
 export const MAINNET_NETWORKS = {
@@ -39,6 +47,7 @@ export const MAINNET_NETWORKS = {
 export const TESTNET_NETWORKS = {
     3: "ROPSTEN",
     97: "BSCTESTNET",
+    1287: "MOONBASE-A",
     10001: "ETHDEV",
     10056: "BSCDEV"
 };
@@ -68,6 +77,10 @@ const DEV_RELATIVE_NETWORKS = {
     10056: "BSCDEV"
 };
 
+const MOONBASE_RELATIVE_NETWORKS = {
+    1287: "MOONBASE-A"
+};
+
 //有liquidation的网络
 export const LIQUIDATION_NETWORKS = {
     56: "BSCMAINNET",
@@ -80,6 +93,10 @@ export const isEthereumNetwork = walletNetworkId => {
 
 export const isBinanceNetwork = walletNetworkId => {
     return BINANCE_NETWORKS.hasOwnProperty(walletNetworkId);
+};
+
+export const isMoonbeamNetwork = walletNetworkId => {
+    return MOONBEAM_NETWORKS.hasOwnProperty(walletNetworkId);
 };
 
 export const isMainnetNetwork = walletNetworkId => {
@@ -114,6 +131,8 @@ export const getOtherNetworks = walletNetworkId => {
         );
     } else if (isDevNetwork(walletNetworkId)) {
         other = Object.keys(_.omit(DEV_RELATIVE_NETWORKS, [walletNetworkId]));
+    } else if (isMoonbeamNetwork(walletNetworkId) && isTestnetNetwork(walletNetworkId)) {
+        other = Object.keys(_.omit(MOONBASE_RELATIVE_NETWORKS, [walletNetworkId]));
     } else if (isTestnetNetwork(walletNetworkId)) {
         other = Object.keys(
             _.omit(TESTNET_RELATIVE_NETWORKS, [walletNetworkId])
@@ -122,7 +141,7 @@ export const getOtherNetworks = walletNetworkId => {
     return other.join();
 };
 
-export const SUPPORTED_NETWORKS = { ...ETHEREUM_NETWORKS, ...BINANCE_NETWORKS };
+export const SUPPORTED_NETWORKS = { ...ETHEREUM_NETWORKS, ...BINANCE_NETWORKS, ...MOONBEAM_NETWORKS };
 
 export const SUPPORTED_NETWORKS_MAP = _.invert(SUPPORTED_NETWORKS);
 
@@ -150,6 +169,7 @@ export const BLOCKCHAIN_BROWSER = {
     3: "https://ropsten.etherscan.io/tx/",
     56: "https://bscscan.com/tx/",
     97: "https://testnet.bscscan.com/tx/",
+    1287: "https://moonbase-blockscout.testnet.moonbeam.network/tx/",
     10001: "https://master.explorer.eth.dev.linear.finance/tx/",
     10056: "https://master.explorer.bsc.dev.linear.finance/tx/"
 };
@@ -159,6 +179,7 @@ export const BLOCKCHAIN_BROWSER_API = {
     3: "https://api-ropsten.etherscan.io/api",
     56: "https://api.bscscan.com/api",
     97: "https://api-testnet.bscscan.com/api",
+    1287: "https://moonbase-blockscout.testnet.moonbeam.network/api",
     10001: "https://master.explorer.eth.dev.linear.finance/api",
     10056: "https://master.explorer.bsc.dev.linear.finance/api"
 };
@@ -335,6 +356,21 @@ export const getNetworkSpeeds = async walletNetworkId => {
                 time: 0.2
             }
         };
+    } else if (isMoonbeamNetwork(walletNetworkId)) {
+        return {
+            [NETWORK_SPEEDS_TO_KEY.SLOW]: {
+                price: 0,
+                time: 1
+            },
+            [NETWORK_SPEEDS_TO_KEY.MEDIUM]: {
+                price: 0,
+                time: 0.5
+            },
+            [NETWORK_SPEEDS_TO_KEY.FAST]: {
+                price: 1,
+                time: 0.2
+            }
+        };
     }
 };
 
@@ -384,5 +420,9 @@ export function onWalletConnectDisconnect(provider,cb) {
     provider.on("disconnect", listener);
 }
 
-export const bufferGasLimit = gasLimit =>
-    Math.round(Number(gasLimit) * (1 + GAS_LIMIT_BUFFER));
+// Add support to multiple gas limit buffer by accepting wallet network ID
+export const bufferGasLimit = (gasLimit, walletNetworkId) => {
+    // Moonbeam testnet has to set gas limit to 2M to pass, need to check with Moonbeam team on how to estimate gas fee
+    if (isMoonbeamNetwork(walletNetworkId) && isTestnetNetwork(walletNetworkId)) return 2_000_000
+    return Math.round(Number(gasLimit) * (1 + GAS_LIMIT_BUFFER));
+}    

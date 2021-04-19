@@ -19,7 +19,7 @@
                                 Burn ℓUSD to unlock staked LINA
                             </template>
                         </div>
-                        <div class="actionRate" v-if="isBinanceNetwork">
+                        <div class="actionRate" v-if="isBurnableNetwork">
                             1 LINA = {{ floor(burnData.LINA2USD, 4) }} ℓUSD
                         </div>
                         <div
@@ -185,7 +185,7 @@
                         </div>
 
                         <gasEditor
-                            v-if="!isMobile && isBinanceNetwork"
+                            v-if="!isMobile && isBurnableNetwork"
                         ></gasEditor>
                     </div>
 
@@ -341,12 +341,12 @@
                         </div>
 
                         <gasEditor
-                            v-if="isMobile && isBinanceNetwork"
+                            v-if="isMobile && isBurnableNetwork"
                         ></gasEditor>
                     </div>
 
                     <div
-                        v-if="isBinanceNetwork"
+                        v-if="isBurnableNetwork"
                         class="burnBtn"
                         :class="{ disabled: burnDisabled }"
                         @click="clickBurn"
@@ -364,7 +364,7 @@
             <TabPane name="m1">
                 <watingEnhance
                     class="waitingBox"
-                    v-if="this.actionTabs == 'm1' && isBinanceNetwork"
+                    v-if="this.actionTabs == 'm1' && isBurnableNetwork"
                     :currentStep="confirmTransactionStep"
                     :currentHash="confirmTransactionHash"
                     :currentNetworkId="confirmTransactionNetworkId"
@@ -412,7 +412,9 @@ import {
     bufferGasLimit,
     DEFAULT_GAS_LIMIT,
     isBinanceNetwork,
-    isEthereumNetwork
+    isEthereumNetwork,
+    isMoonbeamNetwork,
+    isTestnetNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 
 import {
@@ -516,6 +518,9 @@ export default {
         walletAddress() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
+        isMoonbeamNetwork() {},
+        isMoonbaseNetwork() {},
+        isBurnableNetwork() {},
         walletNetworkId() {},
         isMobile() {}
     },
@@ -545,6 +550,18 @@ export default {
             return isBinanceNetwork(this.walletNetworkId);
         },
 
+        isMoonbeamNetwork() {
+            return isMoonbeamNetwork(this.walletNetworkId);
+        },
+
+        isMoonbaseNetwork() {
+            return this.isMoonbeamNetwork && isTestnetNetwork(this.walletNetworkId);
+        },
+
+        isBurnableNetwork() {
+            return (this.isMoonbeamNetwork || this.isBinanceNetwork);
+        },
+
         isEthDevNetwork() {
             return isEthDevNetwork(this.walletNetworkId);
         },
@@ -558,7 +575,7 @@ export default {
         }
     },
     async created() {
-        this.isBinanceNetwork && this.getBurnData(this.walletAddress);
+        this.isBurnableNetwork && this.getBurnData(this.walletAddress);
 
         //监听链切换
         this.chainChangeFromSubscribe = this.$pub.subscribe(
@@ -683,7 +700,7 @@ export default {
                     if (this.isEthereumNetwork) {
                         return;
                         // this.actionTabs = "m1"; //进入swap流程
-                    } else if (this.isBinanceNetwork) {
+                    } else if (this.isBurnableNetwork) {
                         this.processing = true;
 
                         //清空之前数据
@@ -694,19 +711,22 @@ export default {
                             this.actionDatas.unStake.gte(n2bn("0.01"))
                         ) {
                             this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.BURN_UNSTAKING
+                                BUILD_PROCESS_SETUP.BURN_UNSTAKING +
+                                    (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                             );
                         } else {
                             if (this.actionDatas.amount.gte(n2bn("0.01"))) {
                                 //需要先burn
                                 this.waitProcessArray.push(
-                                    BUILD_PROCESS_SETUP.BURN
+                                    BUILD_PROCESS_SETUP.BURN +
+                                        (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                                 );
                             }
 
                             if (this.actionDatas.unStake.gte(n2bn("0.01"))) {
                                 this.waitProcessArray.push(
-                                    BUILD_PROCESS_SETUP.UNSTAKING
+                                    BUILD_PROCESS_SETUP.UNSTAKING + 
+                                        (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                                 );
                             }
                         }
@@ -738,7 +758,7 @@ export default {
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.BURN_UNSTAKING
+                        BUILD_PROCESS_SETUP.BURN_UNSTAKING + (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                     ) {
                         await this.burnAndUnstake({
                             burnAmount: this.actionDatas.amount,
@@ -746,12 +766,12 @@ export default {
                         });
                     } else if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.BURN
+                        BUILD_PROCESS_SETUP.BURN + (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                     ) {
                         await this.burn(this.actionDatas.amount);
                     } else if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.UNSTAKING
+                        BUILD_PROCESS_SETUP.UNSTAKING + (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                     ) {
                         await this.unstake(this.actionDatas.unStake);
                     }
@@ -818,7 +838,7 @@ export default {
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
-                    type: BUILD_PROCESS_SETUP.BURN,
+                    type: BUILD_PROCESS_SETUP.BURN + (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" ),
                     networkId: this.walletNetworkId,
                     value: `Burn ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
@@ -869,7 +889,7 @@ export default {
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
-                    type: BUILD_PROCESS_SETUP.BURN,
+                    type: BUILD_PROCESS_SETUP.BURN + (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" ),
                     networkId: this.walletNetworkId,
                     value: `Burn ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
@@ -924,7 +944,7 @@ export default {
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
-                    type: BUILD_PROCESS_SETUP.UNSTAKING,
+                    type: BUILD_PROCESS_SETUP.UNSTAKING + (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" ),
                     networkId: this.walletNetworkId,
                     value: `Burn ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
@@ -968,10 +988,10 @@ export default {
                     unstakeAmount
                 );
 
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
                 // console.log(e);
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.burn);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.burn, this.walletNetworkId);
             }
         },
 
@@ -987,9 +1007,9 @@ export default {
                     burnAmount
                 );
 
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.burn);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.burn, this.walletNetworkId);
             }
         },
 
@@ -1006,10 +1026,10 @@ export default {
                     unstakeAmount
                 );
 
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
                 console.log(e);
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.unstake);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.unstake, this.walletNetworkId);
             }
         },
 
@@ -1096,7 +1116,7 @@ export default {
             try {
                 this.activeItemBtn = 0;
 
-                if (this.isBinanceNetwork) {
+                if (this.isBurnableNetwork) {
                     this.unstakeMax = true;
                     this.resetErrorsMsg();
                     this.resetInputData();
@@ -1225,7 +1245,7 @@ export default {
             try {
                 this.activeItemBtn = 1;
 
-                if (this.isBinanceNetwork) {
+                if (this.isBurnableNetwork) {
                     this.resetErrorsMsg();
                     this.resetInputData();
 
@@ -1365,7 +1385,7 @@ export default {
             try {
                 this.activeItemBtn = 2;
 
-                if (this.isBinanceNetwork) {
+                if (this.isBurnableNetwork) {
                     this.resetErrorsMsg();
                     this.resetInputData();
 
@@ -1460,7 +1480,7 @@ export default {
         //输入要解锁LINA数量
         changeUnStake(unstakedAmount) {
             try {
-                if (this.isBinanceNetwork) {
+                if (this.isBurnableNetwork) {
                     this.resetErrorsMsg();
                     // this.resetInputData();
 
@@ -1698,7 +1718,7 @@ export default {
         //输入要销毁lUSD数量
         changeAmount(burnAmount) {
             try {
-                if (this.isBinanceNetwork) {
+                if (this.isBurnableNetwork) {
                     this.resetErrorsMsg();
                     // this.resetInputData();
 
@@ -1824,7 +1844,7 @@ export default {
                     return;
                 }
 
-                if (this.isBinanceNetwork) {
+                if (this.isBurnableNetwork) {
                     this.resetErrorsMsg();
                     // this.resetInputData();
 
@@ -2026,7 +2046,7 @@ export default {
             this.actionTabs = "m0";
             this.activeItemBtn = -1;
 
-            this.isBinanceNetwork && this.getBurnData(this.walletAddress);
+            this.isBurnableNetwork && this.getBurnData(this.walletAddress);
 
             this.resetInputData();
         },

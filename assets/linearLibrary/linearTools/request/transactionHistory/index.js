@@ -1,7 +1,7 @@
 import linearData from "../linearData/transactionData";
 import flatten from "lodash/flatten";
 import _ from "lodash";
-import { isBinanceNetwork, isEthereumNetwork, LIQUIDATION_NETWORKS } from "../../network";
+import { isBinanceNetwork, isEthereumNetwork, isMoonbeamNetwork, isTestnetNetwork, LIQUIDATION_NETWORKS } from "../../network";
 
 export const PAGINATION_INDEX = 10;
 
@@ -80,7 +80,13 @@ export const fetchTransactionHistory = async (
             chain = "ethereum";
         } else if (isBinanceNetwork(networkId)) {
             chain = "binance";
+        } else if (isMoonbeamNetwork(networkId) && isTestnetNetwork(networkId)) {
+            chain = "moonbase-a";
+        } else if (isMoonbeamNetwork(networkId) && !isTestnetNetwork(networkId)) {
+            chain = "moonbeam";
         }
+
+        console.log(tempDataArr)
 
         const mergedArray = flatten(
             tempDataArr.map((eventType, i) => {

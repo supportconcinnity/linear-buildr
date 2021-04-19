@@ -157,7 +157,8 @@ import {
     isBinanceNetwork,
     isEthDevNetwork,
     isEthereumNetwork,
-    isMainnetNetwork
+    isMainnetNetwork,
+    isMoonbeamNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 import { BigNumber, utils } from "ethers";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
@@ -193,6 +194,7 @@ export default {
         walletNetworkName() {},
         walletNetworkId() {},
         isEthereumNetwork() {},
+        isMoonbeamNetwork() {},
         isBinanceNetwork() {}
     },
     computed: {
@@ -202,6 +204,10 @@ export default {
 
         isBinanceNetwork() {
             return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        isMoonbeamNetwork() {
+            return isMoonbeamNetwork(this.walletNetworkId);
         },
 
         isEthDevNetwork() {
@@ -431,13 +437,13 @@ export default {
                     rewardEntry.signatures[0].signature
                 );
 
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
                 const errorMessage =
                     (e && e.message) || "Error while getting gas estimate";
                 console.log(errorMessage);
 
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.claim);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.claim, this.walletNetworkId);
             }
         },
 

@@ -16,12 +16,11 @@ import lEUR from './lEUR';
 import lUNI from './lUNI';
 import lJPY from './lJPY';
 import LnAssetSystem from './LnAssetSystem';
-import LnErc20Bridge from './LnErc20Bridge';
 import lXLCI from './lXLCI';
 import lXBCI from './lXBCI';
 import lVET from './lVET';
   
   export default {
-    LinearFinance, lUSD, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG, lEUR, lUNI, lJPY, LnAssetSystem, LnErc20Bridge, lXLCI, lXBCI, lVET
+    LinearFinance, lUSD, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG, lEUR, lUNI, lJPY, LnAssetSystem, lXLCI, lXBCI, lVET
   };
     

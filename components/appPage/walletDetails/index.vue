@@ -7,6 +7,11 @@
                     v-if="isEthereumNetwork"
                     src="@/static/ETH.svg"
                 />
+                <img
+                    class="network"
+                    v-if="isMoonbeamNetwork"
+                    src="@/static/moonbeam.svg"
+                />
                 <img class="network" v-else src="@/static/binance.svg" />
 
                 <div class="wallet">
@@ -83,6 +88,7 @@
 
             <div v-if="isMobile" class="mNetwork" @click="mShowWallet = true">
                 <ethereumSvg v-if="isEthereumNetwork" :selected="true" />
+                <moonbeamSvg v-else-if="isMoonbeamNetwork" :selected="true" />
                 <binanceSvg v-else :selected="true" />
                 <div class="mNetworkName">
                     {{ walletNetworkName }}
@@ -102,6 +108,11 @@
                 <ethereumSvg
                     class="networkIcon"
                     v-if="isEthereumNetwork"
+                    :selected="true"
+                />
+                <moonbeamSvg
+                    class="networkIcon"
+                    v-else-if="isMoonbeamNetwork"
                     :selected="true"
                 />
                 <binanceSvg class="networkIcon" v-else :selected="true" />
@@ -470,6 +481,60 @@
                             </div>
                         </div>
                     </template>
+                    <template v-else-if="isMoonbaseNetwork">
+                        <img
+                            class="tokenIcon bsc"
+                            src="@/static/currency/GLMR.svg"
+                        />
+                        <div class="box">
+                            <div class="tokenItems obtrusive">
+                                <div class="left">DEV</div>
+                                <div class="right">
+                                    <b>{{ walletDetails.amountETH || 0 }}</b>
+                                    DEV
+                                </div>
+                            </div>
+                            <div class="tokenItems">
+                                <div class="left">
+                                    1 DEV = ${{
+                                        walletDetails.ETH2USDRate || 0
+                                    }}
+                                    DEV
+                                </div>
+                                <div class="right">
+                                    ≈ ${{ walletDetails.amountETH2USD || 0 }}
+                                    DEV
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else-if="isMoonbeamNetwork">
+                        <img
+                            class="tokenIcon bsc"
+                            src="@/static/currency/GLMR.svg"
+                        />
+                        <div class="box">
+                            <div class="tokenItems obtrusive">
+                                <div class="left">GLMR</div>
+                                <div class="right">
+                                    <b>{{ walletDetails.amountETH || 0 }}</b>
+                                    GLMR
+                                </div>
+                            </div>
+                            <div class="tokenItems">
+                                <div class="left">
+                                    1 GLMR = ${{
+                                        walletDetails.ETH2USDRate || 0
+                                    }}
+                                    GLMR
+                                </div>
+                                <div class="right">
+                                    ≈ ${{ walletDetails.amountETH2USD || 0 }}
+                                    GLMR
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
                 <div class=" tokenBox">
                     <img class="tokenIcon" src="@/static/currency/lUSD.svg" />
@@ -598,6 +663,8 @@ import {
     CHAIN_CHANGE_TYPE,
     isBinanceNetwork,
     isEthereumNetwork,
+    isMoonbeamNetwork,
+    isTestnetNetwork,
     SUPPORTED_WALLETS_MAP,
     LIQUIDATION_NETWORKS
 } from "@/assets/linearLibrary/linearTools/network";
@@ -606,8 +673,10 @@ import lnrJSConnector, {
 } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
+import moonbeamSvg from "@/components/svg/moonbeam";
 import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
+import Moonbeam from '~/components/svg/moonbeam.vue';
 
 export default {
     name: "walletDetails",
@@ -642,7 +711,8 @@ export default {
     },
     components: {
         ethereumSvg,
-        binanceSvg
+        binanceSvg,
+        moonbeamSvg
     },
     watch: {
         trackStatusChange() {},
@@ -653,6 +723,8 @@ export default {
         },
         isEthereumNetwork() {},
         isBinanceNetwork() {},
+        isMoonbeamNetwork() {},
+        isMoonbaseNetwork() {},
         walletNetworkId() {},
         walletType() {},
         isMobile() {}
@@ -668,6 +740,14 @@ export default {
 
         isBinanceNetwork() {
             return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        isMoonbeamNetwork() {
+            return isMoonbeamNetwork(this.walletNetworkId);
+        },
+
+        isMoonbaseNetwork() {
+            return (isTestnetNetwork(this.walletNetworkId) && this.isMoonbeamNetwork);
         },
 
         walletNetworkId() {

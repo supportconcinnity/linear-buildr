@@ -12,6 +12,8 @@ import {
     isBinanceNetwork,
     isEthDevNetwork,
     isEthereumNetwork,
+    isMoonbeamNetwork,
+    isTestnetNetwork,
     WALLET_STATUS
 } from "../network";
 import config from "@/config/common";
@@ -120,15 +122,15 @@ export const getPriceRates = async currency => {
     const walletNetworkId = $nuxt.$store.state.walletNetworkId;
     const isEthereum = isEthereumNetwork(walletNetworkId);
     const isBinance = isBinanceNetwork(walletNetworkId);
+    const isMoonbeam = isMoonbeamNetwork(walletNetworkId);
 
     let rates = {};
     const { utils } = lnrJSConnector;
-
     let contract,
         pricesPromise = [];
     if (isEthereum) {
         rates = await band.pricesLast({ sources: currency });
-    } else if (isBinance) {
+    } else if (isBinance || isMoonbeam) {
         contract = lnrJSConnector.lnrJS.LnBandProtocol;
         if (_.isString(currency)) {
             ["ETH", "BNB"].includes(currency) && (currency = "l" + currency);
@@ -233,6 +235,8 @@ export const storeDetailsData = async () => {
             const isEthereum = isEthereumNetwork(walletNetworkId);
             const isBinance = isBinanceNetwork(walletNetworkId);
             const isEthDev = isEthDevNetwork(walletNetworkId);
+            const isMoonbeam = (isMoonbeamNetwork(walletNetworkId) && !isTestnetNetwork(walletNetworkId));
+            const isMoonbase = (isMoonbeamNetwork(walletNetworkId) && isTestnetNetwork(walletNetworkId));
 
             const {
                 lnrJS: {
@@ -291,7 +295,7 @@ export const storeDetailsData = async () => {
             const LINA2USDRate = priceRates.LINA / 1e18 || 0;
             const lUSD2USDRate = priceRates.lUSD / 1e18 || 1;
             const ETH2USDRate =
-                (isEthereum ? priceRates.ETH : isBinance ? priceRates.BNB : 1) /
+                (isEthereum ? priceRates.ETH : isBinance ? priceRates.BNB : isMoonbase ? priceRates.DEV : isMoonbeam ? priceRates.GLMR : 1) /
                     1e18 || 1;
 
             let amountDebt2USD;
@@ -321,7 +325,7 @@ export const storeDetailsData = async () => {
                 liquids2USD +
                 (isEthereum
                     ? avaliableLINA2USD
-                    : isBinance
+                    : (isBinance || isMoonbeam || isMoonbase)
                     ? amountLINA2USD
                     : 0);
 
@@ -348,6 +352,20 @@ export const storeDetailsData = async () => {
                     balance: amountETH,
                     valueUSD: 0,
                     img: require("@/static/currency/lBNB.svg")
+                });
+            } else if (isMoonbeam) {
+                transferableAssets.push({
+                    name: "GLMR",
+                    balance: amountETH,
+                    valueUSD: 0,
+                    img: require("@/static/currency/GLMR.svg")
+                });
+            } else if (isMoonbase) {
+                transferableAssets.push({
+                    name: "DEV",
+                    balance: amountETH,
+                    valueUSD: 0,
+                    img: require("@/static/currency/GLMR.svg")
                 });
             }
 

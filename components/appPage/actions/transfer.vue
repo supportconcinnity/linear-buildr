@@ -353,7 +353,9 @@ import {
     bufferGasLimit,
     DEFAULT_GAS_LIMIT,
     isBinanceNetwork,
-    isEthereumNetwork
+    isEthereumNetwork,
+    isMoonbeamNetwork,
+    isTestnetNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 import currencies from "@/common/currency";
 
@@ -403,6 +405,9 @@ export default {
         walletAddressEllipsis() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
+        isMoonbeamNetwork() {},
+        isTestnetNetwork() {},
+        isMoonbaseNetwork() {},
         walletNetworkId() {},
         isMobile() {},
         transferDisabled() {},
@@ -453,6 +458,18 @@ export default {
             return isBinanceNetwork(this.walletNetworkId);
         },
 
+        isMoonbeamNetwork() {
+            return isMoonbeamNetwork(this.walletNetworkId);
+        },
+
+        isTestnetNetwork() {
+            return isTestnetNetwork(this.walletNetworkId);
+        },
+
+        isMoonbaseNetwork() {
+            return this.isTestnetNetwork && this.isMoonbeamNetwork;
+        },
+
         walletNetworkId() {
             return this.$store.state?.walletNetworkId;
         },
@@ -468,6 +485,10 @@ export default {
             ? "ETH"
             : this.isBinanceNetwork
             ? "BNB"
+            : (this.isMoonbeamNetwork && this.isTestnetNetwork)
+            ? "DEV"
+            : (this.isMoonbeamNetwork && !this.isTestnetNetwork)
+            ? "GLMR"
             : "BNB";
         //获取ETH gas limit评估
         let ethGasLimit = await this.getGasEstimate(
@@ -523,10 +544,10 @@ export default {
                     balance: _.floor(bn2n(linaBalance), 4)
                 },
                 {
-                    name: this.isEthereumNetwork ? "ETH" : "BNB",
-                    key: this.isEthereumNetwork ? "ETH" : "BNB",
+                    name: this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BNB" : (this.isMoonbeamNetwork && this.isTestnetNetwork) ? "DEV" : (this.isMoonbeamNetwork && !this.isTestnetNetwork) ? "GLMR" : "BNB",
+                    key: this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BNB" : (this.isMoonbeamNetwork && this.isTestnetNetwork) ? "DEV" : (this.isMoonbeamNetwork && !this.isTestnetNetwork) ? "GLMR" : "BNB",
                     img: require(`@/static/${
-                        this.isEthereumNetwork ? "ETH_logo" : "currency/lBNB"
+                        this.isEthereumNetwork ? "ETH_logo" : this.isBinanceNetwork ? "currency/lBNB" : (this.isMoonbeamNetwork && this.isTestnetNetwork) ? "currency/GLMR" : (this.isMoonbeamNetwork && !this.isTestnetNetwork) ? "currency/GLMR" : "currency/GLMR"
                     }.svg`),
                     balance: _.floor(bn2n(walletBalance), 4)
                 },
@@ -579,7 +600,7 @@ export default {
                 ) {
                     this.waitProcessArray.push(
                         this.BUILD_PROCESS_SETUP.TRANSFER +
-                            (this.isEthereumNetwork ? "ETH" : "BSC")
+                            (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                     );
 
                     this.confirmTransactionStep = 0;
@@ -607,7 +628,7 @@ export default {
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         this.BUILD_PROCESS_SETUP.TRANSFER +
-                            (this.isEthereumNetwork ? "ETH" : "BSC")
+                            (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC")
                     ) {
                         await this.onSend(n2bn(this.transferNumber));
                     }
@@ -684,7 +705,7 @@ export default {
             if (currency === "LINA") {
                 let LnProxy = lnrJSConnector.lnrJS.LinearFinance;
                 return LnProxy.transfer(destination, amount, settings);
-            } else if (["ETH", "BNB"].includes(currency)) {
+            } else if (["ETH", "BNB", "DEV", "GLMR"].includes(currency)) {
                 return lnrJSConnector.signer.sendTransaction({
                     value: amount,
                     to: destination,
@@ -724,7 +745,7 @@ export default {
                         destination,
                         amountBN
                     );
-                } else if (["ETH", "BNB"].includes(currency)) {
+                } else if (["ETH", "BNB", "DEV", "GLMR"].includes(currency)) {
                     if (amount === this.selectedAssetMaxValue) {
                         //不能转全部eth,需要留手续费
                         throw new Error("input.error.balanceTooLow");
@@ -739,10 +760,10 @@ export default {
                     ].contract.estimateGas.transfer(destination, amountBN);
                 }
 
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
                 console.log(e);
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.exchange);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.exchange, this.walletNetworkId);
             }
         },
 
@@ -755,7 +776,7 @@ export default {
         //点击最大
         async clickMaxAmount() {
             this.activeItemBtn = 0;
-            if (["ETH", "BNB"].includes(this.currentSelectCurrency.name)) {
+            if (["ETH", "BNB", "GLMR", "DEV"].includes(this.currentSelectCurrency.name)) {
                 if (this.canSendEthAmount <= 0) {
                     this.transferNumber = this.currencyList[
                         this.selected
@@ -773,7 +794,7 @@ export default {
 
         changeAmount(amount) {
             if (
-                ["ETH", "BNB"].includes(this.currentSelectCurrency.name) &&
+                ["ETH", "BNB", "DEV", "GLMR"].includes(this.currentSelectCurrency.name) &&
                 amount > this.canSendEthAmount
             ) {
                 this.transactionErrMsg = `You don\`t have enought balance of ${this.currentSelectCurrency.name}.`;

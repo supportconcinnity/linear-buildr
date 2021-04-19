@@ -9,6 +9,10 @@
                     <template v-else-if="isBinanceNetwork">
                         Binance Smart Chain fee
                     </template>
+                    <template v-else-if="isMoonbeamNetwork">
+                        Network fee
+                    </template>
+                    
                 </span>
                 <span class="editBtn" @click="gasEditorModal = true"
                     ><svg width="16px" height="16px" viewBox="0 0 16 16">
@@ -149,6 +153,9 @@
                             <template v-else-if="isBinanceNetwork">
                                 <img src="@/static/bnb.svg" />
                             </template>
+                            <template v-else-if="isMoonbeamNetwork">
+                                <img src="@/static/moonbeam.svg" />
+                            </template>
                         </div>
 
                         <div class="desc">
@@ -158,6 +165,9 @@
                                 </template>
                                 <template v-else-if="isBinanceNetwork">
                                     Binance Smart Chain fee
+                                </template>
+                                <template v-else-if="isMoonbeamNetwork">
+                                    Network Fee
                                 </template>
                             </div>
                             <div class="descTopMobile">
@@ -171,6 +181,9 @@
                                 </template>
                                 <template v-else-if="isBinanceNetwork">
                                     Binance Smart Chain fee(GWEI)
+                                </template>
+                                <template v-else-if="isMoonbeamNetwork">
+                                    Network Fee
                                 </template>
                             </div>
                         </div>
@@ -210,7 +223,8 @@ import {
     formatGasPrice,
     unFormatGasPrice,
     isEthereumNetwork,
-    isBinanceNetwork
+    isBinanceNetwork,
+    isMoonbeamNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
@@ -254,6 +268,7 @@ export default {
         selectedTypeChangeListener() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
+        isMoonbeamNetwork() {},
         walletNetworkId() {}
     },
 
@@ -276,6 +291,10 @@ export default {
 
         isBinanceNetwork() {
             return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        isMoonbeamNetwork() {
+            return isMoonbeamNetwork(this.walletNetworkId);
         },
 
         walletNetworkId() {

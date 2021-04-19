@@ -21,7 +21,7 @@
                                 LINA.
                             </template>
                         </div>
-                        <div class="actionRate" v-if="isBinanceNetwork">
+                        <div class="actionRate" v-if="isBuildableNetwork">
                             1 LINA =
                             {{
                                 formatNumberFromBigNumber(
@@ -447,7 +447,9 @@ import {
     DEFAULT_GAS_LIMIT,
     isBinanceNetwork,
     isEthDevNetwork,
-    isEthereumNetwork
+    isEthereumNetwork,
+    isMoonbeamNetwork,
+    isTestnetNetwork,
 } from "@/assets/linearLibrary/linearTools/network";
 
 import {
@@ -556,6 +558,9 @@ export default {
         errorHandle() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
+        isMoonbeamNetwork() {},
+        isMoonbaseNetwork() {},
+        isBuildableNetwork() {},
         walletNetworkId() {},
         isMobile() {}
     },
@@ -584,6 +589,18 @@ export default {
 
         isBinanceNetwork() {
             return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        isMoonbeamNetwork() {
+            return isMoonbeamNetwork(this.walletNetworkId);
+        },
+
+        isMoonbaseNetwork() {
+            return this.isMoonbeamNetwork && isTestnetNetwork(this.walletNetworkId);
+        },
+
+        isBuildableNetwork() {
+            return (this.isMoonbeamNetwork || this.isBinanceNetwork);
         },
 
         isEthDevNetwork() {
@@ -1353,7 +1370,7 @@ export default {
                 if (!this.buildDisabled) {
                     if (this.isEthereumNetwork) {
                         this.actionTabs = "m1"; //进入swap流程
-                    } else if (this.isBinanceNetwork) {
+                    } else if (this.isBinanceNetwork || this.isMoonbeamNetwork) {
                         this.processing = true;
 
                         //清空之前数据
@@ -1369,19 +1386,22 @@ export default {
                         ) {
                             //合并进度
                             this.waitProcessArray.push(
-                                BUILD_PROCESS_SETUP.STAKING_BUILD
+                                BUILD_PROCESS_SETUP.STAKING_BUILD +
+                                    (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                             );
                         } else {
                             //单步进度
                             if (this.actionData.stake.gte(n2bn("1"))) {
                                 this.waitProcessArray.push(
-                                    BUILD_PROCESS_SETUP.STAKING
+                                    BUILD_PROCESS_SETUP.STAKING +
+                                        (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                                 );
                             }
 
                             if (this.actionData.amount.gte(n2bn("0.01"))) {
                                 this.waitProcessArray.push(
-                                    BUILD_PROCESS_SETUP.BUILD
+                                    BUILD_PROCESS_SETUP.BUILD +
+                                        (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                                 );
                             }
                         }
@@ -1417,7 +1437,8 @@ export default {
 
                     if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.STAKING_BUILD
+                        BUILD_PROCESS_SETUP.STAKING_BUILD +
+                            (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                     ) {
                         await this.startStakingAndBuildContract({
                             stakeAmountLINA: this.actionData.stake,
@@ -1425,12 +1446,14 @@ export default {
                         });
                     } else if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.STAKING
+                        BUILD_PROCESS_SETUP.STAKING +
+                            (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                     ) {
                         await this.startStakingContract(this.actionData.stake);
                     } else if (
                         this.waitProcessArray[this.confirmTransactionStep] ==
-                        BUILD_PROCESS_SETUP.BUILD
+                        BUILD_PROCESS_SETUP.BUILD +
+                            (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" )
                     ) {
                         await this.startBuildContract(this.actionData.amount);
                     }
@@ -1577,7 +1600,7 @@ export default {
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
-                    type: BUILD_PROCESS_SETUP.BUILD,
+                    type: BUILD_PROCESS_SETUP.BUILD + (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" ),
                     networkId: this.walletNetworkId,
                     value: `Building ${currentStepNum} / ${amountStepNum}`
                 });
@@ -1645,7 +1668,7 @@ export default {
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
-                    type: BUILD_PROCESS_SETUP.STAKING,
+                    type: BUILD_PROCESS_SETUP.STAKING + (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" ),
                     networkId: this.walletNetworkId,
                     value: `Building ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
@@ -1700,7 +1723,7 @@ export default {
                 // 发起右下角通知
                 this.$pub.publish("notificationQueue", {
                     hash: this.confirmTransactionHash,
-                    type: BUILD_PROCESS_SETUP.BUILD,
+                    type: BUILD_PROCESS_SETUP.BUILD + (this.isEthereumNetwork ? "ETH" : this.isBinanceNetwork ? "BSC" : this.isMoonbaseNetwork ? "Moonbase-A" : this.isMoonbeamNetwork ?  "Moonbeam" : "BSC" ),
                     networkId: this.walletNetworkId,
                     value: `Building ${this.confirmTransactionStep + 1} / ${
                         this.waitProcessArray.length
@@ -1741,9 +1764,9 @@ export default {
                     approveAmountLINA
                 );
 
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.approve);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.approve, this.walletNetworkId);
             }
         },
 
@@ -1771,10 +1794,10 @@ export default {
                     buildAmountlUSD
                 );
 
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
                 console.log(e, "getGasEstimateFromStakingAndBuild");
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.staking, this.walletNetworkId);
             }
         },
 
@@ -1798,9 +1821,9 @@ export default {
                     stakeAmountLINA
                 );
 
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.staking, this.walletNetworkId);
             }
         },
 
@@ -1822,9 +1845,9 @@ export default {
                     buildAmountlUSD
                 );
 
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.build);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.build, this.walletNetworkId);
             }
         },
 

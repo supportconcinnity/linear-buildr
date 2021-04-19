@@ -188,6 +188,9 @@ import burn from "@/components/appPage/actions/burn";
 import claim from "@/components/appPage/actions/claim";
 import transfer from "@/components/appPage/actions/transfer";
 import swap from "@/components/appPage/actions/swap";
+import {
+    isMoonbeamNetwork
+} from "@/assets/linearLibrary/linearTools/network";
 
 import referralModal from "@/components/appPage/walletDetails/actions/referralModal";
 import transactionModal from "@/components/appPage/walletDetails/actions/transactionModal";
@@ -210,6 +213,14 @@ export default {
         transactionModal
     },
     data() {
+        if (isMoonbeamNetwork) {
+            return {
+                introductActionModal: false,
+                // currentAction: this.$store.state.currentAction,
+                othersAction: 0, // 0没有 1track 2transaction 3referral
+                actions: ["Build", "Burn", "Claim", "Transfer"]
+            };
+        }
         return {
             introductActionModal: false,
             // currentAction: this.$store.state.currentAction,

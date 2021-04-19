@@ -9,6 +9,7 @@ const graphAPIEndpoints = {
     3: process.env.GRAPH_BAND_BINANCE_TESTNET,
     56: process.env.GRAPH_BAND_BINANCE_MAINNET,
     97: process.env.GRAPH_BAND_BINANCE_TESTNET,
+    1287: process.env.GRAPH_BAND_MOONBASE,
     10001: process.env.GRAPH_BAND_BSCDEV,
     10056: process.env.GRAPH_BAND_BSCDEV
 };

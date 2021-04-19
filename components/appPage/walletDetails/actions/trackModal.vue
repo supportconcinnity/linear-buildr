@@ -162,7 +162,8 @@ import currencies from "@/common/currency";
 
 import {
     isEthereumNetwork,
-    isBinanceNetwork
+    isBinanceNetwork,
+    isMoonbeamNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 
 import {
@@ -238,6 +239,7 @@ export default {
         walletAddress() {},
         isEthereumNetwork() {},
         isBinanceNetwork() {},
+        isMoonbeamNetwork() {},
         walletNetworkId() {}
     },
     computed: {
@@ -255,6 +257,10 @@ export default {
 
         isBinanceNetwork() {
             return isBinanceNetwork(this.walletNetworkId);
+        },
+
+        isMoonbeamNetwork() {
+            return isMoonbeamNetwork(this.walletNetworkId);
         },
 
         walletNetworkId() {
@@ -350,7 +356,7 @@ export default {
                     tableData = this.$store.state?.walletDetails?.transferableAssets.filter(
                         function(item) {
                             item.decimal = _.has(currencies, item.name) ? 4 : 2;
-                            return !["LINA", "ETH", "BNB"].includes(item.name);
+                            return !["LINA", "ETH", "BNB", "DEV", "GLMR"].includes(item.name);
                         }
                     );
                 }

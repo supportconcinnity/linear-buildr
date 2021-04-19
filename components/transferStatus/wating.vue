@@ -31,6 +31,7 @@
         <div class="btns">
             <div v-if="value" class="etherscan" @click="$emit('etherscan')">
                 View on <template v-if="isEthereumNetwork">Etherscan</template>
+                <template v-else-if="isMoonbeamNetwork">Moonbeam Blockscout</template>
                 <template v-else> BSCscan</template>
                 <span><img src="@/static/arrow_right.svg" /></span>
             </div>
@@ -46,6 +47,7 @@
 <script>
 import {
     isEthereumNetwork,
+    isMoonbeamNetwork,
     SUPPORTED_WALLETS_MAP
 } from "@/assets/linearLibrary/linearTools/network";
 export default {
@@ -62,6 +64,7 @@ export default {
     watch: {
         walletType() {},
         isEthereumNetwork() {},
+        isMoonbeamNetwork() {},
         walletNetworkId() {}
     },
     computed: {
@@ -71,6 +74,10 @@ export default {
 
         isEthereumNetwork() {
             return isEthereumNetwork(this.walletNetworkId);
+        },
+
+        isMoonbeamNetwork() {
+            return isMoonbeamNetwork(this.walletNetworkId);
         },
 
         walletNetworkId() {

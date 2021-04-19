@@ -139,6 +139,17 @@
                                             src="@/static/transferProgress/bsc_network.svg"
                                         />
                                     </template>
+                                    <template
+                                        v-else-if="
+                                            isMoonbeamNetwork(currentNetworkId)
+                                        "
+                                    >
+                                        <img
+                                            key="22"
+                                            class="walletType"
+                                            src="@/static/moonbeam.svg"
+                                        />
+                                    </template>
                                 </template>
                             </template>
 
@@ -193,6 +204,16 @@
                             v-else-if="isBinanceNetwork(currentNetworkId)"
                         >
                             View Bscscan
+                        </template>
+                        <template
+                            v-else-if="isMoonbeamNetwork(currentNetworkId) && isTestnetNetwork(currentNetworkId)"
+                        >
+                            View Moonbase-A Blockscout
+                        </template>
+                        <template
+                            v-else-if="isMoonbeamNetwork(currentNetworkId) && !isTestnetNetwork(currentNetworkId)"
+                        >
+                            View Moonbeam Blockscout
                         </template>
 
                         <img src="@/static/arrow_right.svg" />
@@ -263,6 +284,12 @@
                 <template v-else-if="isBinanceNetwork(currentNetworkId)">
                     View Bscscan
                 </template>
+                <template v-else-if="isMoonbeamNetwork(currentNetworkId) && isTestnetNetwork(currentNetworkId)">
+                    View Moonbase-A Blockscout
+                </template>
+                <template v-else-if="isMoonbeamNetwork(currentNetworkId) && !isTestnetNetwork(currentNetworkId)">
+                    View Moonbeam Blockscout
+                </template>
                 <img src="@/static/arrow_right.svg" />
             </div>
         </div>
@@ -275,7 +302,9 @@ import closeSvg from "@/components/svg/close";
 import {
     SUPPORTED_WALLETS_MAP,
     isEthereumNetwork,
-    isBinanceNetwork
+    isBinanceNetwork,
+    isMoonbeamNetwork,
+    isTestnetNetwork
 } from "@/assets/linearLibrary/linearTools/network";
 import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";
 export default {
@@ -321,7 +350,8 @@ export default {
             openBlockchainBrowser,
             SUPPORTED_WALLETS_MAP,
             isEthereumNetwork,
-            isBinanceNetwork
+            isBinanceNetwork,
+            isMoonbeamNetwork
         };
     },
     watch: {

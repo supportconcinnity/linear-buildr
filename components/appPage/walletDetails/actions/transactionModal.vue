@@ -28,13 +28,21 @@
                         v-model="filters.chainType"
                         placeholder="All Chains"
                     >
-                        <Option value="ethereum" label="Ethereum">
+                        <Option value="ethereum" label="Ethereum" v-if="!isMoonbeamNetwork">
                             <img src="@/static/ETH.svg" />
                             <span>Ethereum</span>
                         </Option>
-                        <Option value="binance" label="Binance">
+                        <Option value="binance" label="Binance" v-if="!isMoonbeamNetwork">
                             <img src="@/static/binance.svg" />
                             <span> Binance</span>
+                        </Option>
+                        <Option value="binance" label="Moonbase" v-if="isMoonbaseNetwork">
+                            <img src="@/static/moonbeam.svg" />
+                            <span> Moonbase-A</span>
+                        </Option>
+                        <Option value="binance" label="Moonbase" v-if="isMoonbeamNetwork">
+                            <img src="@/static/moonbeam.svg" />
+                            <span> Moonbeam</span>
                         </Option>
                     </Select>
 
@@ -237,6 +245,11 @@
                                 >
                                     <img src="@/static/logo-wallet-bsc.svg" />
                                 </template>
+                                <template
+                                    v-if="isMoonbeamNetworkFunc(row.networkId)"
+                                >
+                                    <img src="@/static/moonbeam.svg" />
+                                </template>
 
                                 <template v-if="!isMobile">
                                     {{ row.chain }}
@@ -257,6 +270,22 @@
                                     "
                                 >
                                     BSC
+                                </template>
+                                <template
+                                    v-if="
+                                        isMobile &&
+                                            isMoonbeamNetworkFunc(row.networkId) && isTestnetNetworkFunct(row.networkId)
+                                    "
+                                >
+                                    MOONBASE-A
+                                </template>
+                                <template
+                                    v-if="
+                                        isMobile &&
+                                            isMoonbeamNetworkFunc(row.networkId) && !isTestnetNetworkFunct(row.networkId)
+                                    "
+                                >
+                                    MOONBEAM
                                 </template>
                             </div>
                             <div class="td date">
@@ -362,6 +391,10 @@
                     <Option value="binance" label="Binance">
                         <img src="@/static/binance.svg" />
                         <span> Binance</span>
+                    </Option>
+                    <Option value="moonbeam" label="Moonbeam">
+                        <img src="@/static/binance.svg" />
+                        <span> Moonbeam</span>
                     </Option>
                 </Select>
 
@@ -515,6 +548,8 @@ import { format } from "date-fns";
 import {
     isEthereumNetwork,
     isBinanceNetwork,
+    isMoonbeamNetwork,
+    isTestnetNetwork,
     getOtherNetworks
 } from "@/assets/linearLibrary/linearTools/network";
 import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
@@ -557,6 +592,8 @@ export default {
 
             isEthereumNetwork,
             isBinanceNetwork,
+            isMoonbeamNetworkFunc: isMoonbeamNetwork,
+            isTestnetNetworkFunct: isTestnetNetwork,
             openBlockchainBrowser
         };
     },
@@ -636,7 +673,9 @@ export default {
             });
         },
         filterTransactionHistoryData() {},
-        walletNetworkId() {}
+        walletNetworkId() {},
+        isMoonbeamNetwork() {},
+        isMoonbaseNetwork() {}
     },
     computed: {
         //根据筛选条件计算交易数据
@@ -776,6 +815,12 @@ export default {
         },
         walletNetworkId() {
             return this.$store.state?.walletNetworkId;
+        },
+        isMoonbeamNetwork() {
+            return isMoonbeamNetwork(this.walletNetworkId);
+        },
+        isMoonbaseNetwork() {
+            return this.isMoonbeamNetwork && isTestnetNetwork(this.walletNetworkId);
         }
     },
     methods: {
@@ -792,33 +837,41 @@ export default {
         },
         //获取交易记录
         async fetchTransactionHistoryClick() {
-            let waitArray = [];
-
-            //push当前网络
-            waitArray.push(
-                fetchTransactionHistory(
-                    this.$store.state?.wallet?.address,
-                    this.walletNetworkId
-                )
-            );
-
             //获取其他网络graph数据
             const otherNetworkId = getOtherNetworks(this.walletNetworkId);
-            waitArray.push(
-                fetchTransactionHistory(
-                    this.$store.state?.wallet?.address,
-                    otherNetworkId
-                )
-            );
 
-            const [one, two] = await Promise.all(waitArray);
-            this.transactionHistoryData = [...one, ...two];
+            if (otherNetworkId && otherNetworkId !== undefined){
+                let waitArray = [];
 
-            this.transactionHistoryData = this.transactionHistoryData.sort(
-                function(record1, record2) {
-                    return record2.timestamp - record1.timestamp;
-                }
-            );
+                //push当前网络
+                waitArray.push(
+                    fetchTransactionHistory(
+                        this.$store.state?.wallet?.address,
+                        this.walletNetworkId
+                    )
+                );
+                
+                waitArray.push(
+                    fetchTransactionHistory(
+                        this.$store.state?.wallet?.address,
+                        otherNetworkId
+                    )
+                );
+
+                const [one, two] = await Promise.all(waitArray);
+                this.transactionHistoryData = [...one, ...two];
+
+                this.transactionHistoryData = this.transactionHistoryData.sort(
+                    function(record1, record2) {
+                        return record2.timestamp - record1.timestamp;
+                    }
+                );  
+            } else {
+                this.transactionHistoryData = await fetchTransactionHistory(
+                        this.$store.state?.wallet?.address,
+                        this.walletNetworkId
+                    )
+            }
 
             this.gettingData = false;
         },

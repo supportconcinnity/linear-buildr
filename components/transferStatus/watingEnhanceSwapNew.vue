@@ -1192,9 +1192,9 @@ export default {
                     contractAddress,
                     approveAmountLINA
                 );
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.approve);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.approve, this.walletNetworkId);
             }
         },
 
@@ -1289,9 +1289,9 @@ export default {
                     formatAddressToByte32(this.targetWalletAddress)
                 );
 
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.freeze);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.freeze, this.walletNetworkId);
             }
         },
 
@@ -1479,9 +1479,9 @@ export default {
                     BigNumber.from(deposit.amount),
                     deposit.signatures[0].signature
                 );
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.unfreeze);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.unfreeze, this.walletNetworkId);
             }
         },
 
@@ -1559,9 +1559,9 @@ export default {
                     stakeAmountLINA
                 );
 
-                return bufferGasLimit(gasEstimate);
+                return bufferGasLimit(gasEstimate, this.walletNetworkId);
             } catch (e) {
-                return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
+                return bufferGasLimit(DEFAULT_GAS_LIMIT.staking, this.walletNetworkId);
             }
         },
 
