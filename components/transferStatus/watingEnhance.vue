@@ -351,7 +351,8 @@ export default {
             SUPPORTED_WALLETS_MAP,
             isEthereumNetwork,
             isBinanceNetwork,
-            isMoonbeamNetwork
+            isMoonbeamNetwork,
+            isTestnetNetwork
         };
     },
     watch: {
