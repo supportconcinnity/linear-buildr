@@ -123,7 +123,6 @@ export const fetchTransactionHistory = async (
         const orderData = mergedArray.sort(function(record1, record2) {
             return record2.timestamp - record1.timestamp;
         });
-console.log(orderData, "orderData");
         return orderData;
     } catch (e) {
         console.log(e, "fetchTransactionHistory error");

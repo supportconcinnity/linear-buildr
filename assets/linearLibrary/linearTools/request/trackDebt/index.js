@@ -3,34 +3,44 @@ import _ from "lodash";
 import { formatEtherToNumber } from "@/assets/linearLibrary/linearTools/format";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { ethers } from "ethers";
-import { getOtherNetworks } from "../../network";
+import { getOtherNetworks, isMoonbeamNetwork } from "../../network";
 
 export const fetchTrackDebt = async walletAddress => {
     try {
-        let otherNetWorkId = getOtherNetworks(
-            $nuxt.$store.state?.walletNetworkId
-        );
+        const walletNetworkId = $nuxt.$store.state?.walletNetworkId;
+        const isMoonbeam = isMoonbeamNetwork(walletNetworkId);
 
-        let [
-            minted,
-            burned,
-            oetherNetWorkMinted,
-            oetherNetWorkBurned
-        ] = await Promise.all([
-            linearData.lnr.minted({ account: walletAddress }),
-            linearData.lnr.burned({ account: walletAddress }),
-            linearData.lnr.minted({
-                account: walletAddress,
-                networkId: otherNetWorkId
-            }),
-            linearData.lnr.burned({
-                account: walletAddress,
-                networkId: otherNetWorkId
-            })
-        ]);
+        let minted, burned;
+        if (isMoonbeam) {
+            [minted, burned] = await Promise.all([
+                linearData.lnr.minted({ account: walletAddress }),
+                linearData.lnr.burned({ account: walletAddress })
+            ]);
+        } else {
+            let otherNetWorkId = getOtherNetworks(walletNetworkId);
+            let oetherNetWorkMinted, oetherNetWorkBurned;
 
-        minted = minted.concat(oetherNetWorkMinted);
-        burned = burned.concat(oetherNetWorkBurned);
+            [
+                minted,
+                burned,
+                oetherNetWorkMinted,
+                oetherNetWorkBurned
+            ] = await Promise.all([
+                linearData.lnr.minted({ account: walletAddress }),
+                linearData.lnr.burned({ account: walletAddress }),
+                linearData.lnr.minted({
+                    account: walletAddress,
+                    networkId: otherNetWorkId
+                }),
+                linearData.lnr.burned({
+                    account: walletAddress,
+                    networkId: otherNetWorkId
+                })
+            ]);
+
+            minted = minted.concat(oetherNetWorkMinted);
+            burned = burned.concat(oetherNetWorkBurned);
+        }
 
         let totalMinted = 0,
             totalBuild = 0,

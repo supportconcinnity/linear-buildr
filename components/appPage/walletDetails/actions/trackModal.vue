@@ -346,7 +346,7 @@ export default {
 
                 let trackData = { issuedDebt: 0, currentDebt: [] };
 
-                if (this.isBinanceNetwork) {
+                if (this.isBinanceNetwork || this.isMoonbeamNetwork) {
                     trackData = await fetchTrackDebt(this.walletAddress);
                 }
 
@@ -356,7 +356,13 @@ export default {
                     tableData = this.$store.state?.walletDetails?.transferableAssets.filter(
                         function(item) {
                             item.decimal = _.has(currencies, item.name) ? 4 : 2;
-                            return !["LINA", "ETH", "BNB", "DEV", "GLMR"].includes(item.name);
+                            return ![
+                                "LINA",
+                                "ETH",
+                                "BNB",
+                                "DEV",
+                                "GLMR"
+                            ].includes(item.name);
                         }
                     );
                 }
