@@ -493,11 +493,6 @@
 		"outputs": [
 			{
 				"internalType": "address",
-				"name": "user",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
 				"name": "marker",
 				"type": "address"
 			},
