@@ -129,7 +129,7 @@ export const getPriceRates = async currency => {
     if (isEthereum) {
         rates = await band.pricesLast({ sources: currency });
     } else if (isBinance) {
-        contract = lnrJSConnector.lnrJS.LnBandProtocol;
+        contract = lnrJSConnector.lnrJS.LnOracleRouter;
         if (_.isString(currency)) {
             ["ETH", "BNB"].includes(currency) && (currency = "l" + currency);
             rates[currency] = await contract.getPrice(
