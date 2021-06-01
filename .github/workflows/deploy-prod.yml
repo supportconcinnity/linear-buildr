@@ -13,31 +13,25 @@ jobs:
       - name: Clone Source Code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           yarn install
 
+      - name: Clone Config Repository
+        uses: actions/checkout@v2
+        with:
+          repository: Linear-finance/linear-buildr-config
+          ref: master
+          token: ${{ secrets.CONFIG_REPO_TOKEN }}
+          path: ./configs
+
+      - name: Apply Configuration
+        run: |
+          REPO_ROOT=$(pwd)
+          ./configs/apply.sh production "${REPO_ROOT}"
+
       - name: Build Website
         run: |
-          echo "NODE_ENV=\"production\"" >> ./.env.production
-          echo "INFURA_PROJECT_ID=\"${{ secrets.BUILD_INFURA_PROJECT_ID }}\"" >> ./.env.production
-          echo "ETHERSCAN_KEY=\"${{ secrets.BUILD_ETHERSCAN_KEY }}\"" >> ./.env.production
-          echo "BSCSCAN_KEY=\"${{ secrets.BUILD_BSCSCAN_KEY }}\"" >> ./.env.production
-          echo "ALCHEMY_KEY=\"${{ secrets.BUILD_ALCHEMY_KEY }}\"" >> ./.env.production
-          echo "ETH_GAS_STATION_KEY=\"${{ secrets.BUILD_ETH_GAS_STATION_KEY }}\"" >> ./.env.production
-          echo "DEFI_PULSE_STATION_KEY=\"${{ secrets.BUILD_DEFI_PULSE_STATION_KEY }}\"" >> ./.env.production
-          echo "GRAPH_BUILDR_ETHEREUM_MAINNET=\"${{ secrets.BUILD_GRAPH_BUILDR_ETHEREUM_MAINNET }}\"" >> ./.env.production
-          echo "GRAPH_BUILDR_SWAP_ETHEREUM_MAINNET=\"${{ secrets.BUILD_GRAPH_BUILDR_SWAP_ETHEREUM_MAINNET }}\"" >> ./.env.production
-          echo "GRAPH_BUILDR_ETHEREUM_ROPSTEN=\"${{ secrets.BUILD_GRAPH_BUILDR_ETHEREUM_ROPSTEN }}\"" >> ./.env.production
-          echo "GRAPH_BUILDR_SWAP_ETHEREUM_ROPSTEN=\"${{ secrets.BUILD_GRAPH_BUILDR_SWAP_ETHEREUM_ROPSTEN }}\"" >> ./.env.production
-          echo "GRAPH_BUILDR_BINANCE_MAINNET=\"${{ secrets.BUILD_GRAPH_BUILDR_BINANCE_MAINNET }}\"" >> ./.env.production
-          echo "GRAPH_BUILDR_BINANCE_TESTNET=\"${{ secrets.BUILD_GRAPH_BUILDR_BINANCE_TESTNET }}\"" >> ./.env.production
-          echo "GRAPH_BAND_BINANCE_MAINNET=\"${{ secrets.BUILD_GRAPH_BAND_BINANCE_MAINNET }}\"" >> ./.env.production
-          echo "GRAPH_BAND_BINANCE_TESTNET=\"${{ secrets.BUILD_GRAPH_BAND_BINANCE_TESTNET }}\"" >> ./.env.production
-          echo "TOKEN_BRIDGE_MAINNET=\"${{ secrets.BUILD_TOKEN_BRIDGE_MAINNET }}\"" >> ./.env.production
-          echo "TOKEN_BRIDGE_TESTNET=\"${{ secrets.BUILD_TOKEN_BRIDGE_TESTNET }}\"" >> ./.env.production
-          echo "BACKEND_API=\"${{ secrets.BUILD_BACKEND_API }}\"" >> ./.env.production
-          echo "ENABLE_MAINTENANCE=\"${{ secrets.BUILD_ENABLE_MAINTENANCE }}\"" >> ./.env.production
           yarn generate
 
       - name: Clone Workers Site Template
@@ -56,7 +50,7 @@ jobs:
 
       - name: Configure Proxy
         run: |
-          echo '${{ secrets.PROXIES }}' > ./cf-workers-site-template/src/external/proxies.json
+          cp ./configs/proxies.json ./cf-workers-site-template/src/external/proxies.json
 
       - name: Publish Workers Site
         env:
