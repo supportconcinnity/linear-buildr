@@ -15,8 +15,9 @@ export const TRANSACTION_EVENTS = [
     "Referral",
     "Swap",
     "Swap",
+    "Unlock Reward",
     "Liquidated(Staked)",
-    "Liquidated(Locked)"
+    "Liquidated(Locked)",
 ];
 
 export const fetchTransactionHistory = async (
@@ -33,7 +34,8 @@ export const fetchTransactionHistory = async (
             transfers,
             referrals,
             freeZes,
-            unfreezes
+            unfreezes,
+            unlockRewards
         ] = await Promise.all([
             linearData.lnr.minted({ account: walletAddress, networkId }),
             linearData.lnr.burned({ account: walletAddress, networkId }),
@@ -46,7 +48,8 @@ export const fetchTransactionHistory = async (
             linearData.lnr.transfer({ account: walletAddress, networkId }),
             linearData.lnr.referral({ to: walletAddress, networkId }),
             linearData.lnr.freeZe({ depositor: walletAddress, networkId }),
-            linearData.lnr.unfreeze({ recipient: walletAddress, networkId })
+            linearData.lnr.unfreeze({ recipient: walletAddress, networkId }),
+            linearData.lnr.unlockReward({account: walletAddress, networkId})
         ]);
 
         let tempDataArr = [
@@ -58,7 +61,8 @@ export const fetchTransactionHistory = async (
             transfers,
             referrals,
             freeZes,
-            unfreezes
+            unfreezes,
+            unlockRewards
         ];
 
         //如果是bsc main/bsc(私链)则检查liquidation

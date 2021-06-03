@@ -112,6 +112,9 @@
                                 <Checkbox label="Liquidated(Locked)">
                                     Liquidated(Locked)
                                 </Checkbox>
+                                <Checkbox label="Unlock Reward">
+                                    Unlock Reward
+                                </Checkbox>
                             </CheckboxGroup>
                         </DropdownMenu>
                     </Dropdown>
@@ -440,6 +443,9 @@
                             <Checkbox label="Liquidated(Locked)">
                                 Liquidated(Locked)
                             </Checkbox>
+                             <Checkbox label="Unlock Reward">
+                                Unlock Reward
+                            </Checkbox>
                         </CheckboxGroup>
                     </DropdownMenu>
                 </Dropdown>
@@ -617,6 +623,8 @@ export default {
                         rewardsLina = formatNumber(item.rewardsLina) + " LINA";
                     }
                     amount = "+" + rewardsLina + "&\n" + "+" + rewardslusd;
+                } else if (itme.type == "Unlock Reward") {
+                    amount = formatNumber(item.value, item.decimal) + " LINA";
                 } else {
                     return null;
                 }
