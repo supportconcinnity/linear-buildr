@@ -322,7 +322,7 @@ module.exports = {
                 api: graphAPIEndpoints[networkId],
                 max,
                 query: {
-                    entity: "unlockRewards",
+                    entity: "rewardUnlockeds",
                     selection: {
                         orderBy: "timestamp",
                         orderDirection: "desc",
