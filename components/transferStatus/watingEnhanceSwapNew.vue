@@ -348,9 +348,6 @@
                     How to Setup <img src="@/static/info_white.svg" />
                 </div>
 
-                <!-- 网络设置 -->
-                <setupModal ref="setupModal" />
-
                 <!-- 当前是freeze,开始等待blocks,不在approve,不是错误 -->
                 <div
                     class="blockCompletedBox"
@@ -618,7 +615,6 @@
 import _ from "lodash";
 import { openBlockchainBrowser } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
-import setupModal from "@/components/setupModal";
 import {
     SUPPORTED_WALLETS_MAP,
     isEthereumNetwork,
@@ -656,7 +652,6 @@ export default {
     name: "watingEnhanceSwapNew",
     components: {
         closeSvg,
-        setupModal
     },
     props: {
         //需要swap的数量
@@ -1970,7 +1965,7 @@ export default {
         },
 
         stepNetwork() {
-            this.$refs.setupModal.show();
+            this.$store.commit("setSetupModal", true);
         },
 
         //回到默认状态

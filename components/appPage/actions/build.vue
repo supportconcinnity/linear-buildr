@@ -410,8 +410,6 @@
                 fluctuations in pledge tokens.
             </div>
         </Modal>
-
-        <setupModal ref="setupModal"></setupModal>
     </div>
 </template>
 
@@ -473,8 +471,6 @@ import {
 
 import watingEnhanceSwapNew from "@/components/transferStatus/watingEnhanceSwapNew";
 import gasEditorSwap from "@/components/gasEditorSwap";
-
-import setupModal from "@/components/setupModal";
 
 export default {
     name: "build",
@@ -548,8 +544,7 @@ export default {
     components: {
         gasEditor,
         gasEditorSwap,
-        watingEnhanceSwapNew,
-        setupModal
+        watingEnhanceSwapNew
     },
     watch: {
         walletAddress() {},
@@ -634,7 +629,7 @@ export default {
     methods: {
         //跳转到设置
         jumpToStep() {
-            this.$refs.setupModal.show();
+            this.$store.commit("setSetupModal", true);
         },
 
         /**
@@ -1297,9 +1292,7 @@ export default {
                         this.actionData.amount = n2bn("0");
 
                         this.inputData.ratio = ratioAmount;
-                        this.actionData.ratio = n2bn(
-                            ratioAmount.toString()
-                        );
+                        this.actionData.ratio = n2bn(ratioAmount.toString());
                     } else if (
                         ratioAmount < this.buildData.currentRatio &&
                         ratioAmount >= this.buildData.targetRatio
@@ -1332,9 +1325,7 @@ export default {
                         this.actionData.amount = needBuildAmount;
 
                         this.inputData.ratio = ratioAmount;
-                        this.actionData.ratio = n2bn(
-                            ratioAmount.toString()
-                        );
+                        this.actionData.ratio = n2bn(ratioAmount.toString());
                     }
 
                     this.adjustMinStake();
