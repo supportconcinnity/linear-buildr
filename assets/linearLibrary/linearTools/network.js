@@ -12,7 +12,7 @@ import api from "@/api";
  */
 export const ETHEREUM_NETWORKS = {
     1: "MAINNET",
-    3: "ROPSTEN",
+    // 3: "ROPSTEN",
     10001: "ETHDEV"
 };
 
@@ -21,7 +21,7 @@ export const ETHEREUM_NETWORKS = {
  */
 export const BINANCE_NETWORKS = {
     56: "BSCMAINNET",
-    97: "BSCTESTNET",
+    // 97: "BSCTESTNET",
     10056: "BSCDEV"
 };
 
@@ -37,8 +37,8 @@ export const MAINNET_NETWORKS = {
  * 测试网网络
  */
 export const TESTNET_NETWORKS = {
-    3: "ROPSTEN",
-    97: "BSCTESTNET",
+    // 3: "ROPSTEN",
+    // 97: "BSCTESTNET",
     10001: "ETHDEV",
     10056: "BSCDEV"
 };
@@ -74,33 +74,22 @@ export const LIQUIDATION_NETWORKS = {
     10056: "BSCDEV"
 };
 
-export const isEthereumNetwork = walletNetworkId => {
-    return ETHEREUM_NETWORKS.hasOwnProperty(walletNetworkId);
-};
-
-export const isBinanceNetwork = walletNetworkId => {
-    return BINANCE_NETWORKS.hasOwnProperty(walletNetworkId);
-};
-
-export const isMainnetNetwork = walletNetworkId => {
-    return MAINNET_NETWORKS.hasOwnProperty(walletNetworkId);
-};
-
-export const isTestnetNetwork = walletNetworkId => {
-    return TESTNET_NETWORKS.hasOwnProperty(walletNetworkId);
-};
-
-export const isDevNetwork = walletNetworkId => {
-    return DEV_NETWORKS.hasOwnProperty(walletNetworkId);
-};
-
-export const isEthDevNetwork = walletNetworkId => {
-    return ETHDEV_NETWORKS.hasOwnProperty(walletNetworkId);
-};
-
-export const isBscDevNetwork = walletNetworkId => {
-    return BSCDEV_NETWORKS.hasOwnProperty(walletNetworkId);
-};
+export const isEthereumNetwork = walletNetworkId =>
+    ETHEREUM_NETWORKS.hasOwnProperty(walletNetworkId);
+export const isBinanceNetwork = walletNetworkId =>
+    BINANCE_NETWORKS.hasOwnProperty(walletNetworkId);
+export const isMainnetNetwork = walletNetworkId =>
+    MAINNET_NETWORKS.hasOwnProperty(walletNetworkId);
+export const isTestnetNetwork = walletNetworkId =>
+    TESTNET_NETWORKS.hasOwnProperty(walletNetworkId);
+export const isDevNetwork = walletNetworkId =>
+    DEV_NETWORKS.hasOwnProperty(walletNetworkId);
+export const isEthDevNetwork = walletNetworkId =>
+    ETHDEV_NETWORKS.hasOwnProperty(walletNetworkId);
+export const isBscDevNetwork = walletNetworkId =>
+    BSCDEV_NETWORKS.hasOwnProperty(walletNetworkId);
+export const isSupportNetwork = walletNetworkId =>
+    SUPPORTED_NETWORKS.hasOwnProperty(walletNetworkId);
 
 /**
  * 获取所在网络其他网络id
@@ -219,6 +208,21 @@ export const INFURA_JSON_RPC_URLS = {
 //     ETHEREUM: "ethereum",
 //     BINANCE: "binance"
 // };
+
+//RPC网络配置
+export const ETHEREUM_CHAIN_OPTIONS = {
+    56: {
+        chainName: "BSC Mainnet",
+        rpcUrls: ["https://bsc-dataseed1.binance.org/"],
+        chainId: "0x38",
+        nativeCurrency: {
+            name: "BNB",
+            symbol: "BNB",
+            decimals: 18
+        },
+        blockExplorerUrls: ["https://bscscan.com"]
+    }
+};
 
 export async function getEthereumNetwork() {
     const isMobile = $nuxt.$store.state?.isMobile;
@@ -366,19 +370,19 @@ export function onBinanceChainChange(cb) {
     window.BinanceChain.on("chainChanged", listener);
 }
 
-export function onWalletConnectAccountChange(provider,cb) {
+export function onWalletConnectAccountChange(provider, cb) {
     if (!provider) return;
     const listener = _.throttle(cb, 2000);
     provider.on("accountsChanged", listener);
 }
 
-export function onWalletConnectChainChange(provider,cb) {
+export function onWalletConnectChainChange(provider, cb) {
     if (!provider) return;
     const listener = _.throttle(cb, 2000);
     provider.on("chainChanged", listener);
 }
 
-export function onWalletConnectDisconnect(provider,cb) {
+export function onWalletConnectDisconnect(provider, cb) {
     if (!provider) return;
     const listener = _.throttle(cb, 2000);
     provider.on("disconnect", listener);
@@ -386,3 +390,26 @@ export function onWalletConnectDisconnect(provider,cb) {
 
 export const bufferGasLimit = gasLimit =>
     Math.round(Number(gasLimit) * (1 + GAS_LIMIT_BUFFER));
+
+/**
+ * 添加网络到metamask
+ * @param {*} networkId  网络ID
+ */
+export const addEthereumChain = async networkId => {
+    await ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [{ ...ETHEREUM_CHAIN_OPTIONS[networkId] }]
+    });
+};
+
+/**
+ * 检查连接的网络ID
+ * @returns
+ */
+export const checkNetwork = async (networkId = null) => {
+    if (!networkId) {
+        const network = await getEthereumNetwork();
+        networkId = network?.networkId;
+    }
+    return isSupportNetwork(networkId);
+};
