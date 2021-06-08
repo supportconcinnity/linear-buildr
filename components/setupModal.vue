@@ -1,15 +1,18 @@
 <template>
-    <div id="stepModal">
+    <div id="setupModal">
         <Modal
-            v-model="stepModal"
+            :value="setupModal"
             :footer-hide="true"
             :transfer="true"
             :closable="false"
+            :mask-closable="false"
             :mask="true"
-            class="stepModal"
+            class="setupModal"
         >
             <div class="close">
-                <closeSvg @click.native="stepModal = false"></closeSvg>
+                <closeSvg
+                    @click.native="$store.commit('setSetupModal', false)"
+                ></closeSvg>
             </div>
             <div class="title">Setup MetaMask to connect to BSC Mainnet</div>
             <div class="context">
@@ -60,42 +63,20 @@
                                 <Col span="16"
                                     >BSC Mainnet
                                     <Tooltip
-                                        transfer-class-name="transferTooltip"
-                                        transfer
+                                        class="globalInfoStyle"
                                         :content="tooltipContent"
                                         offset="0 4"
                                         placement="bottom"
                                         @on-popper-hide="resetTooltipContent"
                                     >
-                                        <svg
+                                        <CopySvg
                                             class="copyBtn BSC_Mainnet"
                                             data-clipboard-text="BSC Mainnet"
                                             data-clipboard-action="copy"
-                                            @click="copyConfig('.BSC_Mainnet')"
-                                            width="24px"
-                                            height="24px"
-                                            viewBox="0 0 24 24"
-                                            version="1.1"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <desc>Created with Lunacy</desc>
-                                            <g id="Icon/Copy">
-                                                <path
-                                                    d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
-                                                    10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
-                                                    2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
-                                                    2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
-                                                    17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
-                                                    7.67157 7.67157 7 8.5 7Z"
-                                                    transform="translate(2.5 2.5)"
-                                                    id="Combined-Shape"
-                                                    fill="#5a575c"
-                                                    fill-rule="evenodd"
-                                                    stroke="none"
-                                                />
-                                            </g>
-                                        </svg>
+                                            @click.native="
+                                                copyConfig('.BSC_Mainnet')
+                                            "
+                                        />
                                     </Tooltip>
                                 </Col>
                             </Row>
@@ -104,48 +85,25 @@
                                 <Col span="16">
                                     https://bsc-dataseed1.binance.org/
                                     <Tooltip
-                                        transfer-class-name="transferTooltip"
-                                        transfer
+                                        class="globalInfoStyle"
                                         :content="tooltipContent"
                                         offset="0 4"
                                         placement="bottom"
                                         @on-popper-hide="resetTooltipContent"
                                     >
-                                        <svg
+                                        <CopySvg
                                             class="copyBtn RPC_URL1"
                                             data-clipboard-text="https://bsc-dataseed1.binance.org/"
                                             data-clipboard-action="copy"
-                                            @click="copyConfig('.RPC_URL1')"
-                                            width="24px"
-                                            height="24px"
-                                            viewBox="0 0 24 24"
-                                            version="1.1"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <desc>Created with Lunacy</desc>
-                                            <g id="Icon/Copy">
-                                                <path
-                                                    d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
-                                                    10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
-                                                    2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
-                                                    2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
-                                                    17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
-                                                    7.67157 7.67157 7 8.5 7Z"
-                                                    transform="translate(2.5 2.5)"
-                                                    id="Combined-Shape"
-                                                    fill="#5a575c"
-                                                    fill-rule="evenodd"
-                                                    stroke="none"
-                                                />
-                                            </g>
-                                        </svg>
+                                            @click.native="
+                                                copyConfig('.RPC_URL1')
+                                            "
+                                        />
                                     </Tooltip>
                                     or
                                     <span>
                                         (https://bsc-dataseed2.binance.org/<Tooltip
-                                            transfer-class-name="transferTooltip"
-                                            transfer
+                                            class="globalInfoStyle"
                                             :content="tooltipContent"
                                             offset="0 4"
                                             placement="bottom"
@@ -153,35 +111,14 @@
                                                 resetTooltipContent
                                             "
                                         >
-                                            <svg
+                                            <CopySvg
                                                 class="copyBtn RPC_URL2"
                                                 data-clipboard-text="https://bsc-dataseed2.binance.org/"
                                                 data-clipboard-action="copy"
-                                                @click="copyConfig('.RPC_URL2')"
-                                                width="24px"
-                                                height="24px"
-                                                viewBox="0 0 24 24"
-                                                version="1.1"
-                                                xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <desc>Created with Lunacy</desc>
-                                                <g id="Icon/Copy">
-                                                    <path
-                                                        d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
-                                                        10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
-                                                        2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
-                                                        2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
-                                                        17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
-                                                        7.67157 7.67157 7 8.5 7Z"
-                                                        transform="translate(2.5 2.5)"
-                                                        id="Combined-Shape"
-                                                        fill="#5a575c"
-                                                        fill-rule="evenodd"
-                                                        stroke="none"
-                                                    />
-                                                </g>
-                                            </svg> </Tooltip
+                                                @click.native="
+                                                    copyConfig('.RPC_URL2')
+                                                "
+                                            /> </Tooltip
                                         >)
                                     </span>
                                 </Col>
@@ -203,192 +140,20 @@
                                 <Col span="8">Block Explorer URL</Col>
                                 <Col span="16"
                                     >https://bscscan.com/<Tooltip
-                                        transfer-class-name="transferTooltip"
-                                        transfer
+                                        class="globalInfoStyle"
                                         :content="tooltipContent"
                                         offset="0 4"
                                         placement="bottom"
                                         @on-popper-hide="resetTooltipContent"
                                     >
-                                        <svg
+                                        <CopySvg
                                             class="copyBtn Block_URL"
                                             data-clipboard-text="https://bscscan.com/"
                                             data-clipboard-action="copy"
-                                            @click="copyConfig('.Block_URL')"
-                                            width="24px"
-                                            height="24px"
-                                            viewBox="0 0 24 24"
-                                            version="1.1"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <desc>Created with Lunacy</desc>
-                                            <g id="Icon/Copy">
-                                                <path
-                                                    d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
-                                                    10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
-                                                    2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
-                                                    2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
-                                                    17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
-                                                    7.67157 7.67157 7 8.5 7Z"
-                                                    transform="translate(2.5 2.5)"
-                                                    id="Combined-Shape"
-                                                    fill="#5a575c"
-                                                    fill-rule="evenodd"
-                                                    stroke="none"
-                                                />
-                                            </g>
-                                        </svg>
-                                    </Tooltip>
-                                </Col>
-                            </Row>
-                        </div>
-                        <div class="table">
-                            <div class="secondTitle">
-                                Option 2: Connect BSC Testnet
-                            </div>
-                            <Row>
-                                <Col span="8">Network Name</Col>
-                                <Col span="16"
-                                    >BSC Testnet<Tooltip
-                                        transfer-class-name="transferTooltip"
-                                        transfer
-                                        :content="tooltipContent"
-                                        offset="0 4"
-                                        placement="bottom"
-                                        @on-popper-hide="resetTooltipContent"
-                                    >
-                                        <svg
-                                            class="copyBtn BSC_Testnet"
-                                            data-clipboard-text="BSC Testnet"
-                                            data-clipboard-action="copy"
-                                            @click="copyConfig('.BSC_Testnet')"
-                                            width="24px"
-                                            height="24px"
-                                            viewBox="0 0 24 24"
-                                            version="1.1"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <desc>Created with Lunacy</desc>
-                                            <g id="Icon/Copy">
-                                                <path
-                                                    d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
-                                                    10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
-                                                    2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
-                                                    2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
-                                                    17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
-                                                    7.67157 7.67157 7 8.5 7Z"
-                                                    transform="translate(2.5 2.5)"
-                                                    id="Combined-Shape"
-                                                    fill="#5a575c"
-                                                    fill-rule="evenodd"
-                                                    stroke="none"
-                                                />
-                                            </g>
-                                        </svg>
-                                    </Tooltip>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span="8">New RPC URL</Col>
-                                <Col span="16">
-                                    <div>
-                                        https://data-seed-prebsc-1-s1.binance.org:8545<Tooltip
-                                            transfer-class-name="transferTooltip"
-                                            transfer
-                                            :content="tooltipContent"
-                                            offset="0 4"
-                                            placement="bottom"
-                                            @on-popper-hide="
-                                                resetTooltipContent
+                                            @click.native="
+                                                copyConfig('.Block_URL')
                                             "
-                                        >
-                                            <svg
-                                                class="copyBtn RPC_URL3"
-                                                data-clipboard-text="https://data-seed-prebsc-1-s1.binance.org:8545"
-                                                data-clipboard-action="copy"
-                                                @click="copyConfig('.RPC_URL3')"
-                                                width="24px"
-                                                height="24px"
-                                                viewBox="0 0 24 24"
-                                                version="1.1"
-                                                xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
-                                                <desc>Created with Lunacy</desc>
-                                                <g id="Icon/Copy">
-                                                    <path
-                                                        d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
-                                                        10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
-                                                        2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
-                                                        2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
-                                                        17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
-                                                        7.67157 7.67157 7 8.5 7Z"
-                                                        transform="translate(2.5 2.5)"
-                                                        id="Combined-Shape"
-                                                        fill="#5a575c"
-                                                        fill-rule="evenodd"
-                                                        stroke="none"
-                                                    />
-                                                </g>
-                                            </svg>
-                                        </Tooltip>
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span="8">ChainID</Col>
-                                <Col span="16">97</Col>
-                            </Row>
-                            <Row>
-                                <Col span="8">Symbol</Col>
-                                <Col span="16">BNB</Col>
-                            </Row>
-                            <Row>
-                                <Col span="8">Block Explorer URL</Col>
-                                <Col span="16"
-                                    >https://testnet.bscscan.com/<Tooltip
-                                        transfer-class-name="transferTooltip"
-                                        transfer
-                                        :content="tooltipContent"
-                                        offset="0 4"
-                                        placement="bottom"
-                                        @on-popper-hide="resetTooltipContent"
-                                    >
-                                        <svg
-                                            class="copyBtn Block_Explorer_URL"
-                                            data-clipboard-text="https://testnet.bscscan.com/"
-                                            data-clipboard-action="copy"
-                                            @click="
-                                                copyConfig(
-                                                    '.Block_Explorer_URL'
-                                                )
-                                            "
-                                            width="24px"
-                                            height="24px"
-                                            viewBox="0 0 24 24"
-                                            version="1.1"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <desc>Created with Lunacy</desc>
-                                            <g id="Icon/Copy">
-                                                <path
-                                                    d="M12.9947 2.33562C12.91 1.03154 11.8255 0 10.5 0L2.5 0L2.33562 0.00531768C1.03154 0.0899613 0 1.17452 0 2.5L0 10.5L0.00531768
-                                                    10.6644C0.0899613 11.9685 1.17452 13 2.5 13L4.44938 13L4.44938 12L2.5 12L2.35554 11.9931C1.59489 11.9204 1 11.2797 1 10.5L1 2.5L1.00687
-                                                    2.35554C1.07955 1.59489 1.7203 1 2.5 1L10.5 1L10.6445 1.00687C11.4051 1.07955 12 1.7203 12 2.5L12 4.69901L13 4.69901L13 2.5L12.9947
-                                                    2.33562ZM16.5 6L8.5 6C7.11929 6 6 7.11929 6 8.5L6 16.5C6 17.8807 7.11929 19 8.5 19L16.5 19C17.8807 19 19 17.8807 19 16.5L19 8.5C19 7.11929
-                                                    17.8807 6 16.5 6ZM8.5 7L16.5 7C17.3284 7 18 7.67157 18 8.5L18 16.5C18 17.3284 17.3284 18 16.5 18L8.5 18C7.67157 18 7 17.3284 7 16.5L7 8.5C7
-                                                    7.67157 7.67157 7 8.5 7Z"
-                                                    transform="translate(2.5 2.5)"
-                                                    id="Combined-Shape"
-                                                    fill="#5a575c"
-                                                    fill-rule="evenodd"
-                                                    stroke="none"
-                                                />
-                                            </g>
-                                        </svg>
+                                        />
                                     </Tooltip>
                                 </Col>
                             </Row>
@@ -402,20 +167,27 @@
                                 src="setupModal/3.png"
                             />
                         </div>
-                        <div class="p_2">
-                            <thumbnail
-                                style="width:187px;height:240px;margin: 0 auto;"
-                                thumb="setupModal/4_thumb.png"
-                                src="setupModal/4.png"
-                            />
-                        </div>
                     </div>
                 </div>
                 <div class="step step4">
                     <div class="num">04</div>
                     <div class="text">
-                        Click Save. The BSC mainnet / BSC Testnet is connected
-                        with your Metamask Wallet.
+                        Click Save. The BSC mainnet is connected with your
+                        Metamask Wallet.
+                    </div>
+                </div>
+
+                <div class="step step5">
+                    <div class="num">05</div>
+                    <div class="text">
+                        You can
+                        <span
+                            class="light"
+                            :class="{ disable: isOpen }"
+                            @click="clickAddNetwork(56)"
+                            >add BSC mainnet</span
+                        >
+                        to your Metamask Wallet.
                     </div>
                 </div>
             </div>
@@ -427,24 +199,43 @@
 import _ from "lodash";
 import Clipboard from "clipboard";
 import closeSvg from "@/components/svg/close";
+import CopySvg from "@/components/svg/copy";
+import { addEthereumChain, SUPPORTED_WALLETS_MAP } from "@/assets/linearLibrary/linearTools/network";
 
 export default {
     components: {
-        closeSvg
+        closeSvg,
+        CopySvg
     },
-    name: "stepModal",
+    name: "setupModal",
     data() {
         return {
-            stepModal: false, //教程弹窗
-            tooltipContent: "Copy to clipboard"
+            tooltipContent: "Copy to clipboard",
+            isOpen: false
         };
     },
-    watch: {},
-    computed: {},
+    watch: { setupModal() {} },
+    computed: {
+        setupModal() {
+            return this.$store.state?.setupModal;
+        }
+    },
     methods: {
-        show() {
-            this.stepModal = true;
+        async clickAddNetwork(networkId) {
+            if (!this.isOpen) {
+                this.isOpen = true;
+                try {
+                    await addEthereumChain(networkId);
+                    this.$store.commit("setAutoConnect", true);
+                    this.$store.commit("setWalletType", SUPPORTED_WALLETS_MAP.METAMASK);
+                    location.reload();
+                } catch (error) {
+                } finally {
+                    this.isOpen = false;
+                }
+            }
         },
+
         //测试复制文字
         copyConfig(str) {
             var that = this;
@@ -466,16 +257,14 @@ export default {
                 that.tooltipContent = "Copy to clipboard";
             }, 300);
         }
-    },
-    mounted() {},
-    destroyed() {}
+    }
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 body {
-    .stepModal {
-        /deep/.ivu-modal-wrap {
+    .setupModal {
+        .ivu-modal-wrap {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -487,14 +276,15 @@ body {
                 top: 0 !important;
 
                 .ivu-modal-content {
-                    height: 100%;
-                    padding: 40px 0;
+                    height: inherit;
                     border-radius: 16px;
 
                     .ivu-modal-body {
-                        height: 724px;
-                        padding: 0 50px;
+                        height: inherit;
+                        padding: 40px 50px;
                         overflow-y: hidden;
+                        display: flex;
+                        flex-direction: column;
 
                         .close {
                             position: absolute;
@@ -518,23 +308,12 @@ body {
                             font-family: Gilroy;
                             font-size: 14px;
                             overflow-y: scroll;
-                            height: 648px;
-
-                            .copyBtn {
-                                cursor: pointer;
-                                width: 16px;
-                                height: 16px;
-
-                                &:hover {
-                                    #Combined-Shape {
-                                        fill: #1a38f8;
-                                        stroke: #1a38f8;
-                                    }
-                                }
-                            }
+                            flex: 1;
+                            min-height: 0;
 
                             .step {
                                 display: flex;
+                                margin-bottom: 20px;
                                 .num {
                                     width: 25px;
                                     margin-right: 16px;
@@ -550,7 +329,7 @@ body {
                                     &::before {
                                         position: absolute;
                                         width: 3px;
-                                        height: 227px;
+                                        height: 100%;
                                         border-left: dashed 1px #c3c3c3;
                                         content: "";
                                         display: block;
@@ -587,6 +366,7 @@ body {
                                         .ivu-row {
                                             line-height: 18px;
                                             margin: 0 0 16px 0;
+
                                             .ivu-col:nth-child(1) {
                                                 font-family: Gilroy;
                                                 font-size: 14px;
@@ -609,8 +389,9 @@ body {
                                                 span {
                                                     color: #99999a;
                                                 }
-                                                svg {
-                                                    vertical-align: middle;
+
+                                                .copyBtn {
+                                                    margin-left: 5px;
                                                 }
                                             }
                                         }
@@ -620,15 +401,12 @@ body {
                                     width: 402px;
                                     text-align: center;
 
-
                                     .p_1 {
                                         margin: 73px 0 42px 0;
                                     }
                                 }
                             }
-                            .step1 {
-                                margin: 0 0 20px 0;
-                            }
+
                             .step1,
                             .step2 {
                                 .text p {
@@ -640,73 +418,26 @@ body {
                                 .picture {
                                     width: 375px;
                                 }
-                                .num::before {
-                                    height: 575px;
-                                }
                             }
                             .step4 {
+                                align-items: center;
+                                margin: 0 0 20px 0;
+                            }
+
+                            .step5 {
+                                align-items: center;
                                 .num::before {
                                     display: none;
                                 }
-                                margin: 0 0 20px 0;
-                            }
-                        }
 
-                        .transferTooltip {
-                            z-index: 10001 !important;
+                                .light {
+                                    cursor: pointer;
+                                    color: #1a38f8;
 
-                            &[x-placement="top"] {
-                                .ivu-tooltip-arrow {
-                                    border-right: 1px solid #1a38f8;
-                                    border-bottom: 1px solid #1a38f8;
+                                    &.disable {
+                                        opacity: 0.5;
+                                    }
                                 }
-                            }
-
-                            &[x-placement^="bottom"] {
-                                .ivu-tooltip-arrow {
-                                    border-left: 1px solid #1a38f8;
-                                    border-top: 1px solid #1a38f8;
-                                }
-                            }
-
-                            &[x-placement="left"] {
-                                .ivu-tooltip-arrow {
-                                    border-top: 1px solid #1a38f8;
-                                    border-right: 1px solid #1a38f8;
-                                }
-                            }
-
-                            &[x-placement^="right"] {
-                                .ivu-tooltip-arrow {
-                                    border-left: 1px solid #1a38f8;
-                                    border-bottom: 1px solid #1a38f8;
-                                }
-                            }
-
-                            .ivu-tooltip-arrow {
-                                transform: rotate(45deg);
-                                width: 10px;
-                                height: 10px;
-                                background: white;
-                                border: none;
-                            }
-
-                            .ivu-tooltip-inner {
-                                width: 100%;
-                                background-color: #fff;
-                                font-family: Gilroy-Medium;
-                                font-size: 12px;
-                                line-height: 16px;
-                                font-weight: 500;
-                                color: #5a575c;
-                                padding: 10px 16px;
-                                border: 1px solid #1a38f8;
-                                box-shadow: 0 2px 12px 0 #deddde;
-                                border-radius: 8px;
-                                overflow: hidden;
-                                text-align: left;
-                                word-break: keep-all;
-                                white-space: break-spaces;
                             }
                         }
                     }
@@ -714,5 +445,8 @@ body {
             }
         }
     }
+}
+
+@media only screen and (max-width: $max-phone-width) {
 }
 </style>

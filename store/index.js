@@ -5,7 +5,7 @@ export const state = () => ({
     locale: "en", //默认语言
     theme: "light", //默认主题,light或dark
     currentAction: 0, //应用页面跳转控制 1build 2burn 3claim 4transfer 5swap
-    walletDetailsActionURL: '', //如果url参数有 referral transaction track，则先打开
+    walletDetailsActionURL: "", //如果url参数有 referral transaction track，则先打开
     gasDetails: { price: 0, type: NETWORK_SPEEDS_TO_KEY.MEDIUM, status: -1 }, //gas设置详情,-1未初始化,1已初始化
     sourceGasDetails: {
         price: 0,
@@ -21,7 +21,7 @@ export const state = () => ({
     }, //swap gas设置详情,-1未初始化,1已初始化
     liquidationStatus: {
         status: false,
-        timestamp: 0,
+        timestamp: 0
     },
     wallet: { address: "", status: -1 }, //钱包 address=钱包地址,status:-1=未初始化数据,0:更新中,1更新完成,2更新失败,
     walletDetails: {}, //钱包详情
@@ -35,11 +35,15 @@ export const state = () => ({
     registeredMetamaskWalletEvents: false, //是否已经注册metamask钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
     registeredBinanceWalletEvents: false, //是否已经注册binance钱包回调事件(onMetamaskAccountChange和onMetamaskChainChange)
     registeredWalletConnectEvents: false, //是否已经注册WalletConnect协议回调事件(onWalletConnectAccountChange和onWalletConnectChainChange)
-    walletConnect:{uri:"https://www.investopedia.com/terms/q/quick-response-qr-code.asp",qrcode: false}, // wallet conncect 的 uri连接，在还没生成的时候用教程顶替 , qrcode 为是否显示二维码用
+    walletConnect: {
+        uri: "https://www.investopedia.com/terms/q/quick-response-qr-code.asp",
+        qrcode: false
+    }, // wallet conncect 的 uri连接，在还没生成的时候用教程顶替 , qrcode 为是否显示二维码用
     swapUnfreezeDatas: {}, //swap等待解冻所需数据,用于页面强制刷新后重载swap逻辑
     swapUnfreezeContinue: false, //用于判断用户是否点击了继续swap
     isTransaction: false, // 是否在交易页面
-    autoConnect: false //自动连接钱包
+    autoConnect: false, //自动连接钱包
+    setupModal: false //nework setup 窗口
 });
 
 export const mutations = {
@@ -82,7 +86,7 @@ export const mutations = {
     setCurrentAction(state, data) {
         state.currentAction = data;
     },
-    
+
     setWalletDetailsActionURL(state, data) {
         state.walletDetailsActionURL = data;
     },
@@ -157,6 +161,10 @@ export const mutations = {
 
     setWalletConnect(state, data) {
         state.walletConnect = { ...state.walletConnect, ...data };
+    },
+
+    setSetupModal(state, status) {
+        state.setupModal = status;
     }
 };
 

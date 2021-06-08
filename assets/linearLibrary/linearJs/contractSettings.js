@@ -3,9 +3,9 @@ import addresses from "./lib/addresses";
 
 const SUPPORTED_NETWORKS = {
     1: "mainnet",
-    3: "ropsten",
+    // 3: "ropsten",
     56: "bscmainnet", //bsc主网
-    97: "bsctestnet", //bsc测试网
+    // 97: "bsctestnet", //bsc测试网
     10001: "ethdev", // eth dev
     10056: "bscdev" //bsc dev
 };
@@ -18,7 +18,7 @@ const API_KEY = {
 
 export const RPC_URL = {
     56: "https://bsc-dataseed1.binance.org",
-    97: "https://data-seed-prebsc-1-s3.binance.org:8545",
+    // 97: "https://data-seed-prebsc-1-s3.binance.org:8545",
     10001: "https://master.http.eth.dev.linear.finance",
     10056: "https://master.http.bsc.dev.linear.finance"
 };

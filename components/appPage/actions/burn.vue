@@ -392,7 +392,6 @@
             </div>
         </Modal>
 
-        <setupModal ref="setupModal"></setupModal>
     </div>
 </template>
 
@@ -448,7 +447,6 @@ import {
     DECIMAL_PRECISION
 } from "@/assets/linearLibrary/linearTools/constants/process";
 
-import setupModal from "@/components/setupModal";
 
 export default {
     name: "burn",
@@ -509,7 +507,6 @@ export default {
     },
     components: {
         gasEditor,
-        setupModal
     },
 
     watch: {
@@ -2038,7 +2035,7 @@ export default {
 
         //跳转到设置
         jumpToStep() {
-            this.$refs.setupModal.show();
+            this.$store.commit("setSetupModal", true);
         }
     }
 };
