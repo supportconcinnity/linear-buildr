@@ -74,6 +74,11 @@ export const LIQUIDATION_NETWORKS = {
     10056: "BSCDEV"
 };
 
+export const REWARD_UNLOCK_NETWORKS = {
+    56: "BSCMAINNET",
+    10056: "BSCDEV"
+};
+
 export const isEthereumNetwork = walletNetworkId => {
     return ETHEREUM_NETWORKS.hasOwnProperty(walletNetworkId);
 };
