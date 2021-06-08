@@ -74,6 +74,11 @@ export const LIQUIDATION_NETWORKS = {
     10056: "BSCDEV"
 };
 
+export const REWARD_UNLOCK_NETWORKS = {
+    56: "BSCMAINNET",
+    10056: "BSCDEV"
+};
+
 export const isEthereumNetwork = walletNetworkId =>
     ETHEREUM_NETWORKS.hasOwnProperty(walletNetworkId);
 export const isBinanceNetwork = walletNetworkId =>
@@ -88,8 +93,6 @@ export const isEthDevNetwork = walletNetworkId =>
     ETHDEV_NETWORKS.hasOwnProperty(walletNetworkId);
 export const isBscDevNetwork = walletNetworkId =>
     BSCDEV_NETWORKS.hasOwnProperty(walletNetworkId);
-export const isSupportNetwork = walletNetworkId =>
-    SUPPORTED_NETWORKS.hasOwnProperty(walletNetworkId);
 
 /**
  * 获取所在网络其他网络id

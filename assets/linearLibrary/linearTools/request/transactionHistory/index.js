@@ -1,7 +1,7 @@
 import linearData from "../linearData/transactionData";
 import flatten from "lodash/flatten";
 import _ from "lodash";
-import { isBinanceNetwork, isEthereumNetwork, LIQUIDATION_NETWORKS } from "../../network";
+import { isBinanceNetwork, isEthereumNetwork, LIQUIDATION_NETWORKS, REWARD_UNLOCK_NETWORKS } from "../../network";
 
 export const PAGINATION_INDEX = 10;
 
@@ -35,7 +35,6 @@ export const fetchTransactionHistory = async (
             referrals,
             freeZes,
             unfreezes,
-            unlockRewards
         ] = await Promise.all([
             linearData.lnr.minted({ account: walletAddress, networkId }),
             linearData.lnr.burned({ account: walletAddress, networkId }),
@@ -49,7 +48,6 @@ export const fetchTransactionHistory = async (
             linearData.lnr.referral({ to: walletAddress, networkId }),
             linearData.lnr.freeZe({ depositor: walletAddress, networkId }),
             linearData.lnr.unfreeze({ recipient: walletAddress, networkId }),
-            linearData.lnr.unlockReward({account: walletAddress, networkId})
         ]);
 
         let tempDataArr = [
@@ -62,8 +60,12 @@ export const fetchTransactionHistory = async (
             referrals,
             freeZes,
             unfreezes,
-            unlockRewards
         ];
+
+        if (REWARD_UNLOCK_NETWORKS[networkId] !== undefined){
+            const unlockRewards = await linearData.lnr.unlockReward({account: walletAddress, networkId});
+            tempDataArr.push(unlockRewards);
+        }
 
         //如果是bsc main/bsc(私链)则检查liquidation
         if (LIQUIDATION_NETWORKS[networkId] !== undefined) {

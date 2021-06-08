@@ -346,8 +346,7 @@ module.exports = {
                             account,
                             timestamp,
                             block,
-                            value,
-                            currency
+                            value
                         }) => ({
                             hash: id.split("-")[0],
                             account,
