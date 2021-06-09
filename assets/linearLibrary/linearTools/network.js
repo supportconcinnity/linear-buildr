@@ -411,5 +411,8 @@ export const checkNetwork = async (networkId = null) => {
         const network = await getEthereumNetwork();
         networkId = network?.networkId;
     }
-    return isSupportNetwork(networkId);
+    return [
+        SUPPORTED_NETWORKS_MAP.BSCMAINNET,
+        SUPPORTED_NETWORKS_MAP.BSCDEV
+    ].includes(String(networkId));
 };
