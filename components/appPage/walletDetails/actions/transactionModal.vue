@@ -623,8 +623,8 @@ export default {
                         rewardsLina = formatNumber(item.rewardsLina) + " LINA";
                     }
                     amount = "+" + rewardsLina + "&\n" + "+" + rewardslusd;
-                } else if (itme.type == "Unlock Reward") {
-                    amount = formatNumber(item.value, item.decimal) + " LINA";
+                } else if (item.type == "Unlock Reward") {
+                    amount = formatNumber(item.value) + " LINA";
                 } else {
                     return null;
                 }
