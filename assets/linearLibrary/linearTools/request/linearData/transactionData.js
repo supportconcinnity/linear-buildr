@@ -313,6 +313,51 @@ module.exports = {
                 )
                 .catch(err => console.error(err));
         },
+        unlockReward({
+            max = maxRequest,
+            account = undefined,
+            networkId = $nuxt.$store.state?.walletNetworkId
+        } = {}) {
+            return pageResults({
+                api: graphAPIEndpoints[networkId],
+                max,
+                query: {
+                    entity: "rewardUnlockeds",
+                    selection: {
+                        orderBy: "timestamp",
+                        orderDirection: "desc",
+                        where: {
+                            account: account ? `\\"${account}\\"` : undefined
+                        }
+                    },
+                    properties: [
+                        "id",
+                        "account",
+                        "timestamp",
+                        "block",
+                        "value"
+                    ]
+                }
+            })
+                .then(results =>
+                    results.map(
+                        ({
+                            id,
+                            account,
+                            timestamp,
+                            block,
+                            value
+                        }) => ({
+                            hash: id.split("-")[0],
+                            account,
+                            timestamp: Number(timestamp * 1000),
+                            block: Number(block),
+                            value: bn2n(BigNumber.from(value)),
+                        })
+                    )
+                )
+                .catch(err => console.error(err));
+        },
         redeemCollateral({
             max = maxRequest,
             account = undefined,

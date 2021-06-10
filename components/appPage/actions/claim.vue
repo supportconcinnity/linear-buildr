@@ -182,9 +182,7 @@ export default {
             confirmTransactionHash: "", //交易hash
             hasClaim: true, //有没有claim过
             pendingRewardEntries: undefined,
-            currentRatioPercent: 0, //当前P ratio
-
-            // leftTime: 0
+            currentRatioPercent: 0 //当前P ratio
         };
     },
     created() {
@@ -220,14 +218,7 @@ export default {
 
         //claim按钮禁止状态
         claimDisabled() {
-            //到达20210310-15:30则停止claim
-            // let disbaled = false;
-            // if (isMainnetNetwork(this.walletNetworkId) && this.leftTime <= 0) {
-            //     console.log("_");
-            //     disbaled = true;
-            // }
             return (
-                // disbaled ||
                 !this.feesAreClaimable ||
                 this.processing ||
                 (this.tradingRewards == 0 && this.stakingRewards == 0) ||
@@ -240,17 +231,6 @@ export default {
         }
     },
     methods: {
-        countDown() {
-            const loop = () => {
-                let timestamp = Math.round(new Date().getTime() / 1000);
-                this.leftTime = 1615361400 - timestamp;
-                // console.log(this.leftTime);
-                this.leftTime > 0 && setTimeout(loop, 1000);
-            };
-
-            loop();
-        },
-
         //点击 claim
         async clickClaim() {
             if (!this.claimDisabled) {
