@@ -159,6 +159,11 @@ const currencies = {
         fullName: "Xangle Cap index",
         type: "index"
     },
+    lDEFI: {
+        name: "ℓDEFI",
+        fullName: "Pie DAO Index",
+        type: "index"
+    },
     lUNI: {
         name: "ℓUNI",
         fullName: "Uniswap",
@@ -192,7 +197,7 @@ const currencies = {
     lVET: {
         name: "ℓVET",
         fullName: "Vechain",
-        type: "crypto",
+        type: "crypto"
     }
 };
 

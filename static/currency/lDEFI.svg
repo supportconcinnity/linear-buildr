@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>lDEFI-Active</title>
+    <defs>
+        <circle id="path-1" cx="7" cy="7" r="7"></circle>
+        <linearGradient x1="69.2209654%" y1="66.1923217%" x2="47.7657537%" y2="43.1599506%" id="linearGradient-3">
+            <stop stop-color="#516EFF" offset="0%"></stop>
+            <stop stop-color="#4393FF" offset="20%"></stop>
+            <stop stop-color="#38B1FF" offset="41%"></stop>
+            <stop stop-color="#30C7FF" offset="62%"></stop>
+            <stop stop-color="#2BD5FF" offset="82%"></stop>
+            <stop stop-color="#29D9FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="35.1704334%" y1="39.823478%" x2="71.0106666%" y2="60.6012074%" id="linearGradient-4">
+            <stop stop-color="#4FB0FC" offset="0%"></stop>
+            <stop stop-color="#51A9FC" offset="12%"></stop>
+            <stop stop-color="#5897FC" offset="30%"></stop>
+            <stop stop-color="#6278FD" offset="51%"></stop>
+            <stop stop-color="#714DFE" offset="74%"></stop>
+            <stop stop-color="#8417FF" offset="99%"></stop>
+            <stop stop-color="#8416FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="29.401129%" y1="38.073636%" x2="66.1111414%" y2="60.8694052%" id="linearGradient-5">
+            <stop stop-color="#781DFB" offset="0%"></stop>
+            <stop stop-color="#A10ED3" offset="51%"></stop>
+            <stop stop-color="#C500B0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="13.8281719%" y1="44.5097714%" x2="86.1714782%" y2="62.182572%" id="linearGradient-6">
+            <stop stop-color="#B303B2" offset="0%"></stop>
+            <stop stop-color="#FF1178" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="⭐️-04_Icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon_Tokens-(Active)" transform="translate(-151.000000, -996.000000)">
+            <g id="lDEFI-Active" transform="translate(151.000000, 996.000000)">
+                <g id="Group-2">
+                    <circle id="Oval" fill="#F6F6F6" cx="12" cy="12" r="12"></circle>
+                    <g id="PieDAO-Copy-3" transform="translate(5.000000, 5.000000)">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <g id="Oval"></g>
+                        <g id="Group" mask="url(#mask-2)" fill-rule="nonzero">
+                            <g transform="translate(-10.836000, -10.447000)" id="Path">
+                                <path d="M14.53382,30.02985 C15.907122,28.56685 17.57287,29.04124 18.96888,28.55012 C19.8583,28.2375 20.59309,27.58342 21.10703,26.79291 C21.91763,25.54649 22.08927,23.88287 23.19604,22.88999 C23.41241,22.69574 23.66266,22.53033 23.82226,22.28743 C23.9463,22.09892 24.00671,21.87667 24.06537,21.65876 L26.45853,12.762215 C24.57098,13.176748 23.13787,14.669827 21.83636,16.098317 C16.324469,22.14785 10.9613049,28.36021 4.895709,33.85493 L12.500334,35.90138 C13.061433,36.05167 13.453853,33.26756 13.488643,33.0269 C13.646941,31.92727 13.840092,30.92662 14.53368,30.03041" fill="url(#linearGradient-3)"></path>
+                                <path d="M5.164775,33.93578 C5.164775,33.93578 6.444571,33.07989 7.452473,32.82495 C8.460375,32.57001 10.064453,31.92153 11.0037228,30.95693 C11.942994,29.99226 12.411665,29.06756 12.772774,27.61646 C13.133876,26.16536 14.301574,24.90235 15.786218,24.41564 C17.270869,23.92893 20.30987,23.83121 21.08512,21.24702 C21.86044,18.6629 22.0794,14.907064 26.39273,12.966811 L29.2299,2.44908 L27.82598,2.0729 L1.0227,31.23959 L0.00756,32.55167 L5.164775,33.93578 Z" fill="url(#linearGradient-4)"></path>
+                                <path d="M2.94924,33.34218 C2.94924,33.34218 3.952676,32.48153 4.638662,30.38482 C5.024887,29.20525 5.527613,28.05851 6.330604,27.09923 C7.552006,25.6405 9.289168,24.83697 11.1205367,24.45365 C11.3731527,24.4008 11.625362,24.36433 11.871237,24.28285 C12.334637,24.12857 12.774083,23.90996 13.176716,23.63353 C14.346241,22.82762 15.032507,21.35272 15.645406,19.5267 C16.258312,17.70068 17.706661,15.393851 19.14493,14.203655 C20.58315,13.013452 21.78274,12.256864 23.96163,10.9333173 C26.14059,9.609772 28.5929,7.889648 28.87297,2.35339 L23.84361,1.00582 L3.46129,19.66208 L0.00707,32.55349 L2.94924,33.34218 Z" fill="url(#linearGradient-5)"></path>
+                                <path d="M2.85131,21.94177 C2.85131,21.94177 4.223555,20.07081 7.080087,19.46818 C9.936619,18.86548 11.2067578,20.15929 13.357666,16.465334 C15.50857,12.771406 15.258278,11.377839 17.369527,9.538876 C19.48079,7.699913 21.0847,6.968924 23.10343,5.934443 C25.12216,4.899962 26.16299,4.418873 26.86089,1.81425 L20.2846,0.05214 L4.374097,16.255544 L2.85131,21.94177 Z" fill="url(#linearGradient-6)"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
