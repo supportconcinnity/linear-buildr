@@ -737,7 +737,7 @@ export default {
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.BURN_UNSTAKING
                     ) {
-                        await this.burnAndUnstake({
+                        await this.burnAndUnstakeMax({
                             burnAmount: this.actionDatas.amount,
                             unstakeAmount: this.actionDatas.unStake
                         });
@@ -770,7 +770,7 @@ export default {
         },
 
         //burn
-        async burnAndUnstake(
+        async burnAndUnstakeMax(
             { burnAmount, unstakeAmount } = {
                 burnAmount: n2bn("0"),
                 unstakeAmount: n2bn("0")
@@ -793,15 +793,14 @@ export default {
                 utils
             } = lnrJSConnector;
 
-            const burnGasLimit = await this.getBurnAndUnstakeGasEstimate(
+            const burnGasLimit = await this.getBurnAndUnstakeGasEstimateMax(
                 burnAmount,
                 unstakeAmount
             );
 
-            let transaction = await LnCollateralSystem.burnAndUnstake(
+            let transaction = await LnCollateralSystem.burnAndUnstakeMax(
                 burnAmount,
                 utils.formatBytes32String("LINA"),
-                unstakeAmount,
                 {
                     gasPrice: this.$store.state?.gasDetails?.price,
                     gasLimit: burnGasLimit
@@ -945,7 +944,7 @@ export default {
         },
 
         //评估 二合一 gas
-        async getBurnAndUnstakeGasEstimate(burnAmount, unstakeAmount) {
+        async getBurnAndUnstakeGasEstimateMax(burnAmount, unstakeAmount) {
             try {
                 const {
                     lnrJS: { LnCollateralSystem },
@@ -959,10 +958,9 @@ export default {
                     throw new Error("invalid input");
                 }
 
-                let gasEstimate = await LnCollateralSystem.contract.estimateGas.burnAndUnstake(
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.burnAndUnstakeMax(
                     burnAmount,
-                    utils.formatBytes32String("LINA"),
-                    unstakeAmount
+                    utils.formatBytes32String("LINA")
                 );
 
                 return bufferGasLimit(gasEstimate);
