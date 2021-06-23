@@ -1410,7 +1410,7 @@ export default {
                         this.waitProcessArray[this.confirmTransactionStep] ==
                         BUILD_PROCESS_SETUP.STAKING_BUILD
                     ) {
-                        await this.startStakingAndBuildContract({
+                        await this.startStakingAndBuildMaxContract({
                             stakeAmountLINA: this.actionData.stake,
                             buildAmountlUSD: this.actionData.amount
                         });
@@ -1505,7 +1505,7 @@ export default {
         },
 
         //开始抵押和build合约调用
-        async startStakingAndBuildContract(
+        async startStakingAndBuildMaxContract(
             { stakeAmountLINA, buildAmountlUSD } = {
                 stakeAmountLINA: n2bn("0"),
                 buildAmountlUSD: n2bn("0")
@@ -1544,15 +1544,14 @@ export default {
                 gasLimit: this.gasLimit
             };
 
-            transactionSettings.gasLimit = await this.getGasEstimateFromStakingAndBuild(
+            transactionSettings.gasLimit = await this.getGasEstimateFromStakingAndBuildMax(
                 stakeAmountLINA,
                 buildAmountlUSD
             );
 
-            let transaction = await LnCollateralSystem.stakeAndBuild(
+            let transaction = await LnCollateralSystem.stakeAndBuildMax(
                 utils.formatBytes32String("LINA"),
                 stakeAmountLINA,
-                buildAmountlUSD,
                 transactionSettings
             );
 
@@ -1739,7 +1738,7 @@ export default {
         },
 
         //评估StakingAndBuild的gas
-        async getGasEstimateFromStakingAndBuild(
+        async getGasEstimateFromStakingAndBuildMax(
             stakeAmountLINA,
             buildAmountlUSD
         ) {
@@ -1756,15 +1755,14 @@ export default {
                     throw new Error("invalid input");
                 }
 
-                let gasEstimate = await LnCollateralSystem.contract.estimateGas.stakeAndBuild(
+                let gasEstimate = await LnCollateralSystem.contract.estimateGas.stakeAndBuildMax(
                     utils.formatBytes32String("LINA"),
-                    stakeAmountLINA,
-                    buildAmountlUSD
+                    stakeAmountLINA
                 );
 
                 return bufferGasLimit(gasEstimate);
             } catch (e) {
-                console.log(e, "getGasEstimateFromStakingAndBuild");
+                console.log(e, "getGasEstimateFromStakingAndBuildMax");
                 return bufferGasLimit(DEFAULT_GAS_LIMIT.staking);
             }
         },
