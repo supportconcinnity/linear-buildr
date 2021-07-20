@@ -22,19 +22,25 @@
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "bytes32",
-				"name": "name",
-				"type": "bytes32"
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
 			},
 			{
 				"indexed": false,
-				"internalType": "address",
-				"name": "asset",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
 			}
 		],
-		"name": "AssetAdded",
+		"name": "Approval",
 		"type": "event"
 	},
 	{
@@ -49,11 +55,11 @@
 			{
 				"indexed": false,
 				"internalType": "address",
-				"name": "asset",
+				"name": "addr",
 				"type": "address"
 			}
 		],
-		"name": "AssetRemoved",
+		"name": "CachedAddressUpdated",
 		"type": "event"
 	},
 	{
@@ -79,52 +85,26 @@
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "bytes32",
-				"name": "underlying",
-				"type": "bytes32"
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
 			},
 			{
 				"indexed": false,
-				"internalType": "address",
-				"name": "perp",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
 			}
 		],
-		"name": "PerpAdded",
+		"name": "Transfer",
 		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "bytes32",
-				"name": "name",
-				"type": "bytes32"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "addr",
-				"type": "address"
-			}
-		],
-		"name": "StorageAddressUpdated",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_admin",
-				"type": "address"
-			}
-		],
-		"name": "__LnAddressStorage_init",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"inputs": [
@@ -142,38 +122,27 @@
 	{
 		"inputs": [
 			{
+				"internalType": "bytes32",
+				"name": "_key",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_symbol",
+				"type": "string"
+			},
+			{
 				"internalType": "address",
 				"name": "_admin",
 				"type": "address"
 			}
 		],
-		"name": "__LnAssetSystem_init",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract ILnAsset",
-				"name": "asset",
-				"type": "address"
-			}
-		],
-		"name": "addAsset",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract ILnPerpetual",
-				"name": "perp",
-				"type": "address"
-			}
-		],
-		"name": "addPerp",
+		"name": "__LnAssetUpgradeable_init",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -192,8 +161,62 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "assetNumber",
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			}
+		],
+		"name": "allowance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -212,6 +235,24 @@
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "burn",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "candidate",
 		"outputs": [
@@ -225,19 +266,13 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "name",
-				"type": "bytes32"
-			}
-		],
-		"name": "getAddress",
+		"inputs": [],
+		"name": "decimals",
 		"outputs": [
 			{
-				"internalType": "address",
+				"internalType": "uint8",
 				"name": "",
-				"type": "address"
+				"type": "uint8"
 			}
 		],
 		"stateMutability": "view",
@@ -246,49 +281,17 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
-				"name": "name",
-				"type": "bytes32"
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
 			},
 			{
-				"internalType": "string",
-				"name": "reason",
-				"type": "string"
+				"internalType": "uint256",
+				"name": "subtractedValue",
+				"type": "uint256"
 			}
 		],
-		"name": "getAddressWithRequire",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getAssetAddresses",
-		"outputs": [
-			{
-				"internalType": "address[]",
-				"name": "",
-				"type": "address[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "perpAddress",
-				"type": "address"
-			}
-		],
-		"name": "isPerpAddressRegistered",
+		"name": "decreaseAllowance",
 		"outputs": [
 			{
 				"internalType": "bool",
@@ -296,80 +299,41 @@
 				"type": "bool"
 			}
 		],
-		"stateMutability": "view",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "spender",
 				"type": "address"
-			}
-		],
-		"name": "mAddress2Names",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"name": "mAddrs",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
+			},
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "addedValue",
 				"type": "uint256"
 			}
 		],
-		"name": "mAssetList",
+		"name": "increaseAllowance",
 		"outputs": [
 			{
-				"internalType": "contract ILnAsset",
+				"internalType": "bool",
 				"name": "",
-				"type": "address"
+				"type": "bool"
 			}
 		],
-		"stateMutability": "view",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"inputs": [
+		"inputs": [],
+		"name": "keyName",
+		"outputs": [
 			{
 				"internalType": "bytes32",
 				"name": "",
 				"type": "bytes32"
-			}
-		],
-		"name": "perpAddresses",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -379,32 +343,31 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "account",
 				"type": "address"
-			}
-		],
-		"name": "perpSymbols",
-		"outputs": [
+			},
 			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
 			}
 		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "name",
-				"type": "bytes32"
-			}
-		],
-		"name": "removeAsset",
+		"name": "mint",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -422,11 +385,24 @@
 	},
 	{
 		"inputs": [],
-		"name": "totalAssetsInUsd",
+		"name": "symbol",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalSupply",
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "rTotal",
+				"name": "",
 				"type": "uint256"
 			}
 		],
@@ -436,35 +412,65 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
-				"name": "name",
-				"type": "bytes32"
+				"internalType": "address",
+				"name": "recipient",
+				"type": "address"
 			},
 			{
-				"internalType": "address",
-				"name": "dest",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
 			}
 		],
-		"name": "update",
-		"outputs": [],
+		"name": "transfer",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32[]",
-				"name": "names",
-				"type": "bytes32[]"
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
 			},
 			{
-				"internalType": "address[]",
-				"name": "destinations",
-				"type": "address[]"
+				"internalType": "address",
+				"name": "recipient",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
 			}
 		],
-		"name": "updateAll",
+		"name": "transferFrom",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "contract ILnAddressStorage",
+				"name": "_addressStorage",
+				"type": "address"
+			}
+		],
+		"name": "updateAddressCache",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
