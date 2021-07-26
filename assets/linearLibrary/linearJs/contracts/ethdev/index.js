@@ -21,8 +21,9 @@ import lXLCI from './lXLCI';
 import lXBCI from './lXBCI';
 import lVET from './lVET';
 import lDEFI from './lDEFI';
+import lCAKE from './lCAKE';
   
   export default {
-    LinearFinance, lUSD, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG, lEUR, lUNI, lJPY, LnAssetSystem, LnErc20Bridge, lXLCI, lXBCI, lVET, lDEFI
+    LinearFinance, lUSD, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG, lEUR, lUNI, lJPY, LnAssetSystem, LnErc20Bridge, lXLCI, lXBCI, lVET, lDEFI, lCAKE
   };
     

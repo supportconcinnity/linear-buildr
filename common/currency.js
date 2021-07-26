@@ -198,6 +198,11 @@ const currencies = {
         name: "ℓVET",
         fullName: "Vechain",
         type: "crypto"
+    },
+    lCAKE: {
+        name: "ℓCAKE",
+        fullName: "PancakeSwap",
+        type: "crypto"
     }
 };
 

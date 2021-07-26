@@ -33,6 +33,11 @@
         return await this.contract.addAsset(asset, txParams);
       };
     
+      this.addPerp = async (perp, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.addPerp(perp, txParams);
+      };
+    
       this.admin = async (txParams) => {
         txParams = txParams || {};
         return await this.contract.admin(txParams);
@@ -68,6 +73,11 @@
         return await this.contract.getAssetAddresses(txParams);
       };
     
+      this.isPerpAddressRegistered = async (perpAddress, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.isPerpAddressRegistered(perpAddress, txParams);
+      };
+    
       this.mAddress2Names = async (address_1, txParams) => {
         txParams = txParams || {};
         return await this.contract.mAddress2Names(address_1, txParams);
@@ -81,6 +91,16 @@
       this.mAssetList = async (uint256_1, txParams) => {
         txParams = txParams || {};
         return await this.contract.mAssetList(uint256_1, txParams);
+      };
+    
+      this.perpAddresses = async (bytes32_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.perpAddresses(bytes32_1, txParams);
+      };
+    
+      this.perpSymbols = async (address_1, txParams) => {
+        txParams = txParams || {};
+        return await this.contract.perpSymbols(address_1, txParams);
       };
     
       this.removeAsset = async (name, txParams) => {

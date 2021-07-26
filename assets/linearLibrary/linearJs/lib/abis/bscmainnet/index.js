@@ -29,8 +29,9 @@ import lXBCI from './lXBCI';
 import lVET from './lVET';
 import LnLiquidation from './LnLiquidation';
 import lDEFI from './lDEFI';
+import lCAKE from './lCAKE';
   
   export default {
-    LinearFinance, LnAssetSystem, LnBuildBurnSystem, LnConfig, LnOracleRouter, LnDebtSystem, LnCollateralSystem, LnRewardLocker, lUSD, LnRewardSystem, LnErc20Bridge, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG, lEUR, lUNI, lJPY, lXLCI, lXBCI, lVET, LnLiquidation, lDEFI
+    LinearFinance, LnAssetSystem, LnBuildBurnSystem, LnConfig, LnOracleRouter, LnDebtSystem, LnCollateralSystem, LnRewardLocker, lUSD, LnRewardSystem, LnErc20Bridge, lBTC, lETH, lLINK, lTRX, lDOT, lYFI, lBNB, lADA, lXLM, lXAU, lXAG, lEUR, lUNI, lJPY, lXLCI, lXBCI, lVET, LnLiquidation, lDEFI, lCAKE
   };
     
