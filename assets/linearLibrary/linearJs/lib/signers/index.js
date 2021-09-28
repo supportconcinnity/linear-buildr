@@ -4,8 +4,8 @@ import WalletConnect from "./walletConnectSigner";
 import PrivateKey from "./privateKeySigner";
 
 export default {
-    MetaMask,
-    BinanceChain,
-    WalletConnect,
-    PrivateKey
+  MetaMask,
+  BinanceChain,
+  WalletConnect,
+  PrivateKey,
 };

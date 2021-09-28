@@ -4,141 +4,139 @@ export default [
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'oldAdmin',
-        type: 'address'
+        internalType: "address",
+        name: "oldAdmin",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'newAdmin',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "newAdmin",
+        type: "address",
+      },
     ],
-    name: 'AdminChanged',
-    type: 'event'
+    name: "AdminChanged",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'oldCandidate',
-        type: 'address'
+        internalType: "address",
+        name: "oldCandidate",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'newCandidate',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "newCandidate",
+        type: "address",
+      },
     ],
-    name: 'CandidateChanged',
-    type: 'event'
+    name: "CandidateChanged",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'key',
-        type: 'bytes32'
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'value',
-        type: 'uint256'
-      }
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
     ],
-    name: 'SetUintConfig',
-    type: 'event'
+    name: "SetUintConfig",
+    type: "event",
   },
   {
     inputs: [],
-    name: 'BUILD_RATIO',
-    outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
-    stateMutability: 'view',
-    type: 'function'
+    name: "BUILD_RATIO",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
   },
   {
-    inputs: [ { internalType: 'address', name: '_admin', type: 'address' } ],
-    name: '__LnAdminUpgradeable_init',
+    inputs: [{ internalType: "address", name: "_admin", type: "address" }],
+    name: "__LnAdminUpgradeable_init",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    inputs: [ { internalType: 'address', name: '_admin', type: 'address' } ],
-    name: '__LnConfig_init',
+    inputs: [{ internalType: "address", name: "_admin", type: "address" }],
+    name: "__LnConfig_init",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'admin',
-    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
-    stateMutability: 'view',
-    type: 'function'
+    name: "admin",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
-      { internalType: 'bytes32[]', name: 'names', type: 'bytes32[]' },
-      { internalType: 'uint256[]', name: 'values', type: 'uint256[]' }
+      { internalType: "bytes32[]", name: "names", type: "bytes32[]" },
+      { internalType: "uint256[]", name: "values", type: "uint256[]" },
     ],
-    name: 'batchSet',
+    name: "batchSet",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'becomeAdmin',
+    name: "becomeAdmin",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'candidate',
-    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
-    stateMutability: 'view',
-    type: 'function'
+    name: "candidate",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
   },
   {
-    inputs: [ { internalType: 'bytes32', name: 'key', type: 'bytes32' } ],
-    name: 'deleteUint',
+    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    name: "deleteUint",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    inputs: [ { internalType: 'bytes32', name: 'key', type: 'bytes32' } ],
-    name: 'getUint',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function'
+    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    name: "getUint",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_candidate", type: "address" }],
+    name: "setCandidate",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
-      { internalType: 'address', name: '_candidate', type: 'address' }
+      { internalType: "bytes32", name: "key", type: "bytes32" },
+      { internalType: "uint256", name: "value", type: "uint256" },
     ],
-    name: 'setCandidate',
+    name: "setUint",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'key', type: 'bytes32' },
-      { internalType: 'uint256', name: 'value', type: 'uint256' }
-    ],
-    name: 'setUint',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  }
 ];

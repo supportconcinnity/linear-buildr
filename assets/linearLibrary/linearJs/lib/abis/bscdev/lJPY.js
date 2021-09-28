@@ -1,3 +1,2 @@
-import lJPY from '../bscmainnet/lUSD';
-      export default lJPY;
-      
+import lJPY from "../bscmainnet/lUSD";
+export default lJPY;

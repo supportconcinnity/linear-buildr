@@ -1,3 +1,2 @@
-import lXBCI from '../mainnet/lUSD';
-      export default lXBCI;
-      
+import lXBCI from "../mainnet/lUSD";
+export default lXBCI;

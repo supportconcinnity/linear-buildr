@@ -10,20 +10,20 @@ $darkButtonColor: #000; //按钮色
 $darkButtonHoverColor: #000; //按钮热点色
 
 .dark {
-    * {
-        transition: 0.2s linear;
-    }
+  * {
+    transition: 0.2s linear;
+  }
 }
 
 //导出变量,在js中使用
 //Export for js
 :export {
-    darkBackgroundColor: $darkBackgroundColor;
-    darkBackgroundDeepColor: $darkBackgroundDeepColor;
-    darkFontColor: $darkFontColor;
-    darkBorderColor: $darkBorderColor;
-    darkBorderLightColor: $darkBorderLightColor;
-    darkBorderDeepColor: $darkBorderDeepColor;
-    darkButtonColor: $darkButtonColor;
-    darkButtonHoverColor: $darkButtonHoverColor;
+  darkBackgroundColor: $darkBackgroundColor;
+  darkBackgroundDeepColor: $darkBackgroundDeepColor;
+  darkFontColor: $darkFontColor;
+  darkBorderColor: $darkBorderColor;
+  darkBorderLightColor: $darkBorderLightColor;
+  darkBorderDeepColor: $darkBorderDeepColor;
+  darkButtonColor: $darkButtonColor;
+  darkButtonHoverColor: $darkButtonHoverColor;
 }

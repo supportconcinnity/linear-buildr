@@ -11,14 +11,14 @@ export const BIGNUMBER_BASENUMBER = (1e18).toString();
 export const DECIMAL_PRECISION = 2;
 
 //Number转bigNumber
-export const n2bn = num => utils.parseEther(num.toString());
+export const n2bn = (num) => utils.parseEther(num.toString());
 
 //bigNumber转Number
 // export const bn2n = num => Number(utils.formatEther(num.toString()));
-export const bn2n = num => formatEtherToNumber(num);
+export const bn2n = (num) => formatEtherToNumber(num);
 
 //数字字符串直接转bigNumber
-export const numberStrToBN = num => BigNumber.from(num.toString());
+export const numberStrToBN = (num) => BigNumber.from(num.toString());
 
 //bigNumber加法,返回bigNumber
 export const bnAdd = (a, b) => _add(a, b);
@@ -43,14 +43,12 @@ export const bnDiv = (a, b) => _div(a, b);
 //bigNumber除法,返回number
 export const bnDiv2N = (a, b) => formatEtherToNumber(_div(a, b));
 const _div = (a, b) => {
-    return BigNumber.from(
-        toNonExponential(
-            floor(
-                floor(
-                    Number(a.toString()) / Number(b.toString()),
-                    MAX_DECIMAL_LENGTH
-                ) * BIGNUMBER_BASENUMBER
-            ).toString()
-        )
-    );
+  return BigNumber.from(
+    toNonExponential(
+      floor(
+        floor(Number(a.toString()) / Number(b.toString()), MAX_DECIMAL_LENGTH) *
+          BIGNUMBER_BASENUMBER
+      ).toString()
+    )
+  );
 };

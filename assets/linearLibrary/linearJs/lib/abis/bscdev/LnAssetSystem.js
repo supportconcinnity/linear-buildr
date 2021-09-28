@@ -1,3 +1,2 @@
-import LnAssetSystem from '../bscmainnet/LnAssetSystem';
-      export default LnAssetSystem;
-      
+import LnAssetSystem from "../bscmainnet/LnAssetSystem";
+export default LnAssetSystem;

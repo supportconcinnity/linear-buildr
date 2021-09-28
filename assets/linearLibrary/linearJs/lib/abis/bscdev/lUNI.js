@@ -1,3 +1,2 @@
-import lUNI from '../bscmainnet/lUSD';
-      export default lUNI;
-      
+import lUNI from "../bscmainnet/lUSD";
+export default lUNI;

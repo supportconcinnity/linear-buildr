@@ -46,6 +46,7 @@
     "lodash-webpack-plugin": "^0.11.5",
     "node-sass": "^4.13.1",
     "nodemon": "^1.18.9",
+    "prettier": "2.4.1",
     "sass-loader": "^8.0.2"
   },
   "browserslist": [

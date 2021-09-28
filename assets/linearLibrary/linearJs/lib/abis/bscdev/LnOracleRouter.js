@@ -1,3 +1,2 @@
-import LnOracleRouter from '../bscmainnet/LnOracleRouter';
-      export default LnOracleRouter;
-      
+import LnOracleRouter from "../bscmainnet/LnOracleRouter";
+export default LnOracleRouter;
