@@ -94,3 +94,6 @@ sw.*
 .editorconfig
 
 package-lock.json
+
+# generated contracts
+**/contracts
