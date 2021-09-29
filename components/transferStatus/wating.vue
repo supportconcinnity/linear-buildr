@@ -45,7 +45,7 @@
 import {
   isEthereumNetwork,
   SUPPORTED_WALLETS_MAP,
-} from "@/assets/linearLibrary/linearTools/network";
+} from "~/assets/linearLibrary/linearTools/networkMethods";
 export default {
   name: "transferWating",
   props: ["value"], //实现v-model

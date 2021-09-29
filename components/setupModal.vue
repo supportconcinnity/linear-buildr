@@ -183,7 +183,7 @@ import CopySvg from "@/components/svg/copy";
 import {
   addEthereumChain,
   SUPPORTED_WALLETS_MAP,
-} from "@/assets/linearLibrary/linearTools/network";
+} from "~/assets/linearLibrary/linearTools/networkMethods";
 
 export default {
   components: {

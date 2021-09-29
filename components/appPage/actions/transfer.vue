@@ -333,7 +333,7 @@ import {
 } from "@/common/utils";
 
 import _ from "lodash";
-import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import lnrJSConnector from "~/assets/linearLibrary/linearTools/lnrJSConnector";
 import {
   getLiquids,
   storeDetailsData,
@@ -344,7 +344,7 @@ import {
   DEFAULT_GAS_LIMIT,
   isBinanceNetwork,
   isEthereumNetwork,
-} from "@/assets/linearLibrary/linearTools/network";
+} from "~/assets/linearLibrary/linearTools/networkMethods";
 import currencies from "@/common/currency";
 
 import {

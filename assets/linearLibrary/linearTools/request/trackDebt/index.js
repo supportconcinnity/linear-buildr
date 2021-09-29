@@ -3,7 +3,7 @@ import _ from "lodash";
 import { formatEtherToNumber } from "@/assets/linearLibrary/linearTools/format";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { ethers } from "ethers";
-import { getOtherNetworks } from "../../network";
+import { getOtherNetworks } from "../../networkMethods";
 
 export const fetchTrackDebt = async (walletAddress) => {
   try {

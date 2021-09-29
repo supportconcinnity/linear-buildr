@@ -576,14 +576,11 @@ import Clipboard from "clipboard";
 import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 import {
   CHAIN_CHANGE_TYPE,
-  isBinanceNetwork,
-  isEthereumNetwork,
   SUPPORTED_WALLETS_MAP,
-  LIQUIDATION_NETWORKS,
-} from "@/assets/linearLibrary/linearTools/network";
+} from "~/assets/linearLibrary/linearTools/networkMethods";
 import lnrJSConnector, {
   selectedWallet,
-} from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+} from "~/assets/linearLibrary/linearTools/lnrJSConnector";
 import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
 import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";

@@ -13,7 +13,7 @@ import {
   isEthDevNetwork,
   isEthereumNetwork,
   WALLET_STATUS,
-} from "../network";
+} from "../networkMethods";
 import config from "@/config/common";
 import api from "@/api";
 import { n2bn, bn2n, bnMul, bnAdd } from "@/common/bnCalc";

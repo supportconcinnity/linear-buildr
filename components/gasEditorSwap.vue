@@ -404,9 +404,8 @@ import {
   isBinanceNetwork,
   SUPPORTED_NETWORKS_MAP,
   getOtherNetworks,
-} from "@/assets/linearLibrary/linearTools/network";
+} from "~/assets/linearLibrary/linearTools/networkMethods";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
-import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { Logger } from "ethers/lib/utils";
 
 export default {

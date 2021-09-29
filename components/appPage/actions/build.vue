@@ -388,7 +388,7 @@ import _ from "lodash";
 import gasEditor from "@/components/gasEditor";
 import { openBuyLINA, toNonExponential } from "@/common/utils";
 
-import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import lnrJSConnector from "~/assets/linearLibrary/linearTools/lnrJSConnector";
 import {
   storeDetailsData,
   getPriceRates,
@@ -416,7 +416,7 @@ import {
   isBinanceNetwork,
   isEthDevNetwork,
   isEthereumNetwork,
-} from "@/assets/linearLibrary/linearTools/network";
+} from "~/assets/linearLibrary/linearTools/networkMethods";
 
 import {
   bnAdd,

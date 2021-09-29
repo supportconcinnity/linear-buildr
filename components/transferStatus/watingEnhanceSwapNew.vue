@@ -555,12 +555,12 @@ import {
   getEthereumNetwork,
   isTestnetNetwork,
   isDevNetwork,
-} from "@/assets/linearLibrary/linearTools/network";
+} from "~/assets/linearLibrary/linearTools/networkMethods";
 import api from "@/api";
-import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import lnrJSConnector from "~/assets/linearLibrary/linearTools/lnrJSConnector";
 import { bn2n, bnAdd, bnSub, n2bn } from "@/common/bnCalc";
 import { providers } from "ethers";
-import { LinearJs } from "@/assets/linearLibrary/linearJs";
+import { LinearJs } from "~/assets/linearLibrary/linearTools/networkConnector";
 import {
   BUILD_PROCESS_SETUP,
   BUILD_PROCESS_SETUP_MOBILE,

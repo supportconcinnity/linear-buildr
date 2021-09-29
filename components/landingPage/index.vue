@@ -191,13 +191,13 @@
 </template>
 
 <script>
-import { selectedWallet } from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import { selectedWallet } from "~/assets/linearLibrary/linearTools/lnrJSConnector";
 import {
   addEthereumChain,
   checkNetwork,
   SUPPORTED_NETWORKS_MAP,
   SUPPORTED_WALLETS_MAP,
-} from "@/assets/linearLibrary/linearTools/network";
+} from "~/assets/linearLibrary/linearTools/networkMethods";
 import { openBuyLINA } from "@/common/utils";
 import Clipboard from "clipboard";
 import QRCode from "qrcode";

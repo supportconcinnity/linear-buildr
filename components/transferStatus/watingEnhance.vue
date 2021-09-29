@@ -236,7 +236,7 @@ import {
   SUPPORTED_WALLETS_MAP,
   isEthereumNetwork,
   isBinanceNetwork,
-} from "@/assets/linearLibrary/linearTools/network";
+} from "~/assets/linearLibrary/linearTools/networkMethods";
 import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";
 export default {
   name: "transferWatingEnhance",

@@ -198,8 +198,8 @@ import {
   isBinanceNetwork,
   isEthereumNetwork,
   SUPPORTED_WALLETS_MAP,
-} from "@/assets/linearLibrary/linearTools/network";
-import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+} from "~/assets/linearLibrary/linearTools/networkMethods";
+import lnrJSConnector from "~/assets/linearLibrary/linearTools/lnrJSConnector";
 import { bn2n, bnSub, bnSub2N, n2bn } from "@/common/bnCalc";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 import {

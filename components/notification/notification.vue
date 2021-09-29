@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
+import lnrJSConnector from "~/assets/linearLibrary/linearTools/lnrJSConnector";
 import { openBlockchainBrowser } from "@/common/utils";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
 

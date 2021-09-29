@@ -453,7 +453,7 @@ import {
   SUPPORTED_WALLETS_MAP,
   isEthereumNetwork,
   isBinanceNetwork,
-} from "@/assets/linearLibrary/linearTools/network";
+} from "~/assets/linearLibrary/linearTools/networkMethods";
 export default {
   name: "transferWatingEnhanceSwap",
   components: {

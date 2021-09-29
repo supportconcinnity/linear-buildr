@@ -5,7 +5,7 @@ import {
   isBinanceNetwork,
   isEthereumNetwork,
   LIQUIDATION_NETWORKS,
-} from "../../network";
+} from "../../networkMethods";
 
 export const PAGINATION_INDEX = 10;
 
