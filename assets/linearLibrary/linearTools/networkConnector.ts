@@ -104,11 +104,21 @@ export class Web3Connector {
   isDevNetwork: boolean;
   othersNetwork: number[];
   tokenBridgeApi: string;
+  blockchainBrowser: string;
+  blockchainBrowserApi: string;
   // contracts:{}
   constructor(id: number) {
     const chainData = networksMap.get(id);
-    const { name, networkId, networkType, chainType, rpcUrl, addresses } =
-      chainData;
+    const {
+      name,
+      networkId,
+      networkType,
+      chainType,
+      rpcUrl,
+      addresses,
+      blockchainBrowser,
+      blockchainBrowserApi,
+    } = chainData;
     this.networkId = networkId || 1;
     this.network = name;
     this.provider = rpcUrl
@@ -116,6 +126,8 @@ export class Web3Connector {
       : getDefaultProvider();
     this.addressList = addresses;
     this.signers = signers;
+    this.blockchainBrowser = blockchainBrowser;
+    this.blockchainBrowserApi = blockchainBrowserApi;
     const utils = new util(this.provider);
     this.utils = { ...utils, ...ethers.utils };
     this.isEthereumNetwork = chainType === ChainType.ETHEREUM;

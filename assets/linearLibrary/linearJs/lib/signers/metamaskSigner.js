@@ -6,7 +6,7 @@ const MetamaskSigner = () => {
   const signer = provider.getSigner();
   signer.getNextAddresses = () =>
     new Promise((resolve) => resolve(ethereum.enable()));
-  return signer;
+  return { signer, provider };
 };
 
 export default MetamaskSigner;

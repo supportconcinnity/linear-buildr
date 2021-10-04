@@ -6,7 +6,7 @@ const BinanceSigner = () => {
   const signer = provider.getSigner();
   signer.getNextAddresses = () =>
     new Promise((resolve) => resolve(BinanceChain.enable()));
-  return signer;
+  return { signer, provider };
 };
 
 export default BinanceSigner;

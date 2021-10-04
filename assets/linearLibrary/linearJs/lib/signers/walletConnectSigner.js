@@ -26,7 +26,7 @@ export const UpdateWalletConnectSigner = ({ provider }) => {
   let signer = wrappedProvider.getSigner();
   signer.getNextAddresses = () =>
     new Promise((resolve) => resolve(wrappedProvider.listAccounts()));
-  return signer;
+  return { signer, provider: wrappedProvider };
 };
 
 export default WalletConnectSigner;

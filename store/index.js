@@ -1,5 +1,4 @@
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
-import { SUPPORTED_NETWORKS } from "@/assets/linearLibrary/linearTools/network";
 
 export const state = () => ({
   locale: "en", //默认语言
@@ -28,7 +27,23 @@ export const state = () => ({
   walletDetailsLoopRefreshStatus: true,
   walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS_MAP
   walletNetworkId: "1", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
-  walletNetworkName: SUPPORTED_NETWORKS["1"], //当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
+  networkDetails: {
+    networkId: "",
+    network: "",
+    provider: "", //web3 provider
+    addressList: {}, //contract address
+    utils: "",
+    signers: "",
+    isEthereumNetwork: "", //boolean
+    isBinanceNetwork: "", //boolean
+    isMainnetNetwork: "", //boolean
+    isTestnetNetwork: "", //boolean
+    isDevNetwork: "", //boolean
+    othersNetwork: [], //network id array
+    tokenBridgeApi: "", //tokenBridge url
+    blockchainBrowser: "", //chain scan url
+    blockchainBrowserApi: "",
+  }, // network details according to current wallet's chain
   mMenuState: false, //移动端 显示菜单
   mWalletState: false, //移动端 显示钱包详情
   isMobile: false, //是否移动端
@@ -111,8 +126,8 @@ export const mutations = {
     state.walletDetails = { ...state.walletDetails, ...walletDetails };
   },
 
-  setWalletNetworkName(state, walletNetworkName) {
-    state.walletNetworkName = walletNetworkName;
+  setNetworkDetails(state, networkDetails) {
+    state.networkDetails = networkDetails;
   },
 
   setLoopRefreshStatus(state, status) {
