@@ -28,8 +28,10 @@ export interface ChainConfig {
   networkType: string;
   chainType: string;
   rpcUrl?: string;
+  isLiquidationEnable: boolean;
   blockchainBrowser: string;
   blockchainBrowserApi: string;
+  tokenBridgeApi: string;
   addresses: ChainAddresses;
 }
 
@@ -88,7 +90,10 @@ const API_KEY = {
 
 export const networksMap = new Map();
 
-typedConfigs.forEach((object) => networksMap.set(object.networkId, object));
+typedConfigs.forEach((object) => {
+  let id = object.networkId;
+  networksMap.set(id, object);
+});
 
 export class Web3Connector {
   networkId: number;

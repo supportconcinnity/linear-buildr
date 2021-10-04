@@ -4,12 +4,121 @@ import {
   GWEI_UNIT,
   GAS_LIMIT_BUFFER,
 } from "./constants/network";
-import { ChainType, networksMap, NetworkType } from "./networkConnector";
 import { URLS } from "./constants/urls";
 import api from "@/api";
-import { ethers } from "ethers";
+import { typedConfigs, ChainType, NetworkType } from "./networkConnector";
 
 let window: any;
+let $nuxt: any;
+
+/**
+ * ethererm网络
+ */
+let ETHEREUM_NETWORKS: number[] = [];
+
+/**
+ * bsc网络
+ */
+let BINANCE_NETWORKS: number[] = [];
+
+/**
+ * 主网网络
+ */
+let MAINNET_NETWORKS: number[] = [];
+
+/**
+ * 测试网网络
+ */
+let TESTNET_NETWORKS: number[] = [];
+
+let ETHDEV_NETWORKS: number[] = [];
+
+let BSCDEV_NETWORKS: number[] = [];
+
+let DEV_NETWORKS: number[] = [];
+
+let LIQUIDATION_NETWORKS: number[] = [];
+
+let SUPPORTED_NETWORKS: { [k: number]: string } = {};
+
+let BLOCKCHAIN_BROWSER: { [k: number]: string } = {};
+
+let BLOCKCHAIN_BROWSER_API: { [k: number]: string } = {};
+
+let TOKEN_BRIDGE_API: { [k: number]: string } = {};
+
+typedConfigs.forEach((object) => {
+  let id = object.networkId;
+  if (object.chainType === ChainType.ETHEREUM) {
+    ETHEREUM_NETWORKS.push(id);
+  }
+  if (object.chainType === ChainType.BINANCE) {
+    BINANCE_NETWORKS.push(id);
+  }
+  if (object.networkType === NetworkType.MAINNET) {
+    MAINNET_NETWORKS.push(id);
+  }
+  if (object.networkType === NetworkType.TEST) {
+    TESTNET_NETWORKS.push(id);
+  }
+  if (object.networkType === NetworkType.DEV) {
+    DEV_NETWORKS.push(id);
+  }
+  if (
+    object.chainType === ChainType.ETHEREUM &&
+    object.networkType === NetworkType.DEV
+  ) {
+    ETHDEV_NETWORKS.push(id);
+  }
+  if (
+    object.chainType === ChainType.BINANCE &&
+    object.networkType === NetworkType.DEV
+  ) {
+    BSCDEV_NETWORKS.push(id);
+  }
+  if (object.isLiquidationEnable) {
+    LIQUIDATION_NETWORKS.push(id);
+  }
+  SUPPORTED_NETWORKS[id] = object.name;
+  BLOCKCHAIN_BROWSER[id] = object.blockchainBrowser;
+  BLOCKCHAIN_BROWSER_API[id] = object.blockchainBrowserApi;
+  TOKEN_BRIDGE_API[id] = object.tokenBridgeApi;
+});
+
+export const isEthereumNetwork = (walletNetworkId: number) =>
+  ETHEREUM_NETWORKS.includes(walletNetworkId);
+export const isBinanceNetwork = (walletNetworkId: number) =>
+  BINANCE_NETWORKS.includes(walletNetworkId);
+export const isMainnetNetwork = (walletNetworkId: number) =>
+  MAINNET_NETWORKS.includes(walletNetworkId);
+export const isTestnetNetwork = (walletNetworkId: number) =>
+  TESTNET_NETWORKS.includes(walletNetworkId);
+export const isDevNetwork = (walletNetworkId: number) =>
+  DEV_NETWORKS.includes(walletNetworkId);
+export const isEthDevNetwork = (walletNetworkId: number) =>
+  ETHDEV_NETWORKS.includes(walletNetworkId);
+export const isBscDevNetwork = (walletNetworkId: number) =>
+  BSCDEV_NETWORKS.includes(walletNetworkId);
+export const isSupportNetwork = (walletNetworkId: number) =>
+  SUPPORTED_NETWORKS.hasOwnProperty(walletNetworkId);
+
+/**
+ * 获取所在网络其他网络id
+ * @param walletNetworkId 网络Id
+ */
+export const getOtherNetworks = (walletNetworkId: number) => {
+  let other: string[] = [];
+  if (isMainnetNetwork(walletNetworkId)) {
+    other = Object.keys(_.omit(MAINNET_NETWORKS, [walletNetworkId]));
+  } else if (isDevNetwork(walletNetworkId)) {
+    other = Object.keys(_.omit(DEV_NETWORKS, [walletNetworkId]));
+  } else if (isTestnetNetwork(walletNetworkId)) {
+    other = Object.keys(_.omit(TESTNET_NETWORKS, [walletNetworkId]));
+  }
+  return other.join();
+};
+
+export const SUPPORTED_NETWORKS_MAP = _.invert(SUPPORTED_NETWORKS);
 
 export enum SUPPORTED_WALLETS {
   METAMASK = "MetaMask",
@@ -70,8 +179,13 @@ export const INFURA_JSON_RPC_URLS = {
   3: `https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}`,
 };
 
+// export const BLOCKCHAIN = {
+//     ETHEREUM: "ethereum",
+//     BINANCE: "binance"
+// };
+
 //RPC网络配置
-export const ETHEREUM_CHAIN_OPTIONS = {
+export const ETHEREUM_CHAIN_OPTIONS: { [k: number]: any } = {
   56: {
     chainName: "BSC Mainnet",
     rpcUrls: ["https://bsc-dataseed1.binance.org/"],
@@ -85,12 +199,56 @@ export const ETHEREUM_CHAIN_OPTIONS = {
   },
 };
 
-export const getNetworkSpeeds = async (
-  networkType: NetworkType,
-  chainType: ChainType,
-  walletNetworkId: number
-) => {
-  if (networkType === NetworkType.DEV) {
+export async function getEthereumNetwork() {
+  const isMobile = $nuxt.$store.state?.isMobile;
+  if (!window.ethereum && !isMobile) {
+    window.open(WALLET_EXTENSIONS.METAMASK);
+    return {};
+  }
+  let networkId = 1;
+  try {
+    if (window.ethereum?.chainId) {
+      networkId = Number(window.ethereum?.chainId);
+      return {
+        name: SUPPORTED_NETWORKS[networkId],
+        networkId: networkId,
+      };
+    } else if (window.ethereum?.networkVersion) {
+      networkId = Number(window.ethereum?.networkVersion);
+      return {
+        name: SUPPORTED_NETWORKS[networkId],
+        networkId: networkId,
+      };
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function getBinanceNetwork() {
+  const isMobile = $nuxt.$store.state?.isMobile;
+  if (!window.BinanceChain && !isMobile) {
+    window.open(WALLET_EXTENSIONS.BINANCE);
+    return {};
+  }
+  let networkId = 56;
+  try {
+    if (window.BinanceChain?.chainId) {
+      networkId = Number(window.BinanceChain?.chainId);
+      return {
+        name: SUPPORTED_NETWORKS[networkId],
+        networkId: networkId,
+      };
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export const getNetworkSpeeds = async (walletNetworkId: number) => {
+  !walletNetworkId && (walletNetworkId = $nuxt.$store.state?.walletNetworkId);
+
+  if (isDevNetwork(walletNetworkId)) {
     return {
       [NETWORK_SPEEDS_TO_KEY.SLOW]: {
         price: 10,
@@ -105,7 +263,7 @@ export const getNetworkSpeeds = async (
         time: 0.2,
       },
     };
-  } else if (chainType === ChainType.ETHEREUM) {
+  } else if (isEthereumNetwork(walletNetworkId)) {
     let result = await fetch(URLS.ETH_GAS_STATION, {
       headers: {
         "Content-Type": "application/json",
@@ -135,7 +293,7 @@ export const getNetworkSpeeds = async (
         time: networkInfo.fastWait,
       },
     };
-  } else if (chainType === ChainType.BINANCE) {
+  } else if (isBinanceNetwork(walletNetworkId)) {
     let currentGasPrice = 20;
     const res = await api.getBSCGasPrice(walletNetworkId);
     if (res?.result) {
@@ -187,44 +345,35 @@ export function onBinanceChainChange(cb: any) {
   window.BinanceChain.on("chainChanged", listener);
 }
 
-export function onWalletConnectAccountChange(
-  provider: ethers.providers.Web3Provider,
-  cb: any
-) {
+export function onWalletConnectAccountChange(provider: any, cb: any) {
   if (!provider) return;
   const listener = _.throttle(cb, 2000);
   provider.on("accountsChanged", listener);
 }
 
-export function onWalletConnectChainChange(
-  provider: ethers.providers.Web3Provider,
-  cb: any
-) {
+export function onWalletConnectChainChange(provider: any, cb: any) {
   if (!provider) return;
   const listener = _.throttle(cb, 2000);
   provider.on("chainChanged", listener);
 }
 
-export function onWalletConnectDisconnect(
-  provider: ethers.providers.Web3Provider,
-  cb: any
-) {
+export function onWalletConnectDisconnect(provider: any, cb: any) {
   if (!provider) return;
   const listener = _.throttle(cb, 2000);
   provider.on("disconnect", listener);
 }
 
-export const bufferGasLimit = (gasLimit: number | string) =>
+export const bufferGasLimit = (gasLimit: string) =>
   Math.round(Number(gasLimit) * (1 + GAS_LIMIT_BUFFER));
 
 /**
  * 添加网络到metamask
  * @param {*} networkId  网络ID
  */
-export const addEthereumChain = async () => {
+export const addEthereumChain = async (networkId: number) => {
   await window.ethereum.request({
     method: "wallet_addEthereumChain",
-    params: [{ ...ETHEREUM_CHAIN_OPTIONS[56] }],
+    params: [{ ...ETHEREUM_CHAIN_OPTIONS[networkId] }],
   });
 };
 
@@ -232,6 +381,26 @@ export const addEthereumChain = async () => {
  * 检查连接的网络ID
  * @returns
  */
-export const checkNetwork = async (networkId: number) => {
-  return networksMap.has(networkId);
+export const checkNetwork = async (networkId: number | undefined) => {
+  if (!networkId) {
+    const network = await getEthereumNetwork();
+    if (!network) return;
+    networkId = network.networkId;
+  }
+  return isSupportNetwork(networkId!);
+};
+
+export {
+  ETHEREUM_NETWORKS,
+  BINANCE_NETWORKS,
+  MAINNET_NETWORKS,
+  TESTNET_NETWORKS,
+  ETHDEV_NETWORKS,
+  BSCDEV_NETWORKS,
+  DEV_NETWORKS,
+  LIQUIDATION_NETWORKS,
+  SUPPORTED_NETWORKS,
+  BLOCKCHAIN_BROWSER,
+  BLOCKCHAIN_BROWSER_API,
+  TOKEN_BRIDGE_API,
 };
