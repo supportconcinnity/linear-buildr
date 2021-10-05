@@ -82,22 +82,30 @@ typedConfigs.forEach((object) => {
   TOKEN_BRIDGE_API[id] = object.tokenBridgeApi;
 });
 
-export const isEthereumNetwork = (walletNetworkId: number) =>
-  ETHEREUM_NETWORKS.includes(walletNetworkId);
-export const isBinanceNetwork = (walletNetworkId: number) =>
-  BINANCE_NETWORKS.includes(walletNetworkId);
-export const isMainnetNetwork = (walletNetworkId: number) =>
-  MAINNET_NETWORKS.includes(walletNetworkId);
-export const isTestnetNetwork = (walletNetworkId: number) =>
-  TESTNET_NETWORKS.includes(walletNetworkId);
-export const isDevNetwork = (walletNetworkId: number) =>
-  DEV_NETWORKS.includes(walletNetworkId);
-export const isEthDevNetwork = (walletNetworkId: number) =>
-  ETHDEV_NETWORKS.includes(walletNetworkId);
-export const isBscDevNetwork = (walletNetworkId: number) =>
-  BSCDEV_NETWORKS.includes(walletNetworkId);
-export const isSupportNetwork = (walletNetworkId: number) =>
-  SUPPORTED_NETWORKS.hasOwnProperty(walletNetworkId);
+export const isEthereumNetwork = (walletNetworkId: number) => {
+  return ETHEREUM_NETWORKS.includes(+walletNetworkId);
+};
+export const isBinanceNetwork = (walletNetworkId: number) => {
+  return BINANCE_NETWORKS.includes(+walletNetworkId);
+};
+export const isMainnetNetwork = (walletNetworkId: number) => {
+  return MAINNET_NETWORKS.includes(+walletNetworkId);
+};
+export const isTestnetNetwork = (walletNetworkId: number) => {
+  return TESTNET_NETWORKS.includes(+walletNetworkId);
+};
+export const isDevNetwork = (walletNetworkId: number) => {
+  return DEV_NETWORKS.includes(+walletNetworkId);
+};
+export const isEthDevNetwork = (walletNetworkId: number) => {
+  return ETHDEV_NETWORKS.includes(+walletNetworkId);
+};
+export const isBscDevNetwork = (walletNetworkId: number) => {
+  return BSCDEV_NETWORKS.includes(+walletNetworkId);
+};
+export const isSupportNetwork = (walletNetworkId: number) => {
+  return SUPPORTED_NETWORKS.hasOwnProperty(+walletNetworkId);
+};
 
 /**
  * 获取所在网络其他网络id

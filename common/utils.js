@@ -1,4 +1,11 @@
 import _ from "lodash";
+import {
+  BLOCKCHAIN_BROWSER,
+  isBinanceNetwork,
+  isEthereumNetwork,
+  isMainnetNetwork,
+  SUPPORTED_NETWORKS_MAP,
+} from "@/assets/linearLibrary/linearTools/networkMethods";
 import { URLS } from "@/assets/linearLibrary/linearTools/constants/urls";
 import { DECIMAL_PRECISION } from "@/assets/linearLibrary/linearTools/constants/process";
 
@@ -207,9 +214,9 @@ export const addClass = ($el, $className) => {
  * @param {String} hash  交易hash
  * @param {Number | String} networdId 网络ID
  */
-export const openBlockchainBrowser = (hash) => {
+export const openBlockchainBrowser = (hash, networdId) => {
   try {
-    const baseUrl = $nuxt.$store.state.networkDetails.blockchainBrowser + hash;
+    const baseUrl = BLOCKCHAIN_BROWSER[networdId] + hash;
     window.open(baseUrl, "_blank");
   } catch (error) {
     console.log(error, "openBlockchainBrowser");
@@ -220,8 +227,10 @@ export const openBlockchainBrowser = (hash) => {
  * 打开购买LINA站点
  */
 export const openBuyLINA = () => {
+  const walletNetworkId = $nuxt.$store.state?.walletNetworkId;
+  console.log(isMainnetNetwork);
   //主网时打开购买LINA
-  if ($nuxt.$store.state.networkDetails.isMainnetNetwork) {
+  if (isMainnetNetwork(walletNetworkId)) {
     window.open(URLS.BUY_LINA);
   }
 };
