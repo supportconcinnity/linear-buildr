@@ -14,11 +14,11 @@
     >
       <div>
         <img
-          v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
+          v-if="walletType == SUPPORTED_WALLETS.METAMASK"
           src="@/static/metamask.svg"
         />
         <img
-          v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
+          v-if="walletType == SUPPORTED_WALLETS.BINANCE_CHAIN"
           src="@/static/binance.svg"
         />
       </div>
@@ -44,7 +44,7 @@
 <script>
 import {
   isEthereumNetwork,
-  SUPPORTED_WALLETS_MAP,
+  SUPPORTED_WALLETS,
 } from "~/assets/linearLibrary/linearTools/networkMethods";
 export default {
   name: "transferWating",
@@ -54,7 +54,7 @@ export default {
       waitPercent: 0, //等待进度
       waitPercentTimeId: 0, //等待进度计时器ID
 
-      SUPPORTED_WALLETS_MAP,
+      SUPPORTED_WALLETS,
     };
   },
   watch: {

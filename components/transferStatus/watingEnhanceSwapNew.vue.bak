@@ -188,9 +188,9 @@
                         <template
                             v-if="
                                 sourceWalletType ==
-                                    SUPPORTED_WALLETS_MAP.METAMASK &&
+                                    SUPPORTED_WALLETS.METAMASK &&
                                     targetWalletType ==
-                                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        SUPPORTED_WALLETS.BINANCE_CHAIN
                             "
                         >
                             Please switch to BSC Wallet
@@ -200,9 +200,9 @@
                         <template
                             v-else-if="
                                 sourceWalletType ==
-                                    SUPPORTED_WALLETS_MAP.METAMASK &&
+                                    SUPPORTED_WALLETS.METAMASK &&
                                     targetWalletType ==
-                                        SUPPORTED_WALLETS_MAP.METAMASK
+                                        SUPPORTED_WALLETS.METAMASK
                             "
                         >
                             Switch to
@@ -221,7 +221,7 @@
                         <template
                             v-else-if="
                                 sourceWalletType ==
-                                    SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                    SUPPORTED_WALLETS.BINANCE_CHAIN
                             "
                         >
                             Please switch to Metamask Wallet
@@ -248,7 +248,7 @@
                             <template
                                 v-if="
                                     currentWalletType ==
-                                        SUPPORTED_WALLETS_MAP.METAMASK
+                                        SUPPORTED_WALLETS.METAMASK
                                 "
                             >
                                 Metamask
@@ -257,7 +257,7 @@
                             <template
                                 v-if="
                                     currentWalletType ==
-                                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        SUPPORTED_WALLETS.BINANCE_CHAIN
                                 "
                             >
                                 BSC Wallet
@@ -309,9 +309,9 @@
                         <template
                             v-if="
                                 sourceWalletType ==
-                                    SUPPORTED_WALLETS_MAP.METAMASK &&
+                                    SUPPORTED_WALLETS.METAMASK &&
                                     targetWalletType ==
-                                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        SUPPORTED_WALLETS.BINANCE_CHAIN
                             "
                         >
                             <div class="walletItem">
@@ -366,9 +366,9 @@
                         <template
                             v-else-if="
                                 sourceWalletType ==
-                                    SUPPORTED_WALLETS_MAP.METAMASK &&
+                                    SUPPORTED_WALLETS.METAMASK &&
                                     targetWalletType ==
-                                        SUPPORTED_WALLETS_MAP.METAMASK
+                                        SUPPORTED_WALLETS.METAMASK
                             "
                         >
                             <div class="walletItem">
@@ -457,7 +457,7 @@
                         <template
                             v-else-if="
                                 sourceWalletType ==
-                                    SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                    SUPPORTED_WALLETS.BINANCE_CHAIN
                             "
                         >
                             <div class="walletItem">
@@ -505,15 +505,15 @@
                                 <template
                                     v-if="
                                         sourceWalletType ==
-                                            SUPPORTED_WALLETS_MAP.METAMASK &&
+                                            SUPPORTED_WALLETS.METAMASK &&
                                             targetWalletType ==
-                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                                SUPPORTED_WALLETS.BINANCE_CHAIN
                                     "
                                 >
                                     <img
                                         v-if="
                                             currentWalletType ==
-                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                                SUPPORTED_WALLETS.METAMASK
                                         "
                                         class="leftIcon"
                                         src="@/static/metamask.svg"
@@ -522,7 +522,7 @@
                                     <img
                                         v-else-if="
                                             currentWalletType ==
-                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                                SUPPORTED_WALLETS.BINANCE_CHAIN
                                         "
                                         class="leftIcon"
                                         src="@/static/binance.svg"
@@ -531,7 +531,7 @@
                                     <img
                                         v-if="
                                             currentWalletType ==
-                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                                SUPPORTED_WALLETS.METAMASK
                                         "
                                         class="rightIcon"
                                         src="@/static/ETH.svg"
@@ -540,7 +540,7 @@
                                     <img
                                         v-else-if="
                                             currentWalletType ==
-                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                                SUPPORTED_WALLETS.BINANCE_CHAIN
                                         "
                                         class="rightIcon"
                                         src="@/static/bnb.svg"
@@ -551,9 +551,9 @@
                                 <template
                                     v-else-if="
                                         sourceWalletType ==
-                                            SUPPORTED_WALLETS_MAP.METAMASK &&
+                                            SUPPORTED_WALLETS.METAMASK &&
                                             targetWalletType ==
-                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                                SUPPORTED_WALLETS.METAMASK
                                     "
                                 >
                                     <img
@@ -588,7 +588,7 @@
                                     <!-- <img
                                         v-if="
                                             currentWalletType ==
-                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                                SUPPORTED_WALLETS.METAMASK
                                         "
                                         class="rightIcon"
                                         src="@/static/ETH.svg"
@@ -598,7 +598,7 @@
                                     <img
                                         v-else-if="
                                             currentWalletType ==
-                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                                SUPPORTED_WALLETS.BINANCE_CHAIN
                                         "
                                         class="rightIcon"
                                         src="@/static/bnb.svg"
@@ -610,13 +610,13 @@
                                 <template
                                     v-else-if="
                                         sourceWalletType ==
-                                            SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                            SUPPORTED_WALLETS.BINANCE_CHAIN
                                     "
                                 >
                                     <img
                                         v-if="
                                             currentWalletType ==
-                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                                SUPPORTED_WALLETS.METAMASK
                                         "
                                         class="leftIcon"
                                         src="@/static/metamask.svg"
@@ -625,7 +625,7 @@
                                     <img
                                         v-else-if="
                                             currentWalletType ==
-                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                                SUPPORTED_WALLETS.BINANCE_CHAIN
                                         "
                                         class="leftIcon"
                                         src="@/static/binance.svg"
@@ -634,7 +634,7 @@
                                     <img
                                         v-if="
                                             currentWalletType ==
-                                                SUPPORTED_WALLETS_MAP.METAMASK
+                                                SUPPORTED_WALLETS.METAMASK
                                         "
                                         class="rightIcon"
                                         src="@/static/ETH.svg"
@@ -643,7 +643,7 @@
                                     <img
                                         v-if="
                                             currentWalletType ==
-                                                SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                                SUPPORTED_WALLETS.BINANCE_CHAIN
                                         "
                                         class="rightIcon"
                                         src="@/static/bnb.svg"
@@ -656,7 +656,7 @@
                             <template
                                 v-if="
                                     currentWalletType ==
-                                        SUPPORTED_WALLETS_MAP.METAMASK
+                                        SUPPORTED_WALLETS.METAMASK
                                 "
                             >
                                 <template
@@ -672,7 +672,7 @@
                             <template
                                 v-else-if="
                                     currentWalletType ==
-                                        SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+                                        SUPPORTED_WALLETS.BINANCE_CHAIN
                                 "
                                 >BSC Chain Wallet</template
                             >
@@ -973,7 +973,7 @@ import _ from "lodash";
 import { openBlockchainBrowser } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
 import {
-    SUPPORTED_WALLETS_MAP,
+    SUPPORTED_WALLETS,
     isEthereumNetwork,
     isBinanceNetwork,
     getOtherNetworks,
@@ -1032,7 +1032,7 @@ export default {
     data() {
         return {
             BUILD_PROCESS_SETUP,
-            SUPPORTED_WALLETS_MAP,
+            SUPPORTED_WALLETS,
 
             openBlockchainBrowser,
             isEthereumNetwork,
@@ -1241,7 +1241,7 @@ export default {
                 // }
 
                 // this.targetWalletAddress = this.walletAddress;
-                // this.targetWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+                // this.targetWalletType = SUPPORTED_WALLETS.BINANCE_CHAIN;
                 // await this.checkContract();
                 // this.actionTabs = "m1";
 
@@ -2286,7 +2286,7 @@ export default {
 
         async connectMetamaskWallet() {
             this.targetWalletAddress = this.walletAddress;
-            this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+            this.targetWalletType = SUPPORTED_WALLETS.METAMASK;
         },
 
         //连接钱包
@@ -2306,8 +2306,8 @@ export default {
                     this.targetWalletType = isEthereumNetwork(
                         this.targetNetworkId
                     )
-                        ? SUPPORTED_WALLETS_MAP.METAMASK
-                        : SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+                        ? SUPPORTED_WALLETS.METAMASK
+                        : SUPPORTED_WALLETS.BINANCE_CHAIN;
 
                     let network;
                     if (isBinanceNetwork(this.targetNetworkId)) {
@@ -2320,7 +2320,7 @@ export default {
                     //目标为bsc钱包时候检查目标网络id
                     if (
                         this.targetWalletType ==
-                            SUPPORTED_WALLETS_MAP.BINANCE_CHAIN &&
+                            SUPPORTED_WALLETS.BINANCE_CHAIN &&
                         networkId != this.targetNetworkId
                     ) {
                         throw {
@@ -2350,7 +2350,7 @@ export default {
         },
 
         changeTargetWalletInfo(type) {
-            this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+            this.targetWalletType = SUPPORTED_WALLETS.METAMASK;
             this.targetWalletAddress = this.walletAddress;
             this.checkPrepare(++this.checkStatus.stepIndex);
         },
@@ -2374,10 +2374,10 @@ export default {
             let type,
                 contract = "LnErc20Bridge";
             if (isEthereumNetwork(this.targetNetworkId)) {
-                type = SUPPORTED_WALLETS_MAP.METAMASK;
+                type = SUPPORTED_WALLETS.METAMASK;
                 // contract = "LnErc20Bridge";
             } else if (isBinanceNetwork(this.targetNetworkId)) {
-                type = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+                type = SUPPORTED_WALLETS.BINANCE_CHAIN;
                 // contract = "LnBep20Bridge";
             }
 

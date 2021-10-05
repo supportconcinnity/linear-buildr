@@ -7,7 +7,6 @@ import WalletConnect from "../linearJs/lib/signers/walletConnectSigner";
 import PrivateKey from "../linearJs/lib/signers/privateKeySigner";
 import util from "../linearJs/util";
 import {
-  TOKEN_BRIDGE_DEV,
   TOKEN_BRIDGE_MAINNET,
   TOKEN_BRIDGE_TESTNET,
 } from "~/constants/envVars";
@@ -69,8 +68,6 @@ export interface ChainAddresses {
   lXLM: string;
   lXAU: string;
   lXAG: string;
-  lEUR: string;
-  lUNI: string;
   lJPY: string;
   lXLCI: string;
   lXBCI: string;
@@ -95,7 +92,7 @@ typedConfigs.forEach((object) => {
   networksMap.set(id, object);
 });
 
-export class Web3Connector {
+export default class Web3Connector {
   networkId: number;
   network: string;
   provider: providers.BaseProvider;
@@ -158,7 +155,7 @@ export class Web3Connector {
         this.tokenBridgeApi = TOKEN_BRIDGE_TESTNET;
         break;
       case NetworkType.DEV:
-        this.tokenBridgeApi = TOKEN_BRIDGE_DEV;
+        this.tokenBridgeApi = TOKEN_BRIDGE_MAINNET;
         break;
       default:
         this.tokenBridgeApi = TOKEN_BRIDGE_MAINNET;

@@ -113,7 +113,7 @@
 
         <div
           class="mRect mobileShow"
-          @click.stop="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
+          @click.stop="selectedWallet(SUPPORTED_WALLETS.METAMASK)"
         >
           <img class="boxLogo" src="@/static/metamask.svg" />
           <div class="box">
@@ -126,7 +126,7 @@
         <div class="box">
           <div
             class="boxItem"
-            @click.stop="selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK)"
+            @click.stop="selectedWallet(SUPPORTED_WALLETS.METAMASK)"
           >
             <img class="boxLogo" src="@/static/metamask.svg" />
 
@@ -143,7 +143,7 @@
 
           <div
             class="boxItem"
-            @click.stop="selectedWallet(SUPPORTED_WALLETS_MAP.WALLET_CONNECT)"
+            @click.stop="selectedWallet(SUPPORTED_WALLETS.WALLET_CONNECT)"
           >
             <img
               class="boxLogo"
@@ -161,7 +161,7 @@
           <!-- <div
                         class="boxItem"
                         @click.stop="
-                            selectedWallet(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)
+                            selectedWallet(SUPPORTED_WALLETS.BINANCE_CHAIN)
                         "
                     >
                         <img
@@ -196,7 +196,7 @@ import {
   addEthereumChain,
   checkNetwork,
   SUPPORTED_NETWORKS_MAP,
-  SUPPORTED_WALLETS_MAP,
+  SUPPORTED_WALLETS,
 } from "~/assets/linearLibrary/linearTools/networkMethods";
 import { openBuyLINA } from "@/common/utils";
 import Clipboard from "clipboard";
@@ -207,7 +207,7 @@ export default {
 
   data() {
     return {
-      SUPPORTED_WALLETS_MAP,
+      SUPPORTED_WALLETS,
       introduct: "0",
       openBuyLINA,
       tooltipContent: "Copy to clipboard",

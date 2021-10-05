@@ -542,7 +542,7 @@ import _ from "lodash";
 import { openBlockchainBrowser } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
 import {
-  SUPPORTED_WALLETS_MAP,
+  SUPPORTED_WALLETS,
   isEthereumNetwork,
   isBinanceNetwork,
   getOtherNetworks,
@@ -559,8 +559,6 @@ import {
 import api from "@/api";
 import lnrJSConnector from "~/assets/linearLibrary/linearTools/lnrJSConnector";
 import { bn2n, bnAdd, bnSub, n2bn } from "@/common/bnCalc";
-import { providers } from "ethers";
-import { LinearJs } from "~/assets/linearLibrary/linearTools/networkConnector";
 import {
   BUILD_PROCESS_SETUP,
   BUILD_PROCESS_SETUP_MOBILE,
@@ -602,7 +600,7 @@ export default {
   data() {
     return {
       BUILD_PROCESS_SETUP,
-      SUPPORTED_WALLETS_MAP,
+      SUPPORTED_WALLETS,
 
       openBlockchainBrowser,
       isEthereumNetwork,
@@ -770,7 +768,7 @@ export default {
           this.$store.state?.targetGasDetails?.price || 50 * 1000000000;
 
         // this.targetWalletAddress = this.walletAddress;
-        // this.targetWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+        // this.targetWalletType = SUPPORTED_WALLETS.BINANCE_CHAIN;
         // await this.checkContract();
         // this.actionTabs = "m1";
 
@@ -794,7 +792,7 @@ export default {
 
         //单钱包连接
         this.targetWalletAddress = this.walletAddress;
-        this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+        this.targetWalletType = SUPPORTED_WALLETS.METAMASK;
 
         if (currentStep < 1) {
           await this.checkSounrceBalance();
@@ -1701,8 +1699,8 @@ export default {
           const [walletAddress] = await provider.enable();
           this.targetWalletAddress = walletAddress.toLowerCase();
           this.targetWalletType = isEthereumNetwork(this.targetNetworkId)
-            ? SUPPORTED_WALLETS_MAP.METAMASK
-            : SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+            ? SUPPORTED_WALLETS.METAMASK
+            : SUPPORTED_WALLETS.BINANCE_CHAIN;
 
           let network;
           if (isBinanceNetwork(this.targetNetworkId)) {
@@ -1714,7 +1712,7 @@ export default {
 
           //目标为bsc钱包时候检查目标网络id
           if (
-            this.targetWalletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN &&
+            this.targetWalletType == SUPPORTED_WALLETS.BINANCE_CHAIN &&
             networkId != this.targetNetworkId
           ) {
             throw {
@@ -1744,7 +1742,7 @@ export default {
     },
 
     changeTargetWalletInfo(type) {
-      this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+      this.targetWalletType = SUPPORTED_WALLETS.METAMASK;
       this.targetWalletAddress = this.walletAddress;
       this.checkPrepare(++this.checkStatus.stepIndex);
     },
@@ -1768,10 +1766,10 @@ export default {
       let type,
         contract = "LnErc20Bridge";
       if (isEthereumNetwork(this.targetNetworkId)) {
-        type = SUPPORTED_WALLETS_MAP.METAMASK;
+        type = SUPPORTED_WALLETS.METAMASK;
         // contract = "LnErc20Bridge";
       } else if (isBinanceNetwork(this.targetNetworkId)) {
-        type = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+        type = SUPPORTED_WALLETS.BINANCE_CHAIN;
         // contract = "LnBep20Bridge";
       }
 
