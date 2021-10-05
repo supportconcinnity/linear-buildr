@@ -367,7 +367,7 @@
 <script>
 import _ from "lodash";
 import gasEditor from "@/components/gasEditor";
-import lnrJSConnector from "~/assets/linearLibrary/linearTools/lnrJSConnector";
+import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 
 import {
   findParents,
@@ -381,7 +381,7 @@ import {
   DEFAULT_GAS_LIMIT,
   isBinanceNetwork,
   isEthereumNetwork,
-} from "~/assets/linearLibrary/linearTools/networkMethods";
+} from "@/assets/linearLibrary/linearTools/networkMethods";
 
 import {
   formatEtherToNumber,

@@ -985,7 +985,7 @@ import {
     getBinanceNetwork,
     getEthereumNetwork,
     isTestnetNetwork
-} from "@/assets/linearLibrary/linearTools/network";
+} from "@/assets/linearLibrary/linearTools/networkMethods";
 import api from "@/api";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { bn2n, bnAdd, bnSub, n2bn } from "@/common/bnCalc";

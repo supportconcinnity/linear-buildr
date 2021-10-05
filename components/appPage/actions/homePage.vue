@@ -160,10 +160,10 @@
 <script>
 import { openBuyLINA } from "@/common/utils";
 import _ from "lodash";
-import lnrJSConnector from "~/assets/linearLibrary/linearTools/lnrJSConnector";
+import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
 
-import { LIQUIDATION_NETWORKS } from "~/assets/linearLibrary/linearTools/networkMethods";
+import { LIQUIDATION_NETWORKS } from "@/assets/linearLibrary/linearTools/networkMethods";
 
 import { BigNumber, utils } from "ethers";
 

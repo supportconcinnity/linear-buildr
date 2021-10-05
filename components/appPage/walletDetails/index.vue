@@ -57,7 +57,7 @@
                     :class="{
                         selected: isEthereumNetwork
                     }"
-                    @click="changeChain(SUPPORTED_WALLETS.METAMASK)"
+                    @click="changeChain(SUPPORTED_WALLETS_MAP.METAMASK)"
                 >
                     <ethereumSvg :selected="isEthereumNetwork" />
                 </div>
@@ -66,7 +66,7 @@
                     :class="{
                         selected: isBinanceNetwork
                     }"
-                    @click="changeChain(SUPPORTED_WALLETS.BINANCE_CHAIN)"
+                    @click="changeChain(SUPPORTED_WALLETS_MAP.BINANCE_CHAIN)"
                 >
                     <binanceSvg :selected="isBinanceNetwork" />
                 </div>
@@ -576,11 +576,14 @@ import Clipboard from "clipboard";
 import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 import {
   CHAIN_CHANGE_TYPE,
-  SUPPORTED_WALLETS,
-} from "~/assets/linearLibrary/linearTools/networkMethods";
+  isBinanceNetwork,
+  isEthereumNetwork,
+  SUPPORTED_WALLETS_MAP,
+  LIQUIDATION_NETWORKS,
+} from "@/assets/linearLibrary/linearTools/networkMethods";
 import lnrJSConnector, {
   selectedWallet,
-} from "~/assets/linearLibrary/linearTools/lnrJSConnector";
+} from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
 import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";
@@ -604,7 +607,7 @@ export default {
 
       chainChanging: false,
 
-      SUPPORTED_WALLETS,
+      SUPPORTED_WALLETS_MAP,
 
       refreshSelected: false,
 

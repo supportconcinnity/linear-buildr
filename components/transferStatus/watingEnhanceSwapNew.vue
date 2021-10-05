@@ -671,8 +671,8 @@ export default {
     isMobile() {},
     walletAddress() {},
     walletNetworkId() {},
-    // isEthereumNetwork() {},
-    // isBinanceNetwork() {}
+    isEthereumNetwork() {},
+    isBinanceNetwork() {},
   },
   computed: {
     currentWalletType() {

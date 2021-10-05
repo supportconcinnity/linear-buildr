@@ -142,14 +142,14 @@ import trackchart from "@/components/echarts/trackchart";
 import closeSvg from "@/components/svg/close";
 import { format } from "date-fns";
 
-import lnrJSConnector from "~/assets/linearLibrary/linearTools/lnrJSConnector";
+import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import bandPrice from "@/assets/linearLibrary/linearTools/request/linearData/bandPrice";
 import currencies from "@/common/currency";
 
 import {
   isEthereumNetwork,
   isBinanceNetwork,
-} from "~/assets/linearLibrary/linearTools/networkMethods";
+} from "@/assets/linearLibrary/linearTools/networkMethods";
 
 import {
   getExchangeRates,

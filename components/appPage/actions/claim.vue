@@ -133,7 +133,7 @@
 import _ from "lodash";
 import { addSeconds, formatDistanceToNow } from "date-fns";
 import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
-import lnrJSConnector from "~/assets/linearLibrary/linearTools/lnrJSConnector";
+import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 import gasEditor from "@/components/gasEditor";
 import {
@@ -143,7 +143,7 @@ import {
   isEthDevNetwork,
   isEthereumNetwork,
   isMainnetNetwork,
-} from "~/assets/linearLibrary/linearTools/networkMethods";
+} from "@/assets/linearLibrary/linearTools/networkMethods";
 import { BigNumber, utils } from "ethers";
 import { BUILD_PROCESS_SETUP } from "@/assets/linearLibrary/linearTools/constants/process";
 

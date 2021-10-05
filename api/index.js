@@ -1,3 +1,10 @@
+import {
+  isEthereumNetwork,
+  BLOCKCHAIN_BROWSER_API,
+  TOKEN_BRIDGE_API,
+  isMainnetNetwork,
+} from "@/assets/linearLibrary/linearTools/networkMethods";
+
 export default {
   async getReferralCode(wallet) {
     return await $nuxt.$axios
@@ -66,13 +73,13 @@ export default {
       });
   },
 
-  async getWalletBalance(address) {
-    const apikey = $nuxt.$store.$state.networkDetails.isEthereumNetwork
+  async getWalletBalance(address, networkId) {
+    const apikey = isEthereumNetwork(networkId)
       ? process.env.ETHERSCAN_KEY
       : process.env.BSCSCAN_KEY;
 
     return await $nuxt.$axios
-      .$get($nuxt.$store.$state.networkDetails.blockchainBrowserApi, {
+      .$get(BLOCKCHAIN_BROWSER_API[networkId], {
         params: {
           module: "account",
           action: "balance",
@@ -89,13 +96,13 @@ export default {
       });
   },
 
-  async getTokenBalance(address, contractaddress) {
-    const apikey = $nuxt.$store.$state.networkDetails.isEthereumNetwork
+  async getTokenBalance(address, contractaddress, networkId) {
+    const apikey = isEthereumNetwork(networkId)
       ? process.env.ETHERSCAN_KEY
       : process.env.BSCSCAN_KEY;
 
     return await $nuxt.$axios
-      .$get($nuxt.$store.$state.networkDetails.blockchainBrowserApi, {
+      .$get(BLOCKCHAIN_BROWSER_API[networkId], {
         params: {
           module: "account",
           action: "tokenbalance",

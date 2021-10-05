@@ -20,9 +20,6 @@ import signers from "../linearJs/lib/signers";
 import { storeDetailsData } from "./request";
 import { UpdateWalletConnectSigner } from "../linearJs/lib/signers/walletConnectSigner";
 
-let window: any;
-let $nuxt: any;
-
 let lnrJSConnector: any = {
   signers,
   setContractSettings: function (networkId: number) {
@@ -46,9 +43,9 @@ export const connectToWallet = async (walletType: SUPPORTED_WALLETS) => {
     let networkId = $nuxt.$store.state.networkDetails.networkId;
 
     //当连接方式为wallet_connect 且已经设置监听方式时,不要再去重新生成signer，改用updateWalletConnectWeb3Provider去更新provider
-    if (!registeredWalletConnectEvents) {
-      setSigner({ type: walletType, networkId });
-    }
+    // if (!registeredWalletConnectEvents) {
+    //   setSigner({ type: walletType, networkId });
+    // }
     let wallet;
     switch (walletType) {
       case SUPPORTED_WALLETS.METAMASK:
@@ -165,9 +162,9 @@ const updateWalletConnectWeb3Provider = (props: Iprops) => {
   lnrJSConnector.setContractSettings(props.networkId);
 };
 
-export const setSigner = (props: Iprops) => {
-  lnrJSConnector.setContractSettings(props.networkId);
-};
+// export const setSigner = (props: Iprops) => {
+//   lnrJSConnector.setContractSettings(props.networkId);
+// };
 // const getSignerConfig = ({ type, networkId }) => {
 //   if (type === SUPPORTED_WALLETS.WALLET_CONNECT) {
 //     let rpc = { ...INFURA_JSON_RPC_URLS, ...RPC_URL };

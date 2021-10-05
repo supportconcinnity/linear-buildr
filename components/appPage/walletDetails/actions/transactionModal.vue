@@ -417,7 +417,7 @@ import {
   isEthereumNetwork,
   isBinanceNetwork,
   getOtherNetworks,
-} from "~/assets/linearLibrary/linearTools/networkMethods";
+} from "@/assets/linearLibrary/linearTools/networkMethods";
 import { formatNumber } from "@/assets/linearLibrary/linearTools/format";
 import closeSvg from "@/components/svg/close.vue";
 import { openBlockchainBrowser } from "@/common/utils";
