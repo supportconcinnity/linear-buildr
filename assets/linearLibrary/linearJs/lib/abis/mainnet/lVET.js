@@ -1,3 +1,2 @@
-import lVET from '../mainnet/lUSD';
-      export default lVET;
-      
+import lVET from "../mainnet/lUSD";
+export default lVET;

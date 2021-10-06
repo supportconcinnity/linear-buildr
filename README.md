@@ -49,10 +49,10 @@ ENABLE_MAINTENANCE=""
 ```sh
 $ npm run dev
 ```
+
 Open in browser http://localhost:6111
 
 ### For production environments:
-
 
 ```sh
 $ npm run build
@@ -67,6 +67,6 @@ $ npm run generate
 
 ## Dependencies
 
-Please refer to [package.json][PKJS] for details.
+Please refer to [package.json][pkjs] for details.
 
-[PKJS]: <https://github.com/Linear-finance/linear-buildr/blob/v2/package.json>
+[pkjs]: https://github.com/Linear-finance/linear-buildr/blob/v2/package.json

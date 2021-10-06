@@ -1,3 +1,2 @@
-import LnRewardLocker from '../bscmainnet/LnRewardLocker';
-      export default LnRewardLocker;
-      
+import LnRewardLocker from "../bscmainnet/LnRewardLocker";
+export default LnRewardLocker;

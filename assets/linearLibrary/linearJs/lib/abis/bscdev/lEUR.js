@@ -1,3 +1,2 @@
-import lEUR from '../bscmainnet/lUSD';
-      export default lEUR;
-      
+import lEUR from "../bscmainnet/lUSD";
+export default lEUR;

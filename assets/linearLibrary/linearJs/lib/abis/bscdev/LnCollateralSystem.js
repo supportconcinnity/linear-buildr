@@ -1,3 +1,2 @@
-import LnCollateralSystem from '../bscmainnet/LnCollateralSystem';
-      export default LnCollateralSystem;
-      
+import LnCollateralSystem from "../bscmainnet/LnCollateralSystem";
+export default LnCollateralSystem;

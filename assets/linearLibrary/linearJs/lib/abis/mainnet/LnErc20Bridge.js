@@ -4,461 +4,459 @@ export default [
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'oldAdmin',
-        type: 'address'
+        internalType: "address",
+        name: "oldAdmin",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'newAdmin',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "newAdmin",
+        type: "address",
+      },
     ],
-    name: 'AdminChanged',
-    type: 'event'
+    name: "AdminChanged",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'oldCandidate',
-        type: 'address'
+        internalType: "address",
+        name: "oldCandidate",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'newCandidate',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "newCandidate",
+        type: "address",
+      },
     ],
-    name: 'CandidateChanged',
-    type: 'event'
+    name: "CandidateChanged",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'tokenKey',
-        type: 'bytes32'
+        internalType: "bytes32",
+        name: "tokenKey",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'chainId',
-        type: 'uint256'
-      }
+        internalType: "uint256",
+        name: "chainId",
+        type: "uint256",
+      },
     ],
-    name: 'ChainSupportForTokenAdded',
-    type: 'event'
+    name: "ChainSupportForTokenAdded",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'tokenKey',
-        type: 'bytes32'
+        internalType: "bytes32",
+        name: "tokenKey",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'chainId',
-        type: 'uint256'
-      }
+        internalType: "uint256",
+        name: "chainId",
+        type: "uint256",
+      },
     ],
-    name: 'ChainSupportForTokenDropped',
-    type: 'event'
+    name: "ChainSupportForTokenDropped",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'oldRelayer',
-        type: 'address'
+        internalType: "address",
+        name: "oldRelayer",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'newRelayer',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "newRelayer",
+        type: "address",
+      },
     ],
-    name: 'RelayerChanged',
-    type: 'event'
+    name: "RelayerChanged",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'tokenKey',
-        type: 'bytes32'
+        internalType: "bytes32",
+        name: "tokenKey",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'tokenAddress',
-        type: 'address'
+        internalType: "address",
+        name: "tokenAddress",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'uint8',
-        name: 'lockType',
-        type: 'uint8'
-      }
+        internalType: "uint8",
+        name: "lockType",
+        type: "uint8",
+      },
     ],
-    name: 'TokenAdded',
-    type: 'event'
+    name: "TokenAdded",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'srcChainId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'destChainId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "destChainId",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'depositId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "depositId",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'depositor',
-        type: 'bytes32'
+        internalType: "bytes32",
+        name: "depositor",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'recipient',
-        type: 'bytes32'
+        internalType: "bytes32",
+        name: "recipient",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'currency',
-        type: 'bytes32'
+        internalType: "bytes32",
+        name: "currency",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256'
-      }
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
     ],
-    name: 'TokenDeposited',
-    type: 'event'
+    name: "TokenDeposited",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'tokenKey',
-        type: 'bytes32'
-      }
+        internalType: "bytes32",
+        name: "tokenKey",
+        type: "bytes32",
+      },
     ],
-    name: 'TokenRemoved',
-    type: 'event'
+    name: "TokenRemoved",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'srcChainId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'destChainId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "destChainId",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'depositId',
-        type: 'uint256'
+        internalType: "uint256",
+        name: "depositId",
+        type: "uint256",
       },
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'depositor',
-        type: 'bytes32'
+        internalType: "bytes32",
+        name: "depositor",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'recipient',
-        type: 'bytes32'
+        internalType: "bytes32",
+        name: "recipient",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'currency',
-        type: 'bytes32'
+        internalType: "bytes32",
+        name: "currency",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256'
-      }
-    ],
-    name: 'TokenWithdrawn',
-    type: 'event'
-  },
-  {
-    inputs: [],
-    name: 'DEPOSIT_TYPEHASH',
-    outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'DOMAIN_SEPARATOR',
-    outputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'TOKEN_LOCK_TYPE_MINT_BURN',
-    outputs: [ { internalType: 'uint8', name: '', type: 'uint8' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'TOKEN_LOCK_TYPE_TRANSFER',
-    outputs: [ { internalType: 'uint8', name: '', type: 'uint8' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'address', name: '_admin', type: 'address' } ],
-    name: '__LnAdminUpgradeable_init',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_relayer', type: 'address' },
-      { internalType: 'address', name: '_admin', type: 'address' }
-    ],
-    name: '__LnErc20Bridge_init',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' },
-      { internalType: 'uint256', name: 'chainId', type: 'uint256' }
-    ],
-    name: 'addChainSupportForToken',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' },
-      {
-        internalType: 'address',
-        name: 'tokenAddress',
-        type: 'address'
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
       },
-      { internalType: 'uint8', name: 'lockType', type: 'uint8' }
     ],
-    name: 'addToken',
+    name: "TokenWithdrawn",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "DEPOSIT_TYPEHASH",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "DOMAIN_SEPARATOR",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "TOKEN_LOCK_TYPE_MINT_BURN",
+    outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "TOKEN_LOCK_TYPE_TRANSFER",
+    outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_admin", type: "address" }],
+    name: "__LnAdminUpgradeable_init",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'admin',
-    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'becomeAdmin',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'candidate',
-    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'currentChainId',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
-      { internalType: 'bytes32', name: 'token', type: 'bytes32' },
-      { internalType: 'uint256', name: 'amount', type: 'uint256' },
-      { internalType: 'uint256', name: 'destChainId', type: 'uint256' },
-      { internalType: 'bytes32', name: 'recipient', type: 'bytes32' }
+      { internalType: "address", name: "_relayer", type: "address" },
+      { internalType: "address", name: "_admin", type: "address" },
     ],
-    name: 'deposit',
+    name: "__LnErc20Bridge_init",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "tokenKey", type: "bytes32" },
+      { internalType: "uint256", name: "chainId", type: "uint256" },
+    ],
+    name: "addChainSupportForToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "tokenKey", type: "bytes32" },
+      {
+        internalType: "address",
+        name: "tokenAddress",
+        type: "address",
+      },
+      { internalType: "uint8", name: "lockType", type: "uint8" },
+    ],
+    name: "addToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'depositCount',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' },
-      { internalType: 'uint256', name: 'chainId', type: 'uint256' }
-    ],
-    name: 'dropChainSupportForToken',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' } ],
-    name: 'getTokenAddress',
-    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' } ],
-    name: 'getTokenLockType',
-    outputs: [ { internalType: 'uint8', name: '', type: 'uint8' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' },
-      { internalType: 'uint256', name: 'chainId', type: 'uint256' }
-    ],
-    name: 'isTokenSupportedOnChain',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'view',
-    type: 'function'
+    name: "admin",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'relayer',
-    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
-    stateMutability: 'view',
-    type: 'function'
+    name: "becomeAdmin",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    inputs: [ { internalType: 'bytes32', name: 'tokenKey', type: 'bytes32' } ],
-    name: 'removeToken',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    inputs: [],
+    name: "candidate",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "currentChainId",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
-      { internalType: 'address', name: '_candidate', type: 'address' }
+      { internalType: "bytes32", name: "token", type: "bytes32" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+      { internalType: "uint256", name: "destChainId", type: "uint256" },
+      { internalType: "bytes32", name: "recipient", type: "bytes32" },
     ],
-    name: 'setCandidate',
+    name: "deposit",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    inputs: [ { internalType: 'address', name: '_relayer', type: 'address' } ],
-    name: 'setRelayer',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    inputs: [],
+    name: "depositCount",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
   },
   {
-    inputs: [ { internalType: 'bytes32', name: '', type: 'bytes32' } ],
-    name: 'tokenInfos',
+    inputs: [
+      { internalType: "bytes32", name: "tokenKey", type: "bytes32" },
+      { internalType: "uint256", name: "chainId", type: "uint256" },
+    ],
+    name: "dropChainSupportForToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "tokenKey", type: "bytes32" }],
+    name: "getTokenAddress",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "tokenKey", type: "bytes32" }],
+    name: "getTokenLockType",
+    outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "tokenKey", type: "bytes32" },
+      { internalType: "uint256", name: "chainId", type: "uint256" },
+    ],
+    name: "isTokenSupportedOnChain",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "relayer",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "tokenKey", type: "bytes32" }],
+    name: "removeToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_candidate", type: "address" }],
+    name: "setCandidate",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_relayer", type: "address" }],
+    name: "setRelayer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    name: "tokenInfos",
     outputs: [
       {
-        internalType: 'address',
-        name: 'tokenAddress',
-        type: 'address'
+        internalType: "address",
+        name: "tokenAddress",
+        type: "address",
       },
-      { internalType: 'uint8', name: 'lockType', type: 'uint8' }
+      { internalType: "uint8", name: "lockType", type: "uint8" },
     ],
-    stateMutability: 'view',
-    type: 'function'
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
-      { internalType: 'bytes32', name: '', type: 'bytes32' },
-      { internalType: 'uint256', name: '', type: 'uint256' }
+      { internalType: "bytes32", name: "", type: "bytes32" },
+      { internalType: "uint256", name: "", type: "uint256" },
     ],
-    name: 'tokenSupportedOnChain',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'view',
-    type: 'function'
+    name: "tokenSupportedOnChain",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [
-      { internalType: 'uint256', name: 'srcChainId', type: 'uint256' },
-      { internalType: 'uint256', name: 'destChainId', type: 'uint256' },
-      { internalType: 'uint256', name: 'depositId', type: 'uint256' },
-      { internalType: 'bytes32', name: 'depositor', type: 'bytes32' },
-      { internalType: 'bytes32', name: 'recipient', type: 'bytes32' },
-      { internalType: 'bytes32', name: 'currency', type: 'bytes32' },
-      { internalType: 'uint256', name: 'amount', type: 'uint256' },
-      { internalType: 'bytes', name: 'signature', type: 'bytes' }
+      { internalType: "uint256", name: "srcChainId", type: "uint256" },
+      { internalType: "uint256", name: "destChainId", type: "uint256" },
+      { internalType: "uint256", name: "depositId", type: "uint256" },
+      { internalType: "bytes32", name: "depositor", type: "bytes32" },
+      { internalType: "bytes32", name: "recipient", type: "bytes32" },
+      { internalType: "bytes32", name: "currency", type: "bytes32" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+      { internalType: "bytes", name: "signature", type: "bytes" },
     ],
-    name: 'withdraw',
+    name: "withdraw",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
-      { internalType: 'uint256', name: '', type: 'uint256' },
-      { internalType: 'uint256', name: '', type: 'uint256' }
+      { internalType: "uint256", name: "", type: "uint256" },
+      { internalType: "uint256", name: "", type: "uint256" },
     ],
-    name: 'withdrawnDeposits',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'view',
-    type: 'function'
-  }
+    name: "withdrawnDeposits",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
 ];

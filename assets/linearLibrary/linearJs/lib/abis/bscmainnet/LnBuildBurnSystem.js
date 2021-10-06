@@ -4,259 +4,257 @@ export default [
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'oldAdmin',
-        type: 'address'
+        internalType: "address",
+        name: "oldAdmin",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'newAdmin',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "newAdmin",
+        type: "address",
+      },
     ],
-    name: 'AdminChanged',
-    type: 'event'
+    name: "AdminChanged",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'bytes32',
-        name: 'name',
-        type: 'bytes32'
+        internalType: "bytes32",
+        name: "name",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'addr',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "addr",
+        type: "address",
+      },
     ],
-    name: 'CachedAddressUpdated',
-    type: 'event'
+    name: "CachedAddressUpdated",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'oldCandidate',
-        type: 'address'
+        internalType: "address",
+        name: "oldCandidate",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'newCandidate',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "newCandidate",
+        type: "address",
+      },
     ],
-    name: 'CandidateChanged',
-    type: 'event'
+    name: "CandidateChanged",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'account',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
     ],
-    name: 'Paused',
-    type: 'event'
+    name: "Paused",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'account',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
     ],
-    name: 'Unpaused',
-    type: 'event'
+    name: "Unpaused",
+    type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'oldAddr',
-        type: 'address'
+        internalType: "address",
+        name: "oldAddr",
+        type: "address",
       },
       {
         indexed: false,
-        internalType: 'address',
-        name: 'newAddr',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "newAddr",
+        type: "address",
+      },
     ],
-    name: 'UpdateLusdToken',
-    type: 'event'
+    name: "UpdateLusdToken",
+    type: "event",
   },
   {
-    inputs: [ { internalType: 'uint256', name: 'amount', type: 'uint256' } ],
-    name: 'BuildAsset',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'BuildMaxAsset',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'uint256', name: 'amount', type: 'uint256' } ],
-    name: 'BurnAsset',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+    name: "BuildAsset",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'BurnAssetToTarget',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'address', name: 'user', type: 'address' } ],
-    name: 'MaxCanBuildAsset',
-    outputs: [ { internalType: 'uint256', name: '', type: 'uint256' } ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [ { internalType: 'address', name: '_address', type: 'address' } ],
-    name: 'SetLusdTokenAddress',
+    name: "BuildMaxAsset",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    inputs: [ { internalType: 'address', name: '_admin', type: 'address' } ],
-    name: '__LnAdminUpgradeable_init',
+    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+    name: "BurnAsset",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "BurnAssetToTarget",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "user", type: "address" }],
+    name: "MaxCanBuildAsset",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_address", type: "address" }],
+    name: "SetLusdTokenAddress",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_admin", type: "address" }],
+    name: "__LnAdminUpgradeable_init",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
-      { internalType: 'address', name: 'admin', type: 'address' },
+      { internalType: "address", name: "admin", type: "address" },
       {
-        internalType: 'address',
-        name: '_lUSDTokenAddr',
-        type: 'address'
-      }
+        internalType: "address",
+        name: "_lUSDTokenAddr",
+        type: "address",
+      },
     ],
-    name: '__LnBuildBurnSystem_init',
+    name: "__LnBuildBurnSystem_init",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'admin',
-    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
-    stateMutability: 'view',
-    type: 'function'
+    name: "admin",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'becomeAdmin',
+    name: "becomeAdmin",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
-      { internalType: 'address', name: 'user', type: 'address' },
-      { internalType: 'uint256', name: 'amount', type: 'uint256' }
+      { internalType: "address", name: "user", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
-    name: 'buildFromCollateralSys',
+    name: "buildFromCollateralSys",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    inputs: [ { internalType: 'address', name: 'user', type: 'address' } ],
-    name: 'buildMaxFromCollateralSys',
+    inputs: [{ internalType: "address", name: "user", type: "address" }],
+    name: "buildMaxFromCollateralSys",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: 'user', type: 'address' },
-      { internalType: 'address', name: 'liquidator', type: 'address' },
-      { internalType: 'uint256', name: 'amount', type: 'uint256' }
-    ],
-    name: 'burnForLiquidation',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
-      { internalType: 'address', name: 'user', type: 'address' },
-      { internalType: 'uint256', name: 'amount', type: 'uint256' }
+      { internalType: "address", name: "user", type: "address" },
+      { internalType: "address", name: "liquidator", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
-    name: 'burnFromCollateralSys',
+    name: "burnForLiquidation",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "user", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+    ],
+    name: "burnFromCollateralSys",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'candidate',
-    outputs: [ { internalType: 'address', name: '', type: 'address' } ],
-    stateMutability: 'view',
-    type: 'function'
+    name: "candidate",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
-    name: 'paused',
-    outputs: [ { internalType: 'bool', name: '', type: 'bool' } ],
-    stateMutability: 'view',
-    type: 'function'
+    name: "paused",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
   },
   {
-    inputs: [
-      { internalType: 'address', name: '_candidate', type: 'address' }
-    ],
-    name: 'setCandidate',
+    inputs: [{ internalType: "address", name: "_candidate", type: "address" }],
+    name: "setCandidate",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
-    inputs: [ { internalType: 'bool', name: '_paused', type: 'bool' } ],
-    name: 'setPaused',
+    inputs: [{ internalType: "bool", name: "_paused", type: "bool" }],
+    name: "setPaused",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
       {
-        internalType: 'contract ILnAddressStorage',
-        name: '_addressStorage',
-        type: 'address'
-      }
+        internalType: "contract ILnAddressStorage",
+        name: "_addressStorage",
+        type: "address",
+      },
     ],
-    name: 'updateAddressCache',
+    name: "updateAddressCache",
     outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  }
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ];

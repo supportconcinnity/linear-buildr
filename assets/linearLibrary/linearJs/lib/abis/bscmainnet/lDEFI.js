@@ -1,3 +1,2 @@
-import lDEFI from '../bscmainnet/lUSD';
-      export default lDEFI;
-      
+import lDEFI from "../bscmainnet/lUSD";
+export default lDEFI;
