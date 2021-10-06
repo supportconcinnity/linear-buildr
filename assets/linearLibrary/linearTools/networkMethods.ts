@@ -112,15 +112,19 @@ export const isSupportNetwork = (walletNetworkId: number) => {
  * @param walletNetworkId 网络Id
  */
 export const getOtherNetworks = (walletNetworkId: number) => {
-  let other: string[] = [];
+  let other: number[] = [];
   if (isMainnetNetwork(walletNetworkId)) {
-    other = Object.keys(_.omit(MAINNET_NETWORKS, [walletNetworkId]));
+    other = MAINNET_NETWORKS.filter(
+      (networkId) => networkId != walletNetworkId
+    );
   } else if (isDevNetwork(walletNetworkId)) {
-    other = Object.keys(_.omit(DEV_NETWORKS, [walletNetworkId]));
+    other = DEV_NETWORKS.filter((networkId) => networkId != walletNetworkId);
   } else if (isTestnetNetwork(walletNetworkId)) {
-    other = Object.keys(_.omit(TESTNET_NETWORKS, [walletNetworkId]));
+    other = TESTNET_NETWORKS.filter(
+      (networkId) => networkId != walletNetworkId
+    );
   }
-  return other.join();
+  return other;
 };
 
 export const SUPPORTED_NETWORKS_MAP = _.invert(SUPPORTED_NETWORKS);
