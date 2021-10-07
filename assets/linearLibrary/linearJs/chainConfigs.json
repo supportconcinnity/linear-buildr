@@ -14,7 +14,7 @@
       "LnAssetSystem": "0xa6048Ed66C8fF57837361dee2B15711740212571",
       "LnBuildBurnSystem": "0xF0F911B1884d6c125f8c185A6735F5aC956f0079",
       "LnConfig": "0xeaE9B3ce4FA9f4E2a84CB434579a6768dAB81A3c",
-      "LnChainLinkPrices": "0x5Fc41756F83c30DAcEd47d1CE050081A21d95b8a",
+      "LnOracleRouter": "0x5Fc41756F83c30DAcEd47d1CE050081A21d95b8a",
       "LnDebtSystem": "0x6290e605B7A8DFa6F51860f08A8d04a257Da45BD",
       "LnCollateralSystem": "0xBb7cF9A1b0C2aF40B98a9018E3e9f756fE0aD3bb",
       "LnRewardLocker": "0x6707e1B78DE157Aac4115ce09dBC4b699d89E331",
@@ -43,7 +43,7 @@
   {
     "name": "BscMainnet",
     "networkId": 56,
-    "chainType": "BINANCE",
+    "chainType": "binance",
     "networkType": "mainnet",
     "isLiquidationEnable": true,
     "rpcUrl": "https://bsc-dataseed1.binance.org",
@@ -119,7 +119,7 @@
   {
     "name": "BscDev",
     "networkId": 10056,
-    "chainType": "BINANCE",
+    "chainType": "binance",
     "networkType": "dev",
     "isLiquidationEnable": true,
     "rpcUrl": "https://master.http.bsc.dev.linear.finance",

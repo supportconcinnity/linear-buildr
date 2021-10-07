@@ -44,7 +44,8 @@ let BLOCKCHAIN_BROWSER_API: { [k: number]: string } = {};
 
 let TOKEN_BRIDGE_API: { [k: number]: string } = {};
 
-typedConfigs.forEach((object) => {
+for (let i = 0; i < typedConfigs.length; i++) {
+  let object = typedConfigs[i];
   let id = object.networkId;
   if (object.chainType === ChainType.ETHEREUM) {
     ETHEREUM_NETWORKS.push(id);
@@ -80,7 +81,7 @@ typedConfigs.forEach((object) => {
   BLOCKCHAIN_BROWSER[id] = object.blockchainBrowser;
   BLOCKCHAIN_BROWSER_API[id] = object.blockchainBrowserApi;
   TOKEN_BRIDGE_API[id] = object.tokenBridgeApi;
-});
+}
 
 export const isEthereumNetwork = (walletNetworkId: number) => {
   return ETHEREUM_NETWORKS.includes(+walletNetworkId);
@@ -303,12 +304,13 @@ export const getNetworkSpeeds = async (walletNetworkId: number) => {
       },
     };
   } else if (isBinanceNetwork(walletNetworkId)) {
+    console.log(isBinanceNetwork(walletNetworkId));
+
     let currentGasPrice = 20;
     const res = await api.getBSCGasPrice(walletNetworkId);
     if (res?.result) {
       currentGasPrice = unFormatGasPrice(res.result);
     }
-
     return {
       [NETWORK_SPEEDS_TO_KEY.SLOW]: {
         price: currentGasPrice * 0.75,

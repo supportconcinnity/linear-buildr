@@ -51,7 +51,7 @@ export interface ChainAddresses {
   LnErc20Bridge: string;
   LnBuildBurnSystem?: string;
   LnConfig?: string;
-  LnChainLinkPrices?: string;
+  LnOracleRouter?: string;
   LnDebtSystem?: string;
   LnCollateralSystem?: string;
   LnRewardLocker?: string;
@@ -72,11 +72,17 @@ export interface ChainAddresses {
   lXLCI: string;
   lXBCI: string;
   lVET: string;
+  lEUR: string;
+  lUNI: string;
 }
 
 export interface NetworksMap {
   key: number;
   value: ChainConfig;
+}
+
+interface Contracts {
+  [k: string]: ethers.Contract;
 }
 
 const API_KEY = {
@@ -92,11 +98,33 @@ typedConfigs.forEach((object) => {
   networksMap.set(id, object);
 });
 
+const assetUpgradeableSubcontract = [
+  "lUSD",
+  "lBTC",
+  "lETH",
+  "lLINK",
+  "lTRX",
+  "lDOT",
+  "lYFI",
+  "lBNB",
+  "lADA",
+  "lXLM",
+  "lXAU",
+  "lXAG",
+  "lJPY",
+  "lXLCI",
+  "lXBCI",
+  "lVET",
+  "lEUR",
+  "lUNI",
+];
+
 export default class Web3Connector {
   networkId: number;
   network: string;
   provider: providers.BaseProvider;
   addressList: ChainAddresses;
+  contracts: Contracts;
   utils: any;
   signers: any;
   isEthereumNetwork: boolean;
@@ -108,8 +136,7 @@ export default class Web3Connector {
   tokenBridgeApi: string;
   blockchainBrowser: string;
   blockchainBrowserApi: string;
-  // contracts:{}
-  constructor(id: number) {
+  constructor(id: number, signer?: ethers.Signer) {
     const chainData = networksMap.get(id);
     const {
       name,
@@ -161,6 +188,37 @@ export default class Web3Connector {
         this.tokenBridgeApi = TOKEN_BRIDGE_MAINNET;
     }
 
-    // this.contracts[]
+    function initContracts(
+      contractAddress: ChainAddresses,
+      signerOrProvider: providers.BaseProvider | ethers.Signer
+    ) {
+      return Object.keys(contractAddress).reduce(function (
+        result: Contracts,
+        key
+      ) {
+        const factoryKey = `${key}__factory`;
+        if (assetUpgradeableSubcontract.includes(key)) {
+          result[key] = contracts.LnAssetUpgradeable__factory.connect(
+            contractAddress[key],
+            signerOrProvider
+          );
+        } else {
+          result[key] = contracts[factoryKey].connect(
+            contractAddress[key],
+            signerOrProvider
+          );
+        }
+
+        return result;
+      },
+      {});
+    }
+
+    // is a signer is not passed, init readable contracts only
+    if (signer) {
+      this.contracts = initContracts(addresses, signer);
+    } else {
+      this.contracts = initContracts(addresses, this.provider);
+    }
   }
 }
