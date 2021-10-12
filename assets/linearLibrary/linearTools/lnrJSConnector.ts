@@ -20,9 +20,13 @@ import signers from "../linearJs/lib/signers";
 import { storeDetailsData } from "./request";
 import { UpdateWalletConnectSigner } from "../linearJs/lib/signers/walletConnectSigner";
 
-let window: any;
-
-let $nuxt: any;
+declare global {
+  interface Window {
+    $nuxt: any;
+    BinanceChain: any;
+    ethereum: any;
+  }
+}
 
 let lnrJSConnector: any = {
   signers,
@@ -44,9 +48,9 @@ export const defaultNetwork = {
 export const connectToWallet = async (walletType: SUPPORTED_WALLETS) => {
   try {
     let registeredWalletConnectEvents =
-      $nuxt.$store.state?.registeredWalletConnectEvents;
+      window.$nuxt.$store.state?.registeredWalletConnectEvents;
 
-    let networkId = $nuxt.$store.state.networkDetails.networkId;
+    let networkId = window.$nuxt.$store.state.networkDetails.networkId;
 
     //当连接方式为wallet_connect 且已经设置监听方式时,不要再去重新生成signer，改用updateWalletConnectWeb3Provider去更新provider
     // if (!registeredWalletConnectEvents) {
@@ -131,7 +135,7 @@ const connectToWalletConnect = async () => {
     //to do: Is the network is selected if using wallet connect
     let signer = await signers.WalletConnect();
     let provider = signer.provider;
-    $nuxt.$store.commit("setWalletConnect", {
+    window.$nuxt.$store.commit("setWalletConnect", {
       qrcode: false,
     });
 
@@ -201,8 +205,8 @@ export const selectedWallet = async (
   try {
     //连接钱包
     const walletStatus = await connectToWallet(walletType);
-    $nuxt.$Spin.show();
-    const store = $nuxt.$store;
+    window.$nuxt.$Spin.show();
+    const store = window.$nuxt.$store;
 
     //连接成功
     if (walletStatus && walletStatus.currentWallet) {
@@ -237,7 +241,7 @@ export const selectedWallet = async (
         onMetamaskAccountChange(async () => {
           //当前链的钱包切换时才执行更新
           if (store.state.walletType == SUPPORTED_WALLETS.METAMASK) {
-            $nuxt.$Spin.show();
+            window.$nuxt.$Spin.show();
             let network = await getEthereumNetwork();
             let { networkId } = network!;
             if (networkId === undefined) return;
@@ -254,7 +258,7 @@ export const selectedWallet = async (
             store.commit("setWalletDetails", {}); //清理数据
             await storeDetailsData();
             $pub.publish("onWalletAccountChange");
-            $nuxt.$Spin.hide();
+            window.$nuxt.$Spin.hide();
           }
         });
 
@@ -276,7 +280,7 @@ export const selectedWallet = async (
         onBinanceAccountChange(async () => {
           //当前链的钱包切换时才执行更新
           if (store.state.walletType == SUPPORTED_WALLETS.BINANCE_CHAIN) {
-            $nuxt.$Spin.show();
+            window.$nuxt.$Spin.show();
 
             const address = await lnrJSConnector.signers
               .BinanceChain()
@@ -291,7 +295,7 @@ export const selectedWallet = async (
 
             await storeDetailsData();
             $pub.publish("onWalletAccountChange");
-            $nuxt.$Spin.hide();
+            window.$nuxt.$Spin.hide();
           }
         });
 
@@ -316,7 +320,7 @@ export const selectedWallet = async (
               store.state.walletType == SUPPORTED_WALLETS.WALLET_CONNECT &&
               store.state?.wallet.address != accounts[0]
             ) {
-              $nuxt.$Spin.show();
+              window.$nuxt.$Spin.show();
               let networkId = (
                 await lnrJSConnector.signers
                   .WalletConnect()
@@ -338,7 +342,7 @@ export const selectedWallet = async (
               store.commit("setWalletDetails", {}); //清理数据
               await storeDetailsData();
               $pub.publish("onWalletAccountChange");
-              $nuxt.$Spin.hide();
+              window.$nuxt.$Spin.hide();
             }
           }
         );
@@ -388,7 +392,7 @@ export const selectedWallet = async (
     console.log(error, "selectedWallet error");
     return false;
   } finally {
-    $nuxt.$Spin.hide();
+    window.$nuxt.$Spin.hide();
   }
 };
 

@@ -8,9 +8,6 @@ import { URLS } from "./constants/urls";
 import api from "@/api";
 import { typedConfigs, ChainType, NetworkType } from "./networkConnector";
 
-let window: any;
-let $nuxt: any;
-
 /**
  * ethererm网络
  */
@@ -213,7 +210,7 @@ export const ETHEREUM_CHAIN_OPTIONS: { [k: number]: any } = {
 };
 
 export async function getEthereumNetwork() {
-  const isMobile = $nuxt.$store.state?.isMobile;
+  const isMobile = window.$nuxt.$store.state?.isMobile;
   if (!window.ethereum && !isMobile) {
     window.open(WALLET_EXTENSIONS.METAMASK);
     return {};
@@ -239,7 +236,7 @@ export async function getEthereumNetwork() {
 }
 
 export async function getBinanceNetwork() {
-  const isMobile = $nuxt.$store.state?.isMobile;
+  const isMobile = window.$nuxt.$store.state?.isMobile;
   if (!window.BinanceChain && !isMobile) {
     window.open(WALLET_EXTENSIONS.BINANCE);
     return {};
@@ -259,7 +256,8 @@ export async function getBinanceNetwork() {
 }
 
 export const getNetworkSpeeds = async (walletNetworkId: number) => {
-  !walletNetworkId && (walletNetworkId = $nuxt.$store.state?.walletNetworkId);
+  !walletNetworkId &&
+    (walletNetworkId = window.$nuxt.$store.state?.walletNetworkId);
 
   if (isDevNetwork(walletNetworkId)) {
     return {
