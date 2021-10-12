@@ -1,3 +1,2 @@
-import lYFI from '../bscmainnet/lUSD';
-      export default lYFI;
-      
+import lYFI from "../bscmainnet/lUSD";
+export default lYFI;

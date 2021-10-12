@@ -1,3 +1,2 @@
-import lDOT from '../bscmainnet/lUSD';
-      export default lDOT;
-      
+import lDOT from "../bscmainnet/lUSD";
+export default lDOT;

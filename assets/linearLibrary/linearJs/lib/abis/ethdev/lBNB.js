@@ -1,3 +1,2 @@
-import lBNB from '../mainnet/lUSD';
-      export default lBNB;
-      
+import lBNB from "../mainnet/lUSD";
+export default lBNB;

@@ -5,12 +5,12 @@
 import PubSub from "pubsub-js";
 import { storeDetailsData } from "@/assets/linearLibrary/linearTools/request";
 
-export default async function({ store }) {
-    PubSub.subscribe("onWalletDetailsLoopRefreshStart", async msg => {
-        await storeDetailsData();
-    });
+export default async function ({ store }) {
+  PubSub.subscribe("onWalletDetailsLoopRefreshStart", async (msg) => {
+    await storeDetailsData();
+  });
 
-    PubSub.subscribe("onWalletDetailsLoopRefreshStop", async msg => {
-        store.commit("setLoopRefreshStatus", false);
-    });
+  PubSub.subscribe("onWalletDetailsLoopRefreshStop", async (msg) => {
+    store.commit("setLoopRefreshStatus", false);
+  });
 }

@@ -1,3 +1,2 @@
-import LnLiquidation from '../bscmainnet/LnLiquidation';
-      export default LnLiquidation;
-      
+import LnLiquidation from "../bscmainnet/LnLiquidation";
+export default LnLiquidation;

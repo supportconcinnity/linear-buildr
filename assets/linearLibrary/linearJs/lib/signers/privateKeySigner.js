@@ -1,9 +1,11 @@
-import { Wallet, getDefaultProvider } from 'ethers';
-import ContractSettings from '../../contractSettings';
+import { Wallet, getDefaultProvider } from "ethers";
+import ContractSettings from "../../contractSettings";
 
-const PrivateKeySigner = function(provider, networkId, privateKey) {
+const PrivateKeySigner = function (provider, networkId, privateKey) {
   if (networkId && !provider) {
-    provider = getDefaultProvider(ContractSettings.SUPPORTED_NETWORKS[networkId]);
+    provider = getDefaultProvider(
+      ContractSettings.SUPPORTED_NETWORKS[networkId]
+    );
   }
   return new Wallet(privateKey, provider || getDefaultProvider());
 };

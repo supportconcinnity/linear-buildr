@@ -1,3 +1,2 @@
-import lCAKE from '../mainnet/lUSD';
-      export default lCAKE;
-      
+import lCAKE from "../mainnet/lUSD";
+export default lCAKE;

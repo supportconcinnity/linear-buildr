@@ -1,6 +1,5 @@
 {
-    "home": {
-        "tabMenu": ["HOME", "TRANSACTIONS"]
-    }
-    
+  "home": {
+    "tabMenu": ["HOME", "TRANSACTIONS"]
+  }
 }

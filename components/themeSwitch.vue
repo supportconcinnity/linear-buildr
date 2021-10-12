@@ -1,13 +1,13 @@
 <template>
-    <i-switch
-        class="themeSwitch"
-        v-model="theme"
-        :class="theme"
-        true-value="dark"
-        false-value="light"
-        @on-change="theme => $store.commit('setTheme', theme)"
-    >
-    </i-switch>
+  <i-switch
+    class="themeSwitch"
+    v-model="theme"
+    :class="theme"
+    true-value="dark"
+    false-value="light"
+    @on-change="(theme) => $store.commit('setTheme', theme)"
+  >
+  </i-switch>
 </template>
 
 <script>
@@ -79,25 +79,25 @@
 
  */
 export default {
-    name: "themeSwitch",
-    data() {
-        return {
-            theme: this.$store.state.theme
-        };
-    }
+  name: "themeSwitch",
+  data() {
+    return {
+      theme: this.$store.state.theme,
+    };
+  },
 };
 </script>
 
 <style lang="scss">
 .themeSwitch {
-    &.light {
-        border-color: $lightBorderColor;
-        background-color: $lightButtonColor;
-    }
+  &.light {
+    border-color: $lightBorderColor;
+    background-color: $lightButtonColor;
+  }
 
-    &.dark {
-        border-color: $darkBorderColor;
-        background-color: $darkButtonColor;
-    }
+  &.dark {
+    border-color: $darkBorderColor;
+    background-color: $darkButtonColor;
+  }
 }
 </style>

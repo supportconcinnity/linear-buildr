@@ -1,3 +1,2 @@
-import LinearFinance from '../mainnet/LinearFinance';
-      export default LinearFinance;
-      
+import LinearFinance from "../mainnet/LinearFinance";
+export default LinearFinance;

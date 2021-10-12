@@ -8,6 +8,6 @@ export const DECIMAL_LENGTH = 2; //小数位长度
  * 数字是否溢出
  * @param {*} num
  */
-export const numberFlow = num => {
-    return _.lt(num, UNDERFLOW) || _.gt(num, OVERFLOW);
+export const numberFlow = (num) => {
+  return _.lt(num, UNDERFLOW) || _.gt(num, OVERFLOW);
 };

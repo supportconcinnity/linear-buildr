@@ -1,10 +1,10 @@
 import _ from "lodash";
 import {
-    BLOCKCHAIN_BROWSER,
-    isBinanceNetwork,
-    isEthereumNetwork,
-    isMainnetNetwork,
-    SUPPORTED_NETWORKS_MAP
+  BLOCKCHAIN_BROWSER,
+  isBinanceNetwork,
+  isEthereumNetwork,
+  isMainnetNetwork,
+  SUPPORTED_NETWORKS_MAP,
 } from "@/assets/linearLibrary/linearTools/network";
 import { URLS } from "@/assets/linearLibrary/linearTools/constants/urls";
 import { DECIMAL_PRECISION } from "@/assets/linearLibrary/linearTools/constants/process";
@@ -30,58 +30,58 @@ import { DECIMAL_PRECISION } from "@/assets/linearLibrary/linearTools/constants/
  */
 //timeFormat
 export const timeFormat = (time, fmStr) => {
-    const weekCN = "一二三四五六日";
-    const weekEN = [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday"
-    ];
+  const weekCN = "一二三四五六日";
+  const weekEN = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
 
-    let year = time.getFullYear();
-    let month = time.getMonth() + 1;
-    let day = time.getDate();
-    let hours = time.getHours();
-    let minutes = time.getMinutes();
-    let seconds = time.getSeconds();
-    let milliSeconds = time.getMilliseconds();
-    let week = time.getDay();
+  let year = time.getFullYear();
+  let month = time.getMonth() + 1;
+  let day = time.getDate();
+  let hours = time.getHours();
+  let minutes = time.getMinutes();
+  let seconds = time.getSeconds();
+  let milliSeconds = time.getMilliseconds();
+  let week = time.getDay();
 
-    month = month >= 10 ? month : "0" + month;
-    day = day >= 10 ? day : "0" + day;
-    hours = hours >= 10 ? hours : "0" + hours;
-    minutes = minutes >= 10 ? minutes : "0" + minutes;
-    seconds = seconds >= 10 ? seconds : "0" + seconds;
+  month = month >= 10 ? month : "0" + month;
+  day = day >= 10 ? day : "0" + day;
+  hours = hours >= 10 ? hours : "0" + hours;
+  minutes = minutes >= 10 ? minutes : "0" + minutes;
+  seconds = seconds >= 10 ? seconds : "0" + seconds;
 
-    if (fmStr.indexOf("yyyy") !== -1) {
-        fmStr = fmStr.replace("yyyy", year);
-    } else {
-        fmStr = fmStr.replace("yy", (year + "").slice(2));
-    }
-    fmStr = fmStr.replace("mm", month);
-    fmStr = fmStr.replace("dd", day);
-    fmStr = fmStr.replace("hh", hours);
-    fmStr = fmStr.replace("MM", minutes);
-    fmStr = fmStr.replace("ss", seconds);
-    fmStr = fmStr.replace("SSS", milliSeconds);
-    fmStr = fmStr.replace("W", weekCN[week - 1]);
-    fmStr = fmStr.replace("ww", weekEN[week - 1]);
-    fmStr = fmStr.replace("w", week);
-    return fmStr;
+  if (fmStr.indexOf("yyyy") !== -1) {
+    fmStr = fmStr.replace("yyyy", year);
+  } else {
+    fmStr = fmStr.replace("yy", (year + "").slice(2));
+  }
+  fmStr = fmStr.replace("mm", month);
+  fmStr = fmStr.replace("dd", day);
+  fmStr = fmStr.replace("hh", hours);
+  fmStr = fmStr.replace("MM", minutes);
+  fmStr = fmStr.replace("ss", seconds);
+  fmStr = fmStr.replace("SSS", milliSeconds);
+  fmStr = fmStr.replace("W", weekCN[week - 1]);
+  fmStr = fmStr.replace("ww", weekEN[week - 1]);
+  fmStr = fmStr.replace("w", week);
+  return fmStr;
 };
 
 //时间格式化
-Date.prototype.format = function(fmStr) {
-    return timeFormat(this, fmStr);
+Date.prototype.format = function (fmStr) {
+  return timeFormat(this, fmStr);
 };
 
 //取小数位长度
-Number.prototype.countDecimals = function() {
-    if (Math.floor(this.valueOf()) === this.valueOf()) return 0;
-    return this.toString().split(".")[1].length || 0;
+Number.prototype.countDecimals = function () {
+  if (Math.floor(this.valueOf()) === this.valueOf()) return 0;
+  return this.toString().split(".")[1].length || 0;
 };
 
 /**
@@ -90,16 +90,16 @@ Number.prototype.countDecimals = function() {
  * @param decimal  保留小数位
  */
 export const formatterInput = (value, decimal = DECIMAL_PRECISION) => {
-    //小数位大于2位才四舍五入,防止小数后第一位0无法输入的情况
-    if (value.countDecimals() > decimal) {
-        value = _.floor(value, decimal);
-    }
+  //小数位大于2位才四舍五入,防止小数后第一位0无法输入的情况
+  if (value.countDecimals() > decimal) {
+    value = _.floor(value, decimal);
+  }
 
-    //大于最大安全整数
-    if (value > Number.MAX_SAFE_INTEGER) {
-        value = toNonExponential(value);
-    }
-    return value;
+  //大于最大安全整数
+  if (value > Number.MAX_SAFE_INTEGER) {
+    value = toNonExponential(value);
+  }
+  return value;
 };
 
 /**
@@ -107,31 +107,31 @@ export const formatterInput = (value, decimal = DECIMAL_PRECISION) => {
  * @param {*} num
  */
 // toNonExponential: Conversion of scientific counting method to digital text
-export const toNonExponential = num => {
-    try {
-        if (isNaN(num)) return 0;
-        let strParam = String(num);
-        let flag = /e/.test(strParam);
-        if (!flag) return num;
+export const toNonExponential = (num) => {
+  try {
+    if (isNaN(num)) return 0;
+    let strParam = String(num);
+    let flag = /e/.test(strParam);
+    if (!flag) return num;
 
-        // 指数符号 true: 正，false: 负
-        let sysbol = true;
-        if (/e-/.test(strParam)) {
-            sysbol = false;
-        }
-        // 指数
-        let index = Number(strParam.match(/\d+$/)[0]);
-        // 基数
-        let basis = strParam.match(/^[\d\.]+/)[0].replace(/\./, "");
-
-        if (sysbol) {
-            return basis.padEnd(index + 1, 0);
-        } else {
-            return basis.padStart(index + basis.length, 0).replace(/^0/, "0.");
-        }
-    } catch (error) {
-        return 0;
+    // 指数符号 true: 正，false: 负
+    let sysbol = true;
+    if (/e-/.test(strParam)) {
+      sysbol = false;
     }
+    // 指数
+    let index = Number(strParam.match(/\d+$/)[0]);
+    // 基数
+    let basis = strParam.match(/^[\d\.]+/)[0].replace(/\./, "");
+
+    if (sysbol) {
+      return basis.padEnd(index + 1, 0);
+    } else {
+      return basis.padStart(index + basis.length, 0).replace(/^0/, "0.");
+    }
+  } catch (error) {
+    return 0;
+  }
 };
 
 /**
@@ -142,21 +142,21 @@ export const toNonExponential = num => {
  */
 //findParents
 export const findParents = ($el, $className) => {
-    try {
-        let parentNode = $el.parentNode;
-        while (parentNode) {
-            if (
-                parentNode.className &&
-                parentNode.className.indexOf($className) != -1
-            ) {
-                return parentNode;
-            }
-            parentNode = parentNode.parentNode;
-        }
-        return null;
-    } catch (error) {
-        return null;
+  try {
+    let parentNode = $el.parentNode;
+    while (parentNode) {
+      if (
+        parentNode.className &&
+        parentNode.className.indexOf($className) != -1
+      ) {
+        return parentNode;
+      }
+      parentNode = parentNode.parentNode;
     }
+    return null;
+  } catch (error) {
+    return null;
+  }
 };
 
 /**
@@ -166,22 +166,22 @@ export const findParents = ($el, $className) => {
  */
 //removeClass
 export const removeClass = ($el, $className) => {
-    try {
-        let classNameArray = $el.className.split(" ");
+  try {
+    let classNameArray = $el.className.split(" ");
 
-        if (_.isArray($className)) {
-            _.pullAll(classNameArray, $className);
-        } else if (_.isString($className)) {
-            _.pull(classNameArray, $className);
-        } else {
-            return false;
-        }
-
-        $el.className = classNameArray.join(" ");
-        return true;
-    } catch (error) {
-        return false;
+    if (_.isArray($className)) {
+      _.pullAll(classNameArray, $className);
+    } else if (_.isString($className)) {
+      _.pull(classNameArray, $className);
+    } else {
+      return false;
     }
+
+    $el.className = classNameArray.join(" ");
+    return true;
+  } catch (error) {
+    return false;
+  }
 };
 
 /**
@@ -191,24 +191,23 @@ export const removeClass = ($el, $className) => {
  */
 //addClass
 export const addClass = ($el, $className) => {
-    try {
-        let classNameArray = $el.className.split(" ");
+  try {
+    let classNameArray = $el.className.split(" ");
 
-        if (_.isArray($className)) {
-            classNameArray = [...classNameArray, ...$className];
-        } else if (_.isString($className)) {
-            classNameArray.push($className);
-        } else {
-            return false;
-        }
-
-        $el.className = classNameArray.join(" ");
-        return true;
-    } catch (error) {
-        return false;
+    if (_.isArray($className)) {
+      classNameArray = [...classNameArray, ...$className];
+    } else if (_.isString($className)) {
+      classNameArray.push($className);
+    } else {
+      return false;
     }
-};
 
+    $el.className = classNameArray.join(" ");
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
 
 /**
  * 根据HASH打开网站
@@ -216,39 +215,39 @@ export const addClass = ($el, $className) => {
  * @param {Number | String} networdId 网络ID
  */
 export const openBlockchainBrowser = (hash, networdId) => {
-    try {
-        const baseUrl = BLOCKCHAIN_BROWSER[networdId] + hash;
-        window.open(baseUrl, "_blank");
-    } catch (error) {
-        console.log(error, "openBlockchainBrowser");
-    }
+  try {
+    const baseUrl = BLOCKCHAIN_BROWSER[networdId] + hash;
+    window.open(baseUrl, "_blank");
+  } catch (error) {
+    console.log(error, "openBlockchainBrowser");
+  }
 };
 
 /**
  * 打开购买LINA站点
  */
 export const openBuyLINA = () => {
-    const walletNetworkId = $nuxt.$store.state?.walletNetworkId;
-    //主网时打开购买LINA
-    if (isMainnetNetwork(walletNetworkId)) {
-        window.open(URLS.BUY_LINA);
-    }
+  const walletNetworkId = $nuxt.$store.state?.walletNetworkId;
+  //主网时打开购买LINA
+  if (isMainnetNetwork(walletNetworkId)) {
+    window.open(URLS.BUY_LINA);
+  }
 };
 
 //设置输入框的光标位置，会选中 selectionStart 到 selectionEnd 间的内容
 export const setCursorRange = (el, selectionStart, selectionEnd) => {
-    try {
-        if (el.setSelectionRange) {
-            el.focus();
-            el.setSelectionRange(selectionStart, selectionEnd);
-        } else if (el.createTextRange) {
-            var range = el.createTextRange();
-            range.collapse(true);
-            range.moveEnd("character", selectionEnd);
-            range.moveStart("character", selectionStart);
-            range.select();
-        }
-    } catch (error) {
-        console.log(error, "setCursorRange");
+  try {
+    if (el.setSelectionRange) {
+      el.focus();
+      el.setSelectionRange(selectionStart, selectionEnd);
+    } else if (el.createTextRange) {
+      var range = el.createTextRange();
+      range.collapse(true);
+      range.moveEnd("character", selectionEnd);
+      range.moveStart("character", selectionStart);
+      range.select();
     }
+  } catch (error) {
+    console.log(error, "setCursorRange");
+  }
 };

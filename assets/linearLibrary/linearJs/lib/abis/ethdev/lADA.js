@@ -1,3 +1,2 @@
-import lADA from '../mainnet/lUSD';
-      export default lADA;
-      
+import lADA from "../mainnet/lUSD";
+export default lADA;

@@ -1,3 +1,2 @@
-import lLINK from '../mainnet/lUSD';
-      export default lLINK;
-      
+import lLINK from "../mainnet/lUSD";
+export default lLINK;

@@ -1,3 +1,2 @@
-import lXLCI from '../bscmainnet/lUSD';
-      export default lXLCI;
-      
+import lXLCI from "../bscmainnet/lUSD";
+export default lXLCI;

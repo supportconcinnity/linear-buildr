@@ -1,3 +1,2 @@
-import lXAG from '../mainnet/lUSD';
-      export default lXAG;
-      
+import lXAG from "../mainnet/lUSD";
+export default lXAG;

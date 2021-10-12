@@ -1,3 +1,2 @@
-import lUSD from '../bscmainnet/lUSD';
-      export default lUSD;
-      
+import lUSD from "../bscmainnet/lUSD";
+export default lUSD;
