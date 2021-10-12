@@ -25,10 +25,8 @@ let loopId = 0;
  */
 export const getLiquids = async (wallet, all = false) => {
   const {
-    lnrJS: {
-      LnAssetSystem,
-      contractSettings: { addressList },
-    },
+    lnrJS: { LnAssetSystem },
+    addressList,
   } = lnrJSConnector;
 
   //获取资产列表
@@ -163,14 +161,14 @@ export const getPriceRates = async (currency) => {
 export const getPriceRatesFromApi = async (currency) => {
   const rates = {};
   const {
-    lnrJS: { LnChainLinkPrices },
+    lnrJS: { LnOracleRouter },
     utils,
   } = lnrJSConnector;
   if (_.isString(currency)) {
     if (currency == "lUSD") {
       rates["lUSD"] = n2bn("1");
     } else if (currency == "LINA") {
-      rates["LINA"] = await LnChainLinkPrices.getPrice(
+      rates["LINA"] = await LnOracleRouter.getPrice(
         utils.formatBytes32String("LINA")
       );
     } else {
@@ -197,7 +195,7 @@ export const getPriceRatesFromApi = async (currency) => {
       if (c == "lUSD") {
         rates["lUSD"] = n2bn("1");
       } else if (c == "LINA") {
-        rates["LINA"] = await LnChainLinkPrices.getPrice(
+        rates["LINA"] = await LnOracleRouter.getPrice(
           utils.formatBytes32String("LINA")
         );
       } else {
@@ -243,7 +241,6 @@ export const storeDetailsData = async () => {
         utils,
         provider,
       } = lnrJSConnector;
-
       let promiseArray = [
         LinearFinance.balanceOf(walletAddress),
         lUSD.balanceOf(walletAddress),
@@ -266,7 +263,6 @@ export const storeDetailsData = async () => {
 
       //可以直接转换数值的组
       const result = await Promise.all(promiseArray);
-
       let [
         avaliableLINA,
         amountlUSD,

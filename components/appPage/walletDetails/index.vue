@@ -757,8 +757,11 @@ export default {
           let liquidationStatus = await lnr.userPositionMarked({
             account: this.walletAddress,
           });
-
-          if (liquidationStatus.length > 0 && liquidationStatus[0].state) {
+          if (
+            liquidationStatus !== undefined &&
+            liquidationStatus.length > 0 &&
+            liquidationStatus[0].state
+          ) {
             //已标记
             this.$store.commit("setLiquidationStatus", {
               status: liquidationStatus[0].state,

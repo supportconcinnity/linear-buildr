@@ -27,10 +27,12 @@ let $nuxt: any;
 let lnrJSConnector: any = {
   signers,
   setContractSettings: function (networkId: number) {
-    this.lnrJS = new Web3Connector(networkId);
+    this.Web3 = new Web3Connector(networkId);
+    this.lnrJS = this.Web3.contracts;
     // this.signer = this.lnrJS.signers;
-    this.provider = this.lnrJS.provider;
-    this.utils = this.lnrJS.utils;
+    this.provider = this.Web3.provider;
+    this.utils = this.Web3.utils;
+    this.addressList = this.Web3.addressList;
   },
 };
 
@@ -75,10 +77,12 @@ const connectToMetamask = async () => {
       // window.ethereum.autoRefreshOnNetworkChange = true;
       await window.ethereum.enable();
     }
-    const provider = await signers.MetaMask().provider;
+    const signer = await signers.MetaMask();
+    const provider = signer.provider;
     const accounts = await provider.listAccounts();
     if (accounts && accounts.length > 0) {
       let network = await provider.getNetwork();
+      lnrJSConnector.setContractSettings(network.chainId, signer);
       return {
         ...walletState,
         currentWallet: accounts[0],
@@ -100,10 +104,12 @@ const connectToBinance = async () => {
       // window.BinanceChain.autoRefreshOnNetworkChange = true;
       await window.BinanceChain.enable();
     }
-    let provider = signers.BinanceChain().provider;
+    let signer = await signers.BinanceChain();
+    let provider = signer.provider;
     const accounts = await provider.listAccounts();
     if (accounts && accounts.length > 0) {
       let network = await provider.getNetwork();
+      lnrJSConnector.setContractSettings(network.chainId, signer);
       return {
         ...walletState,
         currentWallet: accounts[0],
@@ -123,7 +129,8 @@ const connectToWalletConnect = async () => {
   try {
     //启动
     //to do: Is the network is selected if using wallet connect
-    let provider = signers.WalletConnect().provider;
+    let signer = await signers.WalletConnect();
+    let provider = signer.provider;
     $nuxt.$store.commit("setWalletConnect", {
       qrcode: false,
     });
@@ -137,6 +144,7 @@ const connectToWalletConnect = async () => {
     const accounts = await provider.listAccounts();
     if (accounts && accounts.length > 0) {
       let network = await provider.getNetwork();
+      lnrJSConnector.setContractSettings(network.chainId, signer);
       return {
         ...walletState,
         currentWallet: accounts[0],
@@ -159,11 +167,10 @@ const updateWalletConnectWeb3Provider = (props: Iprops) => {
   if (props.type !== SUPPORTED_WALLETS.WALLET_CONNECT) {
     return;
   }
-
-  // let signer = UpdateWalletConnectSigner({
-  //   provider: lnrJSConnector.signers.provider,
-  // });
-  lnrJSConnector.setContractSettings(props.networkId);
+  let signer = UpdateWalletConnectSigner({
+    provider: lnrJSConnector.signers.provider,
+  });
+  lnrJSConnector.setContractSettings(props.networkId, signer);
 };
 
 // export const setSigner = (props: Iprops) => {

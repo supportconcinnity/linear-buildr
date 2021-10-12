@@ -632,7 +632,7 @@ export default {
 
         if (this.isEthDevNetwork) {
           const avaliableLINA = await LinearFinance.balanceOf(walletAddress); //LINA余额
-
+          console.log(avaliableLINA);
           this.buildData.LINA = _.floor(
             formatEtherToNumber(avaliableLINA),
             DECIMAL_PRECISION
@@ -648,7 +648,7 @@ export default {
             LinearFinance.balanceOf(walletAddress), //LINA余额
             LnCollateralSystem.userCollateralData(walletAddress, LINABytes), //staked lina
             LnRewardLocker.balanceOf(walletAddress), //lock lina
-            LinearFinance.allowance(walletAddress, LnCollateralSystemAddress), //已 approved 的 lina 额度
+            // LinearFinance.allowance(walletAddress, LnCollateralSystemAddress), //已 approved 的 lina 额度
             LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress), //总债务
             getBuildRatio(), //目标抵押率
             LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress), //个人全部抵押物兑lUSD,用于计算pratio
