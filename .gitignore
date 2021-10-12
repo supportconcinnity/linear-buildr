@@ -90,8 +90,7 @@ sw.*
 *.swp
 *.zip
 *.rar
-
 .env.*
 .editorconfig
+
 package-lock.json
-yarn.lock
