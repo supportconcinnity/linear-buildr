@@ -12,6 +12,7 @@ import {
 } from "~/constants/envVars";
 import * as contracts from "../linearJs/lib/contracts";
 
+let Contracts: any = contracts;
 const signers = {
   MetaMask,
   BinanceChain,
@@ -189,7 +190,7 @@ export default class Web3Connector {
     }
 
     function initContracts(
-      contractAddress: ChainAddresses,
+      contractAddress: { [index: string]: any } = {},
       signerOrProvider: providers.BaseProvider | ethers.Signer
     ) {
       return Object.keys(contractAddress).reduce(function (
@@ -203,7 +204,7 @@ export default class Web3Connector {
             signerOrProvider
           );
         } else {
-          result[key] = contracts[factoryKey].connect(
+          result[key] = Contracts[factoryKey].connect(
             contractAddress[key],
             signerOrProvider
           );

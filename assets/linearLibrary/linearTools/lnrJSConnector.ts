@@ -20,6 +20,10 @@ import signers from "../linearJs/lib/signers";
 import { storeDetailsData } from "./request";
 import { UpdateWalletConnectSigner } from "../linearJs/lib/signers/walletConnectSigner";
 
+let window: any;
+
+let $nuxt: any;
+
 let lnrJSConnector: any = {
   signers,
   setContractSettings: function (networkId: number) {

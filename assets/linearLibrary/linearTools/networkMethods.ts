@@ -8,6 +8,9 @@ import { URLS } from "./constants/urls";
 import api from "@/api";
 import { typedConfigs, ChainType, NetworkType } from "./networkConnector";
 
+let window: any;
+let $nuxt: any;
+
 /**
  * ethererm网络
  */
