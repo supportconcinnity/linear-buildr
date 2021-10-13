@@ -641,14 +641,14 @@ export default {
           this.buildData.LINABN = avaliableLINA;
         } else {
           const LINABytes = utils.formatBytes32String("LINA");
-          //取合约地址
-          const LnCollateralSystemAddress = LnCollateralSystem.contract.address;
+          // 取合约地址
+          const LnCollateralSystemAddress = LnCollateralSystem.address;
 
           const results = await Promise.all([
             LinearFinance.balanceOf(walletAddress), //LINA余额
             LnCollateralSystem.userCollateralData(walletAddress, LINABytes), //staked lina
             LnRewardLocker.balanceOf(walletAddress), //lock lina
-            // LinearFinance.allowance(walletAddress, LnCollateralSystemAddress), //已 approved 的 lina 额度
+            LinearFinance.allowance(walletAddress, LnCollateralSystemAddress), //已 approved 的 lina 额度
             LnDebtSystem.GetUserDebtBalanceInUsd(walletAddress), //总债务
             getBuildRatio(), //目标抵押率
             LnCollateralSystem.GetUserTotalCollateralInUsd(walletAddress), //个人全部抵押物兑lUSD,用于计算pratio
@@ -1314,7 +1314,7 @@ export default {
       } = lnrJSConnector;
 
       //取合约地址
-      const LnCollateralSystemAddress = LnCollateralSystem.contract.address;
+      const LnCollateralSystemAddress = LnCollateralSystem.address;
 
       const transactionSettings = {
         gasPrice: this.$store.state?.gasDetails?.price,
@@ -1581,7 +1581,7 @@ export default {
           throw new Error("invalid approveAmountLINA");
         }
 
-        let gasEstimate = await LinearFinance.contract.estimateGas.approve(
+        let gasEstimate = await LinearFinance.estimateGas.approve(
           contractAddress,
           approveAmountLINA
         );
@@ -1607,12 +1607,13 @@ export default {
           throw new Error("invalid input");
         }
 
-        let gasEstimate =
-          await LnCollateralSystem.contract.estimateGas.stakeAndBuild(
-            utils.formatBytes32String("LINA"),
-            stakeAmountLINA,
-            buildAmountlUSD
-          );
+        let gasEstimate = await LnCollateralSystem.estimateGas.stakeAndBuild(
+          utils.formatBytes32String("LINA"),
+          stakeAmountLINA,
+          buildAmountlUSD
+        );
+
+        console.log(gasEstimate);
 
         return bufferGasLimit(gasEstimate);
       } catch (e) {
@@ -1636,11 +1637,10 @@ export default {
           throw new Error("invalid stakeAmountLINA");
         }
 
-        let gasEstimate =
-          await LnCollateralSystem.contract.estimateGas.Collateral(
-            utils.formatBytes32String("LINA"),
-            stakeAmountLINA
-          );
+        let gasEstimate = await LnCollateralSystem.estimateGas.Collateral(
+          utils.formatBytes32String("LINA"),
+          stakeAmountLINA
+        );
 
         return bufferGasLimit(gasEstimate);
       } catch (e) {
@@ -1662,10 +1662,9 @@ export default {
           throw new Error("invalid buildAmountlUSD");
         }
 
-        let gasEstimate =
-          await LnBuildBurnSystem.contract.estimateGas.BuildAsset(
-            buildAmountlUSD
-          );
+        let gasEstimate = await LnBuildBurnSystem.estimateGas.BuildAsset(
+          buildAmountlUSD
+        );
 
         return bufferGasLimit(gasEstimate);
       } catch (e) {

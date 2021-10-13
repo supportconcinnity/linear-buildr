@@ -1,7 +1,11 @@
 import { providers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
-const WalletConnectSigner = ({ chainId = 1, infuraId = "", rpc = {} }) => {
+const WalletConnectSigner = async ({
+  chainId = 1,
+  infuraId = "",
+  rpc = {},
+}) => {
   const provider = new WalletConnectProvider({
     bridge: "https://bridge.walletconnect.org",
     qrcode: false,

@@ -899,12 +899,11 @@ export default {
           throw new Error("invalid input");
         }
 
-        let gasEstimate =
-          await LnCollateralSystem.contract.estimateGas.burnAndUnstake(
-            burnAmount,
-            utils.formatBytes32String("LINA"),
-            unstakeAmount
-          );
+        let gasEstimate = await LnCollateralSystem.estimateGas.burnAndUnstake(
+          burnAmount,
+          utils.formatBytes32String("LINA"),
+          unstakeAmount
+        );
 
         return bufferGasLimit(gasEstimate);
       } catch (e) {
@@ -921,8 +920,9 @@ export default {
           utils,
         } = lnrJSConnector;
 
-        let gasEstimate =
-          await LnBuildBurnSystem.contract.estimateGas.BurnAsset(burnAmount);
+        let gasEstimate = await LnBuildBurnSystem.estimateGas.BurnAsset(
+          burnAmount
+        );
 
         return bufferGasLimit(gasEstimate);
       } catch (e) {
@@ -938,7 +938,7 @@ export default {
           utils,
         } = lnrJSConnector;
 
-        let gasEstimate = await LnCollateralSystem.contract.estimateGas.Redeem(
+        let gasEstimate = await LnCollateralSystem.estimateGas.Redeem(
           utils.formatBytes32String("LINA"),
           unstakeAmount
         );

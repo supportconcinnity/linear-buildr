@@ -112,13 +112,15 @@ const assetUpgradeableSubcontract = [
   "lXLM",
   "lXAU",
   "lXAG",
+  "lEUR",
+  "lUNI",
   "lJPY",
   "lXLCI",
   "lXBCI",
   "lVET",
-  "lEUR",
-  "lUNI",
 ];
+
+const perpetualSubcontract = ["LnPerpetual_lBTC", "LnPerpetual_lETH"];
 
 export default class Web3Connector {
   networkId: number;
@@ -203,7 +205,15 @@ export default class Web3Connector {
             contractAddress[key],
             signerOrProvider
           );
+        } else if (perpetualSubcontract.includes(key)) {
+          result[key] = contracts.LnPerpetual__factory.connect(
+            contractAddress[key],
+            signerOrProvider
+          );
         } else {
+          if (Contracts[factoryKey] === undefined) {
+            console.log(key);
+          }
           result[key] = Contracts[factoryKey].connect(
             contractAddress[key],
             signerOrProvider
@@ -217,6 +227,7 @@ export default class Web3Connector {
 
     // is a signer is not passed, init readable contracts only
     if (signer) {
+      console.log(signer);
       this.contracts = initContracts(addresses, signer);
     } else {
       this.contracts = initContracts(addresses, this.provider);

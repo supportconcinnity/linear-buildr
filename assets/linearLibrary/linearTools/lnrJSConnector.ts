@@ -19,6 +19,7 @@ import $pub from "pubsub-js";
 import signers from "../linearJs/lib/signers";
 import { storeDetailsData } from "./request";
 import { UpdateWalletConnectSigner } from "../linearJs/lib/signers/walletConnectSigner";
+import { ethers } from "ethers";
 
 declare global {
   interface Window {
@@ -30,8 +31,8 @@ declare global {
 
 let lnrJSConnector: any = {
   signers,
-  setContractSettings: function (networkId: number) {
-    this.Web3 = new Web3Connector(networkId);
+  setContractSettings: function (networkId: number, signer?: ethers.Signer) {
+    this.Web3 = new Web3Connector(networkId, signer);
     this.lnrJS = this.Web3.contracts;
     // this.signer = this.lnrJS.signers;
     this.provider = this.Web3.provider;
@@ -86,7 +87,7 @@ const connectToMetamask = async () => {
     const accounts = await provider.listAccounts();
     if (accounts && accounts.length > 0) {
       let network = await provider.getNetwork();
-      lnrJSConnector.setContractSettings(network.chainId, signer);
+      lnrJSConnector.setContractSettings(network.chainId, signer.signer);
       return {
         ...walletState,
         currentWallet: accounts[0],
@@ -113,7 +114,7 @@ const connectToBinance = async () => {
     const accounts = await provider.listAccounts();
     if (accounts && accounts.length > 0) {
       let network = await provider.getNetwork();
-      lnrJSConnector.setContractSettings(network.chainId, signer);
+      lnrJSConnector.setContractSettings(network.chainId, signer.signer);
       return {
         ...walletState,
         currentWallet: accounts[0],
@@ -148,7 +149,7 @@ const connectToWalletConnect = async () => {
     const accounts = await provider.listAccounts();
     if (accounts && accounts.length > 0) {
       let network = await provider.getNetwork();
-      lnrJSConnector.setContractSettings(network.chainId, signer);
+      lnrJSConnector.setContractSettings(network.chainId, signer.signer);
       return {
         ...walletState,
         currentWallet: accounts[0],
@@ -174,7 +175,7 @@ const updateWalletConnectWeb3Provider = (props: Iprops) => {
   let signer = UpdateWalletConnectSigner({
     provider: lnrJSConnector.signers.provider,
   });
-  lnrJSConnector.setContractSettings(props.networkId, signer);
+  lnrJSConnector.setContractSettings(props.networkId, signer.signer);
 };
 
 // export const setSigner = (props: Iprops) => {
@@ -212,7 +213,7 @@ export const selectedWallet = async (
     if (walletStatus && walletStatus.currentWallet) {
       store.commit(
         "setWalletNetworkName",
-        walletStatus?.networkName.toUpperCase()
+        SUPPORTED_NETWORKS[walletStatus.networkId]
       );
       store.commit("setWalletNetworkId", walletStatus.networkId.toString());
 
@@ -244,12 +245,14 @@ export const selectedWallet = async (
             window.$nuxt.$Spin.show();
             let network = await getEthereumNetwork();
             let { networkId } = network!;
+            const signer = lnrJSConnector.signers.MetaMask().signer;
+
             if (networkId === undefined) return;
             const address = await lnrJSConnector.signers
               .MetaMask()
               .provider.listAccounts();
 
-            lnrJSConnector.setContractSettings(networkId);
+            lnrJSConnector.setContractSettings(networkId, signer.signer);
 
             store.commit("mergeWallet", {
               address: address[0],
@@ -287,7 +290,10 @@ export const selectedWallet = async (
               .provider.listAccounts();
             const signer = lnrJSConnector.signers.BinanceChain().signer;
 
-            lnrJSConnector.setContractSettings(walletStatus.networkId);
+            lnrJSConnector.setContractSettings(
+              walletStatus.networkId,
+              signer.signer
+            );
 
             store.commit("mergeWallet", {
               address: address[0],

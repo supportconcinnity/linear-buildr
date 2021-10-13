@@ -898,7 +898,7 @@ export default {
           );
 
           //取合约地址
-          const LnBridgeAddress = LnBridge.contract.address;
+          const LnBridgeAddress = LnBridge.address;
 
           //获取之前approve的数量
           const approveAmount = await LnProxy.allowance(
@@ -1017,7 +1017,7 @@ export default {
       const { utils } = lnrJSConnector;
 
       //取合约地址
-      const LnBridgeAddress = LnBridge.contract.address;
+      const LnBridgeAddress = LnBridge.address;
 
       const transactionSettings = {
         gasPrice: this.sourceGasPrice,
@@ -1087,7 +1087,7 @@ export default {
           throw new Error("invalid approveAmountLINA");
         }
 
-        let gasEstimate = await LnProxy.contract.estimateGas.approve(
+        let gasEstimate = await LnProxy.estimateGas.approve(
           contractAddress,
           approveAmountLINA
         );
@@ -1180,7 +1180,7 @@ export default {
 
         const { utils } = lnrJSConnector;
 
-        let gasEstimate = await LnBridge.contract.estimateGas.deposit(
+        let gasEstimate = await LnBridge.estimateGas.deposit(
           utils.formatBytes32String(this.currency),
           swapNumber,
           this.targetNetworkId,
@@ -1364,7 +1364,7 @@ export default {
         // );
 
         //如果是bridge里面能提取的lina不足,会报错但无法捕捉异常,导致无限等待
-        let gasEstimate = await LnBridge.contract.estimateGas.withdraw(
+        let gasEstimate = await LnBridge.estimateGas.withdraw(
           deposit.srcChainId,
           deposit.destChainId,
           deposit.depositId,
@@ -1449,7 +1449,7 @@ export default {
         }
 
         let gasEstimate =
-          await LnCollateralSystem.contract.estimateGas.collateralAndBuild(
+          await LnCollateralSystem.estimateGas.collateralAndBuild(
             utils.formatBytes32String(this.currency),
             stakeAmountLINA
           );

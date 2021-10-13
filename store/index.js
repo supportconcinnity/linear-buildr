@@ -1,5 +1,5 @@
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
-
+import { SUPPORTED_NETWORKS } from "@/assets/linearLibrary/linearTools/networkMethods";
 export const state = () => ({
   locale: "en", //默认语言
   theme: "light", //默认主题,light或dark
@@ -27,6 +27,7 @@ export const state = () => ({
   walletDetailsLoopRefreshStatus: true,
   walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS
   walletNetworkId: "1", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
+  walletNetworkName: SUPPORTED_NETWORKS["1"],
   networkDetails: {
     networkId: "",
     network: "",
@@ -124,6 +125,10 @@ export const mutations = {
 
   mergeWalletDetails(state, walletDetails) {
     state.walletDetails = { ...state.walletDetails, ...walletDetails };
+  },
+
+  setWalletNetworkName(state, walletNetworkName) {
+    state.walletNetworkName = walletNetworkName;
   },
 
   setNetworkDetails(state, networkDetails) {

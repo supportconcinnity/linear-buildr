@@ -1,6 +1,6 @@
 import { providers } from "ethers";
 
-const MetamaskSigner = () => {
+const MetamaskSigner = async () => {
   const { ethereum } = window;
   const provider = new providers.Web3Provider(ethereum);
   const signer = provider.getSigner();

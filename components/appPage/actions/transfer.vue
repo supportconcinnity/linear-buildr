@@ -706,7 +706,7 @@ export default {
           // } else if (this.isBinanceNetwork) {
           //     LnProxy = lnrJSConnector.lnrJS.LnProxyBEP20;
           // }
-          gasEstimate = await LnProxy.contract.estimateGas.transfer(
+          gasEstimate = await LnProxy.estimateGas.transfer(
             destination,
             amountBN
           );
@@ -722,7 +722,7 @@ export default {
         } else {
           gasEstimate = await lnrJSConnector.lnrJS[
             currency
-          ].contract.estimateGas.transfer(destination, amountBN);
+          ].estimateGas.transfer(destination, amountBN);
         }
 
         return bufferGasLimit(gasEstimate);
