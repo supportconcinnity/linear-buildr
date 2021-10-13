@@ -209,36 +209,6 @@
             TRANSACTION
           </div>
         </div>
-        <div class="box">
-          <div
-            class="boxItem"
-            :class="{ selected: referStatus }"
-            @click="referralModalClick"
-            @mouseenter="referIconStatus = 1"
-            @mouseleave="referIconStatus = 0"
-          >
-            <div class="placeholder">
-              <transition-group name="img-fade">
-                <img
-                  key="1"
-                  v-show="!referStatus && !referIconStatus"
-                  src="@/static/appPage/refer.svg"
-                />
-                <img
-                  key="2"
-                  v-show="!referStatus && referIconStatus"
-                  src="@/static/appPage/refer_hover.svg"
-                />
-                <img
-                  key="3"
-                  v-show="referStatus"
-                  src="@/static/appPage/refer_selected.svg"
-                />
-              </transition-group>
-            </div>
-            REFERRAL
-          </div>
-        </div>
       </div>
       <div class="ratioBox">
         <div
@@ -703,10 +673,6 @@ export default {
     this.$pub.subscribe("trackModalCloseEvent", (msg, params) => {
       this.trackStatus = false;
     });
-    //订阅推荐窗口关闭事件
-    this.$pub.subscribe("referralModalCloseEvent", (msg, params) => {
-      this.referStatus = false;
-    });
     //订阅钱包账户改变事件
     this.$pub.subscribe("onWalletAccountChange", (msg, params) => {
       this.walletStatusChange(true);
@@ -730,10 +696,6 @@ export default {
     //根据url参数判断是否打开track transaction referral
     if (this.$store.state?.walletDetailsActionURL) {
       switch (this.$store.state?.walletDetailsActionURL) {
-        case "referral":
-          this.referStatus = true;
-          this.$pub.publish("referralModalChange", true);
-          break;
         case "transaction":
           this.transactionStatus = true;
           this.$pub.publish("transactionModalChange", true);
@@ -859,25 +821,6 @@ export default {
       if (this.transactionStatus) {
         this.referStatus = false;
         this.trackStatus = false;
-        this.$pub.publish("referralModalChange", this.referStatus);
-        this.$pub.publish("trackModalChange", this.trackStatus);
-
-        if (this.mShowWallet) {
-          this.mShowWallet = false;
-        }
-      }
-    },
-
-    //推荐窗口状态改变
-    referralModalClick() {
-      this.referStatus = !this.referStatus;
-      this.$pub.publish("referralModalChange", this.referStatus);
-
-      //窗口打开时关闭其他两个窗口
-      if (this.referStatus) {
-        this.transactionStatus = false;
-        this.trackStatus = false;
-        this.$pub.publish("transactionModalChange", this.transactionStatus);
         this.$pub.publish("trackModalChange", this.trackStatus);
 
         if (this.mShowWallet) {
@@ -896,7 +839,6 @@ export default {
         this.transactionStatus = false;
         this.referStatus = false;
         this.$pub.publish("transactionModalChange", this.transactionStatus);
-        this.$pub.publish("referralModalChange", this.referStatus);
 
         if (this.mShowWallet) {
           this.mShowWallet = false;

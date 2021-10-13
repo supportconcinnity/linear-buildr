@@ -123,7 +123,6 @@ module.exports = {
       "/claim",
       "/transfer",
       "/swap",
-      "/referral",
       "/transaction",
       "/track",
     ],

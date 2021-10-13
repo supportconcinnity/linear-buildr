@@ -30,9 +30,6 @@ export default {
         store.commit("setCurrentAction", 0);
 
         switch (params.sub) {
-          case "referral":
-            store.commit("setWalletDetailsActionURL", "referral");
-            break;
           case "transaction":
             store.commit("setWalletDetailsActionURL", "transaction");
             break;

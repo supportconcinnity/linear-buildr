@@ -41,7 +41,6 @@
 
         <div class="title" v-if="othersAction == 1">Track Debt</div>
         <div class="title" v-if="othersAction == 2">Transaction</div>
-        <div class="title" v-if="othersAction == 3">Referral</div>
 
         <img
           class="info"
@@ -151,7 +150,6 @@
       <transfer v-else-if="currentAction == 4"></transfer>
       <swap v-else></swap>
 
-      <referralModal />
       <transactionModal />
       <trackModal />
     </div>
@@ -169,7 +167,6 @@ import claim from "@/components/appPage/actions/claim";
 import transfer from "@/components/appPage/actions/transfer";
 import swap from "@/components/appPage/actions/swap";
 
-import referralModal from "@/components/appPage/walletDetails/actions/referralModal";
 import transactionModal from "@/components/appPage/walletDetails/actions/transactionModal";
 import trackModal from "@/components/appPage/walletDetails/actions/trackModal";
 
@@ -185,7 +182,6 @@ export default {
     transfer,
     swap,
     trackModal,
-    referralModal,
     notificationQueue,
     transactionModal,
   },
@@ -211,12 +207,6 @@ export default {
         this.othersAction = 2;
       }
     });
-    this.$pub.subscribe("referralModalChange", (msg, params) => {
-      // console.log("referralModalChange", params);
-      if (params) {
-        this.othersAction = 3;
-      }
-    });
 
     //订阅历史记录窗口关闭事件
     //this.$pub.subscribe("transactionModalCloseEvent", (msg, params) => {
@@ -224,10 +214,6 @@ export default {
     //});
     ////订阅历史记录窗口关闭事件
     //this.$pub.subscribe("trackModalCloseEvent", (msg, params) => {
-    //    this.othersAction = 0;
-    //});
-    ////订阅推荐窗口关闭事件
-    //this.$pub.subscribe("referralModalCloseEvent", (msg, params) => {
     //    this.othersAction = 0;
     //});
   },
@@ -265,13 +251,11 @@ export default {
           this.$router.push("/" + common.SUBPAGE_OPTIONS_MAP[action]);
 
           //关闭 referral transaction track 的 modal
-          this.$pub.publish("referralModalCloseEvent");
           this.$pub.publish("transactionModalCloseEvent");
           this.$pub.publish("trackModalCloseEvent");
 
           this.othersAction = 0;
 
-          this.$pub.publish("referralModalChange", false);
           this.$pub.publish("transactionModalChange", false);
           this.$pub.publish("trackModalChange", false);
           this.$store.commit("setmMenuState", false);
