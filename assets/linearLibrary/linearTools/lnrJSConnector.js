@@ -14,19 +14,21 @@ import {
   INFURA_JSON_RPC_URLS,
   SUPPORTED_NETWORKS,
 } from "./network";
-import { LinearJs } from "../linearJs";
+import Web3Connector, { RPC_URL } from "../linearJs/web3Connector";
 import $pub from "pubsub-js";
+import signers from "../linearJs/lib/signers";
 import { storeDetailsData } from "./request";
-import { RPC_URL } from "../linearJs/contractSettings";
 import { UpdateWalletConnectSigner } from "../linearJs/lib/signers/walletConnectSigner";
 
 let lnrJSConnector = {
-  signers: LinearJs.signers,
-  setContractSettings: function (contractSettings) {
-    this.lnrJS = new LinearJs(contractSettings);
-    this.signer = this.lnrJS.contractSettings.signer;
-    this.provider = this.lnrJS.contractSettings.provider;
-    this.utils = this.lnrJS.utils;
+  signers,
+  setContractSettings: function ({ networkId, signer }) {
+    this.Web3 = new Web3Connector(networkId, signer);
+    this.lnrJS = this.Web3.contracts;
+    this.signer = this.Web3.signer;
+    this.provider = this.Web3.provider;
+    this.utils = this.Web3.utils;
+    this.addressList = this.Web3.addressList;
   },
 };
 

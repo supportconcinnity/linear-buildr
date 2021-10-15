@@ -25,10 +25,7 @@ let loopId = 0;
  */
 export const getLiquids = async (wallet, all = false) => {
   const {
-    lnrJS: {
-      LnAssetSystem,
-      contractSettings: { addressList },
-    },
+    lnrJS: { LnAssetSystem, addressList },
   } = lnrJSConnector;
 
   //获取资产列表

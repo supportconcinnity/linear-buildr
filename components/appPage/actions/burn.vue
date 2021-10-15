@@ -899,7 +899,7 @@ export default {
         }
 
         let gasEstimate =
-          await LnCollateralSystem.contract.estimateGas.burnAndUnstakeMax(
+          await LnCollateralSystem.estimateGas.burnAndUnstakeMax(
             burnAmount,
             utils.formatBytes32String("LINA")
           );
@@ -919,8 +919,9 @@ export default {
           utils,
         } = lnrJSConnector;
 
-        let gasEstimate =
-          await LnBuildBurnSystem.contract.estimateGas.BurnAsset(burnAmount);
+        let gasEstimate = await LnBuildBurnSystem.estimateGas.BurnAsset(
+          burnAmount
+        );
 
         return bufferGasLimit(gasEstimate);
       } catch (e) {
@@ -936,7 +937,7 @@ export default {
           utils,
         } = lnrJSConnector;
 
-        let gasEstimate = await LnCollateralSystem.contract.estimateGas.Redeem(
+        let gasEstimate = await LnCollateralSystem.estimateGas.Redeem(
           utils.formatBytes32String("LINA"),
           unstakeAmount
         );

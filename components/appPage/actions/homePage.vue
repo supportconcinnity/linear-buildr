@@ -260,7 +260,7 @@ export default {
           const LINABytes = utils.formatBytes32String("LINA");
 
           //取合约地址
-          const LnCollateralSystemAddress = LnCollateralSystem.contract.address;
+          const LnCollateralSystemAddress = LnCollateralSystem.address;
 
           const results = await Promise.all([
             LinearFinance.balanceOf(this.walletAddress), //LINA余额

@@ -990,7 +990,8 @@ import api from "@/api";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { bn2n, bnAdd, bnSub, n2bn } from "@/common/bnCalc";
 import { providers } from "ethers";
-import { LinearJs } from "@/assets/linearLibrary/linearJs";
+import Web3Connector from '~/assets/linearLibrary/linearJs/web3Connector';
+import signers from '~/assets/linearLibrary/linearJs/lib/signers'
 import {
     BUILD_PROCESS_SETUP,
     BUILD_PROCESS_SETUP_MOBILE,
@@ -1367,7 +1368,7 @@ export default {
                     );
 
                     //取合约地址
-                    const LnBridgeAddress = LnBridge.contract.address;
+                    const LnBridgeAddress = LnBridge.address;
 
                     //获取之前approve的数量
                     const approveAmount = await LnProxy.allowance(
@@ -1529,7 +1530,7 @@ export default {
             const { utils } = lnrJSConnector;
 
             //取合约地址
-            const LnBridgeAddress = LnBridge.contract.address;
+            const LnBridgeAddress = LnBridge.address;
 
             const transactionSettings = {
                 gasPrice: this.sourceGasPrice,
@@ -1600,7 +1601,7 @@ export default {
                     throw new Error("invalid approveAmountLINA");
                 }
 
-                let gasEstimate = await LnProxy.contract.estimateGas.approve(
+                let gasEstimate = await LnProxy.estimateGas.approve(
                     contractAddress,
                     approveAmountLINA
                 );
@@ -1691,7 +1692,7 @@ export default {
 
                 const { utils } = lnrJSConnector;
 
-                let gasEstimate = await LnBridge.contract.estimateGas.deposit(
+                let gasEstimate = await LnBridge.estimateGas.deposit(
                     utils.formatBytes32String(this.currency),
                     swapNumber,
                     this.targetNetworkId,
@@ -1794,7 +1795,7 @@ export default {
                     SETUP = "BSC";
                 }
 
-                // let gasEstimate = await LnBridge.contract.estimateGas.withdraw(
+                // let gasEstimate = await LnBridge.estimateGas.withdraw(
                 // 3,
                 //     97,
                 //     19,
@@ -1929,7 +1930,7 @@ export default {
                 // );
 
                 //如果是bridge里面能提取的lina不足,会报错但无法捕捉异常,导致无限等待
-                let gasEstimate = await LnBridge.contract.estimateGas.withdraw(
+                let gasEstimate = await LnBridge.estimateGas.withdraw(
                     deposit.srcChainId,
                     deposit.destChainId,
                     deposit.depositId,
@@ -2014,7 +2015,7 @@ export default {
                     throw new Error("invalid stakeAmountLINA");
                 }
 
-                let gasEstimate = await LnCollateralSystem.contract.estimateGas.collateralAndBuild(
+                let gasEstimate = await LnCollateralSystem.estimateGas.collateralAndBuild(
                     utils.formatBytes32String(this.currency),
                     stakeAmountLINA
                 );
@@ -2381,13 +2382,13 @@ export default {
                 // contract = "LnBep20Bridge";
             }
 
-            const signer = new LinearJs.signers[type]();
-            this.targetContract = new LinearJs({
-                networkId: Number(this.targetNetworkId),
-                signer
-            });
+      const signer = new signers[type]();
+      this.targetContract = new Web3Connector({
+        networkId: Number(this.targetNetworkId),
+        signer,
+      });
 
-            return this.targetContract[contract];
+      return this.targetContract.contracts[contract];
         },
 
         //获取冻结手续费
