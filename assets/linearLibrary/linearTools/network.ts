@@ -6,121 +6,151 @@ import {
 } from "./constants/network";
 import { URLS } from "./constants/urls";
 import api from "@/api";
+import {
+  typedConfigs,
+  ChainType,
+  NetworkType,
+} from "../linearJs/web3Connector";
+
+declare global {
+  interface Window {
+    BinanceChain: any;
+    ethereum: any;
+  }
+}
 
 /**
  * ethererm网络
  */
-export const ETHEREUM_NETWORKS = {
-  1: "MAINNET",
-  // 3: "ROPSTEN",
-  10001: "ETHDEV",
-};
+let ETHEREUM_NETWORKS: number[] = [];
 
 /**
  * bsc网络
  */
-export const BINANCE_NETWORKS = {
-  56: "BSCMAINNET",
-  // 97: "BSCTESTNET",
-  10056: "BSCDEV",
-};
+let BINANCE_NETWORKS: number[] = [];
 
 /**
  * 主网网络
  */
-export const MAINNET_NETWORKS = {
-  1: "MAINNET",
-  56: "BSCMAINNET",
-};
+let MAINNET_NETWORKS: number[] = [];
 
 /**
  * 测试网网络
  */
-export const TESTNET_NETWORKS = {
-  // 3: "ROPSTEN",
-  // 97: "BSCTESTNET",
-  10001: "ETHDEV",
-  10056: "BSCDEV",
+let TESTNET_NETWORKS: number[] = [];
+
+let ETHDEV_NETWORKS: number[] = [];
+
+let BSCDEV_NETWORKS: number[] = [];
+
+let DEV_NETWORKS: number[] = [];
+
+let LIQUIDATION_NETWORKS: { [k: number]: string } = {};
+
+let REWARD_UNLOCK_NETWORKS: { [k: number]: string } = {};
+
+let SUPPORTED_NETWORKS: { [k: number]: string } = {};
+
+let BLOCKCHAIN_BROWSER: { [k: number]: string } = {};
+
+let BLOCKCHAIN_BROWSER_API: { [k: number]: string } = {};
+
+let TOKEN_BRIDGE_API: { [k: number]: string } = {};
+
+for (let i = 0; i < typedConfigs.length; i++) {
+  let object = typedConfigs[i];
+  let id = object.networkId;
+  if (object.chainType === ChainType.ETHEREUM) {
+    ETHEREUM_NETWORKS.push(id);
+  }
+  if (object.chainType === ChainType.BINANCE) {
+    BINANCE_NETWORKS.push(id);
+  }
+  if (object.networkType === NetworkType.MAINNET) {
+    MAINNET_NETWORKS.push(id);
+  }
+  if (object.networkType === NetworkType.TEST) {
+    TESTNET_NETWORKS.push(id);
+  }
+  if (object.networkType === NetworkType.DEV) {
+    DEV_NETWORKS.push(id);
+  }
+  if (
+    object.chainType === ChainType.ETHEREUM &&
+    object.networkType === NetworkType.DEV
+  ) {
+    ETHDEV_NETWORKS.push(id);
+  }
+  if (
+    object.chainType === ChainType.BINANCE &&
+    object.networkType === NetworkType.DEV
+  ) {
+    BSCDEV_NETWORKS.push(id);
+  }
+  if (object.isLiquidationEnable) {
+    LIQUIDATION_NETWORKS[id] = object.name;
+  }
+  if (object.isRewardable) {
+    REWARD_UNLOCK_NETWORKS[id] = object.name;
+  }
+  SUPPORTED_NETWORKS[id] = object.name;
+  BLOCKCHAIN_BROWSER[id] = object.blockchainBrowser;
+  BLOCKCHAIN_BROWSER_API[id] = object.blockchainBrowserApi;
+  TOKEN_BRIDGE_API[id] = object.tokenBridgeApi;
+}
+
+export const isEthereumNetwork = (walletNetworkId: number) => {
+  return ETHEREUM_NETWORKS.includes(+walletNetworkId);
 };
-
-export const ETHDEV_NETWORKS = {
-  10001: "ETHDEV",
+export const isBinanceNetwork = (walletNetworkId: number) => {
+  return BINANCE_NETWORKS.includes(+walletNetworkId);
 };
-
-export const BSCDEV_NETWORKS = {
-  10056: "BSCDEV",
+export const isMainnetNetwork = (walletNetworkId: number) => {
+  return MAINNET_NETWORKS.includes(+walletNetworkId);
 };
-
-export const DEV_NETWORKS = { ...ETHDEV_NETWORKS, ...BSCDEV_NETWORKS };
-
-const MAINNET_RELATIVE_NETWORKS = {
-  1: "MAINNET",
-  56: "BSCMAINNET",
+export const isTestnetNetwork = (walletNetworkId: number) => {
+  return TESTNET_NETWORKS.includes(+walletNetworkId);
 };
-
-const TESTNET_RELATIVE_NETWORKS = {
-  3: "ROPSTEN",
-  97: "BSCTESTNET",
+export const isDevNetwork = (walletNetworkId: number) => {
+  return DEV_NETWORKS.includes(+walletNetworkId);
 };
-
-const DEV_RELATIVE_NETWORKS = {
-  10001: "ETHDEV",
-  10056: "BSCDEV",
+export const isEthDevNetwork = (walletNetworkId: number) => {
+  return ETHDEV_NETWORKS.includes(+walletNetworkId);
 };
-
-//有liquidation的网络
-export const LIQUIDATION_NETWORKS = {
-  56: "BSCMAINNET",
-  10056: "BSCDEV",
+export const isBscDevNetwork = (walletNetworkId: number) => {
+  return BSCDEV_NETWORKS.includes(+walletNetworkId);
 };
-
-export const REWARD_UNLOCK_NETWORKS = {
-  56: "BSCMAINNET",
-  10056: "BSCDEV",
+export const isSupportNetwork = (walletNetworkId: number) => {
+  return SUPPORTED_NETWORKS.hasOwnProperty(+walletNetworkId);
 };
-
-export const isEthereumNetwork = (walletNetworkId) =>
-  ETHEREUM_NETWORKS.hasOwnProperty(walletNetworkId);
-export const isBinanceNetwork = (walletNetworkId) =>
-  BINANCE_NETWORKS.hasOwnProperty(walletNetworkId);
-export const isMainnetNetwork = (walletNetworkId) =>
-  MAINNET_NETWORKS.hasOwnProperty(walletNetworkId);
-export const isTestnetNetwork = (walletNetworkId) =>
-  TESTNET_NETWORKS.hasOwnProperty(walletNetworkId);
-export const isDevNetwork = (walletNetworkId) =>
-  DEV_NETWORKS.hasOwnProperty(walletNetworkId);
-export const isEthDevNetwork = (walletNetworkId) =>
-  ETHDEV_NETWORKS.hasOwnProperty(walletNetworkId);
-export const isBscDevNetwork = (walletNetworkId) =>
-  BSCDEV_NETWORKS.hasOwnProperty(walletNetworkId);
-export const isSupportNetwork = (walletNetworkId) =>
-  SUPPORTED_NETWORKS.hasOwnProperty(walletNetworkId);
 
 /**
  * 获取所在网络其他网络id
  * @param walletNetworkId 网络Id
  */
-export const getOtherNetworks = (walletNetworkId) => {
-  let other = [];
+export const getOtherNetworks = (walletNetworkId: number) => {
+  let other: number[] = [];
   if (isMainnetNetwork(walletNetworkId)) {
-    other = Object.keys(_.omit(MAINNET_RELATIVE_NETWORKS, [walletNetworkId]));
+    other = MAINNET_NETWORKS.filter(
+      (networkId) => networkId != walletNetworkId
+    );
   } else if (isDevNetwork(walletNetworkId)) {
-    other = Object.keys(_.omit(DEV_RELATIVE_NETWORKS, [walletNetworkId]));
+    other = DEV_NETWORKS.filter((networkId) => networkId != walletNetworkId);
   } else if (isTestnetNetwork(walletNetworkId)) {
-    other = Object.keys(_.omit(TESTNET_RELATIVE_NETWORKS, [walletNetworkId]));
+    other = TESTNET_NETWORKS.filter(
+      (networkId) => networkId != walletNetworkId
+    );
   }
-  return other.join();
+  return other;
 };
-
-export const SUPPORTED_NETWORKS = { ...ETHEREUM_NETWORKS, ...BINANCE_NETWORKS };
 
 export const SUPPORTED_NETWORKS_MAP = _.invert(SUPPORTED_NETWORKS);
 
-export const SUPPORTED_WALLETS_MAP = {
-  METAMASK: "MetaMask",
-  BINANCE_CHAIN: "BinanceChain",
-  WALLET_CONNECT: "WalletConnect",
-};
+export enum SUPPORTED_WALLETS {
+  METAMASK = "MetaMask",
+  BINANCE_CHAIN = "BinanceChain",
+  WALLET_CONNECT = "WalletConnect",
+}
 
 /**
  * PC端钱包安装地址
@@ -130,36 +160,6 @@ export const WALLET_EXTENSIONS = {
     "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn",
   BINANCE:
     "https://chrome.google.com/webstore/detail/binance-chain-wallet/fhbohimaelbohpjbbldcngcnapndodjp",
-};
-
-/**
- * 区块链浏览器地址
- */
-export const BLOCKCHAIN_BROWSER = {
-  1: "https://etherscan.io/tx/",
-  3: "https://ropsten.etherscan.io/tx/",
-  56: "https://bscscan.com/tx/",
-  97: "https://testnet.bscscan.com/tx/",
-  10001: "https://master.explorer.eth.dev.linear.finance/tx/",
-  10056: "https://master.explorer.bsc.dev.linear.finance/tx/",
-};
-
-export const BLOCKCHAIN_BROWSER_API = {
-  1: "https://api.etherscan.io/api",
-  3: "https://api-ropsten.etherscan.io/api",
-  56: "https://api.bscscan.com/api",
-  97: "https://api-testnet.bscscan.com/api",
-  10001: "https://master.explorer.eth.dev.linear.finance/api",
-  10056: "https://master.explorer.bsc.dev.linear.finance/api",
-};
-
-export const TOKEN_BRIDGE_API = {
-  1: process.env.TOKEN_BRIDGE_MAINNET,
-  3: process.env.TOKEN_BRIDGE_TESTNET,
-  56: process.env.TOKEN_BRIDGE_MAINNET,
-  97: process.env.TOKEN_BRIDGE_TESTNET,
-  10001: process.env.TOKEN_BRIDGE_DEV,
-  10056: process.env.TOKEN_BRIDGE_DEV,
 };
 
 /**
@@ -211,7 +211,7 @@ export const INFURA_JSON_RPC_URLS = {
 // };
 
 //RPC网络配置
-export const ETHEREUM_CHAIN_OPTIONS = {
+export const ETHEREUM_CHAIN_OPTIONS: { [k: number]: any } = {
   56: {
     chainName: "BSC Mainnet",
     rpcUrls: ["https://bsc-dataseed1.binance.org/"],
@@ -226,7 +226,7 @@ export const ETHEREUM_CHAIN_OPTIONS = {
 };
 
 export async function getEthereumNetwork() {
-  const isMobile = $nuxt.$store.state?.isMobile;
+  const isMobile = window.$nuxt.$store.state?.isMobile;
   if (!window.ethereum && !isMobile) {
     window.open(WALLET_EXTENSIONS.METAMASK);
     return {};
@@ -252,7 +252,7 @@ export async function getEthereumNetwork() {
 }
 
 export async function getBinanceNetwork() {
-  const isMobile = $nuxt.$store.state?.isMobile;
+  const isMobile = window.$nuxt.$store.state?.isMobile;
   if (!window.BinanceChain && !isMobile) {
     window.open(WALLET_EXTENSIONS.BINANCE);
     return {};
@@ -271,8 +271,9 @@ export async function getBinanceNetwork() {
   }
 }
 
-export const getNetworkSpeeds = async (walletNetworkId) => {
-  !walletNetworkId && (walletNetworkId = $nuxt.$store.state?.walletNetworkId);
+export const getNetworkSpeeds = async (walletNetworkId: number) => {
+  !walletNetworkId &&
+    (walletNetworkId = window.$nuxt.$store.state?.walletNetworkId);
 
   if (isDevNetwork(walletNetworkId)) {
     return {
@@ -320,12 +321,13 @@ export const getNetworkSpeeds = async (walletNetworkId) => {
       },
     };
   } else if (isBinanceNetwork(walletNetworkId)) {
+    console.log(isBinanceNetwork(walletNetworkId));
+
     let currentGasPrice = 20;
     const res = await api.getBSCGasPrice(walletNetworkId);
     if (res?.result) {
       currentGasPrice = unFormatGasPrice(res.result);
     }
-
     return {
       [NETWORK_SPEEDS_TO_KEY.SLOW]: {
         price: currentGasPrice * 0.75,
@@ -343,61 +345,61 @@ export const getNetworkSpeeds = async (walletNetworkId) => {
   }
 };
 
-export const formatGasPrice = (gasPrice) => gasPrice * GWEI_UNIT;
+export const formatGasPrice = (gasPrice: number) => gasPrice * GWEI_UNIT;
 
-export const unFormatGasPrice = (gasPrice) => gasPrice / GWEI_UNIT;
+export const unFormatGasPrice = (gasPrice: number) => gasPrice / GWEI_UNIT;
 
-export function onMetamaskAccountChange(cb) {
+export function onMetamaskAccountChange(cb: any) {
   if (!window.ethereum) return;
   const listener = _.throttle(cb, 2000);
   window.ethereum.on("accountsChanged", listener);
 }
 
-export function onMetamaskChainChange(cb) {
+export function onMetamaskChainChange(cb: any) {
   if (!window.ethereum) return;
   const listener = _.throttle(cb, 2000);
   window.ethereum.on("chainChanged", listener);
 }
 
-export function onBinanceAccountChange(cb) {
+export function onBinanceAccountChange(cb: any) {
   if (!window.BinanceChain) return;
   const listener = _.throttle(cb, 2000);
   window.BinanceChain.on("accountsChanged", listener);
 }
 
-export function onBinanceChainChange(cb) {
+export function onBinanceChainChange(cb: any) {
   if (!window.BinanceChain) return;
   const listener = _.throttle(cb, 2000);
   window.BinanceChain.on("chainChanged", listener);
 }
 
-export function onWalletConnectAccountChange(provider, cb) {
+export function onWalletConnectAccountChange(provider: any, cb: any) {
   if (!provider) return;
   const listener = _.throttle(cb, 2000);
   provider.on("accountsChanged", listener);
 }
 
-export function onWalletConnectChainChange(provider, cb) {
+export function onWalletConnectChainChange(provider: any, cb: any) {
   if (!provider) return;
   const listener = _.throttle(cb, 2000);
   provider.on("chainChanged", listener);
 }
 
-export function onWalletConnectDisconnect(provider, cb) {
+export function onWalletConnectDisconnect(provider: any, cb: any) {
   if (!provider) return;
   const listener = _.throttle(cb, 2000);
   provider.on("disconnect", listener);
 }
 
-export const bufferGasLimit = (gasLimit) =>
+export const bufferGasLimit = (gasLimit: string) =>
   Math.round(Number(gasLimit) * (1 + GAS_LIMIT_BUFFER));
 
 /**
  * 添加网络到metamask
  * @param {*} networkId  网络ID
  */
-export const addEthereumChain = async (networkId) => {
-  await ethereum.request({
+export const addEthereumChain = async (networkId: number) => {
+  await window.ethereum.request({
     method: "wallet_addEthereumChain",
     params: [{ ...ETHEREUM_CHAIN_OPTIONS[networkId] }],
   });
@@ -407,13 +409,27 @@ export const addEthereumChain = async (networkId) => {
  * 检查连接的网络ID
  * @returns
  */
-export const checkNetwork = async (networkId = null) => {
+export const checkNetwork = async (networkId: number | undefined) => {
   if (!networkId) {
     const network = await getEthereumNetwork();
-    networkId = network?.networkId;
+    if (!network) return;
+    networkId = network.networkId;
   }
-  return [
-    SUPPORTED_NETWORKS_MAP.BSCMAINNET,
-    SUPPORTED_NETWORKS_MAP.BSCDEV,
-  ].includes(String(networkId));
+  return isSupportNetwork(networkId!);
+};
+
+export {
+  ETHEREUM_NETWORKS,
+  BINANCE_NETWORKS,
+  MAINNET_NETWORKS,
+  TESTNET_NETWORKS,
+  ETHDEV_NETWORKS,
+  BSCDEV_NETWORKS,
+  DEV_NETWORKS,
+  LIQUIDATION_NETWORKS,
+  REWARD_UNLOCK_NETWORKS,
+  SUPPORTED_NETWORKS,
+  BLOCKCHAIN_BROWSER,
+  BLOCKCHAIN_BROWSER_API,
+  TOKEN_BRIDGE_API,
 };

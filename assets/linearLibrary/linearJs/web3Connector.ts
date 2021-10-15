@@ -26,6 +26,7 @@ export interface ChainConfig {
   chainType: string;
   rpcUrl?: string;
   isLiquidationEnable: boolean;
+  isRewardable: boolean;
   blockchainBrowser: string;
   blockchainBrowserApi: string;
   tokenBridgeApi: string;

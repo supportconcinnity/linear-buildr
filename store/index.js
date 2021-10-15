@@ -26,7 +26,7 @@ export const state = () => ({
   wallet: { address: "", status: -1 }, //钱包 address=钱包地址,status:-1=未初始化数据,0:更新中,1更新完成,2更新失败,
   walletDetails: {}, //钱包详情
   walletDetailsLoopRefreshStatus: true,
-  walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS_MAP
+  walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS
   walletNetworkId: "1", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
   walletNetworkName: SUPPORTED_NETWORKS["1"], //当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
   mMenuState: false, //移动端 显示菜单

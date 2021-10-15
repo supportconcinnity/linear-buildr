@@ -1,7 +1,7 @@
 import {
   getEthereumNetwork,
   getBinanceNetwork,
-  SUPPORTED_WALLETS_MAP,
+  SUPPORTED_WALLETS,
   INFURA_PROJECT_ID,
   onMetamaskAccountChange,
   onBinanceAccountChange,
@@ -42,12 +42,12 @@ export const connectToWallet = async (networkType) => {
     let network;
     let registeredWalletConnectEvents =
       $nuxt.$store.state?.registeredWalletConnectEvents;
-    if (networkType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN) {
+    if (networkType == SUPPORTED_WALLETS.BINANCE_CHAIN) {
       return {};
       network = await getBinanceNetwork();
-    } else if (networkType == SUPPORTED_WALLETS_MAP.METAMASK) {
+    } else if (networkType == SUPPORTED_WALLETS.METAMASK) {
       network = await getEthereumNetwork();
-    } else if (networkType == SUPPORTED_WALLETS_MAP.WALLET_CONNECT) {
+    } else if (networkType == SUPPORTED_WALLETS.WALLET_CONNECT) {
       if (registeredWalletConnectEvents) {
         //当连接到walletconnect 时获取网络id的方式
         network = {
@@ -80,11 +80,11 @@ export const connectToWallet = async (networkType) => {
     }
 
     switch (networkType) {
-      case SUPPORTED_WALLETS_MAP.METAMASK:
+      case SUPPORTED_WALLETS.METAMASK:
         return connectToMetamask(networkId, name);
-      case SUPPORTED_WALLETS_MAP.BINANCE_CHAIN:
+      case SUPPORTED_WALLETS.BINANCE_CHAIN:
         return connectToBinance(networkId, name);
-      case SUPPORTED_WALLETS_MAP.WALLET_CONNECT:
+      case SUPPORTED_WALLETS.WALLET_CONNECT:
         return connectToWalletConnect(networkId, name);
       default:
         return {};
@@ -97,7 +97,7 @@ export const connectToWallet = async (networkType) => {
 
 const connectToMetamask = async (networkId, networkName) => {
   const walletState = {
-    walletType: SUPPORTED_WALLETS_MAP.METAMASK,
+    walletType: SUPPORTED_WALLETS.METAMASK,
   };
   try {
     if (window.ethereum) {
@@ -129,7 +129,7 @@ const connectToMetamask = async (networkId, networkName) => {
 
 const connectToBinance = async (networkId, networkName) => {
   const walletState = {
-    walletType: SUPPORTED_WALLETS_MAP.BINANCE_CHAIN,
+    walletType: SUPPORTED_WALLETS.BINANCE_CHAIN,
   };
   try {
     if (window.BinanceChain) {
@@ -160,7 +160,7 @@ const connectToBinance = async (networkId, networkName) => {
 
 const connectToWalletConnect = async (networkId, networkName) => {
   const walletState = {
-    walletType: SUPPORTED_WALLETS_MAP.WALLET_CONNECT,
+    walletType: SUPPORTED_WALLETS.WALLET_CONNECT,
   };
   try {
     //启动
@@ -211,7 +211,7 @@ const connectToWalletConnect = async (networkId, networkName) => {
 
 //更新wallect connect signer
 const updateWalletConnectWeb3Provider = ({ type, networkId }) => {
-  if (type !== SUPPORTED_WALLETS_MAP.WALLET_CONNECT) {
+  if (type !== SUPPORTED_WALLETS.WALLET_CONNECT) {
     return;
   }
 
@@ -235,7 +235,7 @@ export const setSigner = ({ type, networkId }) => {
 };
 
 const getSignerConfig = ({ type, networkId }) => {
-  if (type === SUPPORTED_WALLETS_MAP.WALLET_CONNECT) {
+  if (type === SUPPORTED_WALLETS.WALLET_CONNECT) {
     let rpc = { ...INFURA_JSON_RPC_URLS, ...RPC_URL };
     return {
       chainId: networkId,
@@ -252,7 +252,7 @@ const getSignerConfig = ({ type, networkId }) => {
  * @param waitStore  是否等待数据获取完成
  */
 export const selectedWallet = async (walletType, waitStore = true) => {
-  //walletType = SUPPORTED_WALLETS_MAP.WALLET_CONNECT;
+  //walletType = SUPPORTED_WALLETS.WALLET_CONNECT;
   try {
     //连接钱包
     const walletStatus = await connectToWallet(walletType);
@@ -286,18 +286,18 @@ export const selectedWallet = async (walletType, waitStore = true) => {
 
       //绑定事件
       if (
-        walletType == SUPPORTED_WALLETS_MAP.METAMASK &&
+        walletType == SUPPORTED_WALLETS.METAMASK &&
         !registeredMetamaskWalletEvents
       ) {
         onMetamaskAccountChange(async (accounts) => {
           //当前链的钱包切换时才执行更新
-          if (store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK) {
+          if (store.state.walletType == SUPPORTED_WALLETS.METAMASK) {
             $nuxt.$Spin.show();
             let { networkId } = await getEthereumNetwork();
 
             const address = await lnrJSConnector.signer.getNextAddresses();
             const signer = new lnrJSConnector.signers[
-              SUPPORTED_WALLETS_MAP.METAMASK
+              SUPPORTED_WALLETS.METAMASK
             ]({});
 
             lnrJSConnector.setContractSettings({
@@ -318,9 +318,9 @@ export const selectedWallet = async (walletType, waitStore = true) => {
 
         //切换网络刷新页面
         onMetamaskChainChange(async (chainId) => {
-          if (store.state.walletType == SUPPORTED_WALLETS_MAP.METAMASK) {
+          if (store.state.walletType == SUPPORTED_WALLETS.METAMASK) {
             store.commit("setWalletDetails", {}); //清理数据
-            const status = await selectedWallet(SUPPORTED_WALLETS_MAP.METAMASK);
+            const status = await selectedWallet(SUPPORTED_WALLETS.METAMASK);
             status &&
               $pub.publish("onWalletChainChange", CHAIN_CHANGE_TYPE.NETWORK);
           }
@@ -328,17 +328,17 @@ export const selectedWallet = async (walletType, waitStore = true) => {
 
         store.commit("setRegisteredMetamaskWalletEvents", true);
       } else if (
-        walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN &&
+        walletType == SUPPORTED_WALLETS.BINANCE_CHAIN &&
         !registeredBinanceWalletEvents
       ) {
         onBinanceAccountChange(async (accounts) => {
           //当前链的钱包切换时才执行更新
-          if (store.state.walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN) {
+          if (store.state.walletType == SUPPORTED_WALLETS.BINANCE_CHAIN) {
             $nuxt.$Spin.show();
 
             const address = await lnrJSConnector.signer.getNextAddresses();
             const signer = new lnrJSConnector.signers[
-              SUPPORTED_WALLETS_MAP.BINANCE_CHAIN
+              SUPPORTED_WALLETS.BINANCE_CHAIN
             ]({});
 
             lnrJSConnector.setContractSettings({
@@ -358,7 +358,7 @@ export const selectedWallet = async (walletType, waitStore = true) => {
 
         //切换网络刷新页面
         onBinanceChainChange((chainId) => {
-          if (store.state.walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN) {
+          if (store.state.walletType == SUPPORTED_WALLETS.BINANCE_CHAIN) {
             location.reload();
             // $pub.publish("onBinanceChainChange");
           }
@@ -366,7 +366,7 @@ export const selectedWallet = async (walletType, waitStore = true) => {
 
         store.commit("setRegisteredBinanceWalletEvents", true);
       } else if (
-        walletType == SUPPORTED_WALLETS_MAP.WALLET_CONNECT &&
+        walletType == SUPPORTED_WALLETS.WALLET_CONNECT &&
         !registeredWalletConnectEvents
       ) {
         onWalletConnectAccountChange(
@@ -374,14 +374,14 @@ export const selectedWallet = async (walletType, waitStore = true) => {
           async (accounts) => {
             //当前链的钱包切换时才执行更新
             if (
-              store.state.walletType == SUPPORTED_WALLETS_MAP.WALLET_CONNECT &&
+              store.state.walletType == SUPPORTED_WALLETS.WALLET_CONNECT &&
               store.state?.wallet.address != accounts[0]
             ) {
               $nuxt.$Spin.show();
               let networkId = lnrJSConnector.signer.provider.provider.chainId;
 
               updateWalletConnectWeb3Provider({
-                type: SUPPORTED_WALLETS_MAP.WALLET_CONNECT,
+                type: SUPPORTED_WALLETS.WALLET_CONNECT,
                 networkId,
               });
               const address = await lnrJSConnector.signer.getNextAddresses();
@@ -402,13 +402,11 @@ export const selectedWallet = async (walletType, waitStore = true) => {
         onWalletConnectChainChange(
           lnrJSConnector.signer.provider.provider,
           async (chainId) => {
-            if (
-              store.state.walletType == SUPPORTED_WALLETS_MAP.WALLET_CONNECT
-            ) {
+            if (store.state.walletType == SUPPORTED_WALLETS.WALLET_CONNECT) {
               store.commit("setWalletDetails", {}); //清理数据
 
               const status = await selectedWallet(
-                SUPPORTED_WALLETS_MAP.WALLET_CONNECT
+                SUPPORTED_WALLETS.WALLET_CONNECT
               );
               status &&
                 $pub.publish("onWalletChainChange", CHAIN_CHANGE_TYPE.NETWORK);
@@ -420,9 +418,7 @@ export const selectedWallet = async (walletType, waitStore = true) => {
         onWalletConnectDisconnect(
           lnrJSConnector.signer.provider.provider,
           async (code, reason) => {
-            if (
-              store.state.walletType == SUPPORTED_WALLETS_MAP.WALLET_CONNECT
-            ) {
+            if (store.state.walletType == SUPPORTED_WALLETS.WALLET_CONNECT) {
               store.commit("setAutoConnect", false);
               if (registeredWalletConnectEvents) {
                 await lnrJSConnector.signer.provider.provider.disconnect();

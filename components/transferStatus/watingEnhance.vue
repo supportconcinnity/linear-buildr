@@ -233,7 +233,7 @@
 import { openBlockchainBrowser } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
 import {
-  SUPPORTED_WALLETS_MAP,
+  SUPPORTED_WALLETS,
   isEthereumNetwork,
   isBinanceNetwork,
 } from "@/assets/linearLibrary/linearTools/network";
@@ -279,7 +279,7 @@ export default {
     return {
       abbreviateAddress,
       openBlockchainBrowser,
-      SUPPORTED_WALLETS_MAP,
+      SUPPORTED_WALLETS,
       isEthereumNetwork,
       isBinanceNetwork,
     };
