@@ -11,13 +11,7 @@ import {
   ChainType,
   NetworkType,
 } from "../linearJs/web3Connector";
-
-declare global {
-  interface Window {
-    BinanceChain: any;
-    ethereum: any;
-  }
-}
+import { INFURA_PROJECT_ID as infuraId } from "../../../constants/envVars";
 
 /**
  * ethererm网络
@@ -54,6 +48,8 @@ let SUPPORTED_NETWORKS: { [k: number]: string } = {};
 let BLOCKCHAIN_BROWSER: { [k: number]: string } = {};
 
 let BLOCKCHAIN_BROWSER_API: { [k: number]: string } = {};
+
+let RPC_URL: { [k: number]: string } = {};
 
 let TOKEN_BRIDGE_API: { [k: number]: string } = {};
 
@@ -96,6 +92,10 @@ for (let i = 0; i < typedConfigs.length; i++) {
   SUPPORTED_NETWORKS[id] = object.name;
   BLOCKCHAIN_BROWSER[id] = object.blockchainBrowser;
   BLOCKCHAIN_BROWSER_API[id] = object.blockchainBrowserApi;
+  if (object.rpcUrl) {
+    RPC_URL[id] = object.rpcUrl;
+  }
+
   TOKEN_BRIDGE_API[id] = object.tokenBridgeApi;
 }
 
@@ -198,7 +198,7 @@ export const WALLET_STATUS = {
 };
 
 //infura project id
-export const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID;
+export const INFURA_PROJECT_ID = infuraId;
 
 export const INFURA_JSON_RPC_URLS = {
   1: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
@@ -432,4 +432,5 @@ export {
   BLOCKCHAIN_BROWSER,
   BLOCKCHAIN_BROWSER_API,
   TOKEN_BRIDGE_API,
+  RPC_URL,
 };

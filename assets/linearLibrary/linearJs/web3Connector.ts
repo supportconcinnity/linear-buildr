@@ -139,6 +139,7 @@ export default class Web3Connector {
   blockchainBrowserApi: string;
   constructor(id: number, signer?: ethers.Signer) {
     const chainData = networksMap.get(id);
+
     const {
       name,
       networkId,
@@ -221,7 +222,6 @@ export default class Web3Connector {
       },
       {});
     }
-
     // is a signer is not passed, init readable contracts only
     if (signer) {
       this.contracts = initContracts(addresses, signer);
