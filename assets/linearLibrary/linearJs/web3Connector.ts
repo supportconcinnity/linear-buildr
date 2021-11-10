@@ -149,6 +149,7 @@ export default class Web3Connector {
       addresses,
       blockchainBrowser,
       blockchainBrowserApi,
+      tokenBridgeApi,
     } = chainData;
     this.networkId = networkId || 1;
     this.network = name;
@@ -159,6 +160,7 @@ export default class Web3Connector {
     this.addressList = addresses;
     this.blockchainBrowser = blockchainBrowser;
     this.blockchainBrowserApi = blockchainBrowserApi;
+    this.tokenBridgeApi = tokenBridgeApi;
     const utils = new util(this.provider);
     this.utils = { ...utils, ...ethers.utils };
     this.isEthereumNetwork = chainType === ChainType.ETHEREUM;
@@ -176,19 +178,6 @@ export default class Web3Connector {
         this.othersNetwork.push(object.networkId);
     });
 
-    switch (networkType) {
-      case NetworkType.MAINNET:
-        this.tokenBridgeApi = TOKEN_BRIDGE_MAINNET;
-        break;
-      case NetworkType.TEST:
-        this.tokenBridgeApi = TOKEN_BRIDGE_TESTNET;
-        break;
-      case NetworkType.DEV:
-        this.tokenBridgeApi = TOKEN_BRIDGE_MAINNET;
-        break;
-      default:
-        this.tokenBridgeApi = TOKEN_BRIDGE_MAINNET;
-    }
     function initContracts(
       contractAddress: { [index: string]: any } = {},
       signerOrProvider: providers.BaseProvider | ethers.Signer
