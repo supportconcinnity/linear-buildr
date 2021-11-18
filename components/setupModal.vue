@@ -182,7 +182,7 @@ import closeSvg from "@/components/svg/close";
 import CopySvg from "@/components/svg/copy";
 import {
   addEthereumChain,
-  SUPPORTED_WALLETS_MAP,
+  SUPPORTED_WALLETS,
 } from "@/assets/linearLibrary/linearTools/network";
 
 export default {
@@ -210,7 +210,7 @@ export default {
         try {
           await addEthereumChain(networkId);
           this.$store.commit("setAutoConnect", true);
-          this.$store.commit("setWalletType", SUPPORTED_WALLETS_MAP.METAMASK);
+          this.$store.commit("setWalletType", SUPPORTED_WALLETS.METAMASK);
           location.reload();
         } catch (error) {
         } finally {

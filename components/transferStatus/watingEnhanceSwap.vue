@@ -13,17 +13,15 @@
         Switch to
 
         <!-- 原始钱包是BSC -->
-        <template
-          v-if="sourceWalletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
-        >
+        <template v-if="sourceWalletType == SUPPORTED_WALLETS.BINANCE_CHAIN">
           Metamask Wallet
         </template>
 
         <!-- 原始钱包和当前钱包是metamask -->
         <template
           v-if="
-            sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK &&
-            currentWalletType == SUPPORTED_WALLETS_MAP.METAMASK
+            sourceWalletType == SUPPORTED_WALLETS.METAMASK &&
+            currentWalletType == SUPPORTED_WALLETS.METAMASK
           "
         >
           <template v-if="isEthereumNetwork(targetNetworkId)"
@@ -35,8 +33,8 @@
         <!-- 原始钱包是metamask,当前钱包不是metamask -->
         <template
           v-if="
-            sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK &&
-            currentWalletType != SUPPORTED_WALLETS_MAP.METAMASK
+            sourceWalletType == SUPPORTED_WALLETS.METAMASK &&
+            currentWalletType != SUPPORTED_WALLETS.METAMASK
           "
         >
           BSC Wallet
@@ -52,13 +50,11 @@
         <!-- 没完成,没错误,没确认 -->
         <span v-else-if="!currentConfirm">
           Confirm with
-          <template v-if="currentWalletType == SUPPORTED_WALLETS_MAP.METAMASK">
+          <template v-if="currentWalletType == SUPPORTED_WALLETS.METAMASK">
             Metamask
           </template>
 
-          <template
-            v-if="currentWalletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
-          >
+          <template v-if="currentWalletType == SUPPORTED_WALLETS.BINANCE_CHAIN">
             BSC Wallet
           </template>
         </span>
@@ -90,7 +86,7 @@
       <!-- 切链 -->
       <template v-if="waitChainChange">
         <!-- 原始钱包是metamask -->
-        <template v-if="sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK">
+        <template v-if="sourceWalletType == SUPPORTED_WALLETS.METAMASK">
           <!-- 有BSC钱包,不是BSC网络,且不是移动端 -->
           <div
             v-if="
@@ -195,9 +191,7 @@
         </template>
 
         <!-- 原始钱包是BSC -->
-        <template
-          v-if="sourceWalletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
-        >
+        <template v-if="sourceWalletType == SUPPORTED_WALLETS.BINANCE_CHAIN">
           <div class="walletIcon">
             <img
               class="wallteLogo"
@@ -215,11 +209,11 @@
       <!-- 不是切链 -->
       <template v-else>
         <!-- 原始钱包是metamask -->
-        <template v-if="sourceWalletType == SUPPORTED_WALLETS_MAP.METAMASK">
+        <template v-if="sourceWalletType == SUPPORTED_WALLETS.METAMASK">
           <!-- 当前钱包是metamask -->
           <div
             class="walletIcon"
-            v-if="currentWalletType == SUPPORTED_WALLETS_MAP.METAMASK"
+            v-if="currentWalletType == SUPPORTED_WALLETS.METAMASK"
           >
             <img
               v-if="isEthereumNetwork(currentNetworkId)"
@@ -235,7 +229,7 @@
           <!-- 当前钱包是BSC -->
           <div
             class="walletIcon"
-            v-if="currentWalletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
+            v-if="currentWalletType == SUPPORTED_WALLETS.BINANCE_CHAIN"
           >
             <img
               class="wallteLogo"
@@ -245,13 +239,11 @@
         </template>
 
         <!-- 原始钱包是BSC -->
-        <template
-          v-if="sourceWalletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
-        >
+        <template v-if="sourceWalletType == SUPPORTED_WALLETS.BINANCE_CHAIN">
           <!-- 当前钱包是BSC -->
           <div
             class="walletIcon"
-            v-if="currentWalletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
+            v-if="currentWalletType == SUPPORTED_WALLETS.BINANCE_CHAIN"
           >
             <img
               class="wallteLogo"
@@ -450,7 +442,7 @@
 import { openBlockchainBrowser } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
 import {
-  SUPPORTED_WALLETS_MAP,
+  SUPPORTED_WALLETS,
   isEthereumNetwork,
   isBinanceNetwork,
 } from "@/assets/linearLibrary/linearTools/network";
@@ -503,7 +495,7 @@ export default {
   data() {
     return {
       openBlockchainBrowser,
-      SUPPORTED_WALLETS_MAP,
+      SUPPORTED_WALLETS,
       isEthereumNetwork,
       isBinanceNetwork,
     };

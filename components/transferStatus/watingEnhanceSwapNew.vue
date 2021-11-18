@@ -542,7 +542,7 @@ import _ from "lodash";
 import { openBlockchainBrowser } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
 import {
-  SUPPORTED_WALLETS_MAP,
+  SUPPORTED_WALLETS,
   isEthereumNetwork,
   isBinanceNetwork,
   getOtherNetworks,
@@ -560,7 +560,8 @@ import api from "@/api";
 import lnrJSConnector from "@/assets/linearLibrary/linearTools/lnrJSConnector";
 import { bn2n, bnAdd, bnSub, n2bn } from "@/common/bnCalc";
 import { providers } from "ethers";
-import { LinearJs } from "@/assets/linearLibrary/linearJs";
+import Web3Connector from "~/assets/linearLibrary/linearJs/web3Connector";
+import signers from "~/assets/linearLibrary/linearJs/lib/signers";
 import {
   BUILD_PROCESS_SETUP,
   BUILD_PROCESS_SETUP_MOBILE,
@@ -602,7 +603,7 @@ export default {
   data() {
     return {
       BUILD_PROCESS_SETUP,
-      SUPPORTED_WALLETS_MAP,
+      SUPPORTED_WALLETS,
 
       openBlockchainBrowser,
       isEthereumNetwork,
@@ -770,7 +771,7 @@ export default {
           this.$store.state?.targetGasDetails?.price || 50 * 1000000000;
 
         // this.targetWalletAddress = this.walletAddress;
-        // this.targetWalletType = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+        // this.targetWalletType = SUPPORTED_WALLETS.BINANCE_CHAIN;
         // await this.checkContract();
         // this.actionTabs = "m1";
 
@@ -787,14 +788,14 @@ export default {
         this.sourceNetworkId = this.walletNetworkId;
 
         //记录目标网络id
-        this.targetNetworkId = getOtherNetworks(this.walletNetworkId);
+        this.targetNetworkId = getOtherNetworks(this.walletNetworkId)[0];
 
         //记录原始钱包地址
         this.sourceWalletAddress = this.walletAddress.toLocaleLowerCase();
 
         //单钱包连接
         this.targetWalletAddress = this.walletAddress;
-        this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+        this.targetWalletType = SUPPORTED_WALLETS.METAMASK;
 
         if (currentStep < 1) {
           await this.checkSounrceBalance();
@@ -900,7 +901,7 @@ export default {
           );
 
           //取合约地址
-          const LnBridgeAddress = LnBridge.contract.address;
+          const LnBridgeAddress = LnBridge.address;
 
           //获取之前approve的数量
           const approveAmount = await LnProxy.allowance(
@@ -1019,7 +1020,7 @@ export default {
       const { utils } = lnrJSConnector;
 
       //取合约地址
-      const LnBridgeAddress = LnBridge.contract.address;
+      const LnBridgeAddress = LnBridge.address;
 
       const transactionSettings = {
         gasPrice: this.sourceGasPrice,
@@ -1089,7 +1090,7 @@ export default {
           throw new Error("invalid approveAmountLINA");
         }
 
-        let gasEstimate = await LnProxy.contract.estimateGas.approve(
+        let gasEstimate = await LnProxy.estimateGas.approve(
           contractAddress,
           approveAmountLINA
         );
@@ -1182,7 +1183,7 @@ export default {
 
         const { utils } = lnrJSConnector;
 
-        let gasEstimate = await LnBridge.contract.estimateGas.deposit(
+        let gasEstimate = await LnBridge.estimateGas.deposit(
           utils.formatBytes32String(this.currency),
           swapNumber,
           this.targetNetworkId,
@@ -1366,7 +1367,7 @@ export default {
         // );
 
         //如果是bridge里面能提取的lina不足,会报错但无法捕捉异常,导致无限等待
-        let gasEstimate = await LnBridge.contract.estimateGas.withdraw(
+        let gasEstimate = await LnBridge.estimateGas.withdraw(
           deposit.srcChainId,
           deposit.destChainId,
           deposit.depositId,
@@ -1451,7 +1452,7 @@ export default {
         }
 
         let gasEstimate =
-          await LnCollateralSystem.contract.estimateGas.collateralAndBuild(
+          await LnCollateralSystem.estimateGas.collateralAndBuild(
             utils.formatBytes32String(this.currency),
             stakeAmountLINA
           );
@@ -1591,7 +1592,6 @@ export default {
 
             //获取签名数据
             const depositArray = await Promise.all(depositPromise);
-
             clearTimeout(this.getPendingProcessLoopId);
             resolve(depositArray);
           }
@@ -1701,8 +1701,8 @@ export default {
           const [walletAddress] = await provider.enable();
           this.targetWalletAddress = walletAddress.toLowerCase();
           this.targetWalletType = isEthereumNetwork(this.targetNetworkId)
-            ? SUPPORTED_WALLETS_MAP.METAMASK
-            : SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+            ? SUPPORTED_WALLETS.METAMASK
+            : SUPPORTED_WALLETS.BINANCE_CHAIN;
 
           let network;
           if (isBinanceNetwork(this.targetNetworkId)) {
@@ -1714,7 +1714,7 @@ export default {
 
           //目标为bsc钱包时候检查目标网络id
           if (
-            this.targetWalletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN &&
+            this.targetWalletType == SUPPORTED_WALLETS.BINANCE_CHAIN &&
             networkId != this.targetNetworkId
           ) {
             throw {
@@ -1744,7 +1744,7 @@ export default {
     },
 
     changeTargetWalletInfo(type) {
-      this.targetWalletType = SUPPORTED_WALLETS_MAP.METAMASK;
+      this.targetWalletType = SUPPORTED_WALLETS.METAMASK;
       this.targetWalletAddress = this.walletAddress;
       this.checkPrepare(++this.checkStatus.stepIndex);
     },
@@ -1768,20 +1768,20 @@ export default {
       let type,
         contract = "LnErc20Bridge";
       if (isEthereumNetwork(this.targetNetworkId)) {
-        type = SUPPORTED_WALLETS_MAP.METAMASK;
+        type = SUPPORTED_WALLETS.METAMASK;
         // contract = "LnErc20Bridge";
       } else if (isBinanceNetwork(this.targetNetworkId)) {
-        type = SUPPORTED_WALLETS_MAP.BINANCE_CHAIN;
+        type = SUPPORTED_WALLETS.BINANCE_CHAIN;
         // contract = "LnBep20Bridge";
       }
 
-      const signer = new LinearJs.signers[type]();
-      this.targetContract = new LinearJs({
+      const signer = new signers[type]();
+      this.targetContract = new Web3Connector({
         networkId: Number(this.targetNetworkId),
         signer,
       });
 
-      return this.targetContract[contract];
+      return this.targetContract.contracts[contract];
     },
 
     //获取冻结手续费

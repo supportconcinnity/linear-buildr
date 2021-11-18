@@ -14,9 +14,10 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"],
+
       "@/*": ["./*"]
     },
-    "types": ["@types/node", "@nuxt/types"]
+    "types": ["@types/node"]
   },
   "exclude": ["node_modules", ".nuxt", "dist"]
 }

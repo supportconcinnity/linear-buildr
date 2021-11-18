@@ -403,7 +403,7 @@ export default {
         //     rewardEntry.signatures[0].signature
         // );
 
-        let gasEstimate = await LnRewardSystem.contract.estimateGas.claimReward(
+        let gasEstimate = await LnRewardSystem.estimateGas.claimReward(
           rewardEntry.periodId, // periodId
           BigNumber.from(rewardEntry.stakingReward), // stakingReward
           BigNumber.from(rewardEntry.feeReward), // feeReward

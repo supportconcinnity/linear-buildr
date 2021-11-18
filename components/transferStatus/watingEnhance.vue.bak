@@ -13,8 +13,8 @@
             >
             <span v-else-if="currentErrMsg">Oops! Something went wrong</span>
             <span v-else-if="!currentConfirm">
-                <template v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK">Confirm with Metmask</template>
-                <template v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN">Confirm with BSC Wallet</template>
+                <template v-if="walletType == SUPPORTED_WALLETS.METAMASK">Confirm with Metmask</template>
+                <template v-if="walletType == SUPPORTED_WALLETS.BINANCE_CHAIN">Confirm with BSC Wallet</template>
             </span>
             <span v-else>
                 <template v-if="isMobile">
@@ -48,7 +48,7 @@
         <div class="walletRect">
             <div
                 class="walletIcon"
-                v-if="walletType == SUPPORTED_WALLETS_MAP.METAMASK"
+                v-if="walletType == SUPPORTED_WALLETS.METAMASK"
             >
                 <!-- <img
                     v-if="isEthereumNetwork(currentNetworkId)"
@@ -76,7 +76,7 @@
 
             <div
                 class="walletIcon"
-                v-if="walletType == SUPPORTED_WALLETS_MAP.BINANCE_CHAIN"
+                v-if="walletType == SUPPORTED_WALLETS.BINANCE_CHAIN"
             >
                 <div class="walletBothIcons">
                     <img class="wallteLogo" src="@/static/transferProgress/wellet_bnb.svg" />
@@ -273,7 +273,7 @@
 import { openBlockchainBrowser } from "@/common/utils";
 import closeSvg from "@/components/svg/close";
 import {
-    SUPPORTED_WALLETS_MAP,
+    SUPPORTED_WALLETS,
     isEthereumNetwork,
     isBinanceNetwork
 } from "@/assets/linearLibrary/linearTools/network";
@@ -317,7 +317,7 @@ export default {
         return {
             abbreviateAddress,
             openBlockchainBrowser,
-            SUPPORTED_WALLETS_MAP,
+            SUPPORTED_WALLETS,
             isEthereumNetwork,
             isBinanceNetwork
         };
