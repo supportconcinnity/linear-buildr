@@ -25,7 +25,8 @@ let loopId = 0;
  */
 export const getLiquids = async (wallet, all = false) => {
   const {
-    lnrJS: { LnAssetSystem, addressList },
+    lnrJS: { LnAssetSystem },
+    addressList,
   } = lnrJSConnector;
 
   //获取资产列表
@@ -92,7 +93,6 @@ export const getLiquids = async (wallet, all = false) => {
       liquids = bnAdd(liquids, value);
     }
   }
-
   liquidsData.liquids = liquids;
   return liquidsData;
 };
