@@ -248,7 +248,12 @@ export default {
       if (!this.isTransaction) {
         if (this.currentAction != action) {
           this.$store.commit("setCurrentAction", action);
-          this.$router.push("/" + common.SUBPAGE_OPTIONS_MAP[action]);
+          const path = common.SUBPAGE_OPTIONS_MAP[action];
+          if (path !== undefined) {
+            this.$router.push("/" + common.SUBPAGE_OPTIONS_MAP[action]);
+          } else {
+            this.$router.push("/");
+          }
 
           //关闭 referral transaction track 的 modal
           this.$pub.publish("transactionModalCloseEvent");

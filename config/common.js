@@ -1,6 +1,12 @@
 import _ from "lodash";
 
-let SUBPAGE_OPTIONS = { build: 1, burn: 2, claim: 3, transfer: 4, swap: 5 };
+let SUBPAGE_OPTIONS = {
+  build: 1,
+  burn: 2,
+  claim: 3,
+  transfer: 4,
+  swap: 5,
+};
 
 let WALLET_DETAILS_OPTIONS = {
   transaction: "transaction",
