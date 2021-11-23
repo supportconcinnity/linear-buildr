@@ -73,6 +73,8 @@ export interface ChainAddresses {
   lVET: string;
   lEUR: string;
   lUNI: string;
+  lDEFI: string;
+  lCAKE: string;
 }
 
 export interface NetworksMap {
@@ -116,6 +118,8 @@ const assetUpgradeableSubcontract = [
   "lXLCI",
   "lXBCI",
   "lVET",
+  "lDEFI",
+  "lCAKE",
 ];
 
 const perpetualSubcontract = ["LnPerpetual_lBTC", "LnPerpetual_lETH"];

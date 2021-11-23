@@ -235,11 +235,8 @@ export const selectedWallet = async (
     window.$nuxt.$Spin.show();
     const store = window.$nuxt.$store;
 
-    console.log(walletStatus, "walletStatus");
-    console.log(walletStatus.currentWallet, "walletStatus.currentWallet");
     //连接成功
     if (walletStatus && walletStatus.currentWallet) {
-      console.log("success");
       store.commit(
         "setWalletNetworkName",
         SUPPORTED_NETWORKS[walletStatus.networkId]
