@@ -410,6 +410,10 @@ export default {
   padding: 200px 193px 207px;
   position: relative;
 
+  .app-dark & {
+    background: $darkBackgroundColor;
+  }
+
   .attentionBox {
     width: 600px;
     position: absolute;
@@ -447,6 +451,10 @@ export default {
           color: #5a575c;
           text-align: left;
           margin-bottom: 4px;
+
+          .app-dark & {
+            color: $darkFontColor;
+          }
         }
 
         .context {
@@ -455,6 +463,10 @@ export default {
           color: #99999a;
           text-align: left;
           margin: 0 0 4px;
+
+          .app-dark & {
+            color: $darkFontColor;
+          }
 
           span {
             font-family: Gilroy-Bold;
@@ -519,6 +531,10 @@ export default {
     line-height: 1.25;
     letter-spacing: normal;
     color: #5a575c;
+
+    .app-dark & {
+      color: $darkFontColor;
+    }
   }
 
   .context {
@@ -533,6 +549,10 @@ export default {
     color: #99999a;
 
     margin: 9px 0 48px;
+
+    .app-dark & {
+      color: $darkFontColor;
+    }
   }
 
   .actionsBox {
@@ -550,6 +570,10 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
+
+      .app-dark & {
+        border-color: $darkBorderColor;
+      }
 
       .imgBox {
         width: 80px;
@@ -575,10 +599,18 @@ export default {
         color: #5a575c;
         font-family: Gilroy-Regular;
         cursor: default;
+
+        .app-dark & {
+          color: $darkFontColorLight;
+        }
       }
 
       &:hover {
         box-shadow: 0 2px 12px 0 #e5e5e5;
+
+        .app-dark & {
+          box-shadow: 0 2px 12px 0 $darkBorderColor;
+        }
       }
     }
 
@@ -638,6 +670,10 @@ export default {
       letter-spacing: normal;
       text-align: center;
       color: #5a575c;
+
+      .app-dark & {
+        color: $darkFontColor;
+      }
     }
 
     .context {
@@ -652,6 +688,10 @@ export default {
       color: #99999a;
 
       margin: 9px 60px;
+
+      .app-dark & {
+        color: $darkFontColor;
+      }
     }
 
     .actionsBox {
@@ -691,6 +731,10 @@ export default {
 
         &:hover {
           box-shadow: 0 2px 12px 0 #e5e5e5;
+
+          .app-dark & {
+            box-shadow: 0 2px 12px 0 $darkBackgroundDeepColor;
+          }
         }
       }
 

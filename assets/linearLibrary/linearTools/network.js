@@ -31,6 +31,7 @@ export const BINANCE_NETWORKS = {
 export const MAINNET_NETWORKS = {
   1: "MAINNET",
   56: "BSCMAINNET",
+  10056: "BSCDEV",
 };
 
 /**

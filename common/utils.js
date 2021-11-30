@@ -229,6 +229,10 @@ export const openBlockchainBrowser = (hash, networdId) => {
 export const openBuyLINA = () => {
   const walletNetworkId = $nuxt.$store.state?.walletNetworkId;
   //主网时打开购买LINA
+  console.log({
+    walletNetworkId,
+    is: isMainnetNetwork(walletNetworkId),
+  });
   if (isMainnetNetwork(walletNetworkId)) {
     window.open(URLS.BUY_LINA);
   }

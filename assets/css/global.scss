@@ -55,6 +55,9 @@ $lightBlue: #f1f7ff;
       .ivu-tooltip-arrow {
         border-right: 1px solid #1a38f8;
         border-bottom: 1px solid #1a38f8;
+        .app-dark & {
+          border-color: $darkBorderColor;
+        }
       }
     }
 
@@ -62,6 +65,9 @@ $lightBlue: #f1f7ff;
       .ivu-tooltip-arrow {
         border-left: 1px solid #1a38f8;
         border-top: 1px solid #1a38f8;
+        .app-dark & {
+          border-color: $darkBorderColor;
+        }
       }
     }
 
@@ -69,6 +75,9 @@ $lightBlue: #f1f7ff;
       .ivu-tooltip-arrow {
         border-top: 1px solid #1a38f8;
         border-right: 1px solid #1a38f8;
+        .app-dark & {
+          border-color: $darkBorderColor;
+        }
       }
     }
 
@@ -76,6 +85,9 @@ $lightBlue: #f1f7ff;
       .ivu-tooltip-arrow {
         border-left: 1px solid #1a38f8;
         border-bottom: 1px solid #1a38f8;
+        .app-dark & {
+          border-color: $darkBorderColor;
+        }
       }
     }
 
@@ -85,6 +97,10 @@ $lightBlue: #f1f7ff;
       height: 10px;
       background: white;
       border: none;
+
+      .app-dark & {
+        background-color: $darkBackgroundColor;
+      }
     }
 
     .ivu-tooltip-inner {
@@ -103,6 +119,13 @@ $lightBlue: #f1f7ff;
       text-align: left;
       word-break: keep-all;
       white-space: break-spaces;
+
+      .app-dark & {
+        background-color: $darkBackgroundColor;
+        color: $darkLighterBlue;
+        border-color: $darkBorderColor;
+        box-shadow: 0 2px 12px 0 $darkBorderColor;
+      }
     }
   }
 

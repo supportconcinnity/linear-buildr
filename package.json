@@ -62,5 +62,9 @@
     "iOS >= 8",
     "Firefox >= 20",
     "Android > 4.4"
-  ]
+  ],
+  "devDependencies": {
+    "@types/lodash": "^4.14.177",
+    "@types/pubsub-js": "^1.8.3"
+  }
 }

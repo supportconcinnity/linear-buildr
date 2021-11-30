@@ -95,6 +95,10 @@ export default {
   overflow: auto;
   background: #fafafa;
 
+  .app-dark & {
+    background: $darkBackgroundDeepColor;
+  }
+
   .container {
     margin: 0 auto;
     width: 1440px;
