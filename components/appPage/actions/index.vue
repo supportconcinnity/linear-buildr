@@ -2,14 +2,36 @@
   <div id="actions">
     <div class="headerBox">
       <a href="/" class="webLogo">
-        <img class="linearBuildrlogo" src="@/static/linear_buildr_logo.svg" />
+        <img
+          v-if="$store.getters.isDarkTheme"
+          class="linearBuildrlogo"
+          src="@/static/linear_buildr_logo_dark.svg"
+        />
+        <img
+          v-else
+          class="linearBuildrlogo"
+          src="@/static/linear_buildr_logo.svg"
+        />
       </a>
 
       <a href="/" class="mobileLogo">
         <img
           class="linearBuildrlogo"
           src="@/static/linear_buildr_logo.svg"
-          v-show="currentAction == 0 && othersAction == 0"
+          v-show="
+            currentAction == 0 &&
+            othersAction == 0 &&
+            !$store.getters.isDarkTheme
+          "
+        />
+        <img
+          v-show="
+            currentAction == 0 &&
+            othersAction == 0 &&
+            $store.getters.isDarkTheme
+          "
+          class="linearBuildrlogo"
+          src="@/static/linear_buildr_logo_dark.svg"
         />
         <img
           class="logoWhenAction"
@@ -344,6 +366,23 @@ export default {
         background-color: #ecf2fb;
         color: #1a38f8;
       }
+
+      .app-dark & {
+        color: $darkLighterBlue;
+
+        &:hover {
+          &:not(.isTransaction):not(.activited) {
+            border-color: $white;
+            color: $white;
+          }
+        }
+
+        &.activited {
+          border-color: $darkLighterBlue;
+          background-color: $darkLighterBlue;
+          color: $darkBackgroundDeepColor;
+        }
+      }
     }
   }
 
@@ -354,6 +393,10 @@ export default {
     overflow: hidden;
     box-shadow: 0px 2px 6px #deddde;
     border-radius: 16px;
+
+    .app-dark & {
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
   }
 }
 
@@ -517,6 +560,10 @@ export default {
       overflow: hidden;
       box-shadow: 0px 2px 6px #deddde;
       border-radius: 16px;
+
+      .app-dark & {
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      }
     }
   }
 }

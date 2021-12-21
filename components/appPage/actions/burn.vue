@@ -1834,6 +1834,10 @@ export default {
     border-radius: 16px;
     box-shadow: 0px 2px 6px #deddde;
 
+    .app-dark & {
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
     .ivu-tabs-bar {
       display: none;
     }
@@ -2159,10 +2163,18 @@ export default {
     box-shadow: 0px 2px 6px #deddde;
     min-height: 550px;
 
+    .app-dark & {
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
     .actionTabs {
       border-radius: 16px;
       box-shadow: 0px 2px 6px #deddde;
       min-height: 550px;
+
+      .app-dark & {
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      }
 
       .ivu-tabs-bar {
         display: none;

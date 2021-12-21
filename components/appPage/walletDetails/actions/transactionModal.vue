@@ -811,6 +811,10 @@ body {
       height: 100%;
       overflow: hidden;
 
+      .app-dark & {
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      }
+
       .closeBtn {
         z-index: 1;
         position: absolute;

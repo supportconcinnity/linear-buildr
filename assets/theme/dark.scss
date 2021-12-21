@@ -1,13 +1,20 @@
 //暗色主题
 //Preparation for dark theme
-$darkBackgroundColor: #000; //背景色
-$darkBackgroundDeepColor: #000; //深色背景
-$darkFontColor: #fff; //字体色
-$darkBorderColor: #000; //边框色
-$darkBorderLightColor: #000; //边框浅色
-$darkBorderDeepColor: #000; //边框深色
-$darkButtonColor: #000; //按钮色
-$darkButtonHoverColor: #000; //按钮热点色
+$white: #fff;
+$darkBackgroundColor: #141b2d; //背景色 / background color
+$darkBackgroundDeepColor: #050d20; //深色背景 / dark background color
+
+$darkLighterBlue: #cee1fb;
+$darkFontColor: $white; //字体色 / font-color
+$darkFontColorSecondary: #bababa; //字体色 / font-color
+$darkFontColorLight: #e5e5e5; //字体色 / font-color
+$darkFontColorDisabled: #5a575c; //字体色 / font-color
+
+$darkBorderColor: #1f2b4d; //边框色 / border-color
+$darkBorderLightColor: #5a575c; //边框浅色 / Light border
+$darkButtonColor: #3851f0; //按钮色 / Button color
+$darkButtonColorHighlight: #1b9cfc; //按钮色 / Button color
+$darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
 
 .dark {
   * {
@@ -18,12 +25,315 @@ $darkButtonHoverColor: #000; //按钮热点色
 //导出变量,在js中使用
 //Export for js
 :export {
+  white: $white;
   darkBackgroundColor: $darkBackgroundColor;
+  darkLighterBlue: $darkLighterBlue;
   darkBackgroundDeepColor: $darkBackgroundDeepColor;
   darkFontColor: $darkFontColor;
   darkBorderColor: $darkBorderColor;
   darkBorderLightColor: $darkBorderLightColor;
-  darkBorderDeepColor: $darkBorderDeepColor;
   darkButtonColor: $darkButtonColor;
   darkButtonHoverColor: $darkButtonHoverColor;
+  darkFontColorSecondary: $darkFontColorSecondary;
+  darkFontColorLight: $darkFontColorLight;
+}
+
+// I was trying to get dark theme done with 0 or less component changes
+.app-dark {
+  // components where images are used
+  // so had to manipulate via filters
+  .ivu-tooltip-rel,
+  img[src*="ICAgICAgPC9nPg0KICAgIDwvZz4NCjwvc3ZnPg0K"] {
+    filter: brightness(3) contrast(2) grayscale(0.8) hue-rotate(-285deg)
+      saturate(1.35);
+  }
+
+  .actionsBox .box .boxItem img[src*="_hover.svg"],
+  .refreshBtn:hover,
+  img[src*="DQogICAgPC9nPg0KPC9zdmc+DQo="],
+  img[src*="refresh.svg"] {
+    filter: brightness(0) contrast(3) invert(1);
+  }
+
+  .introductBox,
+  .ivu-tabs-tabpane,
+  .walletBox .box .boxItem,
+  #build .actionTabs .ivu-tabs-content .ivu-tabs-tabpane,
+  .ivu-tabs-content,
+  #homePage .actionsBox .btn {
+    background-color: $darkBackgroundColor !important;
+  }
+
+  #landingPage .container .walletBox .box .boxItem .boxSub,
+  .ivu-input-number-input,
+  .ivu-input-number-input::placeholder {
+    color: $darkLighterBlue !important;
+  }
+
+  .ivu-collapse-content {
+    background-color: transparent !important;
+  }
+  .ivu-collapse-header,
+  .ivu-collapse-content-box,
+  .actionRate,
+  .editTitle,
+  .infoRight,
+  .tableBody .tr .td,
+  .itemNumBox,
+  .itemTime,
+  .descTop,
+  .contentDesc,
+  .waitDesc,
+  .itemBox .item .text.current,
+  .rewardsBoxClosed .box .amount,
+  .infoBox .title,
+  .ivu-poptip-rel,
+  .currencyItem.selected .itemName,
+  .inputBox .label .amount,
+  .editNetwork,
+  .actionInputItem .p_1,
+  .transferMain .text .descript,
+  .descTopMobile,
+  .statusBox .status,
+  .refreshBtn {
+    color: $darkFontColorSecondary !important;
+  }
+
+  .buyLINA,
+  .mBuyLINA,
+  .actionTitle,
+  .buyLINA .ivu-icon,
+  .actionDesc,
+  .itemTypeBtn,
+  .ivu-collapse-item-active .ivu-collapse-header,
+  .ivu-dropdown.hasFilter .typeBtnSelected,
+  .editBtn,
+  #transactionModal
+    .ivu-modal-wrap
+    .ivu-modal-body
+    .customTable
+    .hasData
+    .tableBody
+    .tr
+    .td:last-of-type,
+  .ivu-page-item:hover:not(.ivu-page-item-active) a,
+  .ivu-page-next:hover:not(.ivu-page-disabled) .ivu-icon,
+  .ivu-page-prev:hover:not(.ivu-page-disabled) .ivu-icon,
+  .walletBox .box .boxItem .boxTitle,
+  .selectionItem.active .itemNumBox,
+  .selectionItem.active .itemTime,
+  .contentTitle,
+  .waitTitle,
+  .transferMain .text .title,
+  .headerBox .title,
+  .mHead .mLogo,
+  .mNavigateItem.activited,
+  .contentTitleMobile,
+  #homePage .actionsBox .btn,
+  #homePage .actionsBox .btn .ivu-icon,
+  .mobileTabs > .activated {
+    color: $darkFontColor !important;
+  }
+
+  .itemTypeBtn,
+  .clearFiltersBtn,
+  #transactionModal
+    .ivu-modal-wrap
+    .ivu-modal-body
+    .customTable
+    .hasData
+    .tableBody
+    .tr
+    .td:last-of-type,
+  .actionInputItem .p_2 {
+    opacity: 1 !important;
+  }
+
+  .mBuyLINA img,
+  .itemTypeBtn img,
+  .editBtn svg {
+    filter: brightness(0) contrast(3) invert(1);
+  }
+
+  .walletBox .box .boxItem,
+  .actionInputItem,
+  .mRect,
+  .tableBody .tr,
+  .tabelHeader .th,
+  .walletInfo .tokenBox,
+  .walletDetailsBox .ratioBox,
+  .selectionItem,
+  .ivu-modal-body .content .custom,
+  .trackBox .table .nothing,
+  .swapInputBox,
+  .swapInputBox.active,
+  .itemTypeBtn {
+    border-color: $darkBorderColor !important;
+  }
+
+  .actionInputItem,
+  .walletBox .box .boxItem,
+  .selectionItem,
+  .ivu-modal-body .content .custom {
+    &:hover {
+      box-shadow: 0 2px 12px 0 $darkBorderColor !important;
+    }
+  }
+
+  .actionInputItem.active,
+  .swapInputBox.active,
+  .swapInputBox:hover {
+    box-shadow: 0 2px 12px 0 $darkBorderColor !important;
+  }
+
+  .mRect .context,
+  .itemTypeTitle,
+  .ivu-select-item,
+  .ivu-checkbox-wrapper,
+  .ivu-dropdown-menu,
+  .clearFiltersBtn.hasFilter,
+  .itemSpeed,
+  .rewardsBoxClosed .box .title,
+  .inputBox .label .max,
+  .editFee,
+  .actionInputItem .p_2,
+  .ivu-input {
+    color: $darkFontColorLight !important;
+  }
+
+  .ivu-modal-body,
+  .ivu-modal-content,
+  .walletAndAddressBox .mNetwork,
+  .walletAndAddressBox .mMenu,
+  .mWalletHead .mInfo,
+  .mWalletHead .networkIcon {
+    background-color: $darkBackgroundColor !important;
+    box-shadow: unset !important;
+  }
+
+  .ivu-modal-content {
+    .title,
+    .p_1,
+    .p_2 {
+      color: $darkFontColor !important;
+    }
+    .context,
+    .subject {
+      color: $darkFontColorSecondary !important;
+    }
+
+    .nothing {
+      background-color: $darkBackgroundColor !important;
+    }
+  }
+
+  .ivu-spin-fix {
+    background-color: rgba($darkBackgroundColor, 0.9) !important;
+  }
+
+  .typeBtn,
+  .amountBtnSelected,
+  .ivu-select-dropdown,
+  .ivu-select-selection,
+  .ivu-page-item,
+  .ivu-page-next,
+  .ivu-page-prev,
+  .rewardsBoxClosed .box,
+  .ivu-poptip-inner,
+  #gasEditorSwap .normal .source,
+  #gasEditorSwap .normal .target,
+  .transferMain .to .li_1 .midle .p_1 span,
+  .mNavigate,
+  .walletDetailsBox,
+  .ivu-date-picker .ivu-input {
+    background: $darkBackgroundDeepColor !important;
+  }
+
+  .ivu-input,
+  .ivu-input-number,
+  #transferWatingEnhance,
+  .ivu-input-number-input {
+    background-color: unset !important;
+  }
+
+  .typeBtn,
+  .ivu-input,
+  .amountBtnSelected,
+  .ivu-select-selection,
+  .ivu-page-item {
+    border-color: $darkBackgroundColor !important;
+  }
+
+  .ivu-select-item:hover,
+  .swapInputBox .inputBox .max {
+    color: $darkBackgroundColor !important;
+  }
+
+  .clearFiltersBtn,
+  .ivu-page-item,
+  .ivu-page-next,
+  .currencyItem .itemName {
+    color: $darkFontColorDisabled !important;
+  }
+
+  .tableBody .tr:hover {
+    box-shadow: 0 2px 6px 0 $darkBorderColor !important;
+  }
+
+  .ivu-page-item-active {
+    background-color: $darkButtonHoverColor !important;
+  }
+  .ivu-page-item-active a {
+    color: $darkBackgroundDeepColor !important;
+  }
+
+  .ivu-page-disabled {
+    opacity: 0.25 !important;
+  }
+
+  .selectionItem.active {
+    border-color: $darkButtonHoverColor !important;
+  }
+
+  .selectionItem.active {
+    box-shadow: 0 2px 12px 0 $darkButtonHoverColor !important;
+  }
+
+  .selectionItem.active .itemSpeed {
+    color: $darkButtonColorHighlight !important;
+  }
+
+  .divider {
+    background-color: $darkBorderColor !important;
+  }
+
+  // Ethereum Logo & others
+  img[src*="+DQogIDwvZz4NCjwvc3ZnPg=="] {
+    filter: invert(1);
+  }
+  img[src*="IDwvZz4NCiAgPC9nPg0KPC9zdmc+"],
+  img[src*="LUSD_gray_logo.svg"] {
+    filter: brightness(0.59) contrast(2.8) grayscale(1);
+  }
+
+  #gasEditorSwap .normal .arrow,
+  .statusBox .status {
+    background-color: rgba(126, 181, 255, 0.1) !important;
+  }
+
+  .swapInputBox .inputBox .max {
+    background-color: $darkLighterBlue !important;
+  }
+
+  @media only screen and (max-width: 414px) {
+    .totalBalanceToUSD {
+      box-shadow: 0 2px 12px 0 $darkBorderColor !important;
+    }
+    .totalBalanceToUSD {
+      background: $darkBackgroundDeepColor !important;
+    }
+    .infoBox .status {
+      background-color: unset !important;
+    }
+  }
 }

@@ -932,6 +932,10 @@ export default {
       border-radius: 20px;
       background: #f6f5f6;
 
+      .app-dark & {
+        background: $darkBackgroundColor;
+      }
+
       .network {
         margin-right: 8px;
         width: 16px;
@@ -948,6 +952,10 @@ export default {
         line-height: 1.29;
         letter-spacing: normal;
         color: #5a575c;
+
+        .app-dark & {
+          color: $darkFontColorSecondary;
+        }
       }
 
       .address {
@@ -965,6 +973,10 @@ export default {
         line-height: 1.29;
         letter-spacing: normal;
         color: #99999a;
+
+        .app-dark & {
+          color: $darkFontColorSecondary;
+        }
       }
 
       .copyBtn {
@@ -978,6 +990,11 @@ export default {
           #Combined-Shape {
             fill: #1a38f8;
             stroke: #1a38f8;
+
+            .app-dark & {
+              fill: #cee1fb;
+              stroke: #cee1fb;
+            }
           }
         }
       }
@@ -994,6 +1011,13 @@ export default {
         text-transform: uppercase;
         cursor: pointer;
         transition: $animete-time linear;
+
+        .app-dark & {
+          color: $darkFontColorSecondary;
+          &:hover {
+            color: #fff;
+          }
+        }
 
         &:hover {
           color: #1a38f8;
@@ -1098,6 +1122,9 @@ export default {
           &:hover,
           &.selected {
             color: #1a38f8;
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
           }
         }
       }
@@ -1114,6 +1141,10 @@ export default {
         font-size: 32px;
         text-align: center;
         color: #5a575c;
+
+        .app-dark & {
+          color: $darkFontColorLight;
+        }
 
         &.inLiquidation {
           color: #df434c;
@@ -1132,6 +1163,10 @@ export default {
         font-size: 14px;
         text-align: center;
         color: #5a575c;
+
+        .app-dark & {
+          color: $darkFontColorLight;
+        }
 
         img {
           margin-top: -3px;
@@ -1158,6 +1193,10 @@ export default {
           height: 24px;
           background-color: #5a575c;
           position: absolute;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
         }
 
         .scale200 {
@@ -1309,6 +1348,10 @@ export default {
         letter-spacing: normal;
         color: #5a575c;
         margin-bottom: 8px;
+
+        .app-dark & {
+          color: $darkFontColorLight;
+        }
       }
 
       .tokenBox {
@@ -1335,6 +1378,13 @@ export default {
             color: #5a575c;
             display: flex;
             justify-content: space-between;
+
+            .app-dark & {
+              color: #9d9d9d;
+            }
+            .app-dark &:first-child {
+              color: $darkFontColorLight;
+            }
 
             &.obtrusive {
               .left {
@@ -1368,6 +1418,10 @@ export default {
                   font-style: normal;
                   letter-spacing: normal;
                   color: #5a575c;
+
+                  .app-dark & {
+                    color: $darkFontColorLight;
+                  }
                   .top {
                     font-size: 16px;
                     line-height: 1.5;
@@ -1405,6 +1459,10 @@ export default {
           letter-spacing: normal;
           color: #5a575c;
           margin-bottom: 8px;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
         }
 
         .amount {
@@ -1416,6 +1474,10 @@ export default {
           line-height: 1.25;
           letter-spacing: normal;
           color: #5a575c;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
         }
       }
 
@@ -1552,6 +1614,10 @@ export default {
           line-height: 1.29;
           letter-spacing: normal;
           color: #5a575c;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
         }
 
         .address {
@@ -1737,6 +1803,10 @@ export default {
             line-height: 1.29;
             letter-spacing: normal;
             color: #5a575c;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
           }
 
           .address {
@@ -1842,6 +1912,10 @@ export default {
           letter-spacing: normal;
           color: #5a575c;
 
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
+
           .ivu-tooltip {
             margin-left: 8px;
           }
@@ -1862,6 +1936,10 @@ export default {
             letter-spacing: normal;
             text-align: center;
             color: #5a575c;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
 
             .context {
               font-size: 14px;
@@ -1914,6 +1992,10 @@ export default {
           letter-spacing: normal;
           color: #5a575c;
           margin-bottom: 8px;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
         }
 
         .tokenBox {
@@ -1943,6 +2025,13 @@ export default {
               color: #5a575c;
               display: flex;
               justify-content: space-between;
+
+              .app-dark & {
+                color: #9d9d9d;
+              }
+              .app-dark &:first-child {
+                color: $darkFontColorLight;
+              }
 
               &.obtrusive {
                 .left {
@@ -1976,6 +2065,10 @@ export default {
                     font-style: normal;
                     letter-spacing: normal;
                     color: #5a575c;
+
+                    .app-dark & {
+                      color: $darkFontColorLight;
+                    }
                     .top {
                       font-size: 16px;
                       line-height: 1.5;
@@ -2021,6 +2114,10 @@ export default {
             letter-spacing: normal;
             color: #5a575c;
             margin-bottom: 8px;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
           }
 
           .amount {
@@ -2032,6 +2129,10 @@ export default {
             line-height: 1.25;
             letter-spacing: normal;
             color: #5a575c;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
           }
         }
 

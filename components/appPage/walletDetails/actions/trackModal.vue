@@ -63,6 +63,7 @@
           :data="emptyData"
           :color="{
             lineColor: '#fff',
+            backgroundColor: $store.getters.isDarkTheme ? '#141B2D' : '#fff',
             areaColorTop: '#fff',
           }"
           :title="'Total Current Debt\n(ℓUSD)'"
@@ -77,7 +78,8 @@
           area
           :color="{
             lineColor: '#1a38f8',
-            areaColorTop: '#1a38f8',
+            backgroundColor: $store.getters.isDarkTheme ? '#141B2D' : '#fff',
+            areaColorTop: '#fff',
           }"
           :formatter="`ℓUSD : {c0}`"
           :title="
@@ -374,6 +376,10 @@ export default {
       padding: 46px 143px 0;
       height: 100%;
       overflow: hidden;
+
+      .app-dark & {
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      }
 
       .closeBtn {
         z-index: 1;
