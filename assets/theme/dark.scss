@@ -6,13 +6,14 @@ $darkBackgroundDeepColor: #050d20; //深色背景 / dark background color
 
 $darkLighterBlue: #cee1fb;
 $darkFontColor: $white; //字体色 / font-color
-$darkFontColorSecondary: #bababa; //字体色 / font-color
+$darkFontColorSecondary: #f6f5f6; //字体色 / font-color
 $darkFontColorLight: #e5e5e5; //字体色 / font-color
 $darkFontColorDisabled: #5a575c; //字体色 / font-color
 
 $darkBorderColor: #1f2b4d; //边框色 / border-color
 $darkBorderLightColor: #5a575c; //边框浅色 / Light border
 $darkButtonColor: #3851f0; //按钮色 / Button color
+$darkButtonColor2: #1a38f8; //按钮色 / Button color
 $darkButtonColorHighlight: #1b9cfc; //按钮色 / Button color
 $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
 
@@ -59,8 +60,7 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   .ivu-tabs-tabpane,
   .walletBox .box .boxItem,
   #build .actionTabs .ivu-tabs-content .ivu-tabs-tabpane,
-  .ivu-tabs-content,
-  #homePage .actionsBox .btn {
+  .ivu-tabs-content {
     background-color: $darkBackgroundColor !important;
   }
 
@@ -73,8 +73,15 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   .ivu-collapse-content {
     background-color: transparent !important;
   }
+
+  #walletDetails .walletDetailsBox .walletInfo .title,
+  #walletDetails .walletDetailsBox .walletInfo .tokenBox .box .tokenItems.obtrusive .left,
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .contentTitle,
+  #homePage .title,
+  #landingPage .container .walletBox .box .boxItem .boxSub,
+  .ivu-collapse-item-active .ivu-collapse-header,
   .ivu-collapse-header,
-  .ivu-collapse-content-box,
+  //.ivu-collapse-content-box,
   .actionRate,
   .editTitle,
   .infoRight,
@@ -99,13 +106,45 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
     color: $darkFontColorSecondary !important;
   }
 
-  .buyLINA,
+  //#landingPage .container .walletBox .box .boxItem .boxSub,
+  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .title,
+  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .amount,
+  #walletDetails
+    .walletDetailsBox
+    .walletInfo
+    .tokenBox
+    .box
+    .tokenItems.obtrusive
+    .right,
+  #walletDetails .walletDetailsBox .actionsBox .box .boxItem,
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .contentDesc,
+  #gasEditor
+    .gasEditorModal
+    .ivu-modal
+    .ivu-modal-body
+    .content
+    .custom
+    .leftRect
+    .desc
+    .unit,
+  #gasEditor
+    .gasEditorModal
+    .ivu-modal
+    .ivu-modal-body
+    .content
+    .selections
+    .selectionItem
+    .itemSpeed,
+  #gasEditor .editInfo .infoLeft .editTitle,
+  .ivu-input-number-input,
+  #homePage .actionsBox .boxItem .boxContext,
+  #homePage .context,
+  .ivu-collapse-content-box,
   .mBuyLINA,
   .actionTitle,
   .buyLINA .ivu-icon,
   .actionDesc,
   .itemTypeBtn,
-  .ivu-collapse-item-active .ivu-collapse-header,
   .ivu-dropdown.hasFilter .typeBtnSelected,
   .editBtn,
   #transactionModal
@@ -133,6 +172,10 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   #homePage .actionsBox .btn .ivu-icon,
   .mobileTabs > .activated {
     color: $darkFontColor !important;
+  }
+
+  #walletDetails .walletDetailsBox .walletInfo .tokenBox .box .tokenItems {
+    color: #99999a !important;
   }
 
   .itemTypeBtn,
@@ -171,7 +214,21 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
     border-color: $darkBorderColor !important;
   }
 
-  .actionInputItem,
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .custom,
+  #gasEditor
+    .gasEditorModal
+    .ivu-modal
+    .ivu-modal-body
+    .content
+    .selections
+    .selectionItem,
+  .actionInputItem {
+    &:hover {
+      border-color: $darkButtonColor !important;
+      box-shadow: none !important;
+    }
+  }
+
   .walletBox .box .boxItem,
   .selectionItem,
   .ivu-modal-body .content .custom {
@@ -231,6 +288,7 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
     background-color: rgba($darkBackgroundColor, 0.9) !important;
   }
 
+  #homePage .actionsBox .boxItem,
   .typeBtn,
   .amountBtnSelected,
   .ivu-select-dropdown,
@@ -247,6 +305,13 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   .walletDetailsBox,
   .ivu-date-picker .ivu-input {
     background: $darkBackgroundDeepColor !important;
+  }
+
+  //#homePage .actionsBox .boxItem {
+  //  border-color: $darkBackgroundDeepColor!important;
+  //}
+  #homePage .actionsBox .boxItem {
+    box-shadow: none !important;
   }
 
   .ivu-input,
@@ -325,6 +390,110 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
     background-color: $darkLighterBlue !important;
   }
 
+  #landingPage
+    .container
+    .introductBox
+    .ivu-collapse
+    .ivu-collapse-item
+    .ivu-collapse-header
+    .line {
+    background-color: #99999a;
+  }
+
+  .buyLINA {
+    color: $darkButtonColor2 !important;
+
+    &:hover {
+      color: #7eb5ff !important;
+    }
+    .ivu-icon {
+      color: $darkButtonColor2 !important;
+      &:hover {
+        color: #7eb5ff !important;
+      }
+    }
+  }
+
+  #homePage .actionsBox .btn,
+  #landingPage
+    .container
+    .introductBox
+    .ivu-collapse
+    .ivu-collapse-item-active
+    .ivu-collapse-header
+    .line {
+    background-color: $darkButtonColor2 !important;
+  }
+  #landingPage .container .walletBox .box .boxItem {
+    border-color: $darkBackgroundColor !important;
+    &:hover {
+      border-color: $darkButtonColor !important;
+      box-shadow: none !important;
+    }
+  }
+
+  #build
+    .actionTabs
+    .ivu-tabs-content
+    .ivu-tabs-tabpane
+    .buildBox
+    .actionBodyWeb
+    .actionDesc {
+    color: #e5e5e5 !important;
+  }
+
+  #build
+    .actionTabs
+    .ivu-tabs-content
+    .ivu-tabs-tabpane
+    .buildBox
+    .actionBodyWeb
+    .actionRate {
+    background-color: rgba(56, 81, 240, 0.3) !important;
+  }
+  #build .actionTabs .ivu-tabs-content .ivu-tabs-tabpane .buildBox .buildBtn {
+    background-color: $darkButtonColor !important;
+  }
+
+  #gasEditor .editInfo .infoLeft .editBtn,
+  #build
+    .actionTabs
+    .ivu-tabs-content
+    .ivu-tabs-tabpane
+    .buildBox
+    .actionBodyWeb
+    .actionInputItem
+    .itemLeft
+    .itemType
+    .itemTypeBtn {
+    color: $darkButtonColor2 !important;
+  }
+
+  #gasEditor .editInfo .infoLeft .editBtn {
+    border-color: $darkButtonColor2 !important;
+  }
+
+  #gasEditor
+    .gasEditorModal
+    .ivu-modal
+    .ivu-modal-body
+    .content
+    .selections
+    .selectionItem
+    .itemNumBox {
+    color: $darkButtonHoverColor !important;
+  }
+  #gasEditor
+    .gasEditorModal
+    .ivu-modal
+    .ivu-modal-body
+    .content
+    .selections
+    .selectionItem
+    .itemTime {
+    color: #bababa !important;
+  }
+
   @media only screen and (max-width: 414px) {
     .totalBalanceToUSD {
       box-shadow: 0 2px 12px 0 $darkBorderColor !important;
@@ -336,4 +505,156 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
       background-color: unset !important;
     }
   }
+
+  /*// landing
+  #landingPage {
+
+    .seeDetailsModal {
+      .ivu-modal-wrap {
+        .ivu-modal {
+
+          .ivu-modal-content {
+            .ivu-modal-body {
+              .walletConnect {
+
+                .walletConnectBox {
+                  background-color: #141b2d;
+
+                  .top {
+                    .button {
+
+                      //&:hover {
+                        //content: url("../../static/close_hover.svg");
+                      //}
+                    }
+
+                    .title {
+                      color: #f6f5f6;
+                    }
+
+                    //.logo {
+                    //}
+                  }
+
+                  .boxTitle {
+                    color: #5a575c;
+                  }
+
+                  .boxCopy {
+
+                    .copyTitle {
+
+                      .title {
+                        color: #1a38f8;
+                      }
+
+                      .copyBtn {
+                        .cooyIcon {
+                          //&:hover {
+                            //content: url("../../static/copy_hover.svg");
+                          //}
+                        }
+                      }
+                    }
+                  }
+
+                  .canvas {
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .container {
+
+      .introductBox {
+        background: #fff;
+
+        .ivu-collapse {
+          background: unset;
+          border: unset;
+          padding-left: 120px;
+
+          .ivu-collapse-item {
+            margin-bottom: 24px;
+            border: unset;
+
+            .ivu-collapse-header {
+              color: #99999a;
+
+              .line {
+                background: #99999a;
+              }
+            }
+
+            .ivu-collapse-content {
+
+              .ivu-collapse-content-box {
+                color: #5a575c;
+
+              }
+            }
+          }
+
+          .ivu-collapse-item-active {
+
+            .ivu-collapse-header {
+              color: #5a575c;
+              .line {
+                background: #1a38f8;
+              }
+            }
+          }
+        }
+
+        .buyLINA {
+          color: #1a38f8;
+
+          .ivu-icon {
+            color: #1a38f8;
+          }
+
+          &:hover {
+            color: #7eb5ff;
+
+            .ivu-icon {
+              color: #7eb5ff;
+            }
+          }
+        }
+      }
+
+      .walletBox {
+        .box {
+
+          .boxItem {
+            border: solid 1px #e5e5e5;
+            background-color: #ffffff;
+
+
+            .boxSub {
+              color: #5a575c;
+            }
+
+            .boxTitle {
+              color: #1a38f8;
+            }
+
+            .boxDesc {
+              color: #99999a;
+            }
+
+            &:hover {
+              border: solid 1px #3851f0;
+              box-shadow: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  // end landing*/
 }
