@@ -1254,6 +1254,9 @@ export default {
             width: 100%;
             height: 100%;
             min-height: 550px;
+            display: flex;
+            justify-content: center;
+            -webkit-justify-content: center;
           }
 
           .transferBox {
