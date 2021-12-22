@@ -52,7 +52,6 @@
                 <div class="inputRect">
                   <InputNumber
                     class="input"
-                    :class="inputData.stake < 1 ? 'text-secondary-gray' : ''"
                     ref="itemInput0"
                     type="text"
                     v-model="inputData.stake"
@@ -123,7 +122,6 @@
                 <div class="inputRect">
                   <InputNumber
                     class="input"
-                    :class="inputData.amount < 1 ? 'text-secondary-gray' : ''"
                     ref="itemInput1"
                     type="text"
                     :min="0"
@@ -179,7 +177,6 @@
                 <div class="inputRect">
                   <InputNumber
                     class="input"
-                    :class="inputData.ratio < 1 ? 'text-secondary-gray' : ''"
                     ref="itemInput2"
                     type="text"
                     :max="100000000000"
@@ -2115,6 +2112,8 @@ export default {
             width: 100%;
             height: 88vh !important;
             min-height: 550px;
+            display: flex;
+            justify-content: center;
           }
 
           .buildBox {
