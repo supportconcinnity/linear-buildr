@@ -64,10 +64,13 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
     background-color: $darkBackgroundColor !important;
   }
 
-  #landingPage .container .walletBox .box .boxItem .boxSub,
+  #landingPage .container .walletBox .box .boxItem .boxSub::placeholder {
+    color: $darkLighterBlue !important;
+  }
+
   .ivu-input-number-input,
   .ivu-input-number-input::placeholder {
-    color: $darkLighterBlue !important;
+    color: #99999a !important;
   }
 
   .ivu-collapse-content {
@@ -389,6 +392,13 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
     background-color: $darkLighterBlue !important;
   }
 
+  // transaction component
+  #transferWatingEnhance .processBar .itemBox .item .view,
+  #transferWatingEnhance .processBar .itemBox .item .tryAgain {
+    opacity: 1 !important;
+  }
+  // transaction component end
+
   #landingPage
     .container
     .introductBox
@@ -452,6 +462,9 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   }
   #build .actionTabs .ivu-tabs-content .ivu-tabs-tabpane .buildBox .buildBtn {
     background-color: $darkButtonColor !important;
+    //&.disabled {
+    //  background-color: rgba(126, 181, 255, 0.2)!important;
+    //}
   }
 
   #gasEditor .editInfo .infoLeft .editBtn,
@@ -496,9 +509,6 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
     color: $darkButtonHoverColor !important;
   }
 
-  // gray secondary
-  .text-secondary-gray,
-  .text-secondary-gray .ivu-input-number-input,
   #gasEditor
     .gasEditorModal
     .ivu-modal
@@ -508,6 +518,44 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
     .selectionItem
     .itemTime {
     color: #bababa !important;
+  }
+
+  // burn
+  #burn {
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .burnBox
+      .actionBodyWeb
+      .actionRate {
+      background: rgba(56, 81, 240, 0.5) !important;
+    }
+    #transferWatingEnhance {
+      .waitTitle {
+        color: #f6f5f6 !important;
+      }
+      .waitDesc {
+        color: #ffffff !important;
+      }
+    }
+  }
+
+  // tooltip
+  .globalInfoStyle.ivu-tooltip .ivu-tooltip-popper .ivu-tooltip-inner {
+    background: #ffffff !important;
+    border: 1px solid #3851f0 !important;
+    box-sizing: border-box !important;
+    box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+    border-radius: 8px !important;
+    color: #333333 !important;
+  }
+  .globalInfoStyle.ivu-tooltip
+    .ivu-tooltip-popper[x-placement="top"]
+    .ivu-tooltip-arrow {
+    border-color: #ffffff !important;
+  }
+  .globalInfoStyle.ivu-tooltip .ivu-tooltip-popper .ivu-tooltip-arrow {
+    background-color: #ffffff !important;
   }
 
   @media only screen and (max-width: 414px) {
@@ -651,6 +699,87 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
             color: #5c5c5c !important;
           }
         }
+      }
+    }
+
+    #burn {
+      .introductActionModal
+        .ivu-modal-wrap
+        .ivu-modal
+        .ivu-modal-content
+        .ivu-modal-body {
+        box-shadow: 0px 1px 12px rgba(0, 0, 0, 0.5) !important;
+        border-radius: 8px !important;
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .actionRate {
+        background: rgba(56, 81, 240, 0.5) !important;
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .errMsg {
+        background-color: $darkFontColorSecondary !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .actionInputItem.error {
+        box-shadow: 0 4px 25px rgba(223, 67, 76, 0.3) !important;
+        border-color: #df434c !important;
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .inputGroupBox
+        .actionInputItem
+        .inputBox
+        .itemTypeTitle {
+        font-weight: bold !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .inputGroupBox
+        .actionInputItem
+        .inputBox
+        .itemTypeTitle {
+        color: $darkFontColorSecondary !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .actionInputItem
+        .ratioInputBox
+        .itemTypeBtn {
+        color: $darkButtonColor !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .inputGroupBox
+        .actionInputItem
+        .itemTypeBtn {
+        color: $darkButtonColor2 !important;
       }
     }
   }
