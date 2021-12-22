@@ -78,7 +78,7 @@
       </template>
     </div>
 
-    <div class="processBar">
+    <div class="processBar" v-if="!(currentStep > setupArray.length - 1)">
       <div class="itemBox">
         <div v-for="(item, index) in setupArray" :key="index" class="item">
           <div class="imgBox">
@@ -602,7 +602,8 @@ export default {
     .mobileBtns {
       padding: 0 32px;
       position: absolute;
-      bottom: 32px;
+      //bottom: 32px;
+      bottom: 60px;
       width: 100%;
 
       .funcMobileBtn {

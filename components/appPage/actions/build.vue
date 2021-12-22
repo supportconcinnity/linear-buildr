@@ -52,6 +52,7 @@
                 <div class="inputRect">
                   <InputNumber
                     class="input"
+                    :class="inputData.stake < 1 ? 'text-secondary-gray' : ''"
                     ref="itemInput0"
                     type="text"
                     v-model="inputData.stake"
@@ -114,7 +115,7 @@
                     :class="{ active: activeItemBtn == 1 }"
                     @click.stop="clickMaxBuildAmount"
                   >
-                    Max
+                    MAX
                   </div>
                 </div>
               </div>
@@ -122,6 +123,7 @@
                 <div class="inputRect">
                   <InputNumber
                     class="input"
+                    :class="inputData.amount < 1 ? 'text-secondary-gray' : ''"
                     ref="itemInput1"
                     type="text"
                     :min="0"
@@ -169,7 +171,7 @@
                     :class="{ active: activeItemBtn == 2 }"
                     @click.stop="clickTargetRatio"
                   >
-                    Target ratio
+                    TARGET RATIO
                   </div>
                 </div>
               </div>
@@ -177,6 +179,7 @@
                 <div class="inputRect">
                   <InputNumber
                     class="input"
+                    :class="inputData.ratio < 1 ? 'text-secondary-gray' : ''"
                     ref="itemInput2"
                     type="text"
                     :max="100000000000"
