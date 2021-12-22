@@ -160,9 +160,16 @@
             <div class="placeholder">
               <transition-group name="img-fade">
                 <img
+                  v-if="theme === 'light'"
                   key="1"
                   v-show="!trackStatus && !trackIconStatus"
                   src="@/static/appPage/track.svg"
+                />
+                <img
+                  v-else
+                  key="1"
+                  v-show="!trackStatus && !trackIconStatus"
+                  src="@/static/dark-theme/appPage/track.svg"
                 />
                 <img
                   key="2"
@@ -190,9 +197,16 @@
             <div class="placeholder">
               <transition-group name="img-fade">
                 <img
+                  v-if="theme === 'light'"
                   key="1"
                   v-show="!transactionStatus && !transactionIconStatus"
                   src="@/static/appPage/transaction.svg"
+                />
+                <img
+                  v-else
+                  key="1"
+                  v-show="!transactionStatus && !transactionIconStatus"
+                  src="@/static/dark-theme/appPage/transaction.svg"
                 />
                 <img
                   key="2"
@@ -233,7 +247,8 @@
             placement="bottom"
             offset="0 6"
           >
-            <img src="@/static/info_white.svg" />
+            <img v-if="theme === 'light'" src="@/static/info_white.svg" />
+            <img v-else src="@/static/dark-theme/info_white.svg" />
           </Tooltip>
         </div>
         <div class="percentBox">
@@ -308,7 +323,16 @@
       <div class="walletInfo">
         <div class="title">Wallet Balance</div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/LINA_logo.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/LINA_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/LINA_logo.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive">
               <div class="left">LINA</div>
@@ -362,7 +386,16 @@
           </div>
         </div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/currency/lUSD.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/currency/lUSD.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/currency/lUSD.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive">
               <div class="left">ℓUSD</div>
@@ -383,7 +416,16 @@
         </div>
         <div class="tokenBox">
           <template v-if="isEthereumNetwork">
-            <img class="tokenIcon" src="@/static/ETH_logo.svg" />
+            <img
+              v-if="theme === 'light'"
+              class="tokenIcon"
+              src="@/static/ETH_logo.svg"
+            />
+            <img
+              v-else
+              class="tokenIcon"
+              src="@/static/dark-theme/ETH_logo.svg"
+            />
             <div class="box">
               <div class="tokenItems obtrusive">
                 <div class="left">ETH</div>
@@ -428,7 +470,16 @@
           </template>
         </div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/currency/lUSD.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/currency/lUSD.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/currency/lUSD.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive singer">
               <div class="left">
@@ -440,7 +491,8 @@
                   placement="bottom"
                   offset="0 6"
                 >
-                  <img src="@/static/info_white.svg" />
+                  <img v-if="theme === 'light'" src="@/static/info_white.svg" />
+                  <img v-else src="@/static/dark-theme/info_white.svg" />
                 </Tooltip>
               </div>
               <div class="right">
@@ -455,7 +507,16 @@
           </div>
         </div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/currency/lUSD.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/currency/lUSD.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/currency/lUSD.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive singer">
               <div class="left">
@@ -467,7 +528,8 @@
                   placement="bottom"
                   offset="0 6"
                 >
-                  <img src="@/static/info_white.svg" />
+                  <img v-if="theme === 'light'" src="@/static/info_white.svg" />
+                  <img v-else src="@/static/dark-theme/info_white.svg" />
                 </Tooltip>
               </div>
               <div class="right">
@@ -662,6 +724,9 @@ export default {
       }
 
       return currentRatio;
+    },
+    theme() {
+      return this.$store.state.theme;
     },
   },
   created() {
@@ -1486,6 +1551,17 @@ export default {
         .border,
         .shape {
           transition: fill $animete-time linear;
+        }
+
+        .app-dark & {
+          &:not(.selected) {
+            .border {
+              stroke: #ffffff;
+            }
+            .shape {
+              fill: #ffffff;
+            }
+          }
         }
 
         &:hover {
