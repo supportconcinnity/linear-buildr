@@ -63,7 +63,14 @@
       </div>
 
       <div class="arrow">
-        <img src="@/static/transferProgress/arrow_right.svg" />
+        <img
+          v-if="theme === 'light'"
+          src="@/static/transferProgress/arrow_right.svg"
+        />
+        <img
+          v-else
+          src="@/static/dark-theme/transferProgress/arrow_right.svg"
+        />
       </div>
 
       <div class="target">
@@ -542,6 +549,9 @@ export default {
     sourceGasNetworkId() {
       return this.$store.state?.sourceGasDetails?.networkId;
     },
+    theme() {
+      return this.$store.state.theme;
+    },
   },
 
   methods: {
@@ -916,6 +926,23 @@ export default {
       img {
         width: 15px;
         height: 15px;
+      }
+    }
+    .app-dark & {
+      .source {
+        background: rgba(5, 13, 32, 0.7) !important;
+      }
+      .target {
+        background: rgb(5, 13, 32) !important;
+      }
+      .arrow {
+        background: #3851f0 !important;
+      }
+      .source,
+      .target {
+        .editFee {
+          color: #99999a !important;
+        }
       }
     }
   }

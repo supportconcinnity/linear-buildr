@@ -27,6 +27,7 @@
               class="swapInputBox"
               :class="{
                 error: errors.amountMsg,
+                hovered: currencyDropDown,
               }"
             >
               <div class="iconBox">
@@ -291,6 +292,9 @@ export default {
     currency() {
       return this.currencies[this.selectCurrencyIndex];
     },
+    theme() {
+      return this.$store.state.theme;
+    },
   },
   async created() {
     await this.initData();
@@ -336,7 +340,10 @@ export default {
         {
           name: "LINA",
           key: "LINA",
-          img: require("@/static/LINA_logo.svg"),
+          img:
+            this.theme === "light"
+              ? require("@/static/LINA_logo.svg")
+              : require("@/static/dark-theme/LINA_logo.svg"),
           balance: 0,
           frozenBalance: 0,
           totalBalance: 0,
@@ -614,7 +621,7 @@ export default {
               width: 400px;
               border-radius: 8px;
               border: 1px solid #deddde;
-              transition: $animete-time linear;
+              // transition: $animete-time linear;
               box-shadow: 0 0 0 #deddde;
               margin-top: 64px;
               display: flex;
@@ -668,8 +675,16 @@ export default {
                     display: none;
                   }
 
+                  .ivu-poptip-popper {
+                    &[x-placement^="bottom"] {
+                      padding-top: 0px;
+                      padding-bottom: 0px;
+                      margin-top: 10px;
+                    }
+                  }
+
                   .ivu-poptip-body {
-                    padding: 8px 0;
+                    padding: 0;
 
                     .ivu-poptip-body-content {
                       max-height: 300px;
@@ -677,6 +692,14 @@ export default {
                         display: flex;
                         align-items: center;
                         padding: 16px 24px;
+                        &:first-child {
+                          border-top-left-radius: 4px;
+                          border-top-right-radius: 4px;
+                        }
+                        &:last-child {
+                          border-bottom-left-radius: 4px;
+                          border-bottom-right-radius: 4px;
+                        }
 
                         .itemIcon {
                           width: 40px;
@@ -705,6 +728,7 @@ export default {
 
                         &:hover {
                           &:not(.selected) {
+                            background-color: rgba(#7eb5ff, 0.1);
                             .itemName {
                               color: #1a38f8;
                             }
@@ -787,6 +811,64 @@ export default {
                     &::placeholder {
                       color: #99999a;
                     }
+                  }
+                }
+              }
+              .app-dark & {
+                background: #050d20;
+                border: none;
+                &:hover,
+                &.hovered,
+                &.active {
+                  box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5) !important;
+                }
+                &.active,
+                &.hovered {
+                  border: 1px solid #3851f0 !important;
+                }
+                &.hovered {
+                  .iconBox {
+                    .ivu-poptip-popper {
+                      box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5) !important;
+                      .ivu-poptip-body-content {
+                        .currencyItem {
+                          .itemName {
+                            color: #ffffff !important;
+                          }
+                          &.selected {
+                            .itemName {
+                              color: #1a38f8 !important;
+                            }
+                          }
+
+                          &:hover {
+                            &:not(.selected) {
+                              .itemName {
+                                color: #1a38f8 !important;
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  .divider {
+                    height: 0px;
+                  }
+                  .inputBox {
+                    display: none;
+                  }
+                }
+                .inputBox {
+                  .input {
+                    .ivu-input-number-input::placeholder {
+                      color: #bababa !important;
+                    }
+                  }
+                  .max {
+                    opacity: 1;
+                    background: none !important;
+                    color: $darkButtonColor !important;
                   }
                 }
               }
@@ -897,6 +979,14 @@ export default {
                 margin-bottom: 16px;
 
                 .iconBox {
+                  .icon {
+                    height: 48px;
+                    width: 48px;
+                    margin: 20px 0 12px;
+                  }
+                  .name {
+                    margin-bottom: 12px;
+                  }
                   .avaliable {
                     font-family: Gilroy-Medium;
                     font-size: 12px;
@@ -907,6 +997,13 @@ export default {
                     letter-spacing: normal;
                     text-align: center;
                     color: #99999a;
+                  }
+                  .name {
+                    .ivu-poptip-popper {
+                      &[x-placement^="bottom"] {
+                        margin-top: 24px;
+                      }
+                    }
                   }
                 }
 
@@ -936,7 +1033,7 @@ export default {
                   .max {
                     margin-left: 16px;
                     border-radius: 8px;
-                    border: solid 1px #e5e5e5;
+                    border: solid 1px #3851f0;
                     padding: 14px 24px;
                     font-family: Gilroy-Bold;
                     font-size: 10px;
@@ -947,7 +1044,11 @@ export default {
                     letter-spacing: 1.25px;
                     text-align: center;
                     color: #1a38f8;
+                    background: #050d20;
                   }
+                }
+                .divider {
+                  margin-top: 10px;
                 }
               }
             }

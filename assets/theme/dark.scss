@@ -43,18 +43,18 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
 .app-dark {
   // components where images are used
   // so had to manipulate via filters
-  .ivu-tooltip-rel,
-  img[src*="ICAgICAgPC9nPg0KICAgIDwvZz4NCjwvc3ZnPg0K"] {
-    filter: brightness(3) contrast(2) grayscale(0.8) hue-rotate(-285deg)
-      saturate(1.35);
-  }
+  // .ivu-tooltip-rel,
+  // img[src*="ICAgICAgPC9nPg0KICAgIDwvZz4NCjwvc3ZnPg0K"] {
+  //   filter: brightness(3) contrast(2) grayscale(0.8) hue-rotate(-285deg)
+  //     saturate(1.35);
+  // }
 
-  .actionsBox .box .boxItem img[src*="_hover.svg"],
-  .refreshBtn:hover,
-  img[src*="DQogICAgPC9nPg0KPC9zdmc+DQo="],
-  img[src*="refresh.svg"] {
-    filter: brightness(0) contrast(3) invert(1);
-  }
+  // .actionsBox .box .boxItem img[src*="_hover.svg"],
+  // .refreshBtn:hover,
+  // img[src*="DQogICAgPC9nPg0KPC9zdmc+DQo="],
+  // img[src*="refresh.svg"] {
+  //   filter: brightness(0) contrast(3) invert(1);
+  // }
 
   .introductBox,
   .ivu-tabs-tabpane,
@@ -298,8 +298,6 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   .ivu-page-prev,
   .rewardsBoxClosed .box,
   .ivu-poptip-inner,
-  #gasEditorSwap .normal .source,
-  #gasEditorSwap .normal .target,
   .transferMain .to .li_1 .midle .p_1 span,
   .mNavigate,
   .walletDetailsBox,
@@ -373,15 +371,14 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   }
 
   // Ethereum Logo & others
-  img[src*="+DQogIDwvZz4NCjwvc3ZnPg=="] {
-    filter: invert(1);
-  }
-  img[src*="IDwvZz4NCiAgPC9nPg0KPC9zdmc+"],
-  img[src*="LUSD_gray_logo.svg"] {
-    filter: brightness(0.59) contrast(2.8) grayscale(1);
-  }
+  // img[src*="+DQogIDwvZz4NCjwvc3ZnPg=="] {
+  //   filter: invert(1);
+  // }
+  // img[src*="IDwvZz4NCiAgPC9nPg0KPC9zdmc+"],
+  // img[src*="LUSD_gray_logo.svg"] {
+  //   filter: brightness(0.59) contrast(2.8) grayscale(1);
+  // }
 
-  #gasEditorSwap .normal .arrow,
   .statusBox .status {
     background-color: rgba(126, 181, 255, 0.1) !important;
   }
