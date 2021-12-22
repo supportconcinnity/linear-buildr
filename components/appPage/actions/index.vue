@@ -352,7 +352,7 @@ export default {
 
       &:hover {
         &:not(.isTransaction):not(.activited) {
-          border-color: #1a38f8;
+          // border-color: #1a38f8;
           color: #1a38f8;
         }
       }
@@ -362,25 +362,20 @@ export default {
       }
 
       &.activited {
-        border-color: #ecf2fb;
-        background-color: #ecf2fb;
         color: #1a38f8;
       }
 
       .app-dark & {
-        color: $darkLighterBlue;
+        color: #ffffff;
 
         &:hover {
           &:not(.isTransaction):not(.activited) {
-            border-color: $white;
-            color: $white;
+            color: $darkButtonColor;
           }
         }
 
         &.activited {
-          border-color: $darkLighterBlue;
-          background-color: $darkLighterBlue;
-          color: $darkBackgroundDeepColor;
+          color: $darkButtonColor;
         }
       }
     }
