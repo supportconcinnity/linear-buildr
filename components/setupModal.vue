@@ -200,8 +200,7 @@ export default {
   watch: { setupModal() {} },
   computed: {
     setupModal() {
-      // return this.$store.state?.setupModal;
-      return true;
+      return this.$store.state?.setupModal;
     },
   },
   methods: {
