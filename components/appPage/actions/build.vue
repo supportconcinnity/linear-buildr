@@ -34,7 +34,8 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/LINA_logo.svg" />
+                  <img v-if="theme === 'light'" src="@/static/LINA_logo.svg" />
+                  <img v-else src="@/static/dark-theme/LINA_logo.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">Stake LINA</div>
@@ -94,7 +95,11 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/currency/lUSD.svg" />
+                  <img
+                    v-if="theme === 'light'"
+                    src="@/static/currency/lUSD.svg"
+                  />
+                  <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">
@@ -106,7 +111,11 @@
                       content="Amount of ℓUSD built may vary due to block times and price fluctuations in pledge tokens."
                       offset="0 4"
                     >
-                      <img src="@/static/info_white.svg" />
+                      <img
+                        v-if="theme === 'light'"
+                        src="@/static/info_white.svg"
+                      />
+                      <img v-else src="@/static/dark-theme/info_white.svg" />
                     </Tooltip>
                   </div>
                   <div
@@ -160,7 +169,8 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/percentage.svg" />
+                  <img v-if="theme === 'light'" src="@/static/percentage.svg" />
+                  <img v-else src="@/static/dark-theme/percentage.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">P Ratio</div>
@@ -239,14 +249,25 @@
                 }"
               >
                 <img
+                  v-if="theme === 'light'"
                   class="showInfo"
                   src="@/static/info_white.svg"
+                  @click="showIntroductActionModal"
+                />
+                <img
+                  v-else
+                  class="showInfo"
+                  src="@/static/dark-theme/info_white.svg"
                   @click="showIntroductActionModal"
                 />
 
                 <div class="box">
                   <div class="itemType">
-                    <img src="@/static/LINA_logo.svg" />
+                    <img
+                      v-if="theme === 'light'"
+                      src="@/static/LINA_logo.svg"
+                    />
+                    <img v-else src="@/static/dark-theme/LINA_logo.svg" />
                     <div class="itemTypeTitle">Stake LINA</div>
                     <InputNumber
                       class="input"
@@ -263,7 +284,11 @@
                   </div>
 
                   <div class="itemType">
-                    <img src="@/static/currency/lUSD.svg" />
+                    <img
+                      v-if="theme === 'light'"
+                      src="@/static/currency/lUSD.svg"
+                    />
+                    <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
                     <div class="itemTypeTitle">Build ℓUSD</div>
                     <InputNumber
                       class="input"
@@ -560,6 +585,9 @@ export default {
 
     isMobile() {
       return this.$store.state?.isMobile;
+    },
+    theme() {
+      return this.$store.state.theme;
     },
   },
   created() {
@@ -1891,6 +1919,9 @@ export default {
                   img {
                     width: 100%;
                     height: 100%;
+                  }
+                  .app-dark & {
+                    background: none;
                   }
                 }
 

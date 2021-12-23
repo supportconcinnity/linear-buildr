@@ -255,6 +255,10 @@ export default {
     isMobile() {},
     diffSwapNumber() {},
     currency() {},
+    theme() {
+      this.initCurrencies();
+      this.initData();
+    },
   },
   computed: {
     isEthereumNetwork() {
@@ -1044,7 +1048,9 @@ export default {
                     letter-spacing: 1.25px;
                     text-align: center;
                     color: #1a38f8;
-                    background: #050d20;
+                    .app-dark & {
+                      background: #050d20;
+                    }
                   }
                 }
                 .divider {

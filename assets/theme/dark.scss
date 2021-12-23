@@ -276,11 +276,11 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
     opacity: 1 !important;
   }
 
-  .mBuyLINA img,
-  .itemTypeBtn img,
-  .editBtn svg {
-    filter: brightness(0) contrast(3) invert(1);
-  }
+  // .mBuyLINA img,
+  // .itemTypeBtn img,
+  // .editBtn svg {
+  //   filter: brightness(0) contrast(3) invert(1);
+  // }
 
   .walletBox .box .boxItem,
   .actionInputItem,
@@ -786,7 +786,8 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
       .transferBox
       .transferMain
       .from {
-      &.active {
+      &.active,
+      &:hover {
         border-color: #3851f0 !important;
         box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5) !important;
       }

@@ -11,9 +11,12 @@
         class="linearBuildrlogo"
         src="@/static/linear_buildr_logo.svg"
       />
+      <theme-switch v-if="!isMobile" />
       <div class="mBuyLINA mobileShow" @click.stop="openBuyLINA">
+        <theme-switch v-if="isMobile" variant="mobile" />
         BUY LINA
-        <img src="@/static/arrow_right.svg" />
+        <img v-if="theme === 'light'" src="@/static/arrow_right.svg" />
+        <img v-else src="@/static/dark-theme/arrow_right.svg" />
       </div>
     </div>
 
@@ -210,8 +213,10 @@ import {
 import { openBuyLINA } from "@/common/utils";
 import Clipboard from "clipboard";
 import QRCode from "qrcode";
+import themeSwitch from "../themeSwitch.vue";
 
 export default {
+  components: { themeSwitch },
   name: "landingPage",
 
   data() {
@@ -244,6 +249,12 @@ export default {
 
     WalletConnectUri() {
       return this.$store.state?.walletConnect?.uri;
+    },
+    theme() {
+      return this.$store.state.theme;
+    },
+    isMobile() {
+      return this.$store.state?.isMobile;
     },
   },
   mounted() {
@@ -332,6 +343,8 @@ export default {
     padding-left: 120px;
     display: flex;
     align-items: center;
+    padding-right: 60px;
+    justify-content: space-between;
 
     .linearBuildrlogo {
       cursor: pointer;
@@ -673,7 +686,7 @@ export default {
     padding-bottom: 0;
 
     .mobileShow {
-      display: block;
+      display: flex;
     }
 
     .headerBox {
@@ -702,11 +715,16 @@ export default {
         letter-spacing: 1.5px;
         text-align: right;
         color: #1a38f8;
+        align-items: center;
+        justify-content: flex-end;
 
         img {
           width: 16px;
           height: 16px;
           float: right;
+        }
+        .app-dark & {
+          color: #3851f0 !important;
         }
       }
     }

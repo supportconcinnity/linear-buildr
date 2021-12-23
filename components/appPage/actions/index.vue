@@ -135,6 +135,7 @@
             <img src="@/static/logo-crypto-linear-colour.svg" />
             Menu
           </div>
+          <theme-switch variant="mobile" />
           <img
             @click="mHideMenuFun"
             class="mClose"
@@ -193,6 +194,7 @@ import transactionModal from "@/components/appPage/walletDetails/actions/transac
 import trackModal from "@/components/appPage/walletDetails/actions/trackModal";
 
 import common from "@/config/common";
+import ThemeSwitch from "~/components/themeSwitch.vue";
 
 export default {
   name: "actions",
@@ -206,6 +208,7 @@ export default {
     trackModal,
     notificationQueue,
     transactionModal,
+    ThemeSwitch,
   },
   data() {
     return {
@@ -240,14 +243,18 @@ export default {
     //});
 
     // temporary add dark css body
-
-    this.setDarkThemeInBody();
   },
   watch: {
     isMobile() {},
 
     //显示不同功能 0homePage 1build 2burn 3claim 4transfer 5swap
     currentAction() {},
+    theme: {
+      handler(newValue, oldValue) {
+        this.setDarkThemeInBody(newValue, oldValue);
+      },
+      immediate: true,
+    },
   },
   computed: {
     mMenuState() {
@@ -265,12 +272,20 @@ export default {
     currentAction() {
       return this.$store.state.currentAction;
     },
+    theme() {
+      return this.$store.state.theme;
+    },
   },
   methods: {
     // temporary dark theme in body
-    setDarkThemeInBody() {
+    setDarkThemeInBody(newValue, oldValue = undefined) {
+      const theme = `${newValue}-theme`;
       const body = document.body;
-      body.classList.add("dark-theme");
+      if (oldValue !== undefined) {
+        const oldTheme = `${oldValue}-theme`;
+        body.classList.remove(oldTheme);
+      }
+      body.classList.add(theme);
     },
     //切换功能
     //Switch between features
@@ -514,6 +529,9 @@ export default {
           padding: 16px 24px;
           display: flex;
           margin-bottom: 44px;
+          align-items: center;
+          justify-content: space-between;
+          padding-right: 54px;
           .mLogo {
             font-family: Gilroy-Bold;
             font-size: 24px;
@@ -537,7 +555,7 @@ export default {
         .mNavigateItem {
           width: 100%;
           height: 40px;
-          font-family: Gilroy;
+          font-family: Gilroy-Bold;
           font-size: 32px;
           font-weight: bold;
           font-stretch: normal;
@@ -546,11 +564,12 @@ export default {
           letter-spacing: normal;
           color: #99999a;
           padding-left: 56px;
-          margin-bottom: 32px;
+          margin-bottom: 24px;
           &.activited {
-            font-size: 56px;
             color: #1a38f8;
-            height: 64px;
+            .app-dark & {
+              color: #ffffff;
+            }
           }
         }
       }

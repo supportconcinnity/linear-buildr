@@ -720,6 +720,13 @@ export default {
         .editBtnMobile {
           display: block;
           margin-left: 6px;
+          .app-dark & {
+            svg {
+              path {
+                fill: #3851f0;
+              }
+            }
+          }
         }
       }
 
