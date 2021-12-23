@@ -728,6 +728,14 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   }
 
   @media only screen and (max-width: 414px) {
+    .introductActionModal
+      .ivu-modal-wrap
+      .ivu-modal
+      .ivu-modal-content
+      .ivu-modal-body {
+      box-shadow: 0px 1px 12px rgba(0, 0, 0, 0.5) !important;
+      border-radius: 8px !important;
+    }
     .totalBalanceToUSD {
       box-shadow: 0 2px 12px 0 $darkBorderColor !important;
     }
