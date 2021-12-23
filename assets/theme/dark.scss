@@ -651,6 +651,21 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
       .ivu-tabs-tabpane
       .transferBox
       .transferMain
+      .from,
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .to {
+      background-color: #050d20 !important;
+      border-color: #050d20 !important;
+    }
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
       .from
       .dropdown {
       background: #050d20 !important;
