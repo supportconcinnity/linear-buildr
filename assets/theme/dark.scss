@@ -572,6 +572,17 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
       .ivu-tabs-tabpane
       .burnBox
       .actionBodyWeb
+      .actionInputItem
+      .itemLeft
+      .itemType
+      .itemTypeBtn {
+      color: #1a38f8 !important;
+    }
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .burnBox
+      .actionBodyWeb
       .actionRate {
       background: rgba(56, 81, 240, 0.5) !important;
     }
@@ -1281,3 +1292,16 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   }
   // end landing*/
 }
+
+// calendar
+.dark-theme .ivu-date-picker-transfer {
+  background-color: #050d20;
+}
+.dark-theme .ivu-date-picker-cells-cell-range:before {
+  background: #1f2b4d;
+}
+.dark-theme span.ivu-date-picker-cells-cell-disabled,
+span.ivu-date-picker-cells-cell-disabled:hover {
+  background: #141b2d;
+}
+// calendar  end

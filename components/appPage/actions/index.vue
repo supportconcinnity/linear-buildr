@@ -238,6 +238,10 @@ export default {
     //this.$pub.subscribe("trackModalCloseEvent", (msg, params) => {
     //    this.othersAction = 0;
     //});
+
+    // temporary add dark css body
+
+    this.setDarkThemeInBody();
   },
   watch: {
     isMobile() {},
@@ -263,6 +267,11 @@ export default {
     },
   },
   methods: {
+    // temporary dark theme in body
+    setDarkThemeInBody() {
+      const body = document.body;
+      body.classList.add("dark-theme");
+    },
     //切换功能
     //Switch between features
     actionChange(action) {
