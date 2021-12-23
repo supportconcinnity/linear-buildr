@@ -118,7 +118,8 @@
               <div class="li_1">
                 <div class="iconBox">
                   <div class="icon">
-                    <img src="@/static/wallet.svg" />
+                    <img v-if="theme === 'light'" src="@/static/wallet.svg" />
+                    <img v-else src="@/static/dark-theme/wallet.svg" />
                   </div>
                 </div>
                 <div class="midle">
@@ -385,7 +386,10 @@ export default {
         {
           name: "LINA",
           key: "LINA",
-          img: require("@/static/LINA_logo.svg"),
+          img:
+            this.theme === "light"
+              ? require("@/static/LINA_logo.svg")
+              : require("@/static/dark-theme/LINA_logo.svg"),
           balance: 0,
         },
       ],
@@ -402,6 +406,9 @@ export default {
     walletError() {},
     currentSelectCurrency() {},
     canSendEthAmount() {},
+    theme() {
+      this.initLiquidsList();
+    },
   },
   computed: {
     //transfer按钮禁止状态
@@ -452,6 +459,9 @@ export default {
 
     isMobile() {
       return this.$store.state?.isMobile;
+    },
+    theme() {
+      return this.$store.state.theme;
     },
   },
   async created() {
@@ -510,15 +520,18 @@ export default {
         {
           name: "LINA",
           key: "LINA",
-          img: require("@/static/LINA_logo.svg"),
+          img:
+            this.theme === "light"
+              ? require("@/static/LINA_logo.svg")
+              : require("@/static/dark-theme/LINA_logo.svg"),
           balance: _.floor(bn2n(linaBalance), 4),
         },
         {
           name: this.isEthereumNetwork ? "ETH" : "BNB",
           key: this.isEthereumNetwork ? "ETH" : "BNB",
           img: require(`@/static/${
-            this.isEthereumNetwork ? "ETH_logo" : "currency/lBNB"
-          }.svg`),
+            this.theme === "light" ? "" : "dark-theme/"
+          }${this.isEthereumNetwork ? "ETH_logo" : "currency/lBNB"}.svg`),
           balance: _.floor(bn2n(walletBalance), 4),
         },
         ...liquidsList,
@@ -856,7 +869,7 @@ export default {
               height: 120px;
               border-radius: 8px;
               border: 1px solid #deddde;
-              transition: $animete-time linear;
+              // transition: $animete-time linear;
               box-shadow: 0 0 0 #deddde;
 
               &:hover,
@@ -888,6 +901,9 @@ export default {
                   align-items: center;
                   justify-content: center;
                   background-color: #fff;
+                  .app-dark & {
+                    background: none;
+                  }
 
                   img {
                     width: 100%;
@@ -1105,6 +1121,9 @@ export default {
                     line-height: 40px;
                     border-radius: 100%;
                     background-color: #fff;
+                    .app-dark & {
+                      background: none;
+                    }
 
                     img {
                       width: 100%;
@@ -1141,6 +1160,11 @@ export default {
                       line-height: 1.33;
                       letter-spacing: normal;
                       color: #99999a;
+                      .app-dark & {
+                        color: #313131;
+                        height: 16px;
+                        background-color: #f6f5f6 !important;
+                      }
                     }
                   }
                 }
@@ -1308,12 +1332,22 @@ export default {
 
                 .dropBox {
                   display: flex;
+                  align-items: center;
 
                   .tokenName {
                     font-family: Gilroy-Bold;
                     font-size: 24px;
                     text-align: center;
                     color: #5a575c;
+                  }
+                  .arrow {
+                    height: 20px;
+                    width: 20px;
+                    margin-left: 8px;
+                    img {
+                      width: 100%;
+                      height: 100%;
+                    }
                   }
                 }
 

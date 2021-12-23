@@ -29,7 +29,8 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/LINA_logo.svg" />
+                  <img v-if="theme === 'light'" src="@/static/LINA_logo.svg" />
+                  <img v-else src="@/static/dark-theme/LINA_logo.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">
@@ -41,7 +42,11 @@
                       content="Amount of LINA unstaked may vary due to block times and price fluctuations in pledge tokens."
                       offset="0 4"
                     >
-                      <img src="@/static/info_white.svg" />
+                      <img
+                        v-if="theme === 'light'"
+                        src="@/static/info_white.svg"
+                      />
+                      <img v-else src="@/static/dark-theme/info_white.svg" />
                     </Tooltip>
                   </div>
                   <div
@@ -90,7 +95,11 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/currency/lUSD.svg" />
+                  <img
+                    v-if="theme === 'light'"
+                    src="@/static/currency/lUSD.svg"
+                  />
+                  <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">Burn</div>
@@ -137,7 +146,8 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/percentage.svg" />
+                  <img v-if="theme === 'light'" src="@/static/percentage.svg" />
+                  <img v-else src="@/static/dark-theme/percentage.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">P Ratio</div>
@@ -209,12 +219,28 @@
               >
                 <div class="inputBox">
                   <img
+                    v-if="theme === 'light'"
                     class="showInfo"
                     src="@/static/info_white.svg"
                     @click="showIntroductActionModal"
                   />
+                  <img
+                    v-else
+                    class="showInfo"
+                    src="@/static/dark-theme/info_white.svg"
+                    @click="showIntroductActionModal"
+                  />
 
-                  <img class="logo" src="@/static/LINA_logo.svg" />
+                  <img
+                    v-if="theme === 'light'"
+                    class="logo"
+                    src="@/static/LINA_logo.svg"
+                  />
+                  <img
+                    v-else
+                    class="logo"
+                    src="@/static/dark-theme/LINA_logo.svg"
+                  />
 
                   <div class="itemTypeTitle">Unstake LINA</div>
 
@@ -251,7 +277,16 @@
                 @click="changeFocusItem(1)"
               >
                 <div class="inputBox">
-                  <img class="logo" src="@/static/currency/lUSD.svg" />
+                  <img
+                    v-if="theme === 'light'"
+                    class="logo"
+                    src="@/static/currency/lUSD.svg"
+                  />
+                  <img
+                    v-else
+                    class="logo"
+                    src="@/static/dark-theme/currency/lUSD.svg"
+                  />
 
                   <div class="itemTypeTitle">Burn ℓUSD</div>
 
@@ -521,6 +556,9 @@ export default {
 
     isMobile() {
       return this.$store.state?.isMobile;
+    },
+    theme() {
+      return this.$store.state.theme;
     },
   },
   async created() {
@@ -1955,6 +1993,9 @@ export default {
                   align-items: center;
                   border-radius: 50%;
                   background: #ffffff;
+                  .app-dark & {
+                    background: none;
+                  }
 
                   img {
                     width: 100%;
