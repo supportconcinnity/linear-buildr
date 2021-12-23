@@ -15,6 +15,7 @@
           class="icon"
           src="@/static/info_orange.svg"
           alt=""
+          app-
           v-if="currentRatioStatus == 1"
         />
         <img
