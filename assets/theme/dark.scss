@@ -56,6 +56,58 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   //   filter: brightness(0) contrast(3) invert(1);
   // }
 
+  // landingPage
+  #landingPage {
+    .seeDetailsModal
+      .ivu-modal-wrap
+      .ivu-modal
+      .ivu-modal-content
+      .ivu-modal-body
+      .walletConnect
+      .walletConnectBox {
+      background-color: #141b2d !important;
+    }
+    .seeDetailsModal
+      .ivu-modal-wrap
+      .ivu-modal
+      .ivu-modal-content
+      .ivu-modal-body
+      .walletConnect
+      .walletConnectBox
+      .top
+      .title {
+      color: #f6f5f6 !important;
+    }
+    .seeDetailsModal
+      .ivu-modal-wrap
+      .ivu-modal
+      .ivu-modal-content
+      .ivu-modal-body
+      .walletConnect
+      .walletConnectBox
+      .boxTitle {
+      color: #ffffff !important;
+    }
+    .seeDetailsModal
+      .ivu-modal-wrap
+      .ivu-modal
+      .ivu-modal-content
+      .ivu-modal-body
+      .walletConnect
+      .walletConnectBox
+      .boxCopy
+      .copyTitle
+      .title {
+      color: #1a38f8 !important;
+    }
+    .container .walletBox .box .boxItem .boxSub {
+      color: #f6f5f6 !important;
+    }
+    .container .walletBox .box .boxItem .boxTitle {
+      color: #1a38f8 !important;
+    }
+  }
+
   // Pagination
   .ivu-page.mini {
     .ivu-page-prev,
