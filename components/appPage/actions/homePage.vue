@@ -121,7 +121,11 @@
       collateral pool enables infinite liquidity and no slippage.
     </div>
     <div class="actionsBox">
-      <div class="boxItem" @click="isMobile && btnClick(1)">
+      <div
+        class="boxItem"
+        :class="{ isMobile }"
+        @click="isMobile && btnClick(1)"
+      >
         <div class="imgBox">
           <img v-if="theme === 'light'" src="@/static/LINA_logo.svg" />
           <img v-else src="@/static/dark-theme/LINA_logo.svg" />
@@ -138,7 +142,11 @@
           BUY LINA <Icon type="ios-arrow-round-forward" />
         </div>
       </div>
-      <div class="boxItem" @click="isMobile && btnClick(2)">
+      <div
+        class="boxItem"
+        :class="{ isMobile }"
+        @click="isMobile && btnClick(2)"
+      >
         <div class="imgBox">
           <img v-if="theme === 'light'" src="@/static/currency/lUSD.svg" />
           <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
@@ -740,6 +748,11 @@ export default {
 
           .app-dark & {
             box-shadow: 0 2px 12px 0 $darkBackgroundDeepColor;
+          }
+        }
+        .app-dark & {
+          &.isMobile {
+            background: transparent !important;
           }
         }
       }
