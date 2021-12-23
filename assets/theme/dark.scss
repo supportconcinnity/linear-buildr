@@ -441,6 +441,28 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
     }
   }
 
+  #build {
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .buildBox
+      .actionBodyWeb
+      .actionInputItem {
+      background-color: #050d20 !important;
+      border: none !important;
+      &:hover {
+        border: 1px solid #3851f0 !important;
+        box-sizing: border-box !important;
+        box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+      &.active {
+        border: 1px solid #3851f0 !important;
+        box-sizing: border-box !important;
+        box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+    }
+  }
+
   #build
     .actionTabs
     .ivu-tabs-content
@@ -529,6 +551,26 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
       .actionBodyWeb
       .actionRate {
       background: rgba(56, 81, 240, 0.5) !important;
+    }
+
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .burnBox
+      .actionBodyWeb
+      .actionInputItem {
+      background-color: #050d20 !important;
+      border: none !important;
+      &:hover {
+        border: 1px solid #3851f0 !important;
+        box-sizing: border-box !important;
+        box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+      &.active {
+        border: 1px solid #3851f0 !important;
+        box-sizing: border-box !important;
+        box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+      }
     }
   }
 
@@ -647,6 +689,23 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
     #gasEditor .editInfo .infoLeft,
     #gasEditor .editInfo .infoRight {
       color: #ffffff !important;
+    }
+
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .to {
+      &.active,
+      &:hover {
+        border: 1px solid #3851f0 !important;
+        box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+      &.error {
+        border: 1px solid #df434c !important;
+        box-shadow: 0px 2px 25px rgba(223, 67, 76, 0.25) !important;
+      }
     }
   }
 
@@ -958,6 +1017,83 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
       }
       .ivu-input {
         color: #ffffff !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .errMsg {
+        background-color: #f6f5f6 !important;
+        color: #df434c !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .to {
+        &.active,
+        &:hover {
+          border: 1px solid #3851f0 !important;
+          box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5) !important;
+        }
+        &.error {
+          border: 1px solid #df434c !important;
+          box-shadow: 0px 2px 25px rgba(223, 67, 76, 0.25) !important;
+        }
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .from {
+        &.active {
+          border: 1px solid #3851f0 !important;
+          box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+        }
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .from
+        .dropdown {
+        background: #050d20 !important;
+        box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5) !important;
+        border: none !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .from
+        .dropdown
+        .dropdownItem {
+        &:hover {
+          background: rgba(126, 181, 255, 0.1) !important;
+          .midle {
+            .p_1 {
+              color: #1a38f8 !important;
+            }
+          }
+        }
+        .midle {
+          .p_1 {
+            color: #ffffff !important;
+          }
+        }
+        &.activity {
+          .midle {
+            .p_1 {
+              color: #1a38f8 !important;
+            }
+          }
+        }
       }
     }
   }
