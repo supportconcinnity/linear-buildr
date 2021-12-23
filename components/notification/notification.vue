@@ -166,6 +166,7 @@ export default {
     .description {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       .info {
         font-family: Gilroy-Medium;
         font-size: 12px;
@@ -184,6 +185,7 @@ export default {
         font-weight: bold;
         line-height: 16px;
         letter-spacing: 1.25px;
+        text-transform: uppercase;
         color: #1a38f8;
         transition: $animete-time linear;
         cursor: pointer;
@@ -196,9 +198,12 @@ export default {
   }
   .btns {
     width: 20px;
+    position: absolute;
+    top: 13px;
+    right: 15px;
     i {
       color: #deddde;
-      font-size: 30px;
+      font-size: 20px;
       cursor: pointer;
       transition: $animete-time linear;
       &:hover {
@@ -217,6 +222,15 @@ export default {
 
     &.error {
       background-color: #df434c;
+    }
+  }
+  .app-dark & {
+    background-color: #141b2d;
+    box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5);
+    .text {
+      .title {
+        color: #f6f5f6;
+      }
     }
   }
 }
