@@ -91,6 +91,11 @@ export default {
       }
     },
   },
+  computed: {
+    theme() {
+      return this.$store.state.theme;
+    },
+  },
   methods: {
     //更新数据
     updateData(newData) {
@@ -162,7 +167,13 @@ export default {
           left: this.isMobile ? "center" : "18%",
           textStyle: {
             fontSize: "12",
-            color: this.isMobile ? "#5a575c" : "#c6c4c7",
+            fontWeight: 400,
+            color:
+              this.theme === "light"
+                ? this.isMobile
+                  ? "#5a575c"
+                  : "#c6c4c7"
+                : "#F6F5F6",
           },
         },
         textStyle: {
@@ -196,8 +207,8 @@ export default {
             padding: [17, 0, 0, 0],
             //文本样式
             textStyle: {
-              color: "#c6c4c7", //轴上的字体颜色
-              fontSize: "12", // 轴字体大小
+              color: this.theme === "light" ? "#c6c4c7" : "#F6F5F6", //轴上的字体颜色
+              fontSize: "14", // 轴字体大小
               fontWeight: "bold",
             },
           },
@@ -226,8 +237,8 @@ export default {
             //文本样式
             padding: [0, 10, 0, 0],
             textStyle: {
-              color: "#c6c4c7", //轴上的字体颜色
-              fontSize: "12", // 轴字体大小
+              color: this.theme === "light" ? "#c6c4c7" : "#F6F5F6", //轴上的字体颜色
+              fontSize: "14", // 轴字体大小
               fontWeight: "bold",
             },
           },
