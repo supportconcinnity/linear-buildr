@@ -2322,6 +2322,7 @@ export default {
                     .itemTypeBtn {
                       height: 32px;
                       width: 100%;
+                      text-transform: uppercase;
                       position: absolute;
                       bottom: 0;
                       border-top: solid 1px #e5e5e5;
@@ -2402,6 +2403,7 @@ export default {
                     height: 32px;
                     width: 100%;
                     position: relative;
+                    text-transform: uppercase;
                     bottom: 0;
                     border-top: solid 1px #e5e5e5;
                     font-family: Gilroy;
