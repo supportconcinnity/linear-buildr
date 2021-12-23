@@ -840,6 +840,13 @@ export default {
             border-color: #1a38f8;
           }
         }
+        .app-dark & {
+          color: white !important;
+          .editBtn {
+            border-color: #3851f0 !important;
+            color: #3851f0 !important;
+          }
+        }
       }
     }
   }
