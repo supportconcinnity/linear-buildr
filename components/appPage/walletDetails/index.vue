@@ -1923,6 +1923,9 @@ export default {
             line-height: 1.29;
             letter-spacing: normal;
             color: #99999a;
+            .app-dark & {
+              color: #ffffff !important;
+            }
           }
 
           .copyBtn {
@@ -1934,6 +1937,12 @@ export default {
               #Combined-Shape {
                 fill: #1a38f8;
                 stroke: #1a38f8;
+              }
+            }
+            .app-dark & {
+              #Combined-Shape {
+                fill: #ffffff;
+                stroke: #ffffff;
               }
             }
           }
