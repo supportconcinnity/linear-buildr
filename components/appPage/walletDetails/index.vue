@@ -51,6 +51,7 @@
 
         <div class="disconnect" @click.stop="disconnect">Disconnect</div>
       </div>
+      <theme-switch :variant="variant" />
       <!-- <div class="chainChange" :class="{ chainChanging }">
                 <div
                     class="ethBox"
@@ -84,7 +85,8 @@
       </div>
 
       <div class="mMenu" @click="mShowMenuFun">
-        <img src="@/static/icon-menu.svg" />
+        <img v-if="theme === 'light'" src="@/static/icon-menu.svg" />
+        <img v-else src="@/static/dark-theme/icon-menu.svg" />
       </div>
     </div>
 
@@ -137,6 +139,7 @@
                   fill="#5a575c"
                   fill-rule="evenodd"
                   stroke="none"
+                  class="copy-path"
                 />
               </g>
             </svg>
@@ -620,6 +623,7 @@ import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
 import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
+import ThemeSwitch from "~/components/themeSwitch.vue";
 
 export default {
   name: "walletDetails",
@@ -650,11 +654,13 @@ export default {
 
       //移动端 显示钱包状态
       mShowWallet: false,
+      variant: "desktop",
     };
   },
   components: {
     ethereumSvg,
     binanceSvg,
+    ThemeSwitch,
   },
   watch: {
     trackStatusChange() {},
@@ -666,7 +672,16 @@ export default {
     isBinanceNetwork() {},
     walletNetworkId() {},
     walletType() {},
-    isMobile() {},
+    isMobile: {
+      handler(mobile) {
+        if (mobile === true) {
+          this.variant = "mobile";
+        } else {
+          this.variant = "desktop";
+        }
+      },
+      immediate: true,
+    },
   },
   computed: {
     isMobile() {
@@ -989,7 +1004,7 @@ export default {
     align-items: center;
 
     .info {
-      width: 100%;
+      width: calc(100% - 32px - 8px);
       padding: 7px 16px;
       display: flex;
       justify-content: space-evenly;
@@ -1055,11 +1070,13 @@ export default {
           #Combined-Shape {
             fill: #1a38f8;
             stroke: #1a38f8;
-
-            .app-dark & {
-              fill: #cee1fb;
-              stroke: #cee1fb;
-            }
+          }
+        }
+        .app-dark & {
+          &,
+          #Combined-Shape {
+            fill: #ffffff;
+            stroke: #ffffff;
           }
         }
       }
@@ -1810,6 +1827,9 @@ export default {
           line-height: 1.33;
           letter-spacing: normal;
           color: #99999a;
+          .app-dark & {
+            color: #ffffff;
+          }
         }
       }
 
@@ -1822,6 +1842,9 @@ export default {
         border-radius: 50%;
         box-shadow: 0 2px 6px 0 #deddde;
         background-color: #ffffff;
+        .app-dark & {
+          border: 1px solid #ffffff;
+        }
       }
     }
     .mShowWalletClass {
