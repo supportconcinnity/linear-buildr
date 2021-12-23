@@ -47,6 +47,7 @@
                   <div
                     class="itemTypeBtn"
                     :class="{ active: activeItemBtn == 0 }"
+                    v-if="isMobile"
                     @click="clickUnstakeMax"
                   >
                     Max
@@ -234,6 +235,7 @@
                   <div
                     class="itemTypeBtn"
                     :class="{ active: activeItemBtn == 3 }"
+                    v-if="isMobile"
                     @click="clickUnstakeMax"
                   >
                     Max
