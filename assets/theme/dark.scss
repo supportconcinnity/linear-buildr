@@ -56,6 +56,37 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   //   filter: brightness(0) contrast(3) invert(1);
   // }
 
+  // Pagination
+  .ivu-page.mini {
+    .ivu-page-prev,
+    .ivu-page-item,
+    .ivu-page-next {
+      background-color: transparent;
+    }
+    .ivu-page-item,
+    .ivu-page-next {
+      border-radius: 4px;
+      border: 1px solid #ffffff !important;
+    }
+    .ivu-page-item {
+      a {
+        color: #ffffff !important;
+      }
+      &.ivu-page-item-active {
+        border-color: #3851f0 !important;
+        background: #3851f0 !important;
+      }
+    }
+    .ivu-page-next,
+    .ivu-page-prev {
+      a {
+        i {
+          color: #ffffff !important;
+        }
+      }
+    }
+  }
+
   .introductBox,
   .ivu-tabs-tabpane,
   .walletBox .box .boxItem,
@@ -150,14 +181,6 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   .itemTypeBtn,
   .ivu-dropdown.hasFilter .typeBtnSelected,
   .editBtn,
-  #transactionModal
-    .ivu-modal-wrap
-    .ivu-modal-body
-    .customTable
-    .hasData
-    .tableBody
-    .tr
-    .td:last-of-type,
   .ivu-page-item:hover:not(.ivu-page-item-active) a,
   .ivu-page-next:hover:not(.ivu-page-disabled) .ivu-icon,
   .ivu-page-prev:hover:not(.ivu-page-disabled) .ivu-icon,
@@ -295,9 +318,9 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   .amountBtnSelected,
   .ivu-select-dropdown,
   .ivu-select-selection,
-  .ivu-page-item,
-  .ivu-page-next,
-  .ivu-page-prev,
+  // .ivu-page-item,
+  // .ivu-page-next,
+  // .ivu-page-prev,
   .rewardsBoxClosed .box,
   .ivu-poptip-inner,
   .transferMain .to .li_1 .midle .p_1 span,
