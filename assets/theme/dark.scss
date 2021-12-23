@@ -847,6 +847,19 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
       background-color: unset !important;
     }
 
+    #landingPage {
+      .container .introductBox .mRect {
+        border: 1px solid rgba(153, 153, 154, 0.2);
+        background-color: #050d20 !important;
+      }
+      .container .introductBox .mRect .box .context {
+        color: #1a38f8 !important;
+      }
+      .container .introductBox .mRect .box .chain {
+        color: #ffffff !important;
+      }
+    }
+
     #build {
       .introductActionModal
         .ivu-modal-wrap
