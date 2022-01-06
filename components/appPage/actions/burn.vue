@@ -362,7 +362,7 @@
           </div>
 
           <div v-else class="burnBtn switchToBSC">
-            Please switch to BSC network to burn your ℓusd
+            Please switch to BSC network to burn your ℓ<span>USD</span>
           </div>
 
           <Spin fix v-if="processing"></Spin>
