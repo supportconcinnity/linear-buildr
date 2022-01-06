@@ -39,6 +39,10 @@ $darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
   darkFontColorLight: $darkFontColorLight;
 }
 
+body.dark-theme {
+  background: #050d20 !important;
+}
+
 // I was trying to get dark theme done with 0 or less component changes
 .app-dark {
   // components where images are used
