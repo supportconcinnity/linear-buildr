@@ -139,6 +139,9 @@ export default {
      */
     let innerColor = {};
 
+    innerColor.textColor = _.has(this.color, "textColor")
+      ? this.color.textColor
+      : "#bebebe";
     innerColor.lineColor = _.has(this.color, "lineColor")
       ? this.color.lineColor
       : "#11BA97";
@@ -168,12 +171,7 @@ export default {
           textStyle: {
             fontSize: "12",
             fontWeight: 400,
-            color:
-              this.theme === "light"
-                ? this.isMobile
-                  ? "#5a575c"
-                  : "#c6c4c7"
-                : "#F6F5F6",
+            color: innerColor.textColor,
           },
         },
         textStyle: {
@@ -207,7 +205,7 @@ export default {
             padding: [17, 0, 0, 0],
             //文本样式
             textStyle: {
-              color: this.theme === "light" ? "#c6c4c7" : "#F6F5F6", //轴上的字体颜色
+              color: innerColor.textColor, //轴上的字体颜色
               fontSize: "14", // 轴字体大小
               fontWeight: "bold",
             },
@@ -237,7 +235,7 @@ export default {
             //文本样式
             padding: [0, 10, 0, 0],
             textStyle: {
-              color: this.theme === "light" ? "#c6c4c7" : "#F6F5F6", //轴上的字体颜色
+              color: innerColor.textColor, //轴上的字体颜色
               fontSize: "14", // 轴字体大小
               fontWeight: "bold",
             },

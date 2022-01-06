@@ -57,7 +57,8 @@
         class="chart"
         v-if="!isMobile || (isMobile && currentMobileTabs == 1)"
       >
-        <trackchart
+        <component
+          :is="chartCompo"
           key="1"
           v-if="!hasTrackData"
           :data="emptyData"
@@ -67,9 +68,10 @@
             areaColorTop: '#fff',
           }"
           :title="'Total Current Debt\n(ℓUSD)'"
-        ></trackchart>
+        ></component>
 
-        <trackchart
+        <component
+          :is="chartCompo"
           key="2"
           v-else
           :data="trackData"
@@ -79,6 +81,7 @@
           :color="{
             lineColor: '#1a38f8',
             backgroundColor: $store.getters.isDarkTheme ? '#141B2D' : '#fff',
+            textColor: $store.getters.isDarkTheme ? '#F6F5F6' : '#99999a',
             areaColorTop: '#fff',
           }"
           :formatter="`ℓUSD : {c0}`"
@@ -87,7 +90,7 @@
               ? 'Total Current Debt\n(ℓUSD)'
               : 'Total Current Debt (ℓUSD) / Date'
           "
-        ></trackchart>
+        ></component>
       </div>
 
       <div
@@ -167,6 +170,7 @@ export default {
   data() {
     return {
       currencies,
+      chartCompo: "trackchart",
       trackModal: false,
       hasTrackData: false, //有无图表记录
       currentMobileTabs: 1, //移动端下的tabs, 1chart 2list
@@ -227,6 +231,14 @@ export default {
     isEthereumNetwork() {},
     isBinanceNetwork() {},
     walletNetworkId() {},
+    theme() {
+      this.chartCompo = "";
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.chartCompo = "trackchart";
+        });
+      });
+    },
   },
   computed: {
     walletAddress() {
