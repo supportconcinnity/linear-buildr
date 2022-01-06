@@ -81,6 +81,7 @@
           :color="{
             lineColor: '#1a38f8',
             backgroundColor: $store.getters.isDarkTheme ? '#141B2D' : '#fff',
+            textColor: $store.getters.isDarkTheme ? '#F6F5F6' : '#99999a',
             areaColorTop: '#fff',
           }"
           :formatter="`ℓUSD : {c0}`"
