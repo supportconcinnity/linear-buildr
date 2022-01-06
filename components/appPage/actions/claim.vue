@@ -45,12 +45,23 @@
                     content="Reward can only be claimed when target ratio is reached."
                     placement="top"
                   >
-                    <img src="@/static/info_white.svg" />
+                    <img
+                      v-if="theme === 'light'"
+                      src="@/static/info_white.svg"
+                    />
+                    <img v-else src="@/static/dark-theme/info_white.svg" />
                   </Tooltip>
 
                   <img
+                    v-if="theme === 'light'"
                     class="showInfoMobile"
                     src="@/static/info_white.svg"
+                    @click="showIntroductActionModal"
+                  />
+                  <img
+                    v-else
+                    class="showInfoMobile"
+                    src="@/static/dark-theme/info_white.svg"
                     @click="showIntroductActionModal"
                   />
                 </div>
@@ -213,6 +224,9 @@ export default {
 
     walletNetworkId() {
       return this.$store.state?.walletNetworkId;
+    },
+    theme() {
+      return this.$store.state?.theme;
     },
   },
   methods: {
