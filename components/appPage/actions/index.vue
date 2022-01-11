@@ -280,11 +280,14 @@ export default {
     // temporary dark theme in body
     setDarkThemeInBody(newValue, oldValue = undefined) {
       const theme = `${newValue}-theme`;
+      const html = document.documentElement;
       const body = document.body;
       if (oldValue !== undefined) {
         const oldTheme = `${oldValue}-theme`;
+        html.classList.remove(oldTheme);
         body.classList.remove(oldTheme);
       }
+      html.classList.add(theme);
       body.classList.add(theme);
     },
     //切换功能
