@@ -232,10 +232,11 @@ export default {
     isBinanceNetwork() {},
     walletNetworkId() {},
     theme() {
-      console.log("theme is changed");
       this.chartCompo = "";
-      setTimeout(() => {
-        this.chartCompo = "trackchart";
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.chartCompo = "trackchart";
+        });
       });
     },
   },

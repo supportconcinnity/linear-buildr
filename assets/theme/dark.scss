@@ -156,7 +156,7 @@ body.dark-theme {
         background: #3851f0 !important;
       }
     }
-    app .ivu-page-next,
+    .ivu-page-next,
     .ivu-page-prev {
       a {
         i {
@@ -864,7 +864,7 @@ body.dark-theme {
   }
 
   .switchToBSC {
-    background-color: #7eb5ff !important;
+    background-color: rgba($color: #7eb5ff, $alpha: 0.5) !important;
     color: #ffffff !important;
     span {
       text-transform: uppercase !important;
