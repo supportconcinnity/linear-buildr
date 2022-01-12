@@ -58,10 +58,19 @@ export default {
   },
   watch: {
     walletAddress(data) {},
+    theme: {
+      handler(newvalue, oldValue) {
+        this.setDarkThemeInBody(newvalue, oldValue);
+      },
+      immediate: true,
+    },
   },
   computed: {
     walletAddress() {
       return this.$store.state?.wallet?.address;
+    },
+    theme() {
+      return this.$store.state?.theme;
     },
   },
   methods: {
@@ -75,6 +84,18 @@ export default {
       this.isMobile = this.windowScreen.width <= this.mobileWidth;
       this.$store.commit("setIsMobile", this.isMobile);
     }, 50),
+    setDarkThemeInBody(newValue, oldValue = undefined) {
+      const theme = `${newValue}-theme`;
+      const html = document.documentElement;
+      const body = document.body;
+      if (oldValue !== undefined) {
+        const oldTheme = `${oldValue}-theme`;
+        html.classList.remove(oldTheme);
+        body.classList.remove(oldTheme);
+      }
+      html.classList.add(theme);
+      body.classList.add(theme);
+    },
   },
   mounted() {
     this.$store.commit("setIsMobile", this.isMobile);
