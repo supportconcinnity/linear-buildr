@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
 import { SUPPORTED_NETWORKS } from "@/assets/linearLibrary/linearTools/network";
 
@@ -175,4 +176,20 @@ export const mutations = {
 export const actions = {
   //服务端渲染才调用
   // async nuxtServerInit({ commit }, { req }) {}
+  nuxtClientInit(_store) {
+    const theme = Cookies.get("theme");
+    console.log({ theme });
+    if (theme === undefined) {
+      _store.dispatch("themeInit");
+    } else {
+      _store.commit("setTheme", theme);
+    }
+  },
+  themeInit(_store) {
+    const domain = `.${window.location.host
+      .split(".")
+      .splice(-2)
+      .join(".")}`.split(":")[0];
+    Cookies.set("theme", _store.state.theme, { expires: 7, domain });
+  },
 };

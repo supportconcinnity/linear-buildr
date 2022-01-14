@@ -58,6 +58,7 @@ export default {
         newTheme = "light";
       }
       this.$store.commit("setTheme", newTheme);
+      this.$store.dispatch("themeInit");
     },
   },
 };
