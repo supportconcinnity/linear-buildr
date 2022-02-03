@@ -50,6 +50,9 @@ export default {
       return themeClass;
     },
   },
+  created() {
+    this.setTheme();
+  },
   methods: {
     toggleTheme() {
       const currentTheme = this.theme;
@@ -59,6 +62,10 @@ export default {
       }
       this.$store.commit("setTheme", newTheme);
       this.$store.dispatch("themeInit");
+    },
+    setTheme() {
+      const theme = Cookies.get("theme");
+      this.$store.commit("setTheme", theme);
     },
   },
 };
