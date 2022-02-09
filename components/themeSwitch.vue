@@ -23,6 +23,8 @@
 
 <script>
 import { mapState } from "vuex";
+import Cookies from "js-cookie";
+
 export default {
   name: "themeSwitch",
   props: {
@@ -66,8 +68,10 @@ export default {
     setTheme() {
       const theme = Cookies.get("theme");
       if (theme === undefined) {
+        console.log("dispatch");
         this.$store.dispatch("themeInit");
       } else {
+        console.log("commit");
         this.$store.commit("setTheme", theme);
       }
     },
