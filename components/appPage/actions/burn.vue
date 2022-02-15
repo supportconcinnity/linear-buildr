@@ -29,7 +29,8 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/LINA_logo.svg" />
+                  <img v-if="theme === 'light'" src="@/static/LINA_logo.svg" />
+                  <img v-else src="@/static/dark-theme/LINA_logo.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">
@@ -41,12 +42,17 @@
                       content="Amount of LINA unstaked may vary due to block times and price fluctuations in pledge tokens."
                       offset="0 4"
                     >
-                      <img src="@/static/info_white.svg" />
+                      <img
+                        v-if="theme === 'light'"
+                        src="@/static/info_white.svg"
+                      />
+                      <img v-else src="@/static/dark-theme/info_white.svg" />
                     </Tooltip>
                   </div>
                   <div
                     class="itemTypeBtn"
                     :class="{ active: activeItemBtn == 0 }"
+                    v-if="isMobile"
                     @click="clickUnstakeMax"
                   >
                     Max
@@ -89,7 +95,11 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/currency/lUSD.svg" />
+                  <img
+                    v-if="theme === 'light'"
+                    src="@/static/currency/lUSD.svg"
+                  />
+                  <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">Burn</div>
@@ -136,7 +146,8 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/percentage.svg" />
+                  <img v-if="theme === 'light'" src="@/static/percentage.svg" />
+                  <img v-else src="@/static/dark-theme/percentage.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">P Ratio</div>
@@ -208,12 +219,28 @@
               >
                 <div class="inputBox">
                   <img
+                    v-if="theme === 'light'"
                     class="showInfo"
                     src="@/static/info_white.svg"
                     @click="showIntroductActionModal"
                   />
+                  <img
+                    v-else
+                    class="showInfo"
+                    src="@/static/dark-theme/info_white.svg"
+                    @click="showIntroductActionModal"
+                  />
 
-                  <img class="logo" src="@/static/LINA_logo.svg" />
+                  <img
+                    v-if="theme === 'light'"
+                    class="logo"
+                    src="@/static/LINA_logo.svg"
+                  />
+                  <img
+                    v-else
+                    class="logo"
+                    src="@/static/dark-theme/LINA_logo.svg"
+                  />
 
                   <div class="itemTypeTitle">Unstake LINA</div>
 
@@ -234,6 +261,7 @@
                   <div
                     class="itemTypeBtn"
                     :class="{ active: activeItemBtn == 3 }"
+                    v-if="isMobile"
                     @click="clickUnstakeMax"
                   >
                     Max
@@ -249,7 +277,16 @@
                 @click="changeFocusItem(1)"
               >
                 <div class="inputBox">
-                  <img class="logo" src="@/static/currency/lUSD.svg" />
+                  <img
+                    v-if="theme === 'light'"
+                    class="logo"
+                    src="@/static/currency/lUSD.svg"
+                  />
+                  <img
+                    v-else
+                    class="logo"
+                    src="@/static/dark-theme/currency/lUSD.svg"
+                  />
 
                   <div class="itemTypeTitle">Burn ℓUSD</div>
 
@@ -325,7 +362,7 @@
           </div>
 
           <div v-else class="burnBtn switchToBSC">
-            Please switch to BSC network to burn your ℓusd
+            Please switch to BSC network to burn your ℓ<span>USD</span>
           </div>
 
           <Spin fix v-if="processing"></Spin>
@@ -519,6 +556,9 @@ export default {
 
     isMobile() {
       return this.$store.state?.isMobile;
+    },
+    theme() {
+      return this.$store.state.theme;
     },
   },
   async created() {
@@ -1834,6 +1874,10 @@ export default {
     border-radius: 16px;
     box-shadow: 0px 2px 6px #deddde;
 
+    .app-dark & {
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
     .ivu-tabs-bar {
       display: none;
     }
@@ -1949,6 +1993,9 @@ export default {
                   align-items: center;
                   border-radius: 50%;
                   background: #ffffff;
+                  .app-dark & {
+                    background: none;
+                  }
 
                   img {
                     width: 100%;
@@ -2159,10 +2206,18 @@ export default {
     box-shadow: 0px 2px 6px #deddde;
     min-height: 550px;
 
+    .app-dark & {
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
     .actionTabs {
       border-radius: 16px;
       box-shadow: 0px 2px 6px #deddde;
       min-height: 550px;
+
+      .app-dark & {
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      }
 
       .ivu-tabs-bar {
         display: none;
@@ -2184,6 +2239,8 @@ export default {
             width: 100%;
             height: 100%;
             min-height: 550px;
+            display: flex;
+            justify-content: center;
           }
 
           .burnBox {
@@ -2308,6 +2365,7 @@ export default {
                     .itemTypeBtn {
                       height: 32px;
                       width: 100%;
+                      text-transform: uppercase;
                       position: absolute;
                       bottom: 0;
                       border-top: solid 1px #e5e5e5;
@@ -2388,6 +2446,7 @@ export default {
                     height: 32px;
                     width: 100%;
                     position: relative;
+                    text-transform: uppercase;
                     bottom: 0;
                     border-top: solid 1px #e5e5e5;
                     font-family: Gilroy;

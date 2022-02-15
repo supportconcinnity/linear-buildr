@@ -84,6 +84,7 @@ module.exports = {
       },
     ],
     "@nuxtjs/style-resources",
+    "@/module/module",
   ],
   /*
    ** Axios module configuration

@@ -57,18 +57,21 @@
         class="chart"
         v-if="!isMobile || (isMobile && currentMobileTabs == 1)"
       >
-        <trackchart
+        <component
+          :is="chartCompo"
           key="1"
           v-if="!hasTrackData"
           :data="emptyData"
           :color="{
             lineColor: '#fff',
+            backgroundColor: $store.getters.isDarkTheme ? '#141B2D' : '#fff',
             areaColorTop: '#fff',
           }"
           :title="'Total Current Debt\n(ℓUSD)'"
-        ></trackchart>
+        ></component>
 
-        <trackchart
+        <component
+          :is="chartCompo"
           key="2"
           v-else
           :data="trackData"
@@ -77,7 +80,9 @@
           area
           :color="{
             lineColor: '#1a38f8',
-            areaColorTop: '#1a38f8',
+            backgroundColor: $store.getters.isDarkTheme ? '#141B2D' : '#fff',
+            textColor: $store.getters.isDarkTheme ? '#F6F5F6' : '#99999a',
+            areaColorTop: '#fff',
           }"
           :formatter="`ℓUSD : {c0}`"
           :title="
@@ -85,7 +90,7 @@
               ? 'Total Current Debt\n(ℓUSD)'
               : 'Total Current Debt (ℓUSD) / Date'
           "
-        ></trackchart>
+        ></component>
       </div>
 
       <div
@@ -165,6 +170,7 @@ export default {
   data() {
     return {
       currencies,
+      chartCompo: "trackchart",
       trackModal: false,
       hasTrackData: false, //有无图表记录
       currentMobileTabs: 1, //移动端下的tabs, 1chart 2list
@@ -225,6 +231,14 @@ export default {
     isEthereumNetwork() {},
     isBinanceNetwork() {},
     walletNetworkId() {},
+    theme() {
+      this.chartCompo = "";
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.chartCompo = "trackchart";
+        });
+      });
+    },
   },
   computed: {
     walletAddress() {
@@ -245,6 +259,9 @@ export default {
 
     walletNetworkId() {
       return this.$store.state?.walletNetworkId;
+    },
+    theme() {
+      return this.$store.state.theme;
     },
   },
   created() {
@@ -375,6 +392,10 @@ export default {
       height: 100%;
       overflow: hidden;
 
+      .app-dark & {
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      }
+
       .closeBtn {
         z-index: 1;
         position: absolute;
@@ -414,6 +435,9 @@ export default {
 
           a {
             color: #1a38f8;
+          }
+          .app-dark & {
+            color: #e5e5e5 !important;
           }
         }
 
@@ -469,14 +493,18 @@ export default {
               [class^="ivu-table-column-"] {
                 background-color: #fff;
                 border-color: #f6f5f6;
-                font-family: Gilroy-Medium;
+                font-family: Gilroy-Bold;
                 font-size: 12px;
-                font-weight: 500;
+                font-weight: 700;
                 font-stretch: normal;
                 font-style: normal;
                 line-height: 1.33;
                 letter-spacing: normal;
                 color: #99999a;
+                .app-dark & {
+                  background-color: transparent;
+                  color: #f6f5f6;
+                }
               }
 
               tr {
@@ -493,6 +521,10 @@ export default {
                 [class^="ivu-table-column-"] {
                   height: 56px;
                   border-color: #f6f5f6;
+                  .app-dark & {
+                    background-color: transparent;
+                    border-color: #313131;
+                  }
                 }
                 .ivu-table-cell-slot {
                   font-family: Gilroy-Medium;
@@ -503,6 +535,9 @@ export default {
                   line-height: 1.33;
                   letter-spacing: normal;
                   color: #5a575c;
+                  .app-dark & {
+                    color: #ffffff;
+                  }
                 }
                 .cellAsset {
                   .ivu-table-cell-slot {
@@ -525,11 +560,22 @@ export default {
                     }
                   }
                 }
+                .app-dark & {
+                  .ivu-table-cell-slot {
+                    color: #ffffff;
+                  }
+                }
               }
             }
 
             &::before {
               content: none;
+            }
+            .app-dark & {
+              background-color: transparent;
+              th {
+                border-bottom-color: #313131 !important;
+              }
             }
           }
 
@@ -656,6 +702,7 @@ export default {
           margin: 0 0 40px 0;
           border-radius: 20.5px;
           border: solid 1px #e5e5e5;
+          letter-spacing: 1.5px;
 
           .debtChart,
           .debtList {
@@ -669,6 +716,14 @@ export default {
           .activated {
             background-color: rgba(126, 181, 255, 0.2);
             color: #1a38f8;
+          }
+          .app-dark & {
+            border-color: #3851f0;
+            color: #3851f0;
+            .activated {
+              color: #ffffff;
+              background-color: #3851f0;
+            }
           }
         }
 

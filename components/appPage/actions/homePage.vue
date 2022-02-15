@@ -15,6 +15,7 @@
           class="icon"
           src="@/static/info_orange.svg"
           alt=""
+          app-
           v-if="currentRatioStatus == 1"
         />
         <img
@@ -121,9 +122,14 @@
       collateral pool enables infinite liquidity and no slippage.
     </div>
     <div class="actionsBox">
-      <div class="boxItem" @click="isMobile && btnClick(1)">
+      <div
+        class="boxItem"
+        :class="{ isMobile }"
+        @click="isMobile && btnClick(1)"
+      >
         <div class="imgBox">
-          <img src="@/static/LINA_logo.svg" />
+          <img v-if="theme === 'light'" src="@/static/LINA_logo.svg" />
+          <img v-else src="@/static/dark-theme/LINA_logo.svg" />
         </div>
         <div class="boxContext">
           Buy LINA <br />
@@ -137,9 +143,14 @@
           BUY LINA <Icon type="ios-arrow-round-forward" />
         </div>
       </div>
-      <div class="boxItem" @click="isMobile && btnClick(2)">
+      <div
+        class="boxItem"
+        :class="{ isMobile }"
+        @click="isMobile && btnClick(2)"
+      >
         <div class="imgBox">
-          <img src="@/static/currency/lUSD.svg" />
+          <img v-if="theme === 'light'" src="@/static/currency/lUSD.svg" />
+          <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
         </div>
         <div class="boxContext">
           Stake LINA <br />
@@ -224,6 +235,9 @@ export default {
     },
     walletNetworkId() {
       return this.$store.state?.walletNetworkId;
+    },
+    theme() {
+      return this.$store.state.theme;
     },
   },
   created() {
@@ -410,6 +424,10 @@ export default {
   padding: 200px 193px 207px;
   position: relative;
 
+  .app-dark & {
+    background: $darkBackgroundColor;
+  }
+
   .attentionBox {
     width: 600px;
     position: absolute;
@@ -447,6 +465,10 @@ export default {
           color: #5a575c;
           text-align: left;
           margin-bottom: 4px;
+
+          .app-dark & {
+            color: $darkFontColor;
+          }
         }
 
         .context {
@@ -455,6 +477,10 @@ export default {
           color: #99999a;
           text-align: left;
           margin: 0 0 4px;
+
+          .app-dark & {
+            color: $darkFontColor;
+          }
 
           span {
             font-family: Gilroy-Bold;
@@ -519,6 +545,10 @@ export default {
     line-height: 1.25;
     letter-spacing: normal;
     color: #5a575c;
+
+    .app-dark & {
+      color: $darkFontColor;
+    }
   }
 
   .context {
@@ -533,6 +563,10 @@ export default {
     color: #99999a;
 
     margin: 9px 0 48px;
+
+    .app-dark & {
+      color: $darkFontColor;
+    }
   }
 
   .actionsBox {
@@ -550,6 +584,10 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
+
+      .app-dark & {
+        border-color: $darkBorderColor;
+      }
 
       .imgBox {
         width: 80px;
@@ -575,10 +613,18 @@ export default {
         color: #5a575c;
         font-family: Gilroy-Regular;
         cursor: default;
+
+        .app-dark & {
+          color: $darkFontColorLight;
+        }
       }
 
       &:hover {
         box-shadow: 0 2px 12px 0 #e5e5e5;
+
+        .app-dark & {
+          box-shadow: 0 2px 12px 0 $darkBorderColor;
+        }
       }
     }
 
@@ -638,6 +684,10 @@ export default {
       letter-spacing: normal;
       text-align: center;
       color: #5a575c;
+
+      .app-dark & {
+        color: $darkFontColor;
+      }
     }
 
     .context {
@@ -652,6 +702,10 @@ export default {
       color: #99999a;
 
       margin: 9px 60px;
+
+      .app-dark & {
+        color: $darkFontColor;
+      }
     }
 
     .actionsBox {
@@ -665,23 +719,24 @@ export default {
 
       .boxItem {
         position: relative;
-        width: 35.9999999991vw;
-        height: 35.9999999991vw;
+        width: 132px;
+        height: 148px;
         transition: $animete-time linear;
-        padding: 0 0 0 0;
-        border-radius: 4px;
+        padding: 40px 0;
+        border-radius: 7px;
         border: solid 1px #deddde;
         display: flex;
         flex-direction: column;
         align-items: center;
 
         .imgBox {
-          width: 10.6666666664vw;
-          height: 10.6666666664vw;
-          margin: 27px 50px 0 50px;
+          width: 40px;
+          height: 40px;
+          margin-bottom: 12px;
           img {
-            width: 10.6666666664vw;
-            height: 10.6666666664vw;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
           }
         }
 
@@ -691,16 +746,22 @@ export default {
 
         &:hover {
           box-shadow: 0 2px 12px 0 #e5e5e5;
+
+          .app-dark & {
+            box-shadow: 0 2px 12px 0 $darkBackgroundDeepColor;
+          }
+        }
+        .app-dark & {
+          &.isMobile {
+            background: transparent !important;
+          }
         }
       }
 
       .btn {
         width: 100%;
-        height: 48px;
-        position: absolute;
-        bottom: 14px;
-        border-bottom-left-radius: 4px;
-        border-bottom-right-radius: 4px;
+        height: 16px;
+        position: relative;
         background: #fff;
         text-transform: uppercase;
         cursor: pointer;
@@ -710,7 +771,7 @@ export default {
         font-weight: bold;
         font-stretch: normal;
         font-style: normal;
-        line-height: 1.33;
+        line-height: 16px;
         letter-spacing: 1.5px;
         text-align: center;
         color: #1a38f8;
@@ -721,6 +782,15 @@ export default {
           font-size: 27px;
           margin-left: 0px;
           font-weight: bold;
+        }
+        &.isMobile {
+          .app-dark & {
+            background: none !important;
+            color: $darkButtonColor !important;
+            .ivu-icon {
+              color: $darkButtonColor !important;
+            }
+          }
         }
       }
     }

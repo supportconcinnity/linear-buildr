@@ -1,13 +1,21 @@
 //暗色主题
 //Preparation for dark theme
-$darkBackgroundColor: #000; //背景色
-$darkBackgroundDeepColor: #000; //深色背景
-$darkFontColor: #fff; //字体色
-$darkBorderColor: #000; //边框色
-$darkBorderLightColor: #000; //边框浅色
-$darkBorderDeepColor: #000; //边框深色
-$darkButtonColor: #000; //按钮色
-$darkButtonHoverColor: #000; //按钮热点色
+$white: #fff;
+$darkBackgroundColor: #141b2d; //背景色 / background color
+$darkBackgroundDeepColor: #050d20; //深色背景 / dark background color
+
+$darkLighterBlue: #cee1fb;
+$darkFontColor: $white; //字体色 / font-color
+$darkFontColorSecondary: #f6f5f6; //字体色 / font-color
+$darkFontColorLight: #e5e5e5; //字体色 / font-color
+$darkFontColorDisabled: #5a575c; //字体色 / font-color
+
+$darkBorderColor: #1f2b4d; //边框色 / border-color
+$darkBorderLightColor: #5a575c; //边框浅色 / Light border
+$darkButtonColor: #3851f0; //按钮色 / Button color
+$darkButtonColor2: #1a38f8; //按钮色 / Button color
+$darkButtonColorHighlight: #1b9cfc; //按钮色 / Button color
+$darkButtonHoverColor: #7eb5ff; //按钮热点色 / Button hover color
 
 .dark {
   * {
@@ -18,12 +26,1466 @@ $darkButtonHoverColor: #000; //按钮热点色
 //导出变量,在js中使用
 //Export for js
 :export {
+  white: $white;
   darkBackgroundColor: $darkBackgroundColor;
+  darkLighterBlue: $darkLighterBlue;
   darkBackgroundDeepColor: $darkBackgroundDeepColor;
   darkFontColor: $darkFontColor;
   darkBorderColor: $darkBorderColor;
   darkBorderLightColor: $darkBorderLightColor;
-  darkBorderDeepColor: $darkBorderDeepColor;
   darkButtonColor: $darkButtonColor;
   darkButtonHoverColor: $darkButtonHoverColor;
+  darkFontColorSecondary: $darkFontColorSecondary;
+  darkFontColorLight: $darkFontColorLight;
+}
+
+html.dark-theme,
+body.dark-theme {
+  background: #050d20 !important;
+}
+
+// I was trying to get dark theme done with 0 or less component changes
+.app-dark {
+  // components where images are used
+  // so had to manipulate via filters
+  // .ivu-tooltip-rel,
+  // img[src*="ICAgICAgPC9nPg0KICAgIDwvZz4NCjwvc3ZnPg0K"] {
+  //   filter: brightness(3) contrast(2) grayscale(0.8) hue-rotate(-285deg)
+  //     saturate(1.35);
+  // }
+
+  // .actionsBox .box .boxItem img[src*="_hover.svg"],
+  // .refreshBtn:hover,
+  // img[src*="DQogICAgPC9nPg0KPC9zdmc+DQo="],
+  // img[src*="refresh.svg"] {
+  //   filter: brightness(0) contrast(3) invert(1);
+  // }
+
+  // landingPage
+  #landingPage {
+    .seeDetailsModal
+      .ivu-modal-wrap
+      .ivu-modal
+      .ivu-modal-content
+      .ivu-modal-body
+      .walletConnect
+      .walletConnectBox {
+      background-color: #141b2d !important;
+    }
+    .seeDetailsModal
+      .ivu-modal-wrap
+      .ivu-modal
+      .ivu-modal-content
+      .ivu-modal-body
+      .walletConnect
+      .walletConnectBox
+      .top
+      .title {
+      color: #f6f5f6 !important;
+    }
+    .seeDetailsModal
+      .ivu-modal-wrap
+      .ivu-modal
+      .ivu-modal-content
+      .ivu-modal-body
+      .walletConnect
+      .walletConnectBox
+      .boxTitle {
+      color: #ffffff !important;
+    }
+    .seeDetailsModal
+      .ivu-modal-wrap
+      .ivu-modal
+      .ivu-modal-content
+      .ivu-modal-body
+      .walletConnect
+      .walletConnectBox
+      .boxCopy
+      .copyTitle
+      .title {
+      color: #1a38f8 !important;
+    }
+    .container .walletBox .box .boxItem .boxSub {
+      color: #f6f5f6 !important;
+    }
+    .container .walletBox .box .boxItem .boxTitle {
+      color: #1a38f8 !important;
+    }
+  }
+
+  #homePage {
+    .actionsBox .boxItem {
+      background-color: #141b2d !important;
+      border: 1px solid rgba(153, 153, 154, 0.2) !important;
+
+      .boxContext {
+      }
+    }
+    .actionsBox .btn {
+      background-color: #1a38f8 !important;
+      &:hover {
+        background-color: #7eb5ff !important;
+        color: #333333 !important;
+      }
+
+      .ivu-icon {
+        &:hover {
+          color: #333333 !important;
+        }
+      }
+    }
+  }
+  // Pagination
+  .ivu-page.mini {
+    .ivu-page-prev,
+    .ivu-page-item,
+    .ivu-page-next {
+      background-color: transparent;
+    }
+    .ivu-page-item,
+    .ivu-page-next {
+      border-radius: 4px;
+      border: 1px solid #ffffff !important;
+    }
+    .ivu-page-item {
+      a {
+        color: #ffffff !important;
+      }
+      &.ivu-page-item-active {
+        border-color: #3851f0 !important;
+        background: #3851f0 !important;
+      }
+    }
+    .ivu-page-next,
+    .ivu-page-prev {
+      a {
+        i {
+          color: #ffffff !important;
+        }
+      }
+    }
+  }
+
+  .introductBox,
+  .ivu-tabs-tabpane,
+  .walletBox .box .boxItem,
+  #build .actionTabs .ivu-tabs-content .ivu-tabs-tabpane,
+  .ivu-tabs-content {
+    background-color: $darkBackgroundColor !important;
+  }
+
+  #landingPage .container .walletBox .box .boxItem .boxSub::placeholder {
+    color: $darkLighterBlue !important;
+  }
+
+  .ivu-input-number-input,
+  .ivu-input-number-input::placeholder {
+    color: #99999a !important;
+  }
+
+  .ivu-collapse-content {
+    background-color: transparent !important;
+  }
+
+  #walletDetails .walletDetailsBox .walletInfo .title,
+  #walletDetails .walletDetailsBox .walletInfo .tokenBox .box .tokenItems.obtrusive .left,
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .contentTitle,
+  #homePage .title,
+  #landingPage .container .walletBox .box .boxItem .boxSub,
+  .ivu-collapse-item-active .ivu-collapse-header,
+  .ivu-collapse-header,
+  //.ivu-collapse-content-box,
+  .actionRate,
+  .editTitle,
+  .infoRight,
+  .tableBody .tr .td,
+  .itemNumBox,
+  .itemTime,
+  .descTop,
+  .contentDesc,
+  .waitDesc,
+  .itemBox .item .text.current,
+  .rewardsBoxClosed .box .amount,
+  .infoBox .title,
+  .ivu-poptip-rel,
+  .currencyItem.selected .itemName,
+  .inputBox .label .amount,
+  .editNetwork,
+  .actionInputItem .p_1,
+  .transferMain .text .descript,
+  .descTopMobile,
+  .statusBox .status,
+  .refreshBtn {
+    color: $darkFontColorSecondary !important;
+  }
+
+  //#landingPage .container .walletBox .box .boxItem .boxSub,
+  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .title,
+  #walletDetails .walletDetailsBox .totalBalanceToUSD .box .amount,
+  #walletDetails
+    .walletDetailsBox
+    .walletInfo
+    .tokenBox
+    .box
+    .tokenItems.obtrusive
+    .right,
+  #walletDetails .walletDetailsBox .actionsBox .box .boxItem,
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .contentDesc,
+  #gasEditor
+    .gasEditorModal
+    .ivu-modal
+    .ivu-modal-body
+    .content
+    .custom
+    .leftRect
+    .desc
+    .unit,
+  #gasEditor
+    .gasEditorModal
+    .ivu-modal
+    .ivu-modal-body
+    .content
+    .selections
+    .selectionItem
+    .itemSpeed,
+  #gasEditor .editInfo .infoLeft .editTitle,
+  .ivu-input-number-input,
+  #homePage .actionsBox .boxItem .boxContext,
+  #homePage .context,
+  .ivu-collapse-content-box,
+  .mBuyLINA,
+  .actionTitle,
+  .buyLINA .ivu-icon,
+  .actionDesc,
+  .itemTypeBtn,
+  .ivu-dropdown.hasFilter .typeBtnSelected,
+  .editBtn,
+  .ivu-page-item:hover:not(.ivu-page-item-active) a,
+  .ivu-page-next:hover:not(.ivu-page-disabled) .ivu-icon,
+  .ivu-page-prev:hover:not(.ivu-page-disabled) .ivu-icon,
+  .walletBox .box .boxItem .boxTitle,
+  .selectionItem.active .itemNumBox,
+  .selectionItem.active .itemTime,
+  .contentTitle,
+  .waitTitle,
+  .transferMain .text .title,
+  .headerBox .title,
+  .mHead .mLogo,
+  .mNavigateItem.activited,
+  .contentTitleMobile,
+  .mobileTabs > .activated {
+    color: $darkFontColor !important;
+  }
+
+  #walletDetails .walletDetailsBox .walletInfo .tokenBox .box .tokenItems {
+    color: #99999a !important;
+  }
+
+  .itemTypeBtn,
+  .clearFiltersBtn,
+  #transactionModal
+    .ivu-modal-wrap
+    .ivu-modal-body
+    .customTable
+    .hasData
+    .tableBody
+    .tr
+    .td:last-of-type,
+  .actionInputItem .p_2 {
+    opacity: 1 !important;
+  }
+
+  // .mBuyLINA img,
+  // .itemTypeBtn img,
+  // .editBtn svg {
+  //   filter: brightness(0) contrast(3) invert(1);
+  // }
+
+  .walletBox .box .boxItem,
+  .actionInputItem,
+  .mRect,
+  .tableBody .tr,
+  .tabelHeader .th,
+  .walletInfo .tokenBox,
+  .walletDetailsBox .ratioBox,
+  .selectionItem,
+  .trackBox .table .nothing,
+  .swapInputBox,
+  .swapInputBox.active,
+  .itemTypeBtn {
+    border-color: $darkBorderColor !important;
+  }
+
+  #gasEditor
+    .gasEditorModal
+    .ivu-modal
+    .ivu-modal-body
+    .content
+    .selections
+    .selectionItem,
+  .actionInputItem {
+    &:hover {
+      border-color: $darkButtonColor !important;
+      box-shadow: none !important;
+    }
+  }
+
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .custom {
+    border-color: $darkButtonColor !important;
+    box-shadow: none !important;
+    &.active {
+      border-color: $darkButtonColor !important;
+      box-shadow: none !important;
+    }
+  }
+
+  .walletBox .box .boxItem,
+  .selectionItem {
+    &:hover {
+      box-shadow: 0 2px 12px 0 $darkBorderColor !important;
+    }
+  }
+
+  .actionInputItem.active,
+  .swapInputBox.active,
+  .swapInputBox:hover {
+    box-shadow: 0 2px 12px 0 $darkBorderColor !important;
+  }
+
+  .mRect .context,
+  .itemTypeTitle,
+  .ivu-select-item,
+  .ivu-checkbox-wrapper,
+  .ivu-dropdown-menu,
+  .clearFiltersBtn.hasFilter,
+  .itemSpeed,
+  .rewardsBoxClosed .box .title,
+  .inputBox .label .max,
+  .editFee,
+  .actionInputItem .p_2,
+  .ivu-input {
+    color: $darkFontColorLight !important;
+  }
+
+  .ivu-modal-body,
+  .ivu-modal-content,
+  .walletAndAddressBox .mNetwork,
+  .walletAndAddressBox .mMenu,
+  .mWalletHead .mInfo,
+  .mWalletHead .networkIcon {
+    background-color: $darkBackgroundColor !important;
+    box-shadow: unset !important;
+  }
+
+  .ivu-modal-content {
+    .title,
+    .p_1,
+    .p_2 {
+      color: $darkFontColor !important;
+    }
+    .context,
+    .subject {
+      color: $darkFontColorSecondary !important;
+    }
+
+    .nothing {
+      background-color: $darkBackgroundColor !important;
+    }
+  }
+
+  .ivu-spin-fix {
+    background-color: rgba($darkBackgroundColor, 0.9) !important;
+  }
+
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .selections .selectionItem,
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .custom,
+  .typeBtn,
+  .amountBtnSelected,
+  .ivu-select-dropdown,
+  .ivu-select-selection,
+  // .ivu-page-item,
+  // .ivu-page-next,
+  // .ivu-page-prev,
+  .rewardsBoxClosed .box,
+  .ivu-poptip-inner,
+  .transferMain .to .li_1 .midle .p_1 span,
+  .mNavigate,
+  .walletDetailsBox,
+  .ivu-date-picker .ivu-input {
+    background: $darkBackgroundDeepColor !important;
+  }
+
+  #gasEditor .gasEditorModal .ivu-modal .ivu-modal-body .content .custom {
+    border-color: $darkBackgroundDeepColor !important;
+  }
+  #homePage .actionsBox .boxItem {
+    box-shadow: none !important;
+  }
+
+  .ivu-input,
+  .ivu-input-number,
+  #transferWatingEnhance,
+  .ivu-input-number-input {
+    background-color: unset !important;
+  }
+
+  .typeBtn,
+  .ivu-input,
+  .amountBtnSelected,
+  .ivu-select-selection,
+  .ivu-page-item {
+    border-color: $darkBackgroundColor !important;
+  }
+
+  .ivu-select-item:hover,
+  .swapInputBox .inputBox .max {
+    color: $darkBackgroundColor !important;
+  }
+
+  .clearFiltersBtn,
+  .ivu-page-item,
+  .ivu-page-next,
+  .currencyItem .itemName {
+    color: $darkFontColorDisabled !important;
+  }
+
+  .tableBody .tr:hover {
+    box-shadow: 0 2px 6px 0 $darkBorderColor !important;
+  }
+
+  .ivu-page-item-active {
+    background-color: $darkButtonHoverColor !important;
+  }
+  .ivu-page-item-active a {
+    color: $darkBackgroundDeepColor !important;
+  }
+
+  .ivu-page-disabled {
+    opacity: 0.25 !important;
+  }
+
+  .selectionItem.active {
+    // border-color: $darkButtonHoverColor !important;
+    border-color: $darkButtonColor !important;
+  }
+
+  .selectionItem.active {
+    // box-shadow: 0 2px 12px 0 $darkButtonHoverColor !important;
+    box-shadow: 1px 2px 16px 3px rgba(26, 56, 248, 0.2) !important;
+  }
+
+  .selectionItem.active .itemSpeed {
+    color: $darkButtonColorHighlight !important;
+  }
+
+  .divider {
+    background-color: $darkBorderColor !important;
+  }
+
+  // Ethereum Logo & others
+  // img[src*="+DQogIDwvZz4NCjwvc3ZnPg=="] {
+  //   filter: invert(1);
+  // }
+  // img[src*="IDwvZz4NCiAgPC9nPg0KPC9zdmc+"],
+  // img[src*="LUSD_gray_logo.svg"] {
+  //   filter: brightness(0.59) contrast(2.8) grayscale(1);
+  // }
+
+  .statusBox .status {
+    background-color: rgba(126, 181, 255, 0.1) !important;
+  }
+
+  .swapInputBox .inputBox .max {
+    background-color: $darkLighterBlue !important;
+  }
+
+  // transaction component
+  #transferWatingEnhance .processBar .itemBox .item .view,
+  #transferWatingEnhance .processBar .itemBox .item .tryAgain {
+    opacity: 1 !important;
+  }
+  // transaction component end
+
+  #landingPage
+    .container
+    .introductBox
+    .ivu-collapse
+    .ivu-collapse-item
+    .ivu-collapse-header
+    .line {
+    background-color: #99999a;
+  }
+
+  .buyLINA {
+    color: $darkButtonColor2 !important;
+
+    &:hover {
+      color: #7eb5ff !important;
+    }
+    .ivu-icon {
+      color: $darkButtonColor2 !important;
+      &:hover {
+        color: #7eb5ff !important;
+      }
+    }
+  }
+
+  #landingPage
+    .container
+    .introductBox
+    .ivu-collapse
+    .ivu-collapse-item-active
+    .ivu-collapse-header
+    .line {
+    background-color: $darkButtonColor2 !important;
+  }
+  #landingPage .container .walletBox .box .boxItem {
+    border-color: $darkBackgroundColor !important;
+    &:hover {
+      border-color: $darkButtonColor !important;
+      box-shadow: none !important;
+    }
+  }
+
+  #build {
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .buildBox
+      .actionBodyWeb
+      .actionInputItem {
+      background-color: #050d20 !important;
+      border: none !important;
+      &:hover {
+        border: 1px solid #3851f0 !important;
+        box-sizing: border-box !important;
+        box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+      &.active {
+        border: 1px solid #3851f0 !important;
+        box-sizing: border-box !important;
+        box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+    }
+  }
+
+  #build
+    .actionTabs
+    .ivu-tabs-content
+    .ivu-tabs-tabpane
+    .buildBox
+    .actionBodyWeb
+    .actionDesc {
+    color: #e5e5e5 !important;
+  }
+
+  #build
+    .actionTabs
+    .ivu-tabs-content
+    .ivu-tabs-tabpane
+    .buildBox
+    .actionBodyWeb
+    .actionRate {
+    background-color: rgba(56, 81, 240, 0.3) !important;
+  }
+  #build .actionTabs .ivu-tabs-content .ivu-tabs-tabpane .buildBox .buildBtn {
+    background-color: $darkButtonColor !important;
+    //&.disabled {
+    //  background-color: rgba(126, 181, 255, 0.2)!important;
+    //}
+  }
+
+  #gasEditor .editInfo .infoLeft .editBtn,
+  #build
+    .actionTabs
+    .ivu-tabs-content
+    .ivu-tabs-tabpane
+    .buildBox
+    .actionBodyWeb
+    .actionInputItem
+    .itemLeft
+    .itemType
+    .itemTypeBtn {
+    color: $darkButtonColor2 !important;
+  }
+
+  #build
+    .actionTabs
+    .ivu-tabs-content
+    .ivu-tabs-tabpane
+    .buildBox
+    .actionBodyWeb
+    .actionInputItem {
+    &:active {
+      border-color: $darkButtonColor !important;
+      box-shadow: 0 4px 50px rgba(0, 0, 0, 0.5) !important;
+    }
+  }
+
+  #gasEditor .editInfo .infoLeft .editBtn {
+    border-color: $darkButtonColor2 !important;
+  }
+
+  #gasEditor
+    .gasEditorModal
+    .ivu-modal
+    .ivu-modal-body
+    .content
+    .selections
+    .selectionItem
+    .itemNumBox {
+    color: $darkButtonHoverColor !important;
+  }
+
+  #gasEditor
+    .gasEditorModal
+    .ivu-modal
+    .ivu-modal-body
+    .content
+    .selections
+    .selectionItem
+    .itemTime {
+    color: #bababa !important;
+  }
+
+  // burn
+  #burn {
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .burnBox
+      .actionBodyWeb
+      .actionInputItem
+      .itemLeft
+      .itemType
+      .itemTypeBtn {
+      color: #1a38f8 !important;
+    }
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .burnBox
+      .actionBodyWeb
+      .actionRate {
+      background: rgba(56, 81, 240, 0.5) !important;
+    }
+
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .burnBox
+      .actionBodyWeb
+      .actionInputItem {
+      background-color: #050d20 !important;
+      border: none !important;
+      &:hover {
+        border: 1px solid #3851f0 !important;
+        box-sizing: border-box !important;
+        box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+      &.active {
+        border: 1px solid #3851f0 !important;
+        box-sizing: border-box !important;
+        box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+    }
+  }
+
+  #transferWatingEnhance {
+    .waitTitle {
+      color: #f6f5f6 !important;
+    }
+    .waitDesc {
+      color: #ffffff !important;
+    }
+  }
+
+  #transfer {
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .text
+      .title {
+      color: #f6f5f6 !important;
+    }
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .text
+      .descript {
+      color: #ffffff !important;
+    }
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .from
+      > .midle
+      .p_2 {
+      color: #3851f0 !important;
+    }
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .from,
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .to {
+      background-color: #050d20 !important;
+      border-color: #050d20 !important;
+    }
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .from
+      .dropdown {
+      background: #050d20 !important;
+      box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5) !important;
+      border: none !important;
+    }
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .from
+      .dropdown
+      .dropdownItem {
+      &:hover {
+        background: rgba(126, 181, 255, 0.1) !important;
+        .midle {
+          .p_1 {
+            color: #1a38f8 !important;
+          }
+        }
+      }
+      .midle {
+        .p_1 {
+          color: #ffffff !important;
+        }
+      }
+      &.activity {
+        .midle {
+          .p_1 {
+            color: #1a38f8 !important;
+          }
+        }
+      }
+    }
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .from
+      .dropdown
+      .dropdownItem
+      .midle
+      .p_1 {
+      color: #ffffff !important;
+      &.active {
+        color: #1a38f8 !important;
+      }
+    }
+
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .to,
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .from {
+      &.active,
+      &:hover {
+        border-color: #3851f0 !important;
+        box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+    }
+
+    #gasEditor .editInfo .infoLeft,
+    #gasEditor .editInfo .infoRight {
+      color: #ffffff !important;
+    }
+
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .transferBox
+      .transferMain
+      .to {
+      &.active,
+      &:hover {
+        border: 1px solid #3851f0 !important;
+        box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5) !important;
+      }
+      &.error {
+        border: 1px solid #df434c !important;
+        box-shadow: 0px 2px 25px rgba(223, 67, 76, 0.25) !important;
+      }
+    }
+  }
+
+  #claim {
+    .actionTabs
+      .ivu-tabs-content
+      .ivu-tabs-tabpane
+      .claimBox
+      .actionBody
+      .rewardsBox
+      .box {
+      background-color: #bababa !important;
+
+      .title {
+        font-family: Gilroy-Regular;
+        font-weight: normal !important;
+        color: #99999a !important;
+      }
+      .amount {
+        color: #99999a !important;
+      }
+    }
+  }
+
+  .switchToBSC {
+    background-color: rgba($color: #7eb5ff, $alpha: 0.5) !important;
+    color: #ffffff !important;
+    span {
+      text-transform: uppercase !important;
+    }
+  }
+
+  @media only screen and (max-width: 414px) {
+    .introductActionModal
+      .ivu-modal-wrap
+      .ivu-modal
+      .ivu-modal-content
+      .ivu-modal-body {
+      box-shadow: 0px 1px 12px rgba(0, 0, 0, 0.5) !important;
+      border-radius: 8px !important;
+    }
+    .totalBalanceToUSD {
+      box-shadow: 0 2px 12px 0 $darkBorderColor !important;
+    }
+    .totalBalanceToUSD {
+      background: $darkBackgroundDeepColor !important;
+    }
+    .infoBox .status {
+      background-color: unset !important;
+    }
+
+    #landingPage {
+      .container .introductBox .mRect {
+        border: 1px solid rgba(153, 153, 154, 0.2);
+        background-color: #050d20 !important;
+      }
+      .container .introductBox .mRect .box .context {
+        color: #1a38f8 !important;
+      }
+      .container .introductBox .mRect .box .chain {
+        color: #ffffff !important;
+      }
+    }
+
+    #build {
+      .introductActionModal
+        .ivu-modal-wrap
+        .ivu-modal
+        .ivu-modal-content
+        .ivu-modal-body {
+        box-shadow: 0px 1px 12px rgba(0, 0, 0, 0.5) !important;
+        border-radius: 8px !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .buildBox
+        .actionBodyMobile
+        .errMsg {
+        background-color: $darkFontColorSecondary !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .buildBox
+        .actionBodyMobile
+        .actionInputItem.error {
+        box-shadow: 0 4px 25px rgba(223, 67, 76, 0.3) !important;
+        border-color: #df434c !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .buildBox
+        .actionBodyMobile
+        .actionRate {
+        background: rgba(56, 81, 240, 0.5) !important;
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .buildBox
+        .actionBodyMobile
+        .actionInputItem
+        .ratioInputBox
+        .box
+        .itemTypeTitle,
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .buildBox
+        .actionBodyMobile
+        .inputGroupBox
+        .actionInputItem
+        .box
+        .itemType
+        .itemTypeTitle {
+        color: $darkFontColorSecondary !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .buildBox
+        .actionBodyMobile
+        .actionInputItem
+        .ratioInputBox
+        .itemTypeBtn {
+        color: $darkButtonColor !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .buildBox
+        .actionBodyMobile
+        .inputGroupBox
+        .actionInputItem
+        .itemTypeBtn {
+        color: $darkButtonColor2 !important;
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .buildBox
+        .actionBodyMobile
+        .actionRate,
+      #gasEditor {
+        .editInfo {
+          color: $darkFontColor !important;
+        }
+        .gasEditorModal
+          .ivu-modal
+          .ivu-modal-content
+          .ivu-modal-body
+          .content
+          .contentTitleMobile {
+          color: $darkFontColorSecondary !important;
+        }
+        .gasEditorModal
+          .ivu-modal
+          .ivu-modal-body
+          .content
+          .selections
+          .selectionItem {
+          border-color: rgba(229, 229, 229, 0.2) !important; // #e5e5e5 to rgba
+          &.active {
+            border-color: #1a38f8 !important;
+            box-shadow: 1px 2px 16px 3px rgba(26, 56, 248, 0.2) !important;
+          }
+        }
+        .gasEditorModal .ivu-modal .ivu-modal-body .content .custom {
+          border-color: rgba(229, 229, 229, 0.2) !important; // #e5e5e5 to rgba
+          box-shadow: none !important;
+          &.active {
+            border-color: #3851f0 !important;
+          }
+        }
+        .gasEditorModal
+          .ivu-modal
+          .ivu-modal-body
+          .content
+          .selections
+          .selectionItem {
+          .itemSpeed {
+            color: #1a38f8 !important;
+          }
+          .itemNumBox {
+            color: #5c5c5c !important;
+          }
+          .itemNumBox {
+            color: #5c5c5c !important;
+          }
+        }
+      }
+    }
+
+    #burn {
+      .introductActionModal
+        .ivu-modal-wrap
+        .ivu-modal
+        .ivu-modal-content
+        .ivu-modal-body {
+        box-shadow: 0px 1px 12px rgba(0, 0, 0, 0.5) !important;
+        border-radius: 8px !important;
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .actionRate {
+        background: rgba(56, 81, 240, 0.5) !important;
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .errMsg {
+        background-color: $darkFontColorSecondary !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .actionInputItem.error {
+        box-shadow: 0 4px 25px rgba(223, 67, 76, 0.3) !important;
+        border-color: #df434c !important;
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .inputGroupBox
+        .actionInputItem
+        .inputBox
+        .itemTypeTitle {
+        font-weight: bold !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .inputGroupBox
+        .actionInputItem
+        .inputBox
+        .itemTypeTitle {
+        color: $darkFontColorSecondary !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .actionInputItem
+        .ratioInputBox
+        .itemTypeBtn {
+        color: $darkButtonColor !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .burnBox
+        .actionBodyMobile
+        .inputGroupBox
+        .actionInputItem
+        .itemTypeBtn {
+        color: $darkButtonColor2 !important;
+      }
+    }
+
+    #transfer {
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .from,
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .to {
+        border: 1px solid rgba(229, 229, 229, 0.2);
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .from
+        .dropBox
+        .tokenName {
+        color: #f6f5f6 !important;
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .from
+        .amountInputBox {
+        border-top: 1px solid rgba(229, 229, 229, 0.2);
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .to,
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .from
+        .amountInputBox
+        .box {
+        color: #f6f5f6 !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .from
+        .amountInputBox
+        .maxBtn {
+        background-color: #050d20 !important;
+        color: #1a38f8 !important;
+      }
+      .ivu-input {
+        color: #ffffff !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .errMsg {
+        background-color: #f6f5f6 !important;
+        color: #df434c !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .to {
+        &.active,
+        &:hover {
+          border: 1px solid #3851f0 !important;
+          box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5) !important;
+        }
+        &.error {
+          border: 1px solid #df434c !important;
+          box-shadow: 0px 2px 25px rgba(223, 67, 76, 0.25) !important;
+        }
+      }
+
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .from {
+        &.active {
+          border: 1px solid #3851f0 !important;
+          box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+        }
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .from
+        .dropdown {
+        background: #050d20 !important;
+        box-shadow: 0px 2px 50px rgba(0, 0, 0, 0.5) !important;
+        border: none !important;
+      }
+      .actionTabs
+        .ivu-tabs-content
+        .ivu-tabs-tabpane
+        .transferBox
+        .transferMainMobile
+        .from
+        .dropdown
+        .dropdownItem {
+        &:hover {
+          background: rgba(126, 181, 255, 0.1) !important;
+          .midle {
+            .p_1 {
+              color: #1a38f8 !important;
+            }
+          }
+        }
+        .midle {
+          .p_1 {
+            color: #ffffff !important;
+          }
+        }
+        &.activity {
+          .midle {
+            .p_1 {
+              color: #1a38f8 !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /*// landing
+  #landingPage {
+
+    .seeDetailsModal {
+      .ivu-modal-wrap {
+        .ivu-modal {
+
+          .ivu-modal-content {
+            .ivu-modal-body {
+              .walletConnect {
+
+                .walletConnectBox {
+                  background-color: #141b2d;
+
+                  .top {
+                    .button {
+
+                      //&:hover {
+                        //content: url("../../static/close_hover.svg");
+                      //}
+                    }
+
+                    .title {
+                      color: #f6f5f6;
+                    }
+
+                    //.logo {
+                    //}
+                  }
+
+                  .boxTitle {
+                    color: #5a575c;
+                  }
+
+                  .boxCopy {
+
+                    .copyTitle {
+
+                      .title {
+                        color: #1a38f8;
+                      }
+
+                      .copyBtn {
+                        .cooyIcon {
+                          //&:hover {
+                            //content: url("../../static/copy_hover.svg");
+                          //}
+                        }
+                      }
+                    }
+                  }
+
+                  .canvas {
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .container {
+
+      .introductBox {
+        background: #fff;
+
+        .ivu-collapse {
+          background: unset;
+          border: unset;
+          padding-left: 120px;
+
+          .ivu-collapse-item {
+            margin-bottom: 24px;
+            border: unset;
+
+            .ivu-collapse-header {
+              color: #99999a;
+
+              .line {
+                background: #99999a;
+              }
+            }
+
+            .ivu-collapse-content {
+
+              .ivu-collapse-content-box {
+                color: #5a575c;
+
+              }
+            }
+          }
+
+          .ivu-collapse-item-active {
+
+            .ivu-collapse-header {
+              color: #5a575c;
+              .line {
+                background: #1a38f8;
+              }
+            }
+          }
+        }
+
+        .buyLINA {
+          color: #1a38f8;
+
+          .ivu-icon {
+            color: #1a38f8;
+          }
+
+          &:hover {
+            color: #7eb5ff;
+
+            .ivu-icon {
+              color: #7eb5ff;
+            }
+          }
+        }
+      }
+
+      .walletBox {
+        .box {
+
+          .boxItem {
+            border: solid 1px #e5e5e5;
+            background-color: #ffffff;
+
+
+            .boxSub {
+              color: #5a575c;
+            }
+
+            .boxTitle {
+              color: #1a38f8;
+            }
+
+            .boxDesc {
+              color: #99999a;
+            }
+
+            &:hover {
+              border: solid 1px #3851f0;
+              box-shadow: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  // end landing*/
+}
+
+// calendar
+.dark-theme .ivu-date-picker-transfer {
+  background-color: #050d20;
+}
+.dark-theme .ivu-date-picker-cells-cell-range:before {
+  background: #1f2b4d;
+}
+.dark-theme span.ivu-date-picker-cells-cell-disabled,
+span.ivu-date-picker-cells-cell-disabled:hover {
+  background: #141b2d;
+}
+// calendar  end
+
+// setup modal
+.dark-theme {
+  .ivu-modal-content {
+    background-color: #141b2d;
+  }
+  .setupModal
+    .ivu-modal-wrap
+    .ivu-modal
+    .ivu-modal-content
+    .ivu-modal-body
+    .title {
+    color: #f6f5f6 !important;
+  }
+  .setupModal
+    .ivu-modal-wrap
+    .ivu-modal
+    .ivu-modal-content
+    .ivu-modal-body
+    .context
+    .step
+    .text {
+    color: #ffffff !important;
+  }
+  .setupModal
+    .ivu-modal-wrap
+    .ivu-modal
+    .ivu-modal-content
+    .ivu-modal-body
+    .context
+    .step
+    .text
+    .table
+    .ivu-row
+    .ivu-col {
+    &:nth-child(1) {
+      color: #f6f5f6 !important;
+    }
+    &:nth-child(2) {
+      color: #ffffff !important;
+    }
+  }
+
+  // tooltip
+  .globalInfoStyle.ivu-tooltip .ivu-tooltip-popper .ivu-tooltip-inner {
+    background: #ffffff !important;
+    border: 1px solid #3851f0 !important;
+    box-sizing: border-box !important;
+    box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.5) !important;
+    border-radius: 8px !important;
+    color: #333333 !important;
+  }
+  .globalInfoStyle.ivu-tooltip
+    .ivu-tooltip-popper[x-placement="top"]
+    .ivu-tooltip-arrow {
+    border-color: #ffffff !important;
+  }
+  .globalInfoStyle.ivu-tooltip .ivu-tooltip-popper .ivu-tooltip-arrow {
+    background-color: #ffffff !important;
+  }
 }

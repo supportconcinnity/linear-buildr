@@ -1,9 +1,10 @@
+import Cookies from "js-cookie";
 import { NETWORK_SPEEDS_TO_KEY } from "@/assets/linearLibrary/linearTools/constants/network";
 import { SUPPORTED_NETWORKS } from "@/assets/linearLibrary/linearTools/network";
 
 export const state = () => ({
   locale: "en", //默认语言
-  theme: "light", //默认主题,light或dark
+  theme: "dark", //默认主题,light或dark
   currentAction: 0, //应用页面跳转控制 1build 2burn 3claim 4transfer 5swap
   walletDetailsActionURL: "", //如果url参数有 referral transaction track，则先打开
   gasDetails: { price: 0, type: NETWORK_SPEEDS_TO_KEY.MEDIUM, status: -1 }, //gas设置详情,-1未初始化,1已初始化
@@ -27,8 +28,8 @@ export const state = () => ({
   walletDetails: {}, //钱包详情
   walletDetailsLoopRefreshStatus: true,
   walletType: "", //当前钱包类型 参考SUPPORTED_WALLETS
-  walletNetworkId: "1", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
-  walletNetworkName: SUPPORTED_NETWORKS["1"], //当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
+  walletNetworkId: "10056", //当前钱包网络ID 参考 SUPPORTED_NETWORKS
+  walletNetworkName: SUPPORTED_NETWORKS["10056"], //当前钱包网络名称,参考SUPPORTED_NETWORKS_MAP
   mMenuState: false, //移动端 显示菜单
   mWalletState: false, //移动端 显示钱包详情
   isMobile: false, //是否移动端
@@ -45,6 +46,10 @@ export const state = () => ({
   autoConnect: false, //自动连接钱包
   setupModal: false, //nework setup 窗口
 });
+
+export const getters = {
+  isDarkTheme: (state) => state.theme === "dark",
+};
 
 export const mutations = {
   setTheme(state, theme) {
@@ -171,4 +176,20 @@ export const mutations = {
 export const actions = {
   //服务端渲染才调用
   // async nuxtServerInit({ commit }, { req }) {}
+  nuxtClientInit(_store) {
+    const theme = Cookies.get("theme");
+    console.log({ theme });
+    if (theme === undefined) {
+      _store.dispatch("themeInit");
+    } else {
+      _store.commit("setTheme", theme);
+    }
+  },
+  themeInit(_store) {
+    const domain = `.${window.location.host
+      .split(".")
+      .splice(-2)
+      .join(".")}`.split(":")[0];
+    Cookies.set("theme", _store.state.theme, { expires: 7, domain });
+  },
 };

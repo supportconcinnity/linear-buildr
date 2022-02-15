@@ -51,6 +51,7 @@
 
         <div class="disconnect" @click.stop="disconnect">Disconnect</div>
       </div>
+      <theme-switch :variant="variant" />
       <!-- <div class="chainChange" :class="{ chainChanging }">
                 <div
                     class="ethBox"
@@ -84,7 +85,8 @@
       </div>
 
       <div class="mMenu" @click="mShowMenuFun">
-        <img src="@/static/icon-menu.svg" />
+        <img v-if="theme === 'light'" src="@/static/icon-menu.svg" />
+        <img v-else src="@/static/dark-theme/icon-menu.svg" />
       </div>
     </div>
 
@@ -137,6 +139,7 @@
                   fill="#5a575c"
                   fill-rule="evenodd"
                   stroke="none"
+                  class="copy-path"
                 />
               </g>
             </svg>
@@ -160,9 +163,16 @@
             <div class="placeholder">
               <transition-group name="img-fade">
                 <img
+                  v-if="theme === 'light'"
                   key="1"
                   v-show="!trackStatus && !trackIconStatus"
                   src="@/static/appPage/track.svg"
+                />
+                <img
+                  v-else
+                  key="1"
+                  v-show="!trackStatus && !trackIconStatus"
+                  src="@/static/dark-theme/appPage/track.svg"
                 />
                 <img
                   key="2"
@@ -190,9 +200,16 @@
             <div class="placeholder">
               <transition-group name="img-fade">
                 <img
+                  v-if="theme === 'light'"
                   key="1"
                   v-show="!transactionStatus && !transactionIconStatus"
                   src="@/static/appPage/transaction.svg"
+                />
+                <img
+                  v-else
+                  key="1"
+                  v-show="!transactionStatus && !transactionIconStatus"
+                  src="@/static/dark-theme/appPage/transaction.svg"
                 />
                 <img
                   key="2"
@@ -233,7 +250,8 @@
             placement="bottom"
             offset="0 6"
           >
-            <img src="@/static/info_white.svg" />
+            <img v-if="theme === 'light'" src="@/static/info_white.svg" />
+            <img v-else src="@/static/dark-theme/info_white.svg" />
           </Tooltip>
         </div>
         <div class="percentBox">
@@ -308,7 +326,16 @@
       <div class="walletInfo">
         <div class="title">Wallet Balance</div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/LINA_logo.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/LINA_logo.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/LINA_logo.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive">
               <div class="left">LINA</div>
@@ -362,7 +389,16 @@
           </div>
         </div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/currency/lUSD.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/currency/lUSD.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/currency/lUSD.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive">
               <div class="left">ℓUSD</div>
@@ -383,7 +419,16 @@
         </div>
         <div class="tokenBox">
           <template v-if="isEthereumNetwork">
-            <img class="tokenIcon" src="@/static/ETH_logo.svg" />
+            <img
+              v-if="theme === 'light'"
+              class="tokenIcon"
+              src="@/static/ETH_logo.svg"
+            />
+            <img
+              v-else
+              class="tokenIcon"
+              src="@/static/dark-theme/ETH_logo.svg"
+            />
             <div class="box">
               <div class="tokenItems obtrusive">
                 <div class="left">ETH</div>
@@ -428,7 +473,16 @@
           </template>
         </div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/currency/lUSD.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/currency/lUSD.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/currency/lUSD.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive singer">
               <div class="left">
@@ -440,7 +494,8 @@
                   placement="bottom"
                   offset="0 6"
                 >
-                  <img src="@/static/info_white.svg" />
+                  <img v-if="theme === 'light'" src="@/static/info_white.svg" />
+                  <img v-else src="@/static/dark-theme/info_white.svg" />
                 </Tooltip>
               </div>
               <div class="right">
@@ -455,7 +510,16 @@
           </div>
         </div>
         <div class="tokenBox">
-          <img class="tokenIcon" src="@/static/currency/lUSD.svg" />
+          <img
+            v-if="theme === 'light'"
+            class="tokenIcon"
+            src="@/static/currency/lUSD.svg"
+          />
+          <img
+            v-else
+            class="tokenIcon"
+            src="@/static/dark-theme/currency/lUSD.svg"
+          />
           <div class="box">
             <div class="tokenItems obtrusive singer">
               <div class="left">
@@ -467,7 +531,8 @@
                   placement="bottom"
                   offset="0 6"
                 >
-                  <img src="@/static/info_white.svg" />
+                  <img v-if="theme === 'light'" src="@/static/info_white.svg" />
+                  <img v-else src="@/static/dark-theme/info_white.svg" />
                 </Tooltip>
               </div>
               <div class="right">
@@ -558,6 +623,7 @@ import ethereumSvg from "@/components/svg/ethereum";
 import binanceSvg from "@/components/svg/binance";
 import { abbreviateAddress } from "@/assets/linearLibrary/linearTools/format";
 import { lnr } from "@/assets/linearLibrary/linearTools/request/linearData/transactionData";
+import ThemeSwitch from "~/components/themeSwitch.vue";
 
 export default {
   name: "walletDetails",
@@ -588,11 +654,13 @@ export default {
 
       //移动端 显示钱包状态
       mShowWallet: false,
+      variant: "desktop",
     };
   },
   components: {
     ethereumSvg,
     binanceSvg,
+    ThemeSwitch,
   },
   watch: {
     trackStatusChange() {},
@@ -604,7 +672,16 @@ export default {
     isBinanceNetwork() {},
     walletNetworkId() {},
     walletType() {},
-    isMobile() {},
+    isMobile: {
+      handler(mobile) {
+        if (mobile === true) {
+          this.variant = "mobile";
+        } else {
+          this.variant = "desktop";
+        }
+      },
+      immediate: true,
+    },
   },
   computed: {
     isMobile() {
@@ -662,6 +739,9 @@ export default {
       }
 
       return currentRatio;
+    },
+    theme() {
+      return this.$store.state.theme;
     },
   },
   created() {
@@ -924,13 +1004,17 @@ export default {
     align-items: center;
 
     .info {
-      width: 100%;
+      width: calc(100% - 32px - 8px);
       padding: 7px 16px;
       display: flex;
       justify-content: space-evenly;
       align-items: center;
       border-radius: 20px;
       background: #f6f5f6;
+
+      .app-dark & {
+        background: $darkBackgroundColor;
+      }
 
       .network {
         margin-right: 8px;
@@ -948,6 +1032,10 @@ export default {
         line-height: 1.29;
         letter-spacing: normal;
         color: #5a575c;
+
+        .app-dark & {
+          color: $darkFontColorSecondary;
+        }
       }
 
       .address {
@@ -965,6 +1053,10 @@ export default {
         line-height: 1.29;
         letter-spacing: normal;
         color: #99999a;
+
+        .app-dark & {
+          color: $darkFontColorSecondary;
+        }
       }
 
       .copyBtn {
@@ -978,6 +1070,13 @@ export default {
           #Combined-Shape {
             fill: #1a38f8;
             stroke: #1a38f8;
+          }
+        }
+        .app-dark & {
+          &,
+          #Combined-Shape {
+            fill: #ffffff;
+            stroke: #ffffff;
           }
         }
       }
@@ -994,6 +1093,13 @@ export default {
         text-transform: uppercase;
         cursor: pointer;
         transition: $animete-time linear;
+
+        .app-dark & {
+          color: $darkFontColorSecondary;
+          &:hover {
+            color: #fff;
+          }
+        }
 
         &:hover {
           color: #1a38f8;
@@ -1098,6 +1204,9 @@ export default {
           &:hover,
           &.selected {
             color: #1a38f8;
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
           }
         }
       }
@@ -1114,6 +1223,10 @@ export default {
         font-size: 32px;
         text-align: center;
         color: #5a575c;
+
+        .app-dark & {
+          color: $darkFontColorLight;
+        }
 
         &.inLiquidation {
           color: #df434c;
@@ -1132,6 +1245,10 @@ export default {
         font-size: 14px;
         text-align: center;
         color: #5a575c;
+
+        .app-dark & {
+          color: $darkFontColorLight;
+        }
 
         img {
           margin-top: -3px;
@@ -1158,6 +1275,10 @@ export default {
           height: 24px;
           background-color: #5a575c;
           position: absolute;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
         }
 
         .scale200 {
@@ -1309,6 +1430,10 @@ export default {
         letter-spacing: normal;
         color: #5a575c;
         margin-bottom: 8px;
+
+        .app-dark & {
+          color: $darkFontColorLight;
+        }
       }
 
       .tokenBox {
@@ -1335,6 +1460,13 @@ export default {
             color: #5a575c;
             display: flex;
             justify-content: space-between;
+
+            .app-dark & {
+              color: #9d9d9d;
+            }
+            .app-dark &:first-child {
+              color: $darkFontColorLight;
+            }
 
             &.obtrusive {
               .left {
@@ -1368,6 +1500,10 @@ export default {
                   font-style: normal;
                   letter-spacing: normal;
                   color: #5a575c;
+
+                  .app-dark & {
+                    color: $darkFontColorLight;
+                  }
                   .top {
                     font-size: 16px;
                     line-height: 1.5;
@@ -1405,6 +1541,10 @@ export default {
           letter-spacing: normal;
           color: #5a575c;
           margin-bottom: 8px;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
         }
 
         .amount {
@@ -1416,6 +1556,10 @@ export default {
           line-height: 1.25;
           letter-spacing: normal;
           color: #5a575c;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
         }
       }
 
@@ -1424,6 +1568,17 @@ export default {
         .border,
         .shape {
           transition: fill $animete-time linear;
+        }
+
+        .app-dark & {
+          &:not(.selected) {
+            .border {
+              stroke: #ffffff;
+            }
+            .shape {
+              fill: #ffffff;
+            }
+          }
         }
 
         &:hover {
@@ -1487,7 +1642,8 @@ export default {
     position: fixed;
     right: 0;
     top: 0;
-    z-index: 9999;
+    //z-index: 9999;
+    z-index: 999;
 
     &.mScroll {
       overflow-y: scroll;
@@ -1552,6 +1708,10 @@ export default {
           line-height: 1.29;
           letter-spacing: normal;
           color: #5a575c;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
         }
 
         .address {
@@ -1667,6 +1827,9 @@ export default {
           line-height: 1.33;
           letter-spacing: normal;
           color: #99999a;
+          .app-dark & {
+            color: #ffffff;
+          }
         }
       }
 
@@ -1679,6 +1842,9 @@ export default {
         border-radius: 50%;
         box-shadow: 0 2px 6px 0 #deddde;
         background-color: #ffffff;
+        .app-dark & {
+          border: 1px solid #ffffff;
+        }
       }
     }
     .mShowWalletClass {
@@ -1737,6 +1903,10 @@ export default {
             line-height: 1.29;
             letter-spacing: normal;
             color: #5a575c;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
           }
 
           .address {
@@ -1753,6 +1923,9 @@ export default {
             line-height: 1.29;
             letter-spacing: normal;
             color: #99999a;
+            .app-dark & {
+              color: #ffffff !important;
+            }
           }
 
           .copyBtn {
@@ -1764,6 +1937,12 @@ export default {
               #Combined-Shape {
                 fill: #1a38f8;
                 stroke: #1a38f8;
+              }
+            }
+            .app-dark & {
+              #Combined-Shape {
+                fill: #ffffff;
+                stroke: #ffffff;
               }
             }
           }
@@ -1842,6 +2021,10 @@ export default {
           letter-spacing: normal;
           color: #5a575c;
 
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
+
           .ivu-tooltip {
             margin-left: 8px;
           }
@@ -1862,6 +2045,10 @@ export default {
             letter-spacing: normal;
             text-align: center;
             color: #5a575c;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
 
             .context {
               font-size: 14px;
@@ -1914,6 +2101,10 @@ export default {
           letter-spacing: normal;
           color: #5a575c;
           margin-bottom: 8px;
+
+          .app-dark & {
+            color: $darkFontColorLight;
+          }
         }
 
         .tokenBox {
@@ -1943,6 +2134,13 @@ export default {
               color: #5a575c;
               display: flex;
               justify-content: space-between;
+
+              .app-dark & {
+                color: #9d9d9d;
+              }
+              .app-dark &:first-child {
+                color: $darkFontColorLight;
+              }
 
               &.obtrusive {
                 .left {
@@ -1976,6 +2174,10 @@ export default {
                     font-style: normal;
                     letter-spacing: normal;
                     color: #5a575c;
+
+                    .app-dark & {
+                      color: $darkFontColorLight;
+                    }
                     .top {
                       font-size: 16px;
                       line-height: 1.5;
@@ -2021,6 +2223,10 @@ export default {
             letter-spacing: normal;
             color: #5a575c;
             margin-bottom: 8px;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
           }
 
           .amount {
@@ -2032,6 +2238,10 @@ export default {
             line-height: 1.25;
             letter-spacing: normal;
             color: #5a575c;
+
+            .app-dark & {
+              color: $darkFontColorLight;
+            }
           }
         }
 

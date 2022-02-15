@@ -2,14 +2,36 @@
   <div id="actions">
     <div class="headerBox">
       <a href="/" class="webLogo">
-        <img class="linearBuildrlogo" src="@/static/linear_buildr_logo.svg" />
+        <img
+          v-if="$store.getters.isDarkTheme"
+          class="linearBuildrlogo"
+          src="@/static/linear_buildr_logo_dark.svg"
+        />
+        <img
+          v-else
+          class="linearBuildrlogo"
+          src="@/static/linear_buildr_logo.svg"
+        />
       </a>
 
       <a href="/" class="mobileLogo">
         <img
           class="linearBuildrlogo"
           src="@/static/linear_buildr_logo.svg"
-          v-show="currentAction == 0 && othersAction == 0"
+          v-show="
+            currentAction == 0 &&
+            othersAction == 0 &&
+            !$store.getters.isDarkTheme
+          "
+        />
+        <img
+          v-show="
+            currentAction == 0 &&
+            othersAction == 0 &&
+            $store.getters.isDarkTheme
+          "
+          class="linearBuildrlogo"
+          src="@/static/linear_buildr_logo_dark.svg"
         />
         <img
           class="logoWhenAction"
@@ -113,6 +135,7 @@
             <img src="@/static/logo-crypto-linear-colour.svg" />
             Menu
           </div>
+          <theme-switch variant="mobile" />
           <img
             @click="mHideMenuFun"
             class="mClose"
@@ -171,6 +194,7 @@ import transactionModal from "@/components/appPage/walletDetails/actions/transac
 import trackModal from "@/components/appPage/walletDetails/actions/trackModal";
 
 import common from "@/config/common";
+import ThemeSwitch from "~/components/themeSwitch.vue";
 
 export default {
   name: "actions",
@@ -184,6 +208,7 @@ export default {
     trackModal,
     notificationQueue,
     transactionModal,
+    ThemeSwitch,
   },
   data() {
     return {
@@ -216,12 +241,20 @@ export default {
     //this.$pub.subscribe("trackModalCloseEvent", (msg, params) => {
     //    this.othersAction = 0;
     //});
+
+    // temporary add dark css body
   },
   watch: {
     isMobile() {},
 
     //显示不同功能 0homePage 1build 2burn 3claim 4transfer 5swap
     currentAction() {},
+    theme: {
+      handler(newValue, oldValue) {
+        this.setDarkThemeInBody(newValue, oldValue);
+      },
+      immediate: true,
+    },
   },
   computed: {
     mMenuState() {
@@ -239,8 +272,24 @@ export default {
     currentAction() {
       return this.$store.state.currentAction;
     },
+    theme() {
+      return this.$store.state.theme;
+    },
   },
   methods: {
+    // temporary dark theme in body
+    setDarkThemeInBody(newValue, oldValue = undefined) {
+      const theme = `${newValue}-theme`;
+      const html = document.documentElement;
+      const body = document.body;
+      if (oldValue !== undefined) {
+        const oldTheme = `${oldValue}-theme`;
+        html.classList.remove(oldTheme);
+        body.classList.remove(oldTheme);
+      }
+      html.classList.add(theme);
+      body.classList.add(theme);
+    },
     //切换功能
     //Switch between features
     actionChange(action) {
@@ -330,7 +379,7 @@ export default {
 
       &:hover {
         &:not(.isTransaction):not(.activited) {
-          border-color: #1a38f8;
+          // border-color: #1a38f8;
           color: #1a38f8;
         }
       }
@@ -340,9 +389,21 @@ export default {
       }
 
       &.activited {
-        border-color: #ecf2fb;
-        background-color: #ecf2fb;
         color: #1a38f8;
+      }
+
+      .app-dark & {
+        color: #ffffff;
+
+        &:hover {
+          &:not(.isTransaction):not(.activited) {
+            color: $darkButtonColor;
+          }
+        }
+
+        &.activited {
+          color: $darkButtonColor;
+        }
       }
     }
   }
@@ -354,6 +415,10 @@ export default {
     overflow: hidden;
     box-shadow: 0px 2px 6px #deddde;
     border-radius: 16px;
+
+    .app-dark & {
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
   }
 }
 
@@ -467,6 +532,9 @@ export default {
           padding: 16px 24px;
           display: flex;
           margin-bottom: 44px;
+          align-items: center;
+          justify-content: space-between;
+          padding-right: 54px;
           .mLogo {
             font-family: Gilroy-Bold;
             font-size: 24px;
@@ -490,7 +558,7 @@ export default {
         .mNavigateItem {
           width: 100%;
           height: 40px;
-          font-family: Gilroy;
+          font-family: Gilroy-Bold;
           font-size: 32px;
           font-weight: bold;
           font-stretch: normal;
@@ -499,11 +567,12 @@ export default {
           letter-spacing: normal;
           color: #99999a;
           padding-left: 56px;
-          margin-bottom: 32px;
+          margin-bottom: 24px;
           &.activited {
-            font-size: 56px;
             color: #1a38f8;
-            height: 64px;
+            .app-dark & {
+              color: #ffffff;
+            }
           }
         }
       }
@@ -517,6 +586,10 @@ export default {
       overflow: hidden;
       box-shadow: 0px 2px 6px #deddde;
       border-radius: 16px;
+
+      .app-dark & {
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      }
     }
   }
 }

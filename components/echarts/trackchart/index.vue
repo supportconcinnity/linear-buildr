@@ -91,6 +91,11 @@ export default {
       }
     },
   },
+  computed: {
+    theme() {
+      return this.$store.state.theme;
+    },
+  },
   methods: {
     //更新数据
     updateData(newData) {
@@ -134,6 +139,9 @@ export default {
      */
     let innerColor = {};
 
+    innerColor.textColor = _.has(this.color, "textColor")
+      ? this.color.textColor
+      : "#bebebe";
     innerColor.lineColor = _.has(this.color, "lineColor")
       ? this.color.lineColor
       : "#11BA97";
@@ -162,7 +170,8 @@ export default {
           left: this.isMobile ? "center" : "18%",
           textStyle: {
             fontSize: "12",
-            color: this.isMobile ? "#5a575c" : "#c6c4c7",
+            fontWeight: 400,
+            color: innerColor.textColor,
           },
         },
         textStyle: {
@@ -196,8 +205,8 @@ export default {
             padding: [17, 0, 0, 0],
             //文本样式
             textStyle: {
-              color: "#c6c4c7", //轴上的字体颜色
-              fontSize: "12", // 轴字体大小
+              color: innerColor.textColor, //轴上的字体颜色
+              fontSize: "14", // 轴字体大小
               fontWeight: "bold",
             },
           },
@@ -226,8 +235,8 @@ export default {
             //文本样式
             padding: [0, 10, 0, 0],
             textStyle: {
-              color: "#c6c4c7", //轴上的字体颜色
-              fontSize: "12", // 轴字体大小
+              color: innerColor.textColor, //轴上的字体颜色
+              fontSize: "14", // 轴字体大小
               fontWeight: "bold",
             },
           },

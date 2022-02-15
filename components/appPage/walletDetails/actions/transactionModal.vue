@@ -152,7 +152,7 @@
       <div class="filterMenuMobile" v-if="isMobile">
         <img src="@/static/add.svg" @click="showFilterMenuMobileModal" />
         <template v-if="filterNum != 0">
-          {{ filterNum }} Filters applied
+          {{ filterNum }} Filters Applied
         </template>
         <template v-if="filterNum == 0"> Filter </template>
       </div>
@@ -196,7 +196,13 @@
                 </template>
               </div>
               <div class="td date">
-                {{ row.date }}
+                <template v-if="!isMobile">
+                  {{ row.date }}
+                </template>
+                <template v-else>
+                  <span>{{ row.date | mobileDate }} </span>
+                  <span>{{ row.date | mobileDate(true) }} </span>
+                </template>
               </div>
 
               <template v-if="!isMobile">
@@ -217,7 +223,8 @@
                 class="td viewInBrowser"
                 @click="openBlockchainBrowser(row.hash, row.networkId)"
               >
-                <template v-if="!isMobile">VIEW</template> →
+                <template v-if="!isMobile">VIEW</template>
+                <template v-else> → </template>
               </div>
             </div>
           </div>
@@ -255,7 +262,7 @@
       class="filterMenuMobileModal"
     >
       <div class="titleBox">
-        <template v-if="filterNum != 0">
+        <template v-if="filterNum !== 0">
           {{ filterNum }} Filters applied
           <div
             class="clearFiltersBtn"
@@ -462,6 +469,14 @@ export default {
       isBinanceNetwork,
       openBlockchainBrowser,
     };
+  },
+  filters: {
+    mobileDate(date, time = false) {
+      if (time) {
+        return date.split(" ").pop();
+      }
+      return date.split(" ").slice(0, 3).join(" ");
+    },
   },
   created() {
     //订阅组件改变事件
@@ -811,6 +826,10 @@ body {
       height: 100%;
       overflow: hidden;
 
+      .app-dark & {
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      }
+
       .closeBtn {
         z-index: 1;
         position: absolute;
@@ -1099,6 +1118,57 @@ body {
                 }
               }
             }
+            .app-dark & {
+              .chainSelect,
+              .dateDropdown,
+              .typeDropdown,
+              .amountDropdown {
+                border-radius: 4px;
+                border: 1px solid #f6f5f6;
+                &.hasFilter {
+                  border: 1px solid #3851f0;
+                }
+              }
+              .chainSelect .ivu-select-selection {
+                background: transparent !important;
+                span {
+                  color: #f6f5f6;
+                }
+              }
+              .dateDropdown {
+                background: transparent !important;
+                .ivu-date-picker-rel {
+                  .ivu-input {
+                    background: transparent !important;
+                    &::placeholder {
+                      color: #f6f5f6;
+                    }
+                  }
+                }
+              }
+              .ivu-dropdown-rel {
+                .typeBtn,
+                span {
+                  color: #f6f5f6;
+                }
+              }
+              .typeDropdown {
+                background: transparent !important;
+                &.hasFilter {
+                  .ivu-dropdown-rel .typeBtnSelected {
+                    border: none;
+                  }
+                }
+                .typeBtn {
+                  background: transparent !important;
+                }
+              }
+              .amountDropdown {
+                .amountBtnSelected {
+                  background: transparent !important;
+                }
+              }
+            }
           }
 
           .clearFiltersBtn {
@@ -1117,6 +1187,10 @@ body {
             &.hasFilter {
               opacity: 1;
               cursor: pointer;
+            }
+            .app-dark & {
+              color: #3851f0 !important;
+              opacity: 0.5;
             }
           }
         }
@@ -1159,6 +1233,9 @@ body {
                 &:hover {
                   opacity: 1;
                 }
+                .app-dark & {
+                  color: #3851f0 !important;
+                }
               }
             }
           }
@@ -1173,9 +1250,9 @@ body {
 
           .th {
             flex: 1;
-            font-family: Gilroy-Medium;
+            font-family: Gilroy-Bold;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 700;
             line-height: 16px;
             color: #99999a;
             display: flex;
@@ -1189,6 +1266,9 @@ body {
 
             &:last-of-type {
               padding-right: 16px;
+            }
+            .app-dark & {
+              color: #f6f5f6 !important;
             }
           }
         }
@@ -1237,9 +1317,14 @@ body {
                   padding-right: 16px;
                   opacity: 0.2 !important;
                   cursor: pointer;
+                  letter-spacing: 1.5px;
+                  text-transform: uppercase;
 
                   &:hover {
                     opacity: 1 !important;
+                  }
+                  .app-dark & {
+                    color: #3851f0 !important;
                   }
                 }
               }
@@ -1257,6 +1342,16 @@ body {
               .amount {
                 span {
                   white-space: pre-wrap;
+                }
+              }
+              .app-dark & {
+                &:hover {
+                  background: #050d20;
+                  border: 1px solid;
+                  border-color: #3851f0 !important;
+                  border-left: none;
+                  border-right: none;
+                  box-shadow: none !important;
                 }
               }
             }
@@ -1408,6 +1503,7 @@ body {
             align-items: center;
             font-family: Gilroy-Bold;
             font-size: 14px;
+            line-height: 18px;
             color: #99999a;
             margin-bottom: 16px;
 
@@ -1418,6 +1514,9 @@ body {
               padding: 5px 4px 4px 5px;
               border: solid 1px #e5e5e5;
               border-radius: 50%;
+            }
+            .app-dark & {
+              color: #3851f0 !important;
             }
           }
         }
@@ -1472,9 +1571,8 @@ body {
 
             .th {
               flex: 1;
-              font-family: Gilroy-Medium;
               font-size: 12px;
-              font-weight: 500;
+              font-weight: 700;
               line-height: 16px;
               color: #99999a;
               display: flex;
@@ -1487,7 +1585,7 @@ body {
               }
 
               &:last-of-type {
-                flex: 1.5;
+                flex: 1;
                 padding-right: 16px;
               }
             }
@@ -1515,10 +1613,10 @@ body {
 
                 .td {
                   flex: 1;
-                  font-family: Gilroy-Medium;
-                  font-size: 12px;
+                  font-family: Gilroy-Regular;
+                  font-size: 14px;
                   font-weight: 500;
-                  line-height: 16px;
+                  line-height: 18px;
                   color: #5a575c;
                   padding: 5px;
                   height: 100%;
@@ -1542,6 +1640,9 @@ body {
                     &:hover {
                       opacity: 1 !important;
                     }
+                    .app-dark & {
+                      color: #1a38f8 !important;
+                    }
                   }
                 }
 
@@ -1550,16 +1651,26 @@ body {
                   align-items: center;
                   justify-content: center;
                   text-transform: capitalize;
-                  flex-direction: column;
+                  flex: 1.4;
 
                   img {
                     width: 16px;
-                    margin-right: 0px;
+                    margin-right: 5px;
                   }
                 }
 
                 .date {
-                  flex: 1.4;
+                  flex: 1.8;
+                  // width: 90px;
+                  .app-dark & {
+                    span {
+                      &:last-child {
+                        font-size: 12px;
+                        line-break: 16px;
+                        color: #99999a !important;
+                      }
+                    }
+                  }
                 }
 
                 .amount {
@@ -1571,7 +1682,16 @@ body {
                 .typeAmount {
                   display: flex;
                   flex-direction: column;
-                  flex: 2.8;
+                  flex: 2;
+                  .app-dark & {
+                    span {
+                      &:last-child {
+                        font-size: 12px;
+                        line-break: 16px;
+                        color: #99999a !important;
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -1673,6 +1793,11 @@ body {
           height: 100%;
           top: 0 !important;
           margin: 0;
+          .app-dark & {
+            .ivu-icon.ivu-icon-ios-close {
+              color: #ffffff;
+            }
+          }
 
           .ivu-modal-content {
             height: 100%;
@@ -1692,8 +1817,18 @@ body {
                 margin-bottom: 16px;
 
                 .clearFiltersBtn {
+                  font-weight: 700;
                   color: #1a38f8;
                   margin-left: 16px;
+                  font-size: 12px;
+                  line-height: 16px;
+                  letter-spacing: 1.5px;
+                  .app-dark & {
+                    color: #3851f0 !important;
+                  }
+                }
+                .app-dark & {
+                  color: #ffffff;
                 }
               }
 
@@ -1720,9 +1855,9 @@ body {
                     span {
                       height: 80px;
                       line-height: 80px;
-                      font-family: Gilroy-Medium;
+                      font-family: Gilroy-Bold;
                       font-size: 16px;
-                      font-weight: 500;
+                      font-weight: 700;
                       color: #99999a;
                     }
 
@@ -1731,6 +1866,25 @@ body {
                       content: "\f116";
                       color: #cacaca;
                     }
+                    .app-dark & {
+                      background: transparent !important;
+                      border: 1px solid;
+                      border-color: rgba(
+                        $color: #99999a,
+                        $alpha: 0.5
+                      ) !important;
+                      .ivu-select-placeholder {
+                        color: #3851f0;
+                      }
+                      .ivu-select-selected-value {
+                        color: #ffffff !important;
+                      }
+                      .ivu-select-arrow {
+                        &.ivu-icon:before {
+                          color: #3851f0;
+                        }
+                      }
+                    }
                   }
 
                   .ivu-select-dropdown {
@@ -1738,13 +1892,21 @@ body {
                       .ivu-select-item {
                         display: flex;
                         align-items: center;
-                        font-family: Gilroy;
+                        font-family: Gilroy-Bold;
+                        font-weight: 700;
                         font-size: 16px;
                         color: #515a6e;
 
                         img {
                           width: 24px;
                           margin-right: 8px;
+                        }
+                        .app-dark & {
+                          color: #ffffff !important;
+                          &.ivu-select-item-focus {
+                            background: rgba($color: #7eb5ff, $alpha: 0.1);
+                            color: #1a38f8 !important;
+                          }
                         }
                       }
                     }
@@ -1757,12 +1919,15 @@ body {
                       span {
                         color: #5a575c;
                       }
+                      .app-dark & {
+                        border-color: #1a38f8 !important;
+                      }
                     }
                   }
                 }
 
                 .dateDropdown {
-                  font-family: Gilroy-Medium;
+                  font-family: Gilroy-Bold;
 
                   * {
                     box-shadow: none !important;
@@ -1801,11 +1966,38 @@ body {
                       color: #99999a;
                     }
                   }
+                  .app-dark & {
+                    .ivu-date-picker-rel {
+                      color: #3851f0 !important;
+                      .ivu-input-prefix i,
+                      .ivu-input-suffix i {
+                        &:before {
+                          color: #3851f0 !important;
+                        }
+                      }
+                      input {
+                        font-family: Gilroy-Bold;
+                        font-weight: 700;
+                        background: transparent !important;
+                        border: 1px solid rgba($color: #99999a, $alpha: 0.5) !important;
+                        &::placeholder,
+                        &::-webkit-input-placeholder,
+                        &::-moz-placeholder,
+                        &:-moz-placeholder,
+                        &:-ms-input-placeholder {
+                          color: #3851f0 !important;
+                        }
+                      }
+                    }
+                  }
 
                   &.hasFilter {
                     input {
                       border: 1px solid #1a38f8;
                       color: #5a575c;
+                      .app-dark & {
+                        border-color: #1a38f8 !important;
+                      }
                     }
                   }
                 }
@@ -1816,6 +2008,8 @@ body {
                   .ivu-dropdown-rel {
                     .typeBtn,
                     .typeBtnSelected {
+                      font-family: Gilroy-Bold;
+                      font-weight: 700;
                       width: 100%;
                       height: 80px;
                       font-size: 16px;
@@ -1833,6 +2027,13 @@ body {
                         width: 20px;
                         margin-top: 12px;
                         display: inline-block;
+                      }
+                    }
+                    .app-dark & {
+                      .typeBtn {
+                        color: #3851f0 !important;
+                        background: transparent !important;
+                        border: 1px solid rgba($color: #99999a, $alpha: 0.5) !important;
                       }
                     }
                   }
@@ -1869,7 +2070,8 @@ body {
                 }
 
                 .amountDropdown {
-                  font-family: Gilroy-Medium;
+                  font-family: Gilroy-Bold;
+                  font-weight: 700;
 
                   .ivu-dropdown-rel {
                     .amountBtn,
@@ -1885,6 +2087,16 @@ body {
                       padding: 0 8px;
                       color: #99999a;
                       cursor: pointer;
+                    }
+                    .app-dark & {
+                      .amountBtnSelected {
+                        color: #3851f0 !important;
+                        background: transparent !important;
+                        border: 1px solid rgba($color: #99999a, $alpha: 0.5) !important;
+                      }
+                      .amountBtn {
+                        color: #ffffff !important;
+                      }
                     }
                   }
 
@@ -1928,6 +2140,9 @@ body {
 
                 .mobileFiltersChange {
                   background-color: #1a38f8;
+                  .app-dark & {
+                    background-color: #3851f0;
+                  }
                 }
               }
             }

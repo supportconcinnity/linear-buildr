@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="[`app-${$store.state.theme}`]">
     <SetupModal />
     <nuxt />
   </div>

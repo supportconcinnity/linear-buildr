@@ -15,6 +15,10 @@ $lightButtonHoverColor: #fff; //按钮热点色
   }
 }
 
+body.light-theme {
+  background: #fafafa !important;
+}
+
 //导出变量,在js中使用
 //Export for js
 :export {

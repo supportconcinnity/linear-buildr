@@ -34,7 +34,8 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/LINA_logo.svg" />
+                  <img v-if="theme === 'light'" src="@/static/LINA_logo.svg" />
+                  <img v-else src="@/static/dark-theme/LINA_logo.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">Stake LINA</div>
@@ -94,7 +95,11 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/currency/lUSD.svg" />
+                  <img
+                    v-if="theme === 'light'"
+                    src="@/static/currency/lUSD.svg"
+                  />
+                  <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">
@@ -106,7 +111,11 @@
                       content="Amount of ℓUSD built may vary due to block times and price fluctuations in pledge tokens."
                       offset="0 4"
                     >
-                      <img src="@/static/info_white.svg" />
+                      <img
+                        v-if="theme === 'light'"
+                        src="@/static/info_white.svg"
+                      />
+                      <img v-else src="@/static/dark-theme/info_white.svg" />
                     </Tooltip>
                   </div>
                   <div
@@ -114,7 +123,7 @@
                     :class="{ active: activeItemBtn == 1 }"
                     @click.stop="clickMaxBuildAmount"
                   >
-                    Max
+                    MAX
                   </div>
                 </div>
               </div>
@@ -160,7 +169,8 @@
             >
               <div class="itemLeft">
                 <div class="itemIcon">
-                  <img src="@/static/percentage.svg" />
+                  <img v-if="theme === 'light'" src="@/static/percentage.svg" />
+                  <img v-else src="@/static/dark-theme/percentage.svg" />
                 </div>
                 <div class="itemType">
                   <div class="itemTypeTitle">P Ratio</div>
@@ -169,7 +179,7 @@
                     :class="{ active: activeItemBtn == 2 }"
                     @click.stop="clickTargetRatio"
                   >
-                    Target ratio
+                    TARGET RATIO
                   </div>
                 </div>
               </div>
@@ -239,14 +249,25 @@
                 }"
               >
                 <img
+                  v-if="theme === 'light'"
                   class="showInfo"
                   src="@/static/info_white.svg"
+                  @click="showIntroductActionModal"
+                />
+                <img
+                  v-else
+                  class="showInfo"
+                  src="@/static/dark-theme/info_white.svg"
                   @click="showIntroductActionModal"
                 />
 
                 <div class="box">
                   <div class="itemType">
-                    <img src="@/static/LINA_logo.svg" />
+                    <img
+                      v-if="theme === 'light'"
+                      src="@/static/LINA_logo.svg"
+                    />
+                    <img v-else src="@/static/dark-theme/LINA_logo.svg" />
                     <div class="itemTypeTitle">Stake LINA</div>
                     <InputNumber
                       class="input"
@@ -263,7 +284,11 @@
                   </div>
 
                   <div class="itemType">
-                    <img src="@/static/currency/lUSD.svg" />
+                    <img
+                      v-if="theme === 'light'"
+                      src="@/static/currency/lUSD.svg"
+                    />
+                    <img v-else src="@/static/dark-theme/currency/lUSD.svg" />
                     <div class="itemTypeTitle">Build ℓUSD</div>
                     <InputNumber
                       class="input"
@@ -560,6 +585,9 @@ export default {
 
     isMobile() {
       return this.$store.state?.isMobile;
+    },
+    theme() {
+      return this.$store.state.theme;
     },
   },
   created() {
@@ -1767,6 +1795,10 @@ export default {
     border-radius: 16px;
     box-shadow: 0px 2px 6px #deddde;
 
+    .app-dark & {
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
     .ivu-tabs-bar {
       display: none;
     }
@@ -1887,6 +1919,9 @@ export default {
                   img {
                     width: 100%;
                     height: 100%;
+                  }
+                  .app-dark & {
+                    background: none;
                   }
                 }
 
@@ -2076,10 +2111,18 @@ export default {
     box-shadow: 0px 2px 6px #deddde;
     min-height: 550px;
 
+    .app-dark & {
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
     .actionTabs {
       border-radius: 16px;
       box-shadow: 0px 2px 6px #deddde;
       min-height: 550px;
+
+      .app-dark & {
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      }
 
       .ivu-tabs-bar {
         display: none;
@@ -2100,6 +2143,8 @@ export default {
             width: 100%;
             height: 88vh !important;
             min-height: 550px;
+            display: flex;
+            justify-content: center;
           }
 
           .buildBox {
@@ -2220,6 +2265,7 @@ export default {
                   .itemTypeBtn {
                     height: 32px;
                     width: 100%;
+                    text-transform: uppercase;
                     border-top: solid 1px #e5e5e5;
                     font-family: Gilroy;
                     text-align: center;
@@ -2295,6 +2341,7 @@ export default {
                     position: relative;
                     bottom: 0;
                     border-top: solid 1px #e5e5e5;
+                    text-transform: uppercase;
                     font-family: Gilroy;
                     text-align: center;
                     font-size: 10px;

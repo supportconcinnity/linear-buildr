@@ -21,7 +21,14 @@
           <div class="contentTitle">…We are preparing the contract...</div>
 
           <div class="contentIcon">
-            <img src="@/static/transferProgress/swap_check_icon.svg" />
+            <img
+              v-if="theme === 'light'"
+              src="@/static/transferProgress/swap_check_icon.svg"
+            />
+            <img
+              v-else
+              src="@/static/dark-theme/transferProgress/swap_check_icon.svg"
+            />
           </div>
 
           <div class="contentStep">
@@ -703,6 +710,9 @@ export default {
     },
     walletAddress() {
       return this.$store.state?.wallet?.address;
+    },
+    theme() {
+      return this.$store.state.theme;
     },
   },
   created() {
@@ -2279,6 +2289,13 @@ export default {
                 }
               }
             }
+            .app-dark & {
+              color: #3851f0;
+              border-color: #3851f0 !important;
+              .color {
+                fill: #3851f0;
+              }
+            }
           }
         }
 
@@ -2346,6 +2363,9 @@ export default {
                   font-family: Gilroy-Bold;
                   font-weight: bold;
                 }
+                .app-dark & {
+                  color: #99999a;
+                }
               }
 
               .view,
@@ -2372,6 +2392,9 @@ export default {
                 }
 
                 &:hover {
+                  opacity: 1;
+                }
+                .app-dark & {
                   opacity: 1;
                 }
               }
