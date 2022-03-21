@@ -7,14 +7,16 @@
       :closable="false"
       :mask-closable="false"
       :mask="true"
-      class="setupModal"
+      :class="isMobile ? 'setupModalMobile' : 'setupModal'"
     >
-      <div class="close">
-        <closeSvg
-          @click.native="$store.commit('setSetupModal', false)"
-        ></closeSvg>
+      <div class="setup-header-wrapper">
+        <div class="title">Setup MetaMask to connect to BSC Mainnet</div>
+        <div class="close">
+          <closeSvg
+            @click.native="$store.commit('setSetupModal', false)"
+          ></closeSvg>
+        </div>
       </div>
-      <div class="title">Setup MetaMask to connect to BSC Mainnet</div>
       <div class="context">
         <div class="step step1">
           <div class="num">01</div>
@@ -202,6 +204,9 @@ export default {
     setupModal() {
       return this.$store.state?.setupModal;
     },
+    isMobile() {
+      return this.$store.state?.isMobile;
+    },
   },
   methods: {
     async clickAddNetwork(networkId) {
@@ -246,7 +251,8 @@ export default {
 
 <style lang="scss">
 body {
-  .setupModal {
+  .setupModal,
+  .setupModalMobile {
     .ivu-modal-wrap {
       display: flex;
       align-items: center;
@@ -268,11 +274,16 @@ body {
             overflow-y: hidden;
             display: flex;
             flex-direction: column;
+            .setup-header-wrapper {
+              display: flex;
+              justify-content: space-between;
+              gap: 10px;
+            }
 
             .close {
-              position: absolute;
-              right: 40px;
-              top: 40px;
+              //position: absolute;
+              //right: 40px;
+              //top: 40px;
             }
 
             .title {
