@@ -1455,17 +1455,11 @@ span.ivu-date-picker-cells-cell-disabled:hover {
     }
   }
   .setupModalMobile {
-    .ivu-modal-body {
-      padding: 24px 24px !important;
-    }
     .title {
       color: #f6f5f6 !important;
-      font-size: 24px !important;
-      line-height: 32px !important;
     }
     .context {
       .step {
-        flex-wrap: wrap;
         .text {
           color: #ffffff !important;
         }
@@ -1475,13 +1469,6 @@ span.ivu-date-picker-cells-cell-disabled:hover {
           }
           &:nth-child(2) {
             color: #ffffff !important;
-          }
-        }
-
-        .picture {
-          #thumbnail {
-            width: 100% !important;
-            //height: auto!important;
           }
         }
       }

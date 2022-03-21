@@ -25,7 +25,7 @@
           </div>
           <div class="picture">
             <thumbnail
-              style="width: 402px; height: 262px"
+              class="thumbnail-first"
               thumb="setupModal/1_thumb.png"
               src="setupModal/1.png"
             />
@@ -41,7 +41,7 @@
           </div>
           <div class="picture">
             <thumbnail
-              style="width: 398px; height: 258px"
+              class="thumbnail-second"
               thumb="setupModal/2_thumb.png"
               src="setupModal/2.png"
             />
@@ -145,7 +145,7 @@
           <div class="picture">
             <div class="p_1">
               <thumbnail
-                style="width: 187px; height: 240px; margin: 0 auto"
+                class="thumbnail-third"
                 thumb="setupModal/3_thumb.png"
                 src="setupModal/3.png"
               />
@@ -286,22 +286,11 @@ body {
               //top: 40px;
             }
 
-            .title {
-              margin: 0 0 36px 0;
-              font-family: Gilroy-bold;
-              font-size: 32px !important;
-              font-weight: bold;
-              font-stretch: normal;
-              font-style: normal;
-              line-height: 1.25;
-              letter-spacing: normal;
-              color: #5a575c;
-            }
-
             .context {
               font-family: Gilroy;
               font-size: 14px;
               overflow-y: scroll;
+              overflow-x: hidden;
               flex: 1;
               min-height: 0;
 
@@ -392,7 +381,7 @@ body {
                   }
                 }
                 .picture {
-                  width: 402px;
+                  //width: 402px;
                   text-align: center;
 
                   .p_1 {
@@ -434,6 +423,76 @@ body {
                 }
               }
             }
+          }
+        }
+      }
+    }
+  }
+
+  .setupModal {
+    .title {
+      margin: 0 0 36px 0;
+      font-family: Gilroy-bold;
+      font-size: 32px !important;
+      font-weight: bold;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.25;
+      letter-spacing: normal;
+      color: #5a575c;
+    }
+    .context {
+      .step {
+        .picture {
+          .thumbnail-first {
+            width: 402px !important;
+            height: 262px !important;
+          }
+          .thumbnail-second {
+            width: 398px !important;
+            height: 258px !important;
+          }
+          .thumbnail-third {
+            width: 187px !important;
+            height: 240px !important;
+            margin: 0 auto !important;
+          }
+        }
+      }
+    }
+  }
+  .setupModalMobile {
+    .ivu-modal-body {
+      padding: 18px 14px !important;
+    }
+    .title {
+      margin: 0 0 16px 0;
+      font-family: Gilroy-bold;
+      font-weight: bold;
+      font-stretch: normal;
+      font-style: normal;
+      letter-spacing: normal;
+      color: #5a575c;
+      font-size: 24px !important;
+      line-height: 32px !important;
+    }
+    .context {
+      .step {
+        flex-wrap: wrap;
+        .picture {
+          width: 100% !important;
+
+          .thumbnail-first {
+            width: 90% !important;
+            height: 162px !important;
+          }
+          .thumbnail-second {
+            width: 90% !important;
+            height: 158px !important;
+          }
+          .thumbnail-third {
+            width: 187px !important;
+            height: 240px !important;
           }
         }
       }
