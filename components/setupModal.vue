@@ -481,18 +481,26 @@ body {
         flex-wrap: wrap;
         .picture {
           width: 100% !important;
+          .p_1 {
+            margin-top: 0px !important;
+          }
 
           .thumbnail-first {
-            width: 90% !important;
-            height: 162px !important;
+            aspect-ratio: 201/131;
           }
           .thumbnail-second {
-            width: 90% !important;
-            height: 158px !important;
+            aspect-ratio: 199/129;
           }
+
           .thumbnail-third {
             width: 187px !important;
             height: 240px !important;
+          }
+        }
+        &.step1,
+        &.step2 {
+          .text {
+            margin-bottom: 20px;
           }
         }
       }
